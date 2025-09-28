@@ -1,9 +1,26 @@
+/// <reference types="vitest" />
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import path from 'path'
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
+
+  // Path resolution
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+      '@/components': path.resolve(__dirname, './src/components'),
+      '@/pages': path.resolve(__dirname, './src/pages'),
+      '@/store': path.resolve(__dirname, './src/store'),
+      '@/utils': path.resolve(__dirname, './src/utils'),
+      '@/services': path.resolve(__dirname, './src/services'),
+      '@/types': path.resolve(__dirname, './src/types'),
+      '@/config': path.resolve(__dirname, './src/config'),
+      '@/assets': path.resolve(__dirname, './src/assets'),
+    },
+  },
 
   // Zero-cost scalability configuration
   build: {
@@ -12,23 +29,88 @@ export default defineConfig({
 
     // Asset optimization
     assetsDir: 'assets',
+    sourcemap: false, // Disable in production for smaller builds
 
     // Chunk splitting for better caching
     rollupOptions: {
       output: {
         chunkFileNames: 'assets/[name]-[hash].js',
         entryFileNames: 'assets/[name]-[hash].js',
-        assetFileNames: 'assets/[name]-[hash].[ext]'
+        assetFileNames: 'assets/[name]-[hash].[ext]',
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom'],
+          'router-vendor': ['react-router-dom'],
+          'map-vendor': ['leaflet', 'react-leaflet'],
+          'state-vendor': ['zustand'],
+          'i18n-vendor': ['react-i18next', 'i18next'],
+        },
       }
-    }
+    },
+
+    // Build performance
+    target: 'esnext',
+    minify: 'esbuild',
   },
 
   // Development server configuration
   server: {
     port: 3000,
-    open: true
+    open: true,
+    host: true, // Allow external connections for mobile testing
+    cors: true,
+
+    // Hot module replacement
+    hmr: {
+      overlay: true,
+    },
+  },
+
+  // Preview server configuration
+  preview: {
+    port: 4173,
+    host: true,
   },
 
   // Environment variable prefix
-  envPrefix: 'VITE_'
+  envPrefix: 'VITE_',
+
+  // CSS configuration
+  css: {
+    devSourcemap: true,
+    modules: {
+      localsConvention: 'camelCase',
+    },
+  },
+
+  // Vitest configuration
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: ['./src/test/setup.ts'],
+    css: true,
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'json', 'html'],
+      exclude: [
+        'node_modules/',
+        'src/test/',
+        '**/*.d.ts',
+        '**/*.config.*',
+      ],
+    },
+  },
+
+  // Optimization
+  optimizeDeps: {
+    include: [
+      'react',
+      'react-dom',
+      'react-router-dom',
+      'leaflet',
+      'react-leaflet',
+      'zustand',
+      'react-i18next',
+      'i18next'
+    ],
+  },
 })

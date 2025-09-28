@@ -4,11 +4,16 @@
 export const FeatureFlags = {
   // V1 Features (Phase-based enablement)
   BASIC_MAP_DISPLAY: true,        // Phase 1: Basic map foundation
-  BASIC_ROUTING: false,           // Phase 3: Vehicle-safe routing
-  VEHICLE_PROFILES: false,        // Phase 3: Vehicle dimension input
-  CAMPSITE_DISPLAY: false,        // Phase 4: Campsite integration
-  ROUTE_OPTIMIZATION: false,      // Phase 5: Multi-stop optimization
+  WAYPOINT_SYSTEM: true,          // Phase 2: Waypoint management
+  BASIC_ROUTING: true,            // Phase 3: Vehicle-safe routing
+  VEHICLE_PROFILES: true,         // Phase 3: Vehicle dimension input
+  CAMPSITE_DISPLAY: true,         // Phase 4: Campsite integration
+  ROUTE_OPTIMIZATION: true,       // Phase 5: Multi-stop optimization
   DATA_EXPORT: false,             // Phase 6: GPX/JSON export
+
+  // Language Support
+  MULTI_LANGUAGE_FRAMEWORK: true,    // Phase 1: i18n framework ready
+  MULTI_LANGUAGE_COMPLETE: false,    // V2: Complete translations
 
   // V2 Features (Explicitly disabled in V1)
   COMMUNITY_FEATURES: false,      // User reviews, route sharing

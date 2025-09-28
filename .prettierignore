@@ -1,0 +1,27 @@
+# Build output
+dist/
+build/
+
+# Dependencies
+node_modules/
+
+# Generated files
+*.log
+*.lock
+package-lock.json
+
+# Environment files
+.env
+.env.local
+.env.production
+
+# Cache directories
+.cache/
+.temp/
+
+# Coverage reports
+coverage/
+
+# Other
+.DS_Store
+*.tsbuildinfo

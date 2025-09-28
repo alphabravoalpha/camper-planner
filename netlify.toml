@@ -1,0 +1,152 @@
+# Netlify Deployment Configuration
+# Phase 6.4: Production deployment with optimization and redirects
+
+[build]
+  publish = "dist"
+  command = "npm run build"
+
+[build.environment]
+  NODE_VERSION = "18"
+  NPM_FLAGS = "--production=false"
+
+# Build hooks for different branches
+[context.production]
+  command = "npm run build"
+  [context.production.environment]
+    NODE_ENV = "production"
+    VITE_ANALYTICS_ENABLED = "true"
+
+[context.deploy-preview]
+  command = "npm run build:preview"
+  [context.deploy-preview.environment]
+    NODE_ENV = "staging"
+    VITE_ANALYTICS_ENABLED = "false"
+
+[context.branch-deploy]
+  command = "npm run build:dev"
+  [context.branch-deploy.environment]
+    NODE_ENV = "development"
+    VITE_ANALYTICS_ENABLED = "false"
+
+# Headers for security and performance
+[[headers]]
+  for = "/*"
+  [headers.values]
+    # Security headers
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    X-XSS-Protection = "1; mode=block"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(self), payment=()"
+
+    # Performance headers
+    Cache-Control = "public, max-age=31536000, immutable"
+
+    # CORS headers for API access
+    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Methods = "GET, POST, OPTIONS"
+    Access-Control-Allow-Headers = "Content-Type, Authorization"
+
+# Static assets with long cache
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Service worker cache
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# API routes cache
+[[headers]]
+  for = "/api/*"
+  [headers.values]
+    Cache-Control = "public, max-age=300, s-maxage=600"
+
+# HTML files - no cache
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# Redirects for SPA routing
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  conditions = {Role = ["admin"], Country = ["US"]}
+  headers = {X-From = "Netlify"}
+
+# Redirect old routes (if any)
+[[redirects]]
+  from = "/app/*"
+  to = "/*"
+  status = 301
+
+# Force HTTPS
+[[redirects]]
+  from = "http://camper-planner.netlify.app/*"
+  to = "https://camper-planner.netlify.app/:splat"
+  status = 301
+  force = true
+
+# Prerendering for better SEO
+[build.processing]
+  skip_processing = false
+
+[build.processing.css]
+  bundle = true
+  minify = true
+
+[build.processing.js]
+  bundle = true
+  minify = true
+
+[build.processing.html]
+  pretty_urls = true
+
+[build.processing.images]
+  compress = true
+
+# Form handling (for feedback)
+[forms]
+  # Settings for Netlify Forms
+
+# Functions (if needed)
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+# Edge functions (if needed)
+[edge_functions]
+  directory = "netlify/edge-functions"
+
+# Plugin configuration
+[[plugins]]
+  package = "@netlify/plugin-lighthouse"
+
+  [plugins.inputs.thresholds]
+    performance = 0.8
+    accessibility = 0.95
+    best-practices = 0.8
+    seo = 0.8
+
+[[plugins]]
+  package = "netlify-plugin-submit-sitemap"
+
+  [plugins.inputs]
+    baseUrl = "https://camper-planner.netlify.app"
+    sitemapPath = "/sitemap.xml"
+    ignorePeriod = 0
+    providers = [
+      "google",
+      "bing"
+    ]
+
+# Environment variables (non-sensitive)
+[build.environment]
+  VITE_APP_NAME = "European Camper Trip Planner"
+  VITE_APP_DESCRIPTION = "Plan your perfect European camper van adventure"
+  VITE_APP_URL = "https://camper-planner.netlify.app"

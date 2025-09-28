@@ -1,4 +1,4 @@
 // Custom React Hooks
 // Reusable hooks for component logic
 
-export {};
+export { useKeyboardShortcuts } from './useKeyboardShortcuts';
