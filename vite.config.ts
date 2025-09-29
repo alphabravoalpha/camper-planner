@@ -53,6 +53,9 @@ export default defineConfig({
     // Build performance
     target: 'esnext',
     minify: 'esbuild',
+
+    // GitHub Pages compatibility
+    assetsInlineLimit: 0, // Don't inline assets as base64
   },
 
   // Development server configuration
