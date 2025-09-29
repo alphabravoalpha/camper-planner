@@ -2,7 +2,7 @@
 // Phase 4.4: Intelligent campsite recommendations based on route and vehicle profile
 
 import { Campsite } from './CampsiteService';
-import { VehicleProfile } from '../store/vehicleStore';
+import { VehicleProfile } from '../types';
 import { RouteGeometry, calculateDistanceToRoute, haversineDistance } from '../utils/routeDistance';
 
 export interface RecommendationCriteria {

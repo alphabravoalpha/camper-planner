@@ -7,8 +7,8 @@ import {
   Clock, Euro, Users, Tag, Trash2, Edit3, ExternalLink, BarChart3, X, Check,
   Globe, Navigation, Mountain, Heart, Briefcase, Car
 } from 'lucide-react';
-import { useRouteStore } from '../../store/routeStore';
-import { useVehicleStore } from '../../store/vehicleStore';
+import { useRouteStore } from '../../store';
+import { useVehicleStore } from '../../store';
 import { useCostStore } from '../../store/costStore';
 import {
   TripStorageService,

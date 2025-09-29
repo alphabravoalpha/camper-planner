@@ -7,8 +7,8 @@ import {
   Route, Users, Thermometer, Cloud, Car, Bed, Coffee, Camera, Fuel,
   Navigation, Target, BarChart3, Settings, ChevronDown, ChevronUp
 } from 'lucide-react';
-import { useRouteStore } from '../../store/routeStore';
-import { useVehicleStore } from '../../store/vehicleStore';
+import { useRouteStore } from '../../store';
+import { useVehicleStore } from '../../store';
 import {
   TripPlanningService,
   TripPlan,

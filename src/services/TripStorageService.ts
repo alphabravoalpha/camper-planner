@@ -1,8 +1,8 @@
 // Trip Storage Service
 // Phase 5.3: Comprehensive trip management with local storage persistence
 
-import { Waypoint } from '../store/routeStore';
-import { VehicleProfile } from '../store/vehicleStore';
+import { Waypoint } from '../store';
+import { VehicleProfile } from '../store';
 import { CostBreakdown, FuelConsumptionSettings, FuelPriceSettings } from './CostCalculationService';
 import { OptimizationResult } from './RouteOptimizationService';
 

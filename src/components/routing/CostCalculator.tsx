@@ -3,8 +3,8 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { Calculator, Euro, TrendingDown, Settings, Fuel, MapPin, Calendar, Info } from 'lucide-react';
-import { useRouteStore } from '../../store/routeStore';
-import { useVehicleStore } from '../../store/vehicleStore';
+import { useRouteStore } from '../../store';
+import { useVehicleStore } from '../../store';
 import { useCostStore, createRouteHash, isCacheValid } from '../../store/costStore';
 import {
   CostCalculationService,

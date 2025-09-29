@@ -36,7 +36,7 @@ fi
 
 # Add CNAME file for custom domain
 echo "🌐 Adding custom domain configuration..."
-echo "camperplanner.com" > dist/CNAME
+echo "camperplanning.com" > dist/CNAME
 
 # Deploy to gh-pages branch
 echo "📤 Deploying to GitHub Pages..."
@@ -46,9 +46,9 @@ echo "✅ Deployment complete!"
 echo ""
 echo "🌍 Your site will be available at:"
 echo "   📍 GitHub Pages: https://alphabravoalpha.github.io/camper-planner/"
-echo "   📍 Custom Domain: https://camperplanner.com (after DNS setup)"
+echo "   📍 Custom Domain: https://camperplanning.com (after DNS setup)"
 echo ""
 echo "📋 Next steps:"
 echo "   1. Configure GitHub Pages settings in your repository"
-echo "   2. Set up DNS for camperplanner.com to point to GitHub Pages"
+echo "   2. Set up DNS for camperplanning.com to point to GitHub Pages"
 echo "   3. Wait a few minutes for deployment to complete"

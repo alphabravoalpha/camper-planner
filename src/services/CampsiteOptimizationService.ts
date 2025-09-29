@@ -4,8 +4,8 @@
 import { routeOptimizationService, OptimizationCriteria, OptimizationResult } from './RouteOptimizationService';
 import { campsiteService, Campsite } from './CampsiteService';
 import { CampsiteFilterService } from './CampsiteFilterService';
-import { Waypoint } from '../store/routeStore';
-import { VehicleProfile } from '../store/vehicleStore';
+import { Waypoint } from '../store';
+import { VehicleProfile } from '../store';
 
 export interface CampsiteOptimizationRequest {
   waypoints: Waypoint[];

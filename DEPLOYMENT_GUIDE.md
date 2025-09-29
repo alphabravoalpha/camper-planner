@@ -15,7 +15,7 @@ This guide walks you through deploying the European Camper Trip Planner to GitHu
 The project is configured for GitHub Pages deployment with:
 
 - **Base Path**: `/camper-planner/` for GitHub Pages subdirectory
-- **Custom Domain**: `camperplanner.com` via CNAME file
+- **Custom Domain**: `camperplanning.com` via CNAME file
 - **Static Site**: Built with Vite for optimal performance
 - **Asset Optimization**: Chunked builds for better caching
 
@@ -74,11 +74,11 @@ npm run deploy:custom
 ### Step 2: Configure Custom Domain
 
 1. In the same **Pages** section
-2. Under **Custom domain**, enter: `camperplanner.com`
+2. Under **Custom domain**, enter: `camperplanning.com`
 3. Check **Enforce HTTPS**
 4. Click **Save**
 
-## 🌐 DNS Configuration for camperplanner.com
+## 🌐 DNS Configuration for camperplanning.com
 
 Configure your domain registrar to point to GitHub Pages:
 
@@ -99,7 +99,7 @@ Configure your domain registrar to point to GitHub Pages:
 ```
 
 ### Alternative: CNAME Record
-If using a subdomain (like `www.camperplanner.com`):
+If using a subdomain (like `www.camperplanning.com`):
 ```
 CNAME: alphabravoalpha.github.io
 ```
@@ -113,7 +113,7 @@ curl -I https://alphabravoalpha.github.io/camper-planner/
 
 ### 2. Verify Custom Domain (after DNS propagation)
 ```bash
-curl -I https://camperplanner.com/
+curl -I https://camperplanning.com/
 ```
 
 ### 3. Test Application Features
@@ -128,7 +128,7 @@ curl -I https://camperplanner.com/
 
 | Environment | URL | Purpose |
 |-------------|-----|---------|
-| **Production** | `https://camperplanner.com` | Main custom domain |
+| **Production** | `https://camperplanning.com` | Main custom domain |
 | **GitHub Pages** | `https://alphabravoalpha.github.io/camper-planner/` | Backup/canonical URL |
 | **Development** | `http://localhost:3000` | Local development |
 | **Preview** | `http://localhost:4173` | Local production preview |

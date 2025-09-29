@@ -2,8 +2,8 @@
 // Phase 5.1: Multi-stop optimization with TSP solver and intelligent waypoint management
 
 import { RoutingService, RouteRequest, RouteResponse } from './RoutingService';
-import { VehicleProfile } from '../store/vehicleStore';
-import { Waypoint } from '../store/routeStore';
+import { VehicleProfile } from '../store';
+import { Waypoint } from '../store';
 
 export interface OptimizationCriteria {
   objective: 'shortest' | 'fastest' | 'balanced';

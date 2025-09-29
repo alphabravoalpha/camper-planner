@@ -1,8 +1,8 @@
 // Cost Calculation Service
 // Phase 5.2: Comprehensive trip cost calculation and optimization
 
-import { Waypoint } from '../store/routeStore';
-import { VehicleProfile } from '../store/vehicleStore';
+import { Waypoint } from '../store';
+import { VehicleProfile } from '../store';
 
 export interface FuelConsumptionSettings {
   consumptionType: 'l_per_100km' | 'mpg_imperial' | 'mpg_us';

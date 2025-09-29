@@ -1,6 +1,8 @@
 /* Global Styles */
 /* Tailwind CSS base styles and custom global styles */
 
+@import 'leaflet/dist/leaflet.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -47,8 +49,7 @@
   }
 }
 
-/* Leaflet map styles */
-@import 'leaflet/dist/leaflet.css';
+/* Leaflet map styles - imported at top */
 
 /* Custom map marker styles */
 @layer utilities {

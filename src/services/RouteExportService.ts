@@ -1,8 +1,8 @@
 // Route Export Service
 // Phase 6.1: Comprehensive route and trip data export functionality
 
-import { Waypoint } from '../store/routeStore';
-import { VehicleProfile } from '../store/vehicleStore';
+import { Waypoint } from '../store';
+import { VehicleProfile } from '../store';
 import { Trip } from './TripStorageService';
 import { TripPlan } from './TripPlanningService';
 import { CostBreakdown } from './CostCalculationService';
