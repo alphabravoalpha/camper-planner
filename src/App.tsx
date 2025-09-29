@@ -12,6 +12,7 @@ const PlannerPage = React.lazy(() => import('./pages/PlannerPage'));
 const AboutPage = React.lazy(() => import('./pages/AboutPage'));
 const HelpPage = React.lazy(() => import('./pages/HelpPage'));
 const SettingsPage = React.lazy(() => import('./pages/SettingsPage'));
+const MapTestPage = React.lazy(() => import('./pages/MapTestPage'));
 const NotFoundPage = React.lazy(() => import('./pages/NotFoundPage'));
 
 // App Content Component (inside Router context)
@@ -97,6 +98,7 @@ const AppContent: React.FC = () => {
               <Route path="/about" element={<AboutPage />} />
               <Route path="/help" element={<HelpPage />} />
               <Route path="/settings" element={<SettingsPage />} />
+              <Route path="/test-map" element={<MapTestPage />} />
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </Suspense>
