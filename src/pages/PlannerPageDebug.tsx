@@ -3,6 +3,7 @@
 
 import React, { useState } from 'react';
 import { MapContainer as LeafletMapContainer, TileLayer } from 'react-leaflet';
+import WaypointManager from '../components/map/WaypointManager';
 import 'leaflet/dist/leaflet.css';
 
 // Fix for default markers in React-Leaflet
@@ -38,7 +39,7 @@ const MAP_CONFIG = {
 };
 
 const PlannerPageDebug: React.FC = () => {
-  const [debugStep] = useState(1); // Will increment this as we add components
+  const [debugStep] = useState(2); // Will increment this as we add components
 
   console.log(`PlannerPageDebug: Rendering step ${debugStep}`);
 
@@ -48,7 +49,7 @@ const PlannerPageDebug: React.FC = () => {
       <div className="bg-orange-600 text-white p-4 z-50">
         <h1 className="text-xl font-bold">🐛 MapContainer Debug Mode - Step {debugStep}</h1>
         <p className="text-sm">
-          Step 1: Basic MapContainer + TileLayer only (should work like test page)
+          Step 2: MapContainer + TileLayer + WaypointManager (includes RouteVisualization)
         </p>
       </div>
 
@@ -71,16 +72,18 @@ const PlannerPageDebug: React.FC = () => {
             attribution={MAP_CONFIG.tileAttribution}
           />
 
-          {/* Step 1: Nothing else yet */}
+          {/* Step 2: Add WaypointManager (includes RouteVisualization) */}
+          <WaypointManager />
 
         </LeafletMapContainer>
       </div>
 
       {/* Debug Footer */}
       <div className="bg-gray-100 p-4 text-sm text-gray-600">
-        <p><strong>Status:</strong> Step 1 - Basic MapContainer + TileLayer</p>
-        <p><strong>Expected:</strong> Map should load without errors</p>
-        <p><strong>Next:</strong> Will add WaypointManager in Step 2</p>
+        <p><strong>Status:</strong> Step 2 - MapContainer + TileLayer + WaypointManager</p>
+        <p><strong>Expected:</strong> Map with click-to-add waypoints functionality</p>
+        <p><strong>Next:</strong> Will add SimpleCampsiteLayer in Step 3</p>
+        <p><strong>Note:</strong> WaypointManager includes RouteVisualization component</p>
       </div>
     </div>
   );
