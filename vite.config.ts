@@ -8,7 +8,7 @@ export default defineConfig({
   plugins: [react()],
 
   // GitHub Pages deployment configuration
-  base: process.env.NODE_ENV === 'production' ? '/camper-planner/' : '/',
+  base: '/camper-planner/',
 
   // Path resolution
   resolve: {

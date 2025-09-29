@@ -108,7 +108,7 @@ const AppContent: React.FC = () => {
 
 function App() {
   return (
-    <Router>
+    <Router basename="/camper-planner">
       <AppContent />
     </Router>
   );
