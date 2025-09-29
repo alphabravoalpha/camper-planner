@@ -4,7 +4,7 @@
 import React, { useMemo, useState, useCallback } from 'react';
 import { Marker, useMap } from 'react-leaflet';
 import L, { DivIcon } from 'leaflet';
-import { Waypoint } from '../../types';
+import { type Waypoint } from '../../types';
 import { cn } from '../../utils/cn';
 
 interface ClusterGroup {

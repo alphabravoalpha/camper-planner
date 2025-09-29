@@ -1,8 +1,8 @@
 // Campsite Icons Configuration
 // Phase 4.2: Distinct icons for different campsite types based on OSM tags
 
-import L from 'leaflet';
-import { CampsiteType, Campsite } from '../../services/CampsiteService';
+import L, { DivIcon } from 'leaflet';
+import { type CampsiteType, type Campsite } from '../../services/CampsiteService';
 
 export interface CampsiteIconConfig {
   icon: string;
@@ -38,6 +38,14 @@ export const CAMPSITE_ICON_CONFIGS: Record<CampsiteType | 'unknown', CampsiteIco
     borderColor: '#7c3aed',
     size: 32,
     description: 'Aire de service for motorhomes'
+  },
+  parking: {
+    icon: '🚗',
+    color: '#ffffff',
+    backgroundColor: '#f59e0b',
+    borderColor: '#d97706',
+    size: 32,
+    description: 'Parking area with overnight stays allowed'
   },
   unknown: {
     icon: '📍',
@@ -88,7 +96,7 @@ export interface CampsiteMarkerOptions {
   size?: 'small' | 'medium' | 'large';
 }
 
-export function createCampsiteIcon(options: CampsiteMarkerOptions): L.DivIcon {
+export function createCampsiteIcon(options: CampsiteMarkerOptions): DivIcon {
   const { campsite, vehicleCompatible = true, isSelected = false, isMobile = false, size = 'medium' } = options;
 
   // Get base config for campsite type
@@ -158,7 +166,7 @@ export function createCampsiteIcon(options: CampsiteMarkerOptions): L.DivIcon {
 }
 
 // Cluster icon creation for marker clustering
-export function createClusterIcon(cluster: any): L.DivIcon {
+export function createClusterIcon(cluster: any): DivIcon {
   const childCount = cluster.getChildCount();
   const size = childCount < 10 ? 30 : childCount < 100 ? 40 : 50;
 

@@ -5,8 +5,8 @@ import React, { useMemo } from 'react';
 import { Polyline, Marker } from 'react-leaflet';
 import L, { DivIcon } from 'leaflet';
 import { useRouteStore } from '../../store';
-import { Waypoint } from '../../types';
-import { RouteResponse, RestrictedSegment } from '../../services/RoutingService';
+import { type Waypoint } from '../../types';
+import { type RouteResponse, type RestrictedSegment } from '../../services/RoutingService';
 import { FeatureFlags } from '../../config';
 import { cn } from '../../utils/cn';
 

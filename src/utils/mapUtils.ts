@@ -1,8 +1,8 @@
 // Map Utilities
 // Helper functions for map operations and calculations
 
-import L from 'leaflet';
-import { Waypoint } from '../types';
+import L, { Map, LatLngBounds } from 'leaflet';
+import { type Waypoint } from '../types';
 
 export interface BoundingBox {
   north: number;
@@ -44,7 +44,7 @@ export const calculateWaypointBounds = (waypoints: Waypoint[]): BoundingBox | nu
  * Zoom map to fit all waypoints with appropriate padding
  */
 export const zoomToFitWaypoints = (
-  map: L.Map,
+  map: Map,
   waypoints: Waypoint[],
   options: FitBoundsOptions = {}
 ): boolean => {
@@ -71,7 +71,7 @@ export const zoomToFitWaypoints = (
       });
     } else {
       // Multiple waypoints - fit bounds
-      const leafletBounds = L.latLngBounds(
+      const leafletBounds = new LatLngBounds(
         [bounds.south, bounds.west],
         [bounds.north, bounds.east]
       );

@@ -3,7 +3,7 @@
 
 import React, { useState, useCallback } from 'react';
 import { FeatureFlags } from '../../config';
-import { Campsite } from '../../services/CampsiteService';
+import { type Campsite } from '../../services/CampsiteService';
 import { useRouteStore, useVehicleStore, useUIStore } from '../../store';
 import { cn } from '../../utils/cn';
 
@@ -58,11 +58,9 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
   onClose,
   onAddAsWaypoint,
   onExportData,
-  className,
-  isExpanded = false
+  className
 }) => {
   const [activeTab, setActiveTab] = useState<'overview' | 'amenities' | 'contact' | 'booking'>('overview');
-  const [showFullDescription, setShowFullDescription] = useState(false);
   const { addWaypoint, waypoints } = useRouteStore();
   const { profile } = useVehicleStore();
   const { addNotification } = useUIStore();
@@ -87,7 +85,7 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
       lat: campsite.lat,
       lng: campsite.lng,
       name: campsite.name || `${campsite.type} #${campsite.id}`,
-      type: 'campsite' as const
+      type: 'waypoint' as const
     };
 
     addWaypoint(waypoint);

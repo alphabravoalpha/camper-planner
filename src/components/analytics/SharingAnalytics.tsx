@@ -2,7 +2,7 @@
 // Phase 6.2: Privacy-first analytics for tracking sharing usage without personal data
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { TripSharingService, ShareAnalytics } from '../../services/TripSharingService';
+import { TripSharingService, type ShareAnalytics } from '../../services/TripSharingService';
 import { cn } from '../../utils/cn';
 
 interface SharingAnalyticsProps {
@@ -42,14 +42,6 @@ const AnalyticsSummary: React.FC<{
       ).length
     };
   }, [analytics]);
-
-  const methodIcons = {
-    url: '🔗',
-    qr: '📱',
-    social: '🌐',
-    email: '📧',
-    print: '🖨️'
-  };
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">

@@ -3,7 +3,7 @@
 
 import React, { useState } from 'react';
 import { FeatureFlags } from '../../config';
-import { CampsiteType, Campsite } from '../../services/CampsiteService';
+import { type CampsiteType, type Campsite } from '../../services/CampsiteService';
 import { cn } from '../../utils/cn';
 import CampsiteSearch from './CampsiteSearch';
 
@@ -56,7 +56,6 @@ const CampsiteControls: React.FC<CampsiteControlsProps> = ({
   onMaxResultsChange,
   vehicleCompatibleOnly,
   onVehicleCompatibleChange,
-  searchQuery = '',
   onSearchChange,
   onCampsiteSelect,
   isVisible = true,

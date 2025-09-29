@@ -73,11 +73,17 @@ export interface Campsite {
     email?: string;
   };
 
+  // Address (optional, derived from coordinates or OSM data)
+  address?: string;
+
   // Operational
   opening_hours?: string;
   fee?: string;
   reservation?: string;
   capacity?: number;
+
+  // Additional restrictions or important information
+  restrictions?: string;
 
   // Metadata
   source: 'openstreetmap' | 'opencampingmap';

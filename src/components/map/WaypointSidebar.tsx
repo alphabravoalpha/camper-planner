@@ -3,7 +3,7 @@
 
 import React from 'react';
 import { useRouteStore, useMapStore } from '../../store';
-import { Waypoint } from '../../types';
+import { type Waypoint } from '../../types';
 import { cn } from '../../utils/cn';
 
 interface WaypointListItemProps {

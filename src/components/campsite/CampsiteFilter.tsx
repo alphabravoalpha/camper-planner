@@ -3,8 +3,8 @@
 
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { FeatureFlags } from '../../config';
-import { CampsiteType, Campsite } from '../../services/CampsiteService';
-import { useRouteStore, useVehicleStore } from '../../store';
+import { type CampsiteType, type Campsite } from '../../services/CampsiteService';
+import { useRouteStore } from '../../store';
 import { cn } from '../../utils/cn';
 
 export interface CampsiteFilterState {
@@ -136,14 +136,12 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
   filterState,
   onFilterChange,
   onSearchChange,
-  onCampsiteSelect,
   campsiteCount = 0,
   isLoading = false
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [activeTab, setActiveTab] = useState<'types' | 'amenities' | 'advanced' | 'search'>('types');
   const { calculatedRoute } = useRouteStore();
-  const { profile } = useVehicleStore();
 
   // Persist filter state to localStorage
   const persistFilters = useCallback((filters: CampsiteFilterState) => {
