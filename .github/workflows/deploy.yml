@@ -62,7 +62,7 @@ jobs:
         run: npm run test
 
       - name: Upload coverage reports
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         if: success()
 
   # Cross-browser Testing
@@ -92,7 +92,7 @@ jobs:
         run: npx playwright test --project=${{ matrix.browser }}
 
       - name: Upload test results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: playwright-report-${{ matrix.browser }}
@@ -154,16 +154,16 @@ jobs:
           VITE_BUILD_TIME: ${{ github.event.head_commit.timestamp }}
 
       - name: Setup Pages
-        uses: actions/configure-pages@v3
+        uses: actions/configure-pages@v5
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v2
+        uses: actions/upload-pages-artifact@v4
         with:
           path: './dist'
 
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v4
 
   # Deployment Health Check
   health-check:
