@@ -12,13 +12,6 @@ export type { ContextMenuItem } from './ContextMenu';
 export { default as LoadingSpinner, LoadingSkeleton, LoadingOverlay, InlineLoading } from './LoadingSpinner';
 
 // Error handling components (Phase 6.3)
-export {
-  ErrorBoundary,
-  ErrorAlert,
-  WarningAlert,
-  SuccessAlert,
-  InfoAlert,
-  EmptyState,
-  FieldError,
-  HelpText
-} from './ErrorBoundary';
+export { ErrorBoundary } from './ErrorBoundary';
+// TODO: Add these components in future phases
+// export { ErrorAlert, WarningAlert, SuccessAlert, InfoAlert, EmptyState, FieldError, HelpText } from './ErrorBoundary';

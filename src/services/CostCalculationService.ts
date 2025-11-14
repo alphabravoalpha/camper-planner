@@ -318,10 +318,12 @@ export class CostCalculationService {
       let segmentType: RouteSegment['segmentType'] = 'driving';
       let accommodationCost = 0;
 
-      if (end.type === 'campsite' || end.type === 'accommodation') {
-        segmentType = 'overnight';
-        accommodationCost = this.estimateAccommodationCost(end);
-      } else if (i > 0 && distance < 50) {
+      // TODO: Add support for campsite and accommodation types in future version
+      // if (end.type === 'campsite' || end.type === 'accommodation') {
+      //   segmentType = 'overnight';
+      //   accommodationCost = this.estimateAccommodationCost(end);
+      // } else
+      if (i > 0 && distance < 50) {
         segmentType = 'stop';
       }
 
@@ -434,14 +436,16 @@ export class CostCalculationService {
 
   private static estimateAccommodationCost(waypoint: Waypoint): number {
     // Rough estimates for European camping costs
-    switch (waypoint.type) {
-      case 'campsite':
-        return 25; // EUR per night
-      case 'accommodation':
-        return 80; // EUR per night for hotels
-      default:
-        return 0;
-    }
+    // TODO: Add support for campsite and accommodation types in future version
+    // switch (waypoint.type) {
+    //   case 'campsite':
+    //     return 25; // EUR per night
+    //   case 'accommodation':
+    //     return 80; // EUR per night for hotels
+    //   default:
+    //     return 0;
+    // }
+    return 0; // Default for now until campsite/accommodation types are added
   }
 }
 

@@ -168,9 +168,10 @@ export class RouteExportService {
       if (!options.includeWaypoints) {
         exportWaypoints = exportWaypoints.filter(wp => wp.type !== 'waypoint');
       }
-      if (!options.includeCampsites) {
-        exportWaypoints = exportWaypoints.filter(wp => wp.type !== 'campsite');
-      }
+      // TODO: Add support for campsite type in future version
+      // if (!options.includeCampsites) {
+      //   exportWaypoints = exportWaypoints.filter(wp => wp.type !== 'campsite');
+      // }
 
       let result: ExportResult;
 
@@ -267,7 +268,7 @@ export class RouteExportService {
     <name>${this.escapeXML(options.customName || 'Camper Route')}</name>
     <desc>${this.escapeXML('Navigation route for GPS devices')}</desc>`;
 
-      waypoints.forEach((waypoint, _index) => {
+      waypoints.forEach((waypoint, index) => {
         gpxRoute += `
     <rtept lat="${waypoint.lat}" lon="${waypoint.lng}">
       <name>${this.escapeXML(waypoint.name)}</name>
@@ -511,7 +512,7 @@ export class RouteExportService {
     let csvContent = headers.join(',') + '\n';
 
     let totalDistance = 0;
-    waypoints.forEach((waypoint, _index) => {
+    waypoints.forEach((waypoint, index) => {
       const row = [
         `"${this.escapeCSV(waypoint.name)}"`,
         waypoint.lat.toString(),

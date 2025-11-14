@@ -10,6 +10,10 @@ export interface TripData {
   vehicle: VehicleProfile;
   route: RouteData;
 
+  // Optional top-level properties for compatibility
+  name?: string;
+  description?: string;
+
   // V2 Data Structures (optional, added later)
   preferences?: UserPreferences;
   community?: CommunityData;
@@ -19,6 +23,8 @@ export interface TripMetadata {
   name: string;
   created: number; // timestamp
   modified: number; // timestamp
+  description?: string;
+  author?: string;
 }
 
 export interface VehicleProfile {
@@ -47,6 +53,7 @@ export interface Waypoint {
   visitDate?: string;   // ISO date string
   duration?: number;    // planned stay duration in hours
   notes?: string;       // user notes
+  address?: string;     // formatted address
 }
 
 // V2 Data Structures (future)

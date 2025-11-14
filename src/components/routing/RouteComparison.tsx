@@ -34,7 +34,7 @@ const RouteComparison: React.FC<RouteComparisonProps> = ({ className }) => {
       label: 'Main Route',
       isCurrent: true
     },
-    ...(calculatedRoute.alternativeRoutes || []).map((altRoute, index) => ({
+    ...(calculatedRoute.alternativeRoutes || []).map((altRoute: RouteData, index: number) => ({
       id: `alt-${index}`,
       route: altRoute,
       label: `Alternative ${index + 1}`,

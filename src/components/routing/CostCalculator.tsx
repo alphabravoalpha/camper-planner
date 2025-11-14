@@ -10,8 +10,7 @@ import { CostCalculationService } from '../../services/CostCalculationService';
 import type {
   CostBreakdown,
   CostOptimization,
-  FuelConsumptionSettings,
-  FuelPriceSettings
+  FuelConsumptionSettings
 } from '../../services/CostCalculationService';
 
 interface CostCalculatorProps {
@@ -26,7 +25,7 @@ const CostCalculator: React.FC<CostCalculatorProps> = ({
   isVisible = true
 }) => {
   const { waypoints } = useRouteStore();
-  const { selectedProfile } = useVehicleStore();
+  const { profile: selectedProfile } = useVehicleStore();
   const {
     fuelConsumptionSettings,
     fuelPriceSettings,

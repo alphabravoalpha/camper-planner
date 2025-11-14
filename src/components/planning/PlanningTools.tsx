@@ -5,7 +5,8 @@ import React, { useState, useEffect } from 'react';
 import {
   Calendar, Clock, AlertTriangle, CheckCircle, TrendingUp,
   Route, Users, Thermometer, Car, Bed, Coffee, Camera, Fuel,
-  Navigation, Target, BarChart3, Settings, ChevronDown, ChevronUp
+  Navigation, Target, BarChart3, Settings, ChevronDown, ChevronUp,
+  Info, Cloud
 } from 'lucide-react';
 import { useRouteStore } from '../../store';
 import { useVehicleStore } from '../../store';
@@ -35,7 +36,7 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
 }) => {
   // Store hooks
   const { waypoints } = useRouteStore();
-  const { selectedProfile } = useVehicleStore();
+  const { profile: selectedProfile } = useVehicleStore();
 
   // State
   const [viewMode, setViewMode] = useState<ViewMode>('overview');

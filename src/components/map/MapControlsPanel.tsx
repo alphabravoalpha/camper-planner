@@ -2,7 +2,6 @@
 // Phase 2.3: Comprehensive map controls with fullscreen and advanced features
 
 import React, { useState, useCallback } from 'react';
-import * as L from 'leaflet';
 import { cn } from '../../utils/cn';
 
 type LeafletMap = any;

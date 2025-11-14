@@ -407,7 +407,7 @@ interface MapClickHandlerProps {
 
 const MapClickHandler: React.FC<MapClickHandlerProps> = ({ onAddWaypoint }) => {
   useMapEvents({
-    click: (e) => {
+    click: (e: any) => {
       onAddWaypoint(e.latlng.lat, e.latlng.lng);
     }
   });

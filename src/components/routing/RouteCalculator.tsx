@@ -3,8 +3,8 @@
 
 import React, { useCallback, useEffect, useState } from 'react';
 import { useRouteStore, useVehicleStore, useUIStore } from '../../store';
-import { routingService } from '../../services/RoutingService';
-import type { RouteRequest, RouteResponse, RoutingError, RouteRestrictions } from '../../services/RoutingService';
+import { routingService, RoutingError } from '../../services/RoutingService';
+import type { RouteRequest, RouteResponse, RouteRestrictions } from '../../services/RoutingService';
 import { FeatureFlags } from '../../config';
 import { cn } from '../../utils/cn';
 

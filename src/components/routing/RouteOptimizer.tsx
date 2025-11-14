@@ -45,7 +45,7 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
   onWaypointInsert,
   isVisible = true
 }) => {
-  const { waypoints, calculatedRoute: _calculatedRoute, setWaypoints: _setWaypoints, reorderWaypoints } = useRouteStore();
+  const { waypoints, calculatedRoute: _calculatedRoute, reorderWaypoints } = useRouteStore();
   const { profile } = useVehicleStore();
   const { addNotification } = useUIStore();
 
@@ -402,7 +402,7 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
                       {waypoint.name}
                     </div>
                     <div className="text-xs text-gray-500">
-                      {waypoint.type === 'campsite' ? '🏕️ Campsite' : '📍 Waypoint'}
+                      {waypoint.type === 'start' ? '🚩 Start' : waypoint.type === 'end' ? '🏁 End' : '📍 Waypoint'}
                     </div>
                   </div>
 

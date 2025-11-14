@@ -1,7 +1,8 @@
 // Trip Templates Service
 // Phase 5.3: Pre-defined trip templates for common European routes
 
-import type { TripTemplate, Trip, TripMetadata, TripData } from './TripStorageService';
+import type { Trip, TripTemplate } from './TripStorageService';
+export type { TripTemplate } from './TripStorageService';
 
 const EUROPEAN_TRIP_TEMPLATES: TripTemplate[] = [
   {

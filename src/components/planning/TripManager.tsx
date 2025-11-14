@@ -47,7 +47,7 @@ const TripManager: React.FC<TripManagerProps> = ({
 }) => {
   // Store hooks
   const { waypoints } = useRouteStore();
-  const { selectedProfile } = useVehicleStore();
+  const { profile: selectedProfile } = useVehicleStore();
   const { fuelConsumptionSettings, fuelPriceSettings } = useCostStore();
 
   // State
@@ -87,14 +87,14 @@ const TripManager: React.FC<TripManagerProps> = ({
   // Filter trips and templates
   const filteredTrips = trips.filter(trip => {
     const matchesSearch = trip.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      trip.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
+      trip.tags.some((tag: string) => tag.toLowerCase().includes(searchQuery.toLowerCase()));
     const matchesCategory = categoryFilter === 'all' || trip.category === categoryFilter;
     return matchesSearch && matchesCategory;
   });
 
   const filteredTemplates = templates.filter(template => {
     const matchesSearch = template.metadata.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      template.metadata.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
+      template.metadata.tags.some((tag: string) => tag.toLowerCase().includes(searchQuery.toLowerCase()));
     const matchesCategory = categoryFilter === 'all' || template.metadata.category === categoryFilter;
     const matchesDifficulty = difficultyFilter === 'all' || template.metadata.difficulty === difficultyFilter;
     return matchesSearch && matchesCategory && matchesDifficulty;
@@ -690,7 +690,7 @@ const TripManager: React.FC<TripManagerProps> = ({
 
                   <div className="text-sm mb-3">
                     <strong>Best months: </strong>
-                    {template.templateInfo.recommendedMonths.map(month =>
+                    {template.templateInfo.recommendedMonths.map((month: number) =>
                       new Date(2024, month - 1, 1).toLocaleDateString('en', { month: 'short' })
                     ).join(', ')}
                   </div>
@@ -699,7 +699,7 @@ const TripManager: React.FC<TripManagerProps> = ({
                     <div className="text-sm">
                       <strong>Highlights:</strong>
                       <ul className="mt-1 space-y-1">
-                        {template.templateInfo.highlights.slice(0, 2).map((highlight, index) => (
+                        {template.templateInfo.highlights.slice(0, 2).map((highlight: string, index: number) => (
                           <li key={index} className="text-gray-600">• {highlight}</li>
                         ))}
                         {template.templateInfo.highlights.length > 2 && (
