@@ -291,7 +291,9 @@ export class CostCalculationService {
 
     const fuelUsed = (distanceKm / 100) * consumptionLPer100km;
     const prices = this.getCurrentFuelPrices();
-    const fuelPrice = prices[consumptionSettings.fuelType];
+    // Map 'electric' fuelType to 'electricity' price key
+    const priceKey = consumptionSettings.fuelType === 'electric' ? 'electricity' : consumptionSettings.fuelType;
+    const fuelPrice = prices?.[priceKey] ?? 0;
 
     return fuelUsed * fuelPrice;
   }
@@ -434,7 +436,7 @@ export class CostCalculationService {
     return (distanceKm / averageSpeed) * 60; // minutes
   }
 
-  private static estimateAccommodationCost(waypoint: Waypoint): number {
+  private static _estimateAccommodationCost(_waypoint: Waypoint): number {
     // Rough estimates for European camping costs
     // TODO: Add support for campsite and accommodation types in future version
     // switch (waypoint.type) {

@@ -24,6 +24,8 @@ export interface ExportOptions {
 export interface ExportResult {
   success: boolean;
   data?: string | Blob;
+  content?: string; // For direct content access
+  mimeType?: string; // MIME type for blob creation
   filename: string;
   fileSize: number;
   warnings: string[];
@@ -322,7 +324,7 @@ export class RouteExportService {
       exportInfo: {
         format: 'gpx',
         waypoints: waypoints.filter(w => w.type === 'waypoint').length,
-        campsites: waypoints.filter(w => w.type === 'campsite').length,
+        campsites: waypoints.filter(w => w.id.startsWith('campsite_')).length,
         totalPoints: waypoints.length,
         exportedAt: new Date(),
         compatibility: compatibility.devices
@@ -385,7 +387,7 @@ export class RouteExportService {
       exportInfo: {
         format: 'json',
         waypoints: waypoints.filter(w => w.type === 'waypoint').length,
-        campsites: waypoints.filter(w => w.type === 'campsite').length,
+        campsites: waypoints.filter(w => w.id.startsWith('campsite_')).length,
         totalPoints: waypoints.length,
         exportedAt: new Date(),
         compatibility: ['Camper Planner', 'Generic Applications']
@@ -435,7 +437,8 @@ export class RouteExportService {
 
     // Add placemarks for waypoints
     waypoints.forEach((waypoint, _index) => {
-      const styleId = waypoint.type === 'campsite' ? 'campsiteStyle' : 'waypointStyle';
+      // Check if waypoint is a campsite using ID prefix instead of type
+      const styleId = waypoint.id.startsWith('campsite_') ? 'campsiteStyle' : 'waypointStyle';
       const description = this.createWaypointDescription(waypoint, options, additionalData);
 
       kmlContent += `
@@ -487,7 +490,7 @@ export class RouteExportService {
       exportInfo: {
         format: 'kml',
         waypoints: waypoints.filter(w => w.type === 'waypoint').length,
-        campsites: waypoints.filter(w => w.type === 'campsite').length,
+        campsites: waypoints.filter(w => w.id.startsWith('campsite_')).length,
         totalPoints: waypoints.length,
         exportedAt: new Date(),
         compatibility: ['Google Earth', 'Google Maps', 'Many GPS Applications']
@@ -558,7 +561,7 @@ export class RouteExportService {
       exportInfo: {
         format: 'csv',
         waypoints: waypoints.filter(w => w.type === 'waypoint').length,
-        campsites: waypoints.filter(w => w.type === 'campsite').length,
+        campsites: waypoints.filter(w => w.id.startsWith('campsite_')).length,
         totalPoints: waypoints.length,
         exportedAt: new Date(),
         compatibility: ['Excel', 'Google Sheets', 'Numbers', 'Any Spreadsheet Application']
@@ -942,7 +945,8 @@ export class RouteExportService {
     if (options.includeMetadata) {
       description += `\nCoordinates: ${waypoint.lat.toFixed(6)}, ${waypoint.lng.toFixed(6)}`;
 
-      if (waypoint.type === 'campsite') {
+      // Check if waypoint is a campsite using ID prefix instead of type
+      if (waypoint.id.startsWith('campsite_')) {
         description += '\nAmenities: Check local information';
       }
     }

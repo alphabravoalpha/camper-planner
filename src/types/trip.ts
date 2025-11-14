@@ -33,6 +33,8 @@ export interface VehicleProfile {
   width: number;  // meters
   weight: number; // tonnes
   length: number; // meters
+  fuelType?: 'petrol' | 'diesel' | 'lpg' | 'electric';
+  fuelCapacity?: number; // liters
 }
 
 export interface RouteData {

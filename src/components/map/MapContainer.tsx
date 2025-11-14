@@ -315,11 +315,11 @@ const MapContainer: React.FC = () => {
       {/* Map component */}
       <LeafletMapContainer
         ref={mapRef}
-        center={center}
+        center={center as any}
         zoom={zoom}
         minZoom={MAP_CONFIG.minZoom}
         maxZoom={MAP_CONFIG.maxZoom}
-        maxBounds={MAP_CONFIG.maxBounds}
+        maxBounds={MAP_CONFIG.maxBounds as any}
         maxBoundsViscosity={1.0}
         className={cn(
           'h-full w-full z-map',

@@ -142,12 +142,12 @@ const CampsiteMarkers: React.FC<CampsiteMarkersProps> = ({
         <Marker
           key={campsite.id}
           position={[campsite.location.lat, campsite.location.lng]}
-          icon={createCampsiteIcon(campsite.type, campsite.vehicleCompatible)}
+          icon={createCampsiteIcon(campsite.type, campsite.vehicleCompatible) as any}
           eventHandlers={{
             click: () => onCampsiteClick?.(campsite)
           }}
         >
-          <Popup className="campsite-popup" maxWidth={300}>
+          <Popup {...({ className: "campsite-popup", maxWidth: 300 } as any)}>
             <div className="p-3">
               {/* Header */}
               <div className="flex items-start justify-between mb-2">

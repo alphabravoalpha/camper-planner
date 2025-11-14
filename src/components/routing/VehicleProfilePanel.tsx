@@ -70,12 +70,15 @@ const VEHICLE_PRESETS: Array<VehicleProfile & { id: string; name: string; descri
 // Unit conversion types and ratios
 type UnitSystem = 'metric' | 'imperial';
 
+// Numeric vehicle profile fields that need conversions
+type NumericVehicleField = 'height' | 'width' | 'weight' | 'length';
+
 interface UnitConversion {
   metric: { label: string; factor: number };
   imperial: { label: string; factor: number };
 }
 
-const UNIT_CONVERSIONS: Record<keyof VehicleProfile, UnitConversion> = {
+const UNIT_CONVERSIONS: Record<NumericVehicleField, UnitConversion> = {
   height: {
     metric: { label: 'm', factor: 1 },
     imperial: { label: 'ft', factor: 3.28084 }
@@ -95,7 +98,7 @@ const UNIT_CONVERSIONS: Record<keyof VehicleProfile, UnitConversion> = {
 };
 
 // Validation ranges (in metric units)
-const VALIDATION_RANGES: Record<keyof VehicleProfile, { min: number; max: number; step: number }> = {
+const VALIDATION_RANGES: Record<NumericVehicleField, { min: number; max: number; step: number }> = {
   height: { min: 1.5, max: 4.5, step: 0.1 },
   width: { min: 1.5, max: 3.0, step: 0.1 },
   weight: { min: 1.0, max: 40.0, step: 0.1 },
@@ -147,7 +150,7 @@ const VehicleProfilePanel: React.FC<VehicleProfilePanelProps> = ({
   }, [unitSystem]);
 
   // Validation function
-  const validateField = useCallback((field: keyof VehicleProfile, value: number): string => {
+  const validateField = useCallback((field: NumericVehicleField, value: number): string => {
     const range = VALIDATION_RANGES[field];
 
     if (isNaN(value) || value <= 0) {
@@ -169,11 +172,15 @@ const VehicleProfilePanel: React.FC<VehicleProfilePanelProps> = ({
   const validateForm = useCallback((data: VehicleProfile): Record<string, string> => {
     const newErrors: Record<string, string> = {};
 
-    Object.keys(data).forEach(key => {
-      const field = key as keyof VehicleProfile;
-      const error = validateField(field, data[field]);
-      if (error) {
-        newErrors[field] = error;
+    // Only validate numeric fields
+    const numericFields: NumericVehicleField[] = ['height', 'width', 'weight', 'length'];
+    numericFields.forEach(field => {
+      const value = data[field];
+      if (typeof value === 'number') {
+        const error = validateField(field, value);
+        if (error) {
+          newErrors[field] = error;
+        }
       }
     });
 
@@ -181,7 +188,7 @@ const VehicleProfilePanel: React.FC<VehicleProfilePanelProps> = ({
   }, [validateField]);
 
   // Convert value between units
-  const convertValue = useCallback((value: number, field: keyof VehicleProfile, fromUnit: UnitSystem, toUnit: UnitSystem): number => {
+  const convertValue = useCallback((value: number, field: NumericVehicleField, fromUnit: UnitSystem, toUnit: UnitSystem): number => {
     if (fromUnit === toUnit) return value;
 
     const conversion = UNIT_CONVERSIONS[field];
@@ -196,12 +203,12 @@ const VehicleProfilePanel: React.FC<VehicleProfilePanelProps> = ({
   }, []);
 
   // Get display value with unit conversion
-  const getDisplayValue = useCallback((field: keyof VehicleProfile): number => {
+  const getDisplayValue = useCallback((field: NumericVehicleField): number => {
     return convertValue(formData[field], field, 'metric', unitSystem);
   }, [formData, unitSystem, convertValue]);
 
   // Handle input change
-  const handleInputChange = useCallback((field: keyof VehicleProfile, displayValue: number) => {
+  const handleInputChange = useCallback((field: NumericVehicleField, displayValue: number) => {
     // Convert from display units to metric for storage
     const metricValue = convertValue(displayValue, field, unitSystem, 'metric');
 
@@ -216,6 +223,7 @@ const VehicleProfilePanel: React.FC<VehicleProfilePanelProps> = ({
   // Handle preset selection
   const handlePresetSelect = useCallback((preset: typeof VEHICLE_PRESETS[0]) => {
     const newProfile: VehicleProfile = {
+      type: preset.type,
       height: preset.height,
       width: preset.width,
       weight: preset.weight,
@@ -261,7 +269,7 @@ const VehicleProfilePanel: React.FC<VehicleProfilePanelProps> = ({
     if (profile) {
       setFormData(profile);
     } else {
-      setFormData({ height: 2.0, width: 1.9, weight: 3.0, length: 5.0 });
+      setFormData({ type: 'campervan', height: 2.0, width: 1.9, weight: 3.0, length: 5.0 });
     }
     setErrors({});
     setIsDirty(false);
@@ -270,7 +278,7 @@ const VehicleProfilePanel: React.FC<VehicleProfilePanelProps> = ({
   // Handle clear profile
   const handleClear = useCallback(() => {
     clearProfile();
-    setFormData({ height: 2.0, width: 1.9, weight: 3.0, length: 5.0 });
+    setFormData({ type: 'campervan', height: 2.0, width: 1.9, weight: 3.0, length: 5.0 });
     setErrors({});
     setIsDirty(false);
 
@@ -287,7 +295,7 @@ const VehicleProfilePanel: React.FC<VehicleProfilePanelProps> = ({
 
   // Input field component
   const InputField: React.FC<{
-    field: keyof VehicleProfile;
+    field: NumericVehicleField;
     label: string;
     icon: string;
     helpText?: string;

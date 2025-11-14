@@ -594,10 +594,6 @@ export class RouteOptimizationService {
         case 'caravan':
           fuelConsumption = 10 + (vehicleProfile.weight || 0) * 0.3;
           break;
-        case 'van':
-          fuelConsumption = 9;
-          break;
-        case 'car':
         default:
           fuelConsumption = 7;
           break;

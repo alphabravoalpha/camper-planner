@@ -377,8 +377,9 @@ export class TripPlanningService {
    * Determine accommodation type for waypoint
    */
   static determineAccommodationType(waypoint: Waypoint, season: string): DailyStage['accommodationType'] {
-    if (waypoint.type === 'campsite') return 'campsite';
-    if (waypoint.type === 'accommodation') return 'hotel';
+    // Check if waypoint is a campsite using ID prefix instead of type
+    if (waypoint.id.startsWith('campsite_')) return 'campsite';
+    if (waypoint.id.startsWith('accommodation_')) return 'hotel';
 
     // Default recommendations based on season
     if (season === 'winter') return 'hotel';
@@ -617,7 +618,7 @@ export class TripPlanningService {
         factors = {
           ...factors,
           temperature: { min: -15, max: 0 },
-          drivingConditions: 'difficult',
+          drivingConditions: 'challenging',
           warnings: [...factors.warnings, 'Arctic conditions possible', 'Winter tires mandatory']
         };
       }

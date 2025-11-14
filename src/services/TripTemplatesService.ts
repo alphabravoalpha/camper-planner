@@ -439,7 +439,7 @@ export class TripTemplatesService {
     const searchTerm = query.toLowerCase();
     return EUROPEAN_TRIP_TEMPLATES.filter(template =>
       template.metadata.name.toLowerCase().includes(searchTerm) ||
-      template.metadata.description.toLowerCase().includes(searchTerm) ||
+      template.metadata.description?.toLowerCase().includes(searchTerm) ||
       template.metadata.tags.some(tag => tag.toLowerCase().includes(searchTerm)) ||
       template.metadata.countries.some(country => country.toLowerCase().includes(searchTerm)) ||
       template.templateInfo.highlights.some(highlight => highlight.toLowerCase().includes(searchTerm))

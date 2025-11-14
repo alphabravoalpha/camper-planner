@@ -134,15 +134,17 @@ const MapLayerControl: React.FC<MapLayerControlProps> = ({
         {/* Tile Layer */}
         {currentLayer && (
           <TileLayer
-            key={currentLayer.id}
-            url={currentLayer.url}
-            attribution={currentLayer.attribution}
-            subdomains={currentLayer.subdomains}
-            maxZoom={currentLayer.maxZoom}
-            detectRetina={true}
-            updateWhenIdle={true}
-            updateWhenZooming={false}
-            keepBuffer={4}
+            {...({
+              key: currentLayer.id,
+              url: currentLayer.url,
+              attribution: currentLayer.attribution,
+              subdomains: currentLayer.subdomains,
+              maxZoom: currentLayer.maxZoom,
+              detectRetina: true,
+              updateWhenIdle: true,
+              updateWhenZooming: false,
+              keepBuffer: 4
+            } as any)}
           />
         )}
 
@@ -166,15 +168,17 @@ const MapLayerControl: React.FC<MapLayerControlProps> = ({
       {/* Tile Layer */}
       {currentLayer && (
         <TileLayer
-          key={currentLayer.id}
-          url={currentLayer.url}
-          attribution={currentLayer.attribution}
-          subdomains={currentLayer.subdomains}
-          maxZoom={currentLayer.maxZoom}
-          detectRetina={true}
-          updateWhenIdle={true}
-          updateWhenZooming={false}
-          keepBuffer={4}
+          {...({
+            key: currentLayer.id,
+            url: currentLayer.url,
+            attribution: currentLayer.attribution,
+            subdomains: currentLayer.subdomains,
+            maxZoom: currentLayer.maxZoom,
+            detectRetina: true,
+            updateWhenIdle: true,
+            updateWhenZooming: false,
+            keepBuffer: 4
+          } as any)}
         />
       )}
 

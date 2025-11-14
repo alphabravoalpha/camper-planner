@@ -143,7 +143,7 @@ export class RoutingService extends DataService {
           status: 'error',
           routes: [],
           metadata: {
-            service: 'validation',
+            service: 'openrouteservice' as const,
             profile: this.determineProfile(request.vehicleProfile, request.options?.profile),
             timestamp: Date.now(),
             query: request,
