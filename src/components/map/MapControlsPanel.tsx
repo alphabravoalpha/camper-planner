@@ -2,8 +2,10 @@
 // Phase 2.3: Comprehensive map controls with fullscreen and advanced features
 
 import React, { useState, useCallback } from 'react';
-import { Map as LeafletMap } from 'leaflet';
+import * as L from 'leaflet';
 import { cn } from '../../utils/cn';
+
+type LeafletMap = any;
 import { useRouteStore, useUIStore } from '../../store';
 import { zoomToFitWaypoints, calculateRouteDistance, formatDistance } from '../../utils/mapUtils';
 import { useMapKeyboardShortcuts } from '../../hooks/useMapKeyboardShortcuts';

@@ -2,6 +2,7 @@
 // Phase 2.3: Multiple tile layer switching with fallback support
 
 import React, { useState, useCallback } from 'react';
+import { TileLayer } from 'react-leaflet';
 import { cn } from '../../utils/cn';
 import { useUIStore } from '../../store';
 

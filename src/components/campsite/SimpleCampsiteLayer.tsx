@@ -453,9 +453,6 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
                         {clusterCampsite.restrictions.maxHeight && (
                           <div>Max height: {clusterCampsite.restrictions.maxHeight}m</div>
                         )}
-                        {clusterCampsite.restrictions.maxWidth && (
-                          <div>Max width: {clusterCampsite.restrictions.maxWidth}m</div>
-                        )}
                         {clusterCampsite.restrictions.maxLength && (
                           <div>Max length: {clusterCampsite.restrictions.maxLength}m</div>
                         )}

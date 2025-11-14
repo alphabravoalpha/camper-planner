@@ -3,7 +3,7 @@
 
 import React, { useMemo } from 'react';
 import { Polyline, Marker } from 'react-leaflet';
-import L, { DivIcon } from 'leaflet';
+import * as L from 'leaflet';
 import { useRouteStore } from '../../store';
 import type { Waypoint } from '../../types';
 import type { RouteResponse, RestrictedSegment } from '../../services/RoutingService';
@@ -11,8 +11,8 @@ import { FeatureFlags } from '../../config';
 import { cn } from '../../utils/cn';
 
 // Create direction arrow icon
-const createDirectionArrowIcon = (rotation: number): DivIcon => {
-  return L.divIcon({
+const createDirectionArrowIcon = (rotation: number): any => {
+  return (L as any).divIcon({
     html: `
       <div class="relative w-6 h-6 flex items-center justify-center">
         <div
@@ -45,7 +45,7 @@ const calculateMidpoint = (lat1: number, lng1: number, lat2: number, lng2: numbe
 };
 
 // Create restriction warning icon
-const createRestrictionIcon = (restriction: RestrictedSegment): DivIcon => {
+const createRestrictionIcon = (restriction: RestrictedSegment): any => {
   const getRestrictionColor = (severity: 'warning' | 'error') => {
     return severity === 'error' ? '#dc2626' : '#f59e0b'; // red-600 or amber-500
   };
@@ -63,7 +63,7 @@ const createRestrictionIcon = (restriction: RestrictedSegment): DivIcon => {
   const color = getRestrictionColor(restriction.severity);
   const symbol = getRestrictionSymbol(restriction.restriction);
 
-  return L.divIcon({
+  return (L as any).divIcon({
     html: `
       <div class="relative">
         <div class="w-8 h-8 rounded-full border-2 flex items-center justify-center shadow-lg animate-pulse"
@@ -104,7 +104,7 @@ const WaypointNumber: React.FC<WaypointNumberProps> = ({ waypoint, index, total 
     return (index + 1).toString();
   };
 
-  const numberIcon = L.divIcon({
+  const numberIcon = (L as any).divIcon({
     html: `
       <div class="relative">
         <!-- Main number circle -->
@@ -145,8 +145,8 @@ const WaypointNumber: React.FC<WaypointNumberProps> = ({ waypoint, index, total 
   return (
     <Marker
       position={[waypoint.lat, waypoint.lng]}
-      icon={numberIcon}
-      zIndexOffset={2000} // Highest priority - above everything
+      {...({ icon: numberIcon } as any)}
+      {...({ zIndexOffset: 2000 } as any)}
     />
   );
 };
@@ -203,21 +203,16 @@ const CalculatedRouteDisplay: React.FC<{ route: RouteResponse }> = ({ route }) =
       {/* Route outline for better visibility */}
       <Polyline
         positions={routeCoordinates}
-        color="#ffffff"
-        weight={8}
-        opacity={0.6}
-        className="calculated-route-outline"
-        interactive={false}
+        pathOptions={{ color: "#ffffff", weight: 8, opacity: 0.6 }}
+        {...({ className: "calculated-route-outline" } as any)}
+        {...({ interactive: false } as any)}
       />
 
       {/* Main calculated route polyline */}
       <Polyline
         positions={routeCoordinates}
-        color={getRouteColor()}
-        weight={6}
-        opacity={0.8}
-        className="calculated-route"
-        dashArray={getDashArray()}
+        pathOptions={{ color: getRouteColor(), weight: 6, opacity: 0.8, dashArray: getDashArray() }}
+        {...({ className: "calculated-route" } as any)}
       />
 
       {/* Restriction violation indicators */}
@@ -233,8 +228,8 @@ const CalculatedRouteDisplay: React.FC<{ route: RouteResponse }> = ({ route }) =
             <Marker
               key={`restriction-${index}`}
               position={midpoint}
-              icon={icon}
-              zIndexOffset={3000} // Highest priority - above everything else
+              {...({ icon: icon } as any)}
+              {...({ zIndexOffset: 3000 } as any)}
             />
           );
         }
@@ -291,18 +286,15 @@ const StraightLineRouteDisplay: React.FC<{ waypoints: Waypoint[] }> = ({ waypoin
             {/* Route line */}
             <Polyline
               positions={[[segment.start.lat, segment.start.lng], [segment.end.lat, segment.end.lng]]}
-              color={segmentColor}
-              weight={4}
-              opacity={0.6}
-              className="straight-line-route"
-              dashArray="8, 4" // Dashed to indicate it's not a calculated route
+              pathOptions={{ color: segmentColor, weight: 4, opacity: 0.6, dashArray: "8, 4" }}
+              {...({ className: "straight-line-route" } as any)}
             />
 
             {/* Direction arrow at midpoint */}
             <Marker
               position={midpoint}
-              icon={arrowIcon}
-              zIndexOffset={1000}
+              {...({ icon: arrowIcon } as any)}
+              {...({ zIndexOffset: 1000 } as any)}
             />
           </React.Fragment>
         );

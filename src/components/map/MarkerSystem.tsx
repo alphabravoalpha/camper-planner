@@ -3,7 +3,7 @@
 
 import React, { useMemo } from 'react';
 import { Marker, Popup } from 'react-leaflet';
-import L, { DivIcon } from 'leaflet';
+import * as L from 'leaflet';
 import { cn } from '@/utils/cn';
 
 // Marker types for different features
@@ -54,7 +54,7 @@ const createCustomIcon = (type: MarkerType, options: {
   color?: string;
   text?: string | number;
   size?: 'sm' | 'md' | 'lg';
-}): DivIcon => {
+}): any => {
   const { color, text, size = 'md' } = options;
 
   const sizeClasses = {
@@ -77,7 +77,7 @@ const createCustomIcon = (type: MarkerType, options: {
     color || iconColors[type]
   );
 
-  return L.divIcon({
+  return (L as any).divIcon({
     html: `<div class="${iconClass}">${text || getMarkerSymbol(type)}</div>`,
     className: 'custom-marker',
     iconSize: size === 'sm' ? [24, 24] : size === 'lg' ? [40, 40] : [32, 32],
@@ -229,7 +229,7 @@ const MarkerComponent: React.FC<MarkerComponentProps> = ({
   return (
     <Marker
       position={[marker.lat, marker.lng]}
-      icon={icon}
+      {...({ icon: icon } as any)}
       draggable={isDraggable}
       eventHandlers={{
         click: () => onClick?.(marker),

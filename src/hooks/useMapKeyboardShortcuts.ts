@@ -2,7 +2,7 @@
 // Enhanced keyboard controls for map operations
 
 import { useEffect, useCallback } from 'react';
-import { Map as LeafletMap } from 'leaflet';
+import type { Map as LeafletMap } from 'leaflet';
 import { useRouteStore } from '../store';
 import { zoomToFitWaypoints } from '../utils/mapUtils';
 

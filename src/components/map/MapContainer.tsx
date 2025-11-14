@@ -3,7 +3,6 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { MapContainer as LeafletMapContainer, useMap, useMapEvents } from 'react-leaflet';
-import { Map as LeafletMap } from 'leaflet';
 import { FeatureFlags } from '../../config';
 import { useMapStore, useRouteStore, useUIStore, useVehicleStore } from '../../store';
 import { mapStorage } from '../../utils/mapStorage';
@@ -24,7 +23,7 @@ import CampsiteDetails from '../campsite/CampsiteDetails';
 import CampsiteRecommendations from '../campsite/CampsiteRecommendations';
 import UserGuidance from '../ui/UserGuidance';
 import ConfirmDialog from '../ui/ConfirmDialog';
-import type { CampsiteType, Campsite } from '../../services/CampsiteService';
+import type { UICampsite } from '../../adapters/CampsiteAdapter';
 import 'leaflet/dist/leaflet.css';
 import '../../styles/animations.css';
 
@@ -34,8 +33,10 @@ import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 import markerRetina from 'leaflet/dist/images/marker-icon-2x.png';
 
+type LeafletMap = any;
+
 // Fix default marker icons
-L.Icon.Default.mergeOptions({
+(L as any).Icon.Default.mergeOptions({
   iconUrl: markerIcon,
   iconRetinaUrl: markerRetina,
   shadowUrl: markerShadow,
@@ -125,7 +126,7 @@ const MapContainer: React.FC = () => {
   const mapRef = useRef<LeafletMap>(null);
 
   // Campsite state
-  const [selectedCampsite, setSelectedCampsite] = useState<Campsite | null>(null);
+  const [selectedCampsite, setSelectedCampsite] = useState<UICampsite | null>(null);
   const [showCampsiteControls, setShowCampsiteControls] = useState(FeatureFlags.CAMPSITE_DISPLAY);
   const [showCampsiteFilter, setShowCampsiteFilter] = useState(false);
   const [showCampsiteDetails, setShowCampsiteDetails] = useState(false);
@@ -133,7 +134,7 @@ const MapContainer: React.FC = () => {
   const [campsitesVisible, setCampsitesVisible] = useState(FeatureFlags.CAMPSITE_DISPLAY);
   const [campsiteCount, setCampsiteCount] = useState(0);
   const [campsiteFilterState, setCampsiteFilterState] = useState<CampsiteFilterState>(DEFAULT_FILTER_STATE);
-  const [allCampsites, setAllCampsites] = useState<Campsite[]>([]);
+  const [allCampsites, setAllCampsites] = useState<UICampsite[]>([]);
 
   // Route optimization state
   const [showRouteOptimizer, setShowRouteOptimizer] = useState(false);
@@ -258,7 +259,7 @@ const MapContainer: React.FC = () => {
   };
 
   // Campsite handlers
-  const handleCampsiteClick = (campsite: Campsite) => {
+  const handleCampsiteClick = (campsite: UICampsite) => {
     setSelectedCampsite(campsite);
     setShowCampsiteDetails(true);
     setShowCampsiteRecommendations(false);
@@ -268,7 +269,7 @@ const MapContainer: React.FC = () => {
     });
   };
 
-  const handleCampsitesLoaded = (count: number, campsites?: Campsite[]) => {
+  const handleCampsitesLoaded = (count: number, campsites?: UICampsite[]) => {
     setCampsiteCount(count);
     if (campsites) {
       setAllCampsites(campsites);

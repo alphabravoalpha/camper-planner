@@ -15,6 +15,7 @@ const VEHICLE_PRESETS: Array<VehicleProfile & { id: string; name: string; descri
     name: 'Compact Campervan',
     description: 'Small van conversion (VW California, Ford Nugget)',
     icon: '🚐',
+    type: 'campervan',
     height: 2.0,
     width: 1.9,
     weight: 3.0,
@@ -25,6 +26,7 @@ const VEHICLE_PRESETS: Array<VehicleProfile & { id: string; name: string; descri
     name: 'Medium Motorhome',
     description: 'Standard class C motorhome (6-7m)',
     icon: '🚌',
+    type: 'motorhome',
     height: 3.0,
     width: 2.3,
     weight: 3.5,
@@ -35,6 +37,7 @@ const VEHICLE_PRESETS: Array<VehicleProfile & { id: string; name: string; descri
     name: 'Large Motorhome',
     description: 'Class A motorhome (7-9m)',
     icon: '🚎',
+    type: 'motorhome',
     height: 3.4,
     width: 2.5,
     weight: 7.5,
@@ -45,6 +48,7 @@ const VEHICLE_PRESETS: Array<VehicleProfile & { id: string; name: string; descri
     name: 'Car + Caravan',
     description: 'Car with towed caravan',
     icon: '🚗🏠',
+    type: 'caravan',
     height: 2.6,
     width: 2.3,
     weight: 3.5,
@@ -55,6 +59,7 @@ const VEHICLE_PRESETS: Array<VehicleProfile & { id: string; name: string; descri
     name: 'Truck Camper',
     description: 'Pickup truck with camper shell',
     icon: '🛻',
+    type: 'campervan',
     height: 3.2,
     width: 2.1,
     weight: 4.0,
@@ -113,7 +118,7 @@ const VehicleProfilePanel: React.FC<VehicleProfilePanelProps> = ({
 
   // Form state
   const [formData, setFormData] = useState<VehicleProfile>(
-    profile || { height: 2.0, width: 1.9, weight: 3.0, length: 5.0 }
+    profile || { type: 'campervan', height: 2.0, width: 1.9, weight: 3.0, length: 5.0 }
   );
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isDirty, setIsDirty] = useState(false);

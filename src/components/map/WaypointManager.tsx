@@ -3,7 +3,7 @@
 
 import React, { useCallback, useState } from 'react';
 import { Marker, Popup, useMapEvents } from 'react-leaflet';
-import L, { DivIcon } from 'leaflet';
+import * as L from 'leaflet';
 import { useRouteStore, useMapStore, useUIStore } from '../../store';
 import type { Waypoint } from '../../types';
 import { cn } from '../../utils/cn';
@@ -14,7 +14,7 @@ import RouteVisualization from './RouteVisualization';
 import { useKeyboardShortcuts } from '../../hooks/useKeyboardShortcuts';
 
 // Enhanced waypoint icon creation with improved visual feedback
-const createWaypointIcon = (type: 'start' | 'waypoint' | 'end', index: number, isSelected = false, isDragging = false): DivIcon => {
+const createWaypointIcon = (type: 'start' | 'waypoint' | 'end', index: number, isSelected = false, isDragging = false): any => {
   const iconColors = {
     start: 'bg-green-500 border-green-600 text-white shadow-green-200',
     waypoint: 'bg-blue-500 border-blue-600 text-white shadow-blue-200',
@@ -39,7 +39,7 @@ const createWaypointIcon = (type: 'start' | 'waypoint' | 'end', index: number, i
     !isDragging && !isSelected && 'hover:scale-105 hover:shadow-lg shadow-md'
   );
 
-  return L.divIcon({
+  return (L as any).divIcon({
     html: `
       <div class="${baseClass} ${effectsClass}">
         <!-- Main icon content -->
@@ -251,7 +251,7 @@ const WaypointMarker: React.FC<WaypointMarkerProps> = ({
     <>
       <Marker
         position={[waypoint.lat, waypoint.lng]}
-        icon={icon}
+        {...({ icon: icon } as any)}
         draggable={true}
         eventHandlers={{
           click: handleMarkerClick,

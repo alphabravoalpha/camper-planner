@@ -3,7 +3,7 @@
 
 import React, { useMemo, useState, useCallback } from 'react';
 import { Marker, useMap } from 'react-leaflet';
-import L, { DivIcon } from 'leaflet';
+import * as L from 'leaflet';
 import type { Waypoint } from '../../types';
 import { cn } from '../../utils/cn';
 
@@ -11,7 +11,7 @@ interface ClusterGroup {
   id: string;
   center: [number, number];
   waypoints: Waypoint[];
-  bounds: L.LatLngBounds;
+  bounds: any;
 }
 
 interface WaypointClusterProps {
@@ -23,7 +23,7 @@ interface WaypointClusterProps {
 }
 
 // Create cluster icon
-const createClusterIcon = (count: number, size: 'small' | 'medium' | 'large'): DivIcon => {
+const createClusterIcon = (count: number, size: 'small' | 'medium' | 'large'): any => {
   const sizeClasses = {
     small: 'w-8 h-8 text-xs',
     medium: 'w-10 h-10 text-sm',
@@ -32,7 +32,7 @@ const createClusterIcon = (count: number, size: 'small' | 'medium' | 'large'): D
 
   const bgColor = count < 5 ? 'bg-blue-500' : count < 10 ? 'bg-orange-500' : 'bg-red-500';
 
-  return L.divIcon({
+  return (L as any).divIcon({
     html: `
       <div class="${cn(
         'flex items-center justify-center rounded-full border-2 border-white',
@@ -52,7 +52,7 @@ const createClusterIcon = (count: number, size: 'small' | 'medium' | 'large'): D
 
 // Calculate distance between two points in pixels
 const pixelDistance = (
-  map: L.Map,
+  map: any,
   point1: [number, number],
   point2: [number, number]
 ): number => {
@@ -64,7 +64,7 @@ const pixelDistance = (
 // Group waypoints into clusters
 const clusterWaypoints = (
   waypoints: Waypoint[],
-  map: L.Map,
+  map: any,
   maxDistance: number
 ): ClusterGroup[] => {
   if (!map) return [];
@@ -79,7 +79,7 @@ const clusterWaypoints = (
       id: `cluster-${waypoint.id}`,
       center: [waypoint.lat, waypoint.lng],
       waypoints: [waypoint],
-      bounds: L.latLngBounds([waypoint.lat, waypoint.lng], [waypoint.lat, waypoint.lng])
+      bounds: (L as any).latLngBounds([waypoint.lat, waypoint.lng], [waypoint.lat, waypoint.lng])
     };
 
     processed.add(waypoint.id);
@@ -145,7 +145,7 @@ const WaypointCluster: React.FC<WaypointClusterProps> = ({
         id: `single-${waypoint.id}`,
         center: [waypoint.lat, waypoint.lng] as [number, number],
         waypoints: [waypoint],
-        bounds: L.latLngBounds([waypoint.lat, waypoint.lng], [waypoint.lat, waypoint.lng])
+        bounds: (L as any).latLngBounds([waypoint.lat, waypoint.lng], [waypoint.lat, waypoint.lng])
       }));
     }
 
@@ -219,7 +219,7 @@ const WaypointCluster: React.FC<WaypointClusterProps> = ({
           <Marker
             key={cluster.id}
             position={cluster.center}
-            icon={clusterIcon}
+            {...({ icon: clusterIcon } as any)}
             eventHandlers={{
               click: () => handleClusterClick(cluster)
             }}

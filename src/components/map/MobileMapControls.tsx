@@ -2,8 +2,10 @@
 // Phase 2.3: Touch-optimized controls for mobile devices
 
 import React, { useState, useCallback, useEffect } from 'react';
-import { Map as LeafletMap } from 'leaflet';
+import * as L from 'leaflet';
 import { cn } from '../../utils/cn';
+
+type LeafletMap = any;
 import { useRouteStore, useUIStore } from '../../store';
 import { zoomToFitWaypoints } from '../../utils/mapUtils';
 
