@@ -4,7 +4,9 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useMap } from 'react-leaflet';
 import { campsiteService } from '../../services/CampsiteService';
-import type { Campsite, CampsiteRequest, CampsiteType } from '../../services/CampsiteService';
+import type { CampsiteRequest, CampsiteType } from '../../services/CampsiteService';
+import type { UICampsite } from '../../adapters/CampsiteAdapter';
+import { CampsiteAdapter } from '../../adapters/CampsiteAdapter';
 import { useVehicleStore, useUIStore } from '../../store';
 import { FeatureFlags } from '../../config';
 import { cn } from '../../utils/cn';
@@ -12,13 +14,13 @@ import { cn } from '../../utils/cn';
 export interface CampsiteSearchProps {
   className?: string;
   onSearchChange?: (query: string) => void;
-  onCampsiteSelect?: (campsite: Campsite) => void;
+  onCampsiteSelect?: (campsite: UICampsite) => void;
   visibleTypes: CampsiteType[];
   maxResults?: number;
   placeholder?: string;
 }
 
-interface SearchResult extends Campsite {
+interface SearchResult extends UICampsite {
   distance?: number; // Distance from map center in km
   relevance?: number; // Search relevance score
 }
@@ -80,7 +82,7 @@ const CampsiteSearch: React.FC<CampsiteSearchProps> = ({
   }, []);
 
   // Calculate search relevance score
-  const calculateRelevance = useCallback((campsite: Campsite, searchQuery: string): number => {
+  const calculateRelevance = useCallback((campsite: UICampsite, searchQuery: string): number => {
     const query = searchQuery.toLowerCase();
     let score = 0;
 
@@ -138,43 +140,44 @@ const CampsiteSearch: React.FC<CampsiteSearchProps> = ({
           west: expandedBounds.getWest()
         },
         types: visibleTypes,
-        maxResults: maxResults * 2, // Get more results for better filtering
-        includeDetails: true,
-        vehicleProfile: profile || undefined
+        maxResults: maxResults * 2 // Get more results for better filtering
       };
 
       const response = await campsiteService.searchCampsites(request);
 
-      if (response.status === 'success') {
-        // Filter and score results
-        const filteredResults = response.campsites
-          .map(campsite => {
-            const distance = calculateDistance(
-              mapCenter.lat, mapCenter.lng,
-              campsite.location.lat, campsite.location.lng
-            );
-            const relevance = calculateRelevance(campsite, searchQuery);
+      // Convert Campsite to UICampsite
+      const uiCampsites = response.campsites.map(campsite =>
+        CampsiteAdapter.toUICampsite(campsite, profile)
+      );
 
-            return {
-              ...campsite,
-              distance,
-              relevance
-            } as SearchResult;
-          })
-          .filter(result => result.relevance > 0) // Only include relevant results
-          .sort((a, b) => {
-            // Sort by relevance first, then by distance
-            if (b.relevance !== a.relevance) {
-              return b.relevance - a.relevance;
-            }
-            return (a.distance || 0) - (b.distance || 0);
-          })
-          .slice(0, maxResults);
+      // Filter and score results
+      const filteredResults = uiCampsites
+        .map(campsite => {
+          const distance = calculateDistance(
+            mapCenter.lat, mapCenter.lng,
+            campsite.location.lat, campsite.location.lng
+          );
+          const relevance = calculateRelevance(campsite, searchQuery);
 
-        setSearchResults(filteredResults);
-      } else {
-        throw new Error(response.error || 'Search failed');
-      }
+          return {
+            ...campsite,
+            distance,
+            relevance
+          } as SearchResult;
+        })
+        .filter(result => (result.relevance ?? 0) > 0) // Only include relevant results
+        .sort((a, b) => {
+          // Sort by relevance first, then by distance
+          const relevanceA = a.relevance ?? 0;
+          const relevanceB = b.relevance ?? 0;
+          if (relevanceB !== relevanceA) {
+            return relevanceB - relevanceA;
+          }
+          return (a.distance || 0) - (b.distance || 0);
+        })
+        .slice(0, maxResults);
+
+      setSearchResults(filteredResults);
     } catch (error) {
       console.error('Search error:', error);
       addNotification({
