@@ -320,12 +320,11 @@ export class CostCalculationService {
       let segmentType: RouteSegment['segmentType'] = 'driving';
       let accommodationCost = 0;
 
-      // TODO: Add support for campsite and accommodation types in future version
-      // if (end.type === 'campsite' || end.type === 'accommodation') {
-      //   segmentType = 'overnight';
-      //   accommodationCost = this.estimateAccommodationCost(end);
-      // } else
-      if (i > 0 && distance < 50) {
+      // Check if waypoint has campsite data attached
+      if (end.campsiteData) {
+        segmentType = 'overnight';
+        accommodationCost = this.estimateAccommodationCost(end);
+      } else if (i > 0 && distance < 50) {
         segmentType = 'stop';
       }
 
@@ -436,8 +435,53 @@ export class CostCalculationService {
     return (distanceKm / averageSpeed) * 60; // minutes
   }
 
-  // Accommodation cost estimation removed - to be implemented in future version
-  // when campsite and accommodation types are added to waypoints
+  /**
+   * Estimate accommodation cost from campsite data
+   * Parses fee strings and applies defaults for different campsite types
+   */
+  private static estimateAccommodationCost(waypoint: Waypoint): number {
+    const campsiteData = waypoint.campsiteData;
+
+    // No campsite data attached to waypoint
+    if (!campsiteData) {
+      return 0;
+    }
+
+    const nights = campsiteData.nights || 1;
+    const fee = campsiteData.fee?.toLowerCase() || '';
+
+    // Parse free campsites
+    if (fee.includes('free') || fee.includes('no') || fee === 'yes' || !fee) {
+      // Aires and parking are typically free
+      if (campsiteData.type === 'aire' || campsiteData.type === 'parking') {
+        return 0;
+      }
+      // Some campsites are free, but most charge a small amount
+      return 0;
+    }
+
+    // Parse donation-based campsites
+    if (fee.includes('donation')) {
+      return 5 * nights; // Average donation €5/night
+    }
+
+    // Parse numeric fees (€15, 20€, EUR 25, etc.)
+    const numericMatch = fee.match(/(\d+(?:\.\d+)?)/);
+    if (numericMatch) {
+      const amount = parseFloat(numericMatch[1]);
+      return amount * nights;
+    }
+
+    // Default estimates based on campsite type
+    const defaultCosts: Record<string, number> = {
+      'campsite': 25,      // Full-service campsite
+      'caravan_site': 20,  // Caravan-specific site
+      'aire': 8,           // Motorhome aire (often cheaper)
+      'parking': 5         // Overnight parking
+    };
+
+    return (defaultCosts[campsiteData.type] || 15) * nights;
+  }
 }
 
 // Export singleton instance

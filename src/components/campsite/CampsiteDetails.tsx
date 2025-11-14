@@ -85,7 +85,14 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
       lat: campsite.location.lat,
       lng: campsite.location.lng,
       name: campsite.name || `${campsite.type} #${campsite.id}`,
-      type: 'waypoint' as const
+      type: 'waypoint' as const,
+      // Attach campsite data for cost calculation (Phase 5)
+      campsiteData: {
+        id: campsite.id,
+        type: campsite.type,
+        fee: campsite.fee,
+        nights: 1 // Default to 1 night, can be edited later
+      }
     };
 
     addWaypoint(waypoint);

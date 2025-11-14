@@ -58,6 +58,14 @@ export interface Waypoint {
   duration?: number;    // planned stay duration in hours
   notes?: string;       // user notes
   address?: string;     // formatted address
+
+  // Campsite data (Phase 5: for cost calculation)
+  campsiteData?: {
+    id: number;
+    type: 'campsite' | 'aire' | 'parking' | 'caravan_site';
+    fee?: string;       // e.g., "€15", "free", "donation"
+    nights?: number;    // planned nights at this campsite
+  };
 }
 
 // V2 Data Structures (future)
