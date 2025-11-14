@@ -4,8 +4,8 @@
  * Phase 4.2: Bridge between service layer and presentation layer
  */
 
-import { Campsite as ServiceCampsite, CampsiteResponse as ServiceResponse } from '../services/CampsiteService';
-import { VehicleProfile } from '../store';
+import type { Campsite as ServiceCampsite, CampsiteResponse as ServiceResponse } from '../services/CampsiteService';
+import type { VehicleProfile } from '../types';
 
 /**
  * UI-friendly campsite format for components

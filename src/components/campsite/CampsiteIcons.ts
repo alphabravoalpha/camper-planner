@@ -2,8 +2,8 @@
 // Phase 4.2: Distinct icons for different campsite types based on OSM tags
 
 import L from 'leaflet';
-import { CampsiteType } from '../../services/CampsiteService';
-import { UICampsite } from '../../adapters/CampsiteAdapter';
+import type { CampsiteType } from '../../services/CampsiteService';
+import type { UICampsite } from '../../adapters/CampsiteAdapter';
 
 export interface CampsiteIconConfig {
   icon: string;
@@ -15,7 +15,7 @@ export interface CampsiteIconConfig {
 }
 
 // Icon configurations for different campsite types
-export const CAMPSITE_ICON_CONFIGS: Record<CampsiteType | 'unknown', CampsiteIconConfig> = {
+export const CAMPSITE_ICON_CONFIGS: Record<CampsiteType | 'unknown' | 'parking', CampsiteIconConfig> = {
   campsite: {
     icon: '⛺',
     color: '#ffffff',
@@ -39,6 +39,14 @@ export const CAMPSITE_ICON_CONFIGS: Record<CampsiteType | 'unknown', CampsiteIco
     borderColor: '#7c3aed',
     size: 32,
     description: 'Aire de service for motorhomes'
+  },
+  parking: {
+    icon: '🅿️',
+    color: '#ffffff',
+    backgroundColor: '#9333ea',
+    borderColor: '#7e22ce',
+    size: 32,
+    description: 'Motorhome parking'
   },
   unknown: {
     icon: '📍',
@@ -89,7 +97,7 @@ export interface CampsiteMarkerOptions {
   size?: 'small' | 'medium' | 'large';
 }
 
-export function createCampsiteIcon(options: CampsiteMarkerOptions): L.DivIcon {
+export function createCampsiteIcon(options: CampsiteMarkerOptions): ReturnType<typeof L.divIcon> {
   const { campsite, vehicleCompatible = true, isSelected = false, isMobile = false, size = 'medium' } = options;
 
   // Get base config for campsite type
@@ -159,7 +167,7 @@ export function createCampsiteIcon(options: CampsiteMarkerOptions): L.DivIcon {
 }
 
 // Cluster icon creation for marker clustering
-export function createClusterIcon(cluster: any): L.DivIcon {
+export function createClusterIcon(cluster: any): ReturnType<typeof L.divIcon> {
   const childCount = cluster.getChildCount();
   const size = childCount < 10 ? 30 : childCount < 100 ? 40 : 50;
 

@@ -3,7 +3,7 @@
 
 import React, { useState } from 'react';
 import { FeatureFlags } from '../../config';
-import { CampsiteType, Campsite } from '../../services/CampsiteService';
+import type { CampsiteType, Campsite } from '../../services/CampsiteService';
 import { cn } from '../../utils/cn';
 import CampsiteSearch from './CampsiteSearch';
 

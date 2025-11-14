@@ -3,7 +3,7 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { FeatureFlags } from '../../config';
-import { Campsite } from '../../services/CampsiteService';
+import type { Campsite } from '../../services/CampsiteService';
 import { CampsiteRecommendationService, RecommendationCriteria, CampsiteRecommendation } from '../../services/CampsiteRecommendationService';
 import { useRouteStore, useVehicleStore, useUIStore } from '../../store';
 import { cn } from '../../utils/cn';

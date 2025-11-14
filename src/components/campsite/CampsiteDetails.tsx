@@ -3,7 +3,7 @@
 
 import React, { useState, useCallback } from 'react';
 import { FeatureFlags } from '../../config';
-import { Campsite } from '../../services/CampsiteService';
+import type { Campsite } from '../../services/CampsiteService';
 import { useRouteStore, useVehicleStore, useUIStore } from '../../store';
 import { cn } from '../../utils/cn';
 
