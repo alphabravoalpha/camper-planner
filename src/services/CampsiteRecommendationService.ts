@@ -1,7 +1,7 @@
 // Campsite Recommendation Service
 // Phase 4.4: Intelligent campsite recommendations based on route and vehicle profile
 
-import type { Campsite } from './CampsiteService';
+import type { UICampsite } from '../adapters/CampsiteAdapter';
 import type { VehicleProfile } from '../types';
 import type { RouteGeometry } from '../utils/routeDistance';
 import { calculateDistanceToRoute, haversineDistance } from '../utils/routeDistance';
@@ -18,7 +18,7 @@ export interface RecommendationCriteria {
   currentLocation?: [number, number]; // [lat, lng]
 }
 
-export interface CampsiteRecommendation extends Campsite {
+export interface CampsiteRecommendation extends UICampsite {
   recommendationScore: number;
   reasons: string[];
   warnings: string[];
@@ -41,7 +41,7 @@ export class CampsiteRecommendationService {
    * Generate campsite recommendations based on criteria
    */
   static generateRecommendations(
-    campsites: Campsite[],
+    campsites: UICampsite[],
     criteria: RecommendationCriteria,
     maxRecommendations: number = 10
   ): RecommendationResult {
@@ -65,7 +65,7 @@ export class CampsiteRecommendationService {
    * Score individual campsite based on recommendation criteria
    */
   private static scoreCampsite(
-    campsite: Campsite,
+    campsite: UICampsite,
     criteria: RecommendationCriteria
   ): CampsiteRecommendation {
     let score = 0;
@@ -117,7 +117,7 @@ export class CampsiteRecommendationService {
     if (criteria.currentLocation) {
       const distance = haversineDistance(
         criteria.currentLocation[0], criteria.currentLocation[1],
-        campsite.lat, campsite.lng
+        campsite.location.lat, campsite.location.lng
       );
 
       if (distance <= 50) {
@@ -200,7 +200,7 @@ export class CampsiteRecommendationService {
    * Evaluate camping style fit
    */
   private static evaluateCampingStyle(
-    campsite: Campsite,
+    campsite: UICampsite,
     style: 'wild' | 'facilities' | 'luxury'
   ): { score: number; reason?: string; warning?: string } {
     const amenityCount = Object.values(campsite.amenities || {}).filter(Boolean).length;
@@ -236,7 +236,7 @@ export class CampsiteRecommendationService {
    * Evaluate budget fit
    */
   private static evaluateBudgetFit(
-    campsite: Campsite,
+    campsite: UICampsite,
     budget: 'free' | 'budget'
   ): { score: number; reason?: string } {
     const isFree = this.isFreeOrLowCost(campsite);
@@ -260,7 +260,7 @@ export class CampsiteRecommendationService {
   /**
    * Check if campsite is suitable for groups
    */
-  private static isSuitableForGroups(campsite: Campsite): boolean {
+  private static isSuitableForGroups(campsite: UICampsite): boolean {
     const amenities = campsite.amenities || {};
     return Boolean(
       amenities.toilets &&
@@ -288,7 +288,7 @@ export class CampsiteRecommendationService {
   /**
    * Assess overall campsite quality
    */
-  private static assessQuality(campsite: Campsite): { score: number; reason?: string } {
+  private static assessQuality(campsite: UICampsite): { score: number; reason?: string } {
     let score = 0;
     const reasons: string[] = [];
 
@@ -320,7 +320,7 @@ export class CampsiteRecommendationService {
   /**
    * Check for good availability indicators
    */
-  private static hasGoodAvailabilityIndicators(campsite: Campsite): boolean {
+  private static hasGoodAvailabilityIndicators(campsite: UICampsite): boolean {
     return Boolean(
       campsite.website ||
       campsite.phone ||
@@ -331,7 +331,7 @@ export class CampsiteRecommendationService {
   /**
    * Check if campsite is free or low cost
    */
-  private static isFreeOrLowCost(campsite: Campsite): boolean {
+  private static isFreeOrLowCost(campsite: UICampsite): boolean {
     const name = campsite.name?.toLowerCase() || '';
     return (
       campsite.type === 'aire' ||
@@ -344,7 +344,7 @@ export class CampsiteRecommendationService {
   /**
    * Estimate campsite cost category
    */
-  private static estimateCost(campsite: Campsite): 'free' | 'low' | 'medium' | 'high' {
+  private static estimateCost(campsite: UICampsite): 'free' | 'low' | 'medium' | 'high' {
     if (this.isFreeOrLowCost(campsite)) {
       return 'free';
     }
@@ -360,7 +360,7 @@ export class CampsiteRecommendationService {
    * Calculate overall suitability score
    */
   private static calculateSuitabilityScore(
-    campsite: Campsite,
+    campsite: UICampsite,
     criteria: RecommendationCriteria
   ): number {
     let score = 50; // Base suitability
@@ -403,7 +403,7 @@ export class CampsiteRecommendationService {
    * Get recommendations for different scenarios
    */
   static getQuickRecommendations(
-    campsites: Campsite[],
+    campsites: UICampsite[],
     scenario: 'tonight' | 'route-planning' | 'weekend-trip',
     criteria: Partial<RecommendationCriteria> = {}
   ): RecommendationResult {

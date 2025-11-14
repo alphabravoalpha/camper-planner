@@ -3,7 +3,8 @@
 
 import React, { useState } from 'react';
 import { FeatureFlags } from '../../config';
-import type { CampsiteType, Campsite } from '../../services/CampsiteService';
+import type { CampsiteType } from '../../services/CampsiteService';
+import type { UICampsite } from '../../adapters/CampsiteAdapter';
 import { cn } from '../../utils/cn';
 import CampsiteSearch from './CampsiteSearch';
 
@@ -17,7 +18,7 @@ interface CampsiteControlsProps {
   onVehicleCompatibleChange: (compatible: boolean) => void;
   searchQuery?: string;
   onSearchChange?: (query: string) => void;
-  onCampsiteSelect?: (campsite: Campsite) => void;
+  onCampsiteSelect?: (campsite: UICampsite) => void;
   isVisible?: boolean;
   onVisibilityChange?: (visible: boolean) => void;
   onRefresh?: () => void;

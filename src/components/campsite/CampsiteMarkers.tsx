@@ -54,6 +54,8 @@ const CampsiteMarkers: React.FC<CampsiteMarkersProps> = ({
   onCampsiteClick
 }) => {
   const [campsites, setCampsites] = useState<UICampsite[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const { calculatedRoute } = useRouteStore();
   const { profile } = useVehicleStore();
 
@@ -61,6 +63,8 @@ const CampsiteMarkers: React.FC<CampsiteMarkersProps> = ({
   const loadCampsites = useCallback(async (searchBounds: any) => {
     if (!FeatureFlags.CAMPSITE_DISPLAY) return;
 
+    setIsLoading(true);
+    setError(null);
     try {
       const request: CampsiteRequest = {
         bounds: {
@@ -85,9 +89,12 @@ const CampsiteMarkers: React.FC<CampsiteMarkersProps> = ({
       // Convert to UI format using adapter
       const uiResponse = campsiteAdapter.toUIResponse(response, profile);
       setCampsites(uiResponse.campsites);
+      setIsLoading(false);
     } catch (err) {
       console.error('Error loading campsites:', err);
+      setError(err instanceof Error ? err.message : 'Failed to load campsites');
       setCampsites([]);
+      setIsLoading(false);
     }
   }, [visibleTypes, maxResults, profile]);
 

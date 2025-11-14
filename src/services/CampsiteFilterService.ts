@@ -1,7 +1,7 @@
 // Campsite Filter Service
 // Phase 4.3: Advanced filtering and search logic for campsites
 
-import type { Campsite, CampsiteRequest } from './CampsiteService';
+import type { CampsiteRequest } from './CampsiteService';
 import type { UICampsite } from '../adapters/CampsiteAdapter';
 import type { CampsiteFilterState } from '../components/campsite/CampsiteFilter';
 import type { RouteGeometry } from '../utils/routeDistance';
@@ -269,7 +269,7 @@ export class CampsiteFilterService {
    * Calculate search relevance score
    */
   private static calculateSearchScore(
-    campsite: Campsite,
+    campsite: FilteredCampsite,
     nameQuery: string,
     locationQuery: string
   ): number {
@@ -377,7 +377,7 @@ export class CampsiteFilterService {
    */
   static generateSearchSuggestions(
     query: string,
-    campsites: Campsite[],
+    campsites: UICampsite[],
     maxSuggestions: number = 10
   ): string[] {
     const queryLower = query.toLowerCase().trim();

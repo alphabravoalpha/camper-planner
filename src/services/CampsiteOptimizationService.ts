@@ -87,7 +87,7 @@ export class CampsiteOptimizationService {
       campsiteIntegration: {
         suggestedCampsites,
         replacedWaypoints: [], // Would be populated in step 1
-        totalCampsiteStops: workingWaypoints.filter(w => w.type === 'campsite').length
+        totalCampsiteStops: workingWaypoints.filter(w => w.id.startsWith('campsite_')).length
       }
     };
   }
@@ -137,7 +137,7 @@ export class CampsiteOptimizationService {
               lat: bestCampsite.lat,
               lng: bestCampsite.lng,
               name: bestCampsite.name,
-              type: 'campsite'
+              type: 'waypoint'
             },
             { objective: 'balanced', vehicleProfile }
           );
@@ -175,7 +175,8 @@ export class CampsiteOptimizationService {
     for (let i = 0; i < updatedWaypoints.length; i++) {
       const waypoint = updatedWaypoints[i];
 
-      if (waypoint.type === 'campsite') {
+      // Check if this waypoint represents a campsite (ID starts with 'campsite_')
+      if (waypoint.id.startsWith('campsite_')) {
         // Find better alternatives near this campsite
         try {
           const alternatives = await this.findNearbyAlternatives(
@@ -194,7 +195,7 @@ export class CampsiteOptimizationService {
                 lat: betterOption.campsite.lat,
                 lng: betterOption.campsite.lng,
                 name: betterOption.campsite.name,
-                type: 'campsite'
+                type: 'waypoint'
               };
             }
           }

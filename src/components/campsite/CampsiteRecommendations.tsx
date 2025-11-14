@@ -3,16 +3,16 @@
 
 import React, { useState, useMemo } from 'react';
 import { FeatureFlags } from '../../config';
-import type { Campsite } from '../../services/CampsiteService';
+import type { UICampsite } from '../../adapters/CampsiteAdapter';
 import { CampsiteRecommendationService } from '../../services/CampsiteRecommendationService';
 import type { RecommendationCriteria, CampsiteRecommendation } from '../../services/CampsiteRecommendationService';
 import { useRouteStore, useVehicleStore, useUIStore } from '../../store';
 import { cn } from '../../utils/cn';
 
 export interface CampsiteRecommendationsProps {
-  campsites: Campsite[];
-  onCampsiteSelect?: (campsite: Campsite) => void;
-  onAddAsWaypoint?: (campsite: Campsite) => void;
+  campsites: UICampsite[];
+  onCampsiteSelect?: (campsite: UICampsite) => void;
+  onAddAsWaypoint?: (campsite: UICampsite) => void;
   className?: string;
   maxRecommendations?: number;
 }
@@ -26,7 +26,7 @@ const CampsiteRecommendations: React.FC<CampsiteRecommendationsProps> = ({
 }) => {
   const [scenario, setScenario] = useState<'tonight' | 'route-planning' | 'weekend-trip' | 'custom'>('route-planning');
   const [customCriteria, setCustomCriteria] = useState<Partial<RecommendationCriteria>>({});
-  const [showDetails, setShowDetails] = useState<string | null>(null);
+  const [showDetails, setShowDetails] = useState<number | null>(null);
 
   const { calculatedRoute, addWaypoint, waypoints } = useRouteStore();
   const { profile } = useVehicleStore();
@@ -62,7 +62,7 @@ const CampsiteRecommendations: React.FC<CampsiteRecommendationsProps> = ({
   // Handle adding campsite as waypoint
   const handleAddAsWaypoint = (campsite: CampsiteRecommendation) => {
     const isAlreadyWaypoint = waypoints.some(wp =>
-      wp.lat === campsite.lat && wp.lng === campsite.lng
+      wp.lat === campsite.location.lat && wp.lng === campsite.location.lng
     );
 
     if (isAlreadyWaypoint) {
@@ -74,11 +74,11 @@ const CampsiteRecommendations: React.FC<CampsiteRecommendationsProps> = ({
     }
 
     const waypoint = {
-      id: `campsite_${campsite.id}`,
-      lat: campsite.lat,
-      lng: campsite.lng,
-      name: campsite.name || `${campsite.type} #${campsite.id}`,
-      type: 'campsite' as const
+      id: `campsite_${campsite.osmId || campsite.id}`,
+      lat: campsite.location.lat,
+      lng: campsite.location.lng,
+      name: campsite.name || `${campsite.type} #${campsite.osmId || campsite.id}`,
+      type: 'waypoint' as const
     };
 
     addWaypoint(waypoint);
