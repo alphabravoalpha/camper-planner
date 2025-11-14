@@ -142,7 +142,7 @@ const RouteSegments: React.FC<{ segments: RouteSegment[] }> = ({ segments }) => 
 
 // Turn-by-Turn Directions Component
 const TurnByTurnDirections: React.FC<{ segments: RouteSegment[] }> = ({ segments }) => {
-  const [expandedSegment, setExpandedSegment] = useState<number | null>(0);
+  const [_expandedSegment, _setExpandedSegment] = useState<number | null>(0);
 
   const allSteps = useMemo(() => {
     return segments.flatMap((segment, segmentIndex) =>

@@ -45,7 +45,7 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
   onWaypointInsert,
   isVisible = true
 }) => {
-  const { waypoints, calculatedRoute, setWaypoints, reorderWaypoints } = useRouteStore();
+  const { waypoints, calculatedRoute: _calculatedRoute, setWaypoints: _setWaypoints, reorderWaypoints } = useRouteStore();
   const { profile } = useVehicleStore();
   const { addNotification } = useUIStore();
 
@@ -147,35 +147,6 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
     });
   }, []);
 
-  // Handle insertion mode
-  const handleInsertionMode = useCallback((lat: number, lng: number) => {
-    if (!insertionMode) return;
-
-    const newWaypoint = {
-      id: `temp_${Date.now()}`,
-      lat,
-      lng,
-      name: 'New Waypoint',
-      type: 'waypoint' as const
-    };
-
-    setNewWaypointPosition({ lat, lng });
-
-    // Find optimal insertion position
-    routeOptimizationService.findOptimalInsertion(
-      waypoints,
-      newWaypoint,
-      { objective: settings.objective, vehicleProfile: profile || undefined }
-    ).then(result => {
-      setInsertionResult(result);
-    }).catch(error => {
-      console.error('Insertion analysis failed:', error);
-      addNotification({
-        type: 'error',
-        message: 'Failed to analyze waypoint insertion'
-      });
-    });
-  }, [insertionMode, waypoints, settings.objective, profile, addNotification]);
 
   // Auto-optimize when waypoints change
   useEffect(() => {

@@ -164,11 +164,6 @@ export class CampsiteFilterService {
   private static isOpenNow(campsite: Campsite): boolean {
     if (!campsite.openingHours) return true; // Assume open if no hours specified
 
-    // Basic opening hours parsing
-    const now = new Date();
-    const currentDay = now.getDay(); // 0 = Sunday, 1 = Monday, etc.
-    const currentTime = now.getHours() * 60 + now.getMinutes();
-
     // This is a simplified implementation
     // In a real app, you'd want a more robust opening hours parser
     const openingHours = campsite.openingHours.toLowerCase();
@@ -192,7 +187,6 @@ export class CampsiteFilterService {
   private static isFree(campsite: Campsite): boolean {
     // Check various indicators that the campsite might be free
     const name = campsite.name?.toLowerCase() || '';
-    const amenities = campsite.amenities || {};
 
     // Look for keywords indicating free camping
     if (name.includes('free') || name.includes('wild') || name.includes('aire')) {
@@ -305,7 +299,7 @@ export class CampsiteFilterService {
    */
   private static calculateRelevanceScores(
     campsites: FilteredCampsite[],
-    filterState: CampsiteFilterState,
+    _filterState: CampsiteFilterState,
     routeGeometry?: RouteGeometry,
     currentLocation?: [number, number]
   ): FilteredCampsite[] {

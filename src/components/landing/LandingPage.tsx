@@ -1,7 +1,7 @@
 // Enhanced Landing Page
 // Phase 6.4: Launch-ready marketing content and user acquisition
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { cn } from '../../utils/cn';
 import { useAnimations } from '../../utils/animations';
 import { useAnalytics } from '../../utils/analytics';

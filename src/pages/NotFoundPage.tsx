@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui';
 
 const NotFoundPage: React.FC = () => {
-  const { t } = useTranslation();
+  const { t: _t } = useTranslation();
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">

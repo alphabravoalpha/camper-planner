@@ -1,7 +1,7 @@
 // Error Boundary Component
 // React Error Boundary for graceful error handling
 
-import React, { Component } from 'react';
+import { Component } from 'react';
 import type { ReactNode } from 'react';
 import { cn } from '../../utils/cn';
 

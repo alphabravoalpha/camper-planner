@@ -13,7 +13,7 @@ const Header: React.FC = () => {
   const location = useLocation();
   const { t } = useTranslation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { sidebarOpen, toggleSidebar } = useUIStore();
+  const { toggleSidebar } = useUIStore();
 
   const navigationItems = [
     { path: '/', label: t('nav.planner'), key: 'planner' },

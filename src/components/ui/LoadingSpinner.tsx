@@ -90,10 +90,6 @@ export const LoadingSkeleton: React.FC<{
   lines?: number;
   variant?: 'text' | 'card' | 'avatar' | 'button';
 }> = ({ className, lines = 3, variant = 'text' }) => {
-  const skeletonLine = (
-    <div className="animate-pulse bg-gray-200 rounded h-4 w-full" />
-  );
-
   if (variant === 'card') {
     return (
       <div className={cn('animate-pulse space-y-4 p-6 bg-white border border-gray-200 rounded-lg', className)}>

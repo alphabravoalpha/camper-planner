@@ -1,7 +1,7 @@
 // Trip Sharing Component
 // Phase 6.2: Privacy-first trip sharing with comprehensive sharing options
 
-import React, { useState, useCallback, useMemo, useRef } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { useRouteStore, useVehicleStore, useTripStore, useUIStore } from '../../store';
 import { TripSharingService } from '../../services/TripSharingService';
 import type { ShareOptions, ShareResult } from '../../services/TripSharingService';
@@ -169,8 +169,6 @@ const PrintSummary: React.FC<{
   shareUrl: string;
   onPrint: () => void;
 }> = ({ tripData, shareUrl, onPrint }) => {
-  const printRef = useRef<HTMLDivElement>(null);
-
   const handlePrint = useCallback(() => {
     if (!tripData) return;
 

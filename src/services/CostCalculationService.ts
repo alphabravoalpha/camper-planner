@@ -281,7 +281,7 @@ export class CostCalculationService {
   static calculateFuelCost(
     distanceKm: number,
     consumptionSettings: FuelConsumptionSettings,
-    priceSettings: FuelPriceSettings
+    _priceSettings: FuelPriceSettings
   ): number {
     const consumptionLPer100km = this.convertConsumption(
       consumptionSettings.consumption,

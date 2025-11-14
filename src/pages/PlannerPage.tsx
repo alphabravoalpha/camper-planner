@@ -3,11 +3,10 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { FeatureFlags } from '../config';
 import MapContainer from '../components/map/MapContainer';
 
 const PlannerPage: React.FC = () => {
-  const { t } = useTranslation();
+  const { t: _t } = useTranslation();
 
   return (
     <div className="h-full flex flex-col">

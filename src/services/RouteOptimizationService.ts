@@ -339,7 +339,7 @@ export class RouteOptimizationService {
   private nearestNeighborTSP(
     matrix: DistanceMatrix,
     getDistance: (i: number, j: number) => number,
-    lockedPositions: Set<number>
+    _lockedPositions: Set<number>
   ): number[] {
     const n = matrix.distances.length;
     const visited = new Set<number>();
@@ -580,7 +580,7 @@ export class RouteOptimizationService {
   /**
    * Estimate route cost based on distance, time, and vehicle profile
    */
-  private estimateRouteCost(distance: number, duration: number, vehicleProfile?: VehicleProfile): number {
+  private estimateRouteCost(distance: number, _duration: number, vehicleProfile?: VehicleProfile): number {
     const distanceKm = distance / 1000;
 
     // Base fuel consumption (L/100km)

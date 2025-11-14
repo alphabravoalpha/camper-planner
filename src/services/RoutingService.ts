@@ -98,8 +98,6 @@ export class RoutingError extends Error {
 }
 
 export class RoutingService extends DataService {
-  private fallbackService?: RoutingService;
-
   constructor() {
     // OpenRouteService configuration
     const config: DataServiceConfig = {

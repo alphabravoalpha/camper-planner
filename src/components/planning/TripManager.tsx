@@ -3,8 +3,8 @@
 
 import React, { useState, useEffect } from 'react';
 import {
-  Save, Plus, Copy, Download, Upload, Search, Filter, Star, Calendar, MapPin,
-  Clock, Euro, Users, Tag, Trash2, Edit3, ExternalLink, BarChart3, X, Check,
+  Save, Copy, Download, Upload, Search, Star, Calendar, MapPin,
+  Clock, Euro, Users, Trash2, ExternalLink, BarChart3, X,
   Globe, Navigation, Mountain, Heart, Briefcase, Car
 } from 'lucide-react';
 import { useRouteStore } from '../../store';

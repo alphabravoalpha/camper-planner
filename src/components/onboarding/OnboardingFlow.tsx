@@ -4,7 +4,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { cn } from '../../utils/cn';
 import { aria, useAnnounce, useFocusTrap } from '../../utils/accessibility';
-import { useUIStore, useRouteStore, useVehicleStore } from '../../store';
+import { useRouteStore, useVehicleStore } from '../../store';
 
 interface OnboardingStep {
   id: string;
@@ -74,7 +74,7 @@ const VehicleSetupStep: React.FC<{
 }> = ({ onVehicleSet }) => {
   const { setProfile } = useVehicleStore();
   const [vehicleType, setVehicleType] = useState<string>('');
-  const [hasVehicle, setHasVehicle] = useState(false);
+  const [_hasVehicle, setHasVehicle] = useState(false);
 
   const vehicleTypes = [
     { id: 'motorhome', name: 'Motorhome', icon: '🚐', description: 'Self-contained recreational vehicle' },

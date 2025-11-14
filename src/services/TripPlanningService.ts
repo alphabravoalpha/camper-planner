@@ -478,7 +478,7 @@ export class TripPlanningService {
     const recommendations: string[] = [];
 
     // Analyze individual stages
-    stages.forEach((stage, index) => {
+    stages.forEach((stage, _index) => {
       let stageScore = 100;
 
       if (stage.feasibility === 'excellent') stageScore = 100;
@@ -639,7 +639,7 @@ export class TripPlanningService {
   /**
    * Calculate trip metrics for analysis
    */
-  static calculateTripMetrics(plan: TripPlan, vehicleProfile?: VehicleProfile): TripMetrics {
+  static calculateTripMetrics(plan: TripPlan, _vehicleProfile?: VehicleProfile): TripMetrics {
     const avgDailyDistance = plan.totalDistance / plan.totalDays;
     const restRatio = plan.restDays / plan.totalDays;
 

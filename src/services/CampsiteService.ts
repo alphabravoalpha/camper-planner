@@ -270,7 +270,6 @@ class CampsiteCacheManager {
 
 export class CampsiteService extends DataService {
   private cacheManager: CampsiteCacheManager;
-  private fallbackService?: CampsiteService;
 
   constructor() {
     // Overpass API configuration

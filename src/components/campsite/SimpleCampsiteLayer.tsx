@@ -121,11 +121,11 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
   const map = useMap();
   const { calculatedRoute } = useRouteStore();
   const { profile } = useVehicleStore();
-  const { addNotification } = useUIStore();
+  const { addNotification: _addNotification } = useUIStore();
 
   const [campsites, setCampsites] = useState<UICampsite[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [_isLoading, setIsLoading] = useState(false);
+  const [_error, setError] = useState<string | null>(null);
   const [selectedCampsiteId, setSelectedCampsiteId] = useState<string | null>(null);
   const [zoom, setZoom] = useState(map.getZoom());
 

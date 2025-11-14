@@ -1,7 +1,7 @@
 // Waypoint Manager Component
 // Phase 2.2: Enhanced waypoint system with drag-and-drop, editing, and context menu
 
-import React, { useCallback, useState, useRef } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Marker, Popup, useMapEvents } from 'react-leaflet';
 import L, { DivIcon } from 'leaflet';
 import { useRouteStore, useMapStore, useUIStore } from '../../store';
@@ -114,7 +114,7 @@ const WaypointMarker: React.FC<WaypointMarkerProps> = ({
   const [editedName, setEditedName] = useState(waypoint.name);
   const [editedNotes, setEditedNotes] = useState(waypoint.notes || '');
   const [isDragging, setIsDragging] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
+  const [_isHovered, setIsHovered] = useState(false);
 
   const isSelected = selectedWaypoint === waypoint.id;
 
@@ -422,12 +422,7 @@ const WaypointManager: React.FC = () => {
     removeWaypoint,
     updateWaypoint,
     insertWaypoint,
-    clearRoute,
-    undo,
-    redo,
-    canUndo,
-    canRedo,
-    isValidForRouting
+    isValidForRouting: _isValidForRouting
   } = useRouteStore();
   const { addNotification } = useUIStore();
 
@@ -535,51 +530,6 @@ const WaypointManager: React.FC = () => {
     }
   }, [updateWaypoint, addNotification]);
 
-  const handleClearAllConfirm = useCallback(() => {
-    setConfirmDialog({
-      isOpen: true,
-      title: 'Clear All Waypoints',
-      message: `Are you sure you want to remove all ${waypoints.length} waypoints? This action cannot be undone.`,
-      onConfirm: () => {
-        try {
-          clearRoute();
-          addNotification({
-            type: 'success',
-            message: 'All waypoints cleared'
-          });
-        } catch (error) {
-          addNotification({
-            type: 'error',
-            message: 'Failed to clear waypoints'
-          });
-        }
-        setConfirmDialog(prev => ({ ...prev, isOpen: false }));
-      }
-    });
-  }, [waypoints.length, clearRoute, addNotification]);
-
-  const handleUndoRedo = useCallback((action: 'undo' | 'redo') => {
-    try {
-      if (action === 'undo' && canUndo()) {
-        undo();
-        addNotification({
-          type: 'success',
-          message: 'Action undone'
-        });
-      } else if (action === 'redo' && canRedo()) {
-        redo();
-        addNotification({
-          type: 'success',
-          message: 'Action redone'
-        });
-      }
-    } catch (error) {
-      addNotification({
-        type: 'error',
-        message: `Failed to ${action} action`
-      });
-    }
-  }, [undo, redo, canUndo, canRedo, addNotification]);
 
   return (
     <>

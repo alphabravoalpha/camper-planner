@@ -1,7 +1,7 @@
 // Campsite Search Component
 // Phase 4.2: Search functionality for campsites by name and location
 
-import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useMap } from 'react-leaflet';
 import { campsiteService } from '../../services/CampsiteService';
 import type { Campsite, CampsiteRequest, CampsiteType } from '../../services/CampsiteService';
@@ -359,7 +359,7 @@ const CampsiteSearch: React.FC<CampsiteSearchProps> = ({
               <div className="px-3 py-2 text-xs font-medium text-gray-500 border-b border-gray-100">
                 Recent Searches
               </div>
-              {searchHistory.slice(0, 5).map((historyItem, index) => (
+              {searchHistory.slice(0, 5).map((historyItem, _index) => (
                 <button
                   key={historyItem}
                   onClick={() => setQuery(historyItem)}

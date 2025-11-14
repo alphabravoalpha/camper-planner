@@ -139,7 +139,6 @@ export class RouteExportService {
     }
   ): Promise<ExportResult> {
     const warnings: string[] = [];
-    const errors: string[] = [];
 
     try {
       // Validate input data
@@ -247,7 +246,7 @@ export class RouteExportService {
 
     // Add waypoints
     if (options.includeWaypoints || options.includeCampsites) {
-      waypoints.forEach((waypoint, index) => {
+      waypoints.forEach((waypoint, _index) => {
         const symbol = this.getGPSSymbol(waypoint.type, symbols);
         const description = this.createWaypointDescription(waypoint, options, additionalData);
 
@@ -268,7 +267,7 @@ export class RouteExportService {
     <name>${this.escapeXML(options.customName || 'Camper Route')}</name>
     <desc>${this.escapeXML('Navigation route for GPS devices')}</desc>`;
 
-      waypoints.forEach((waypoint, index) => {
+      waypoints.forEach((waypoint, _index) => {
         gpxRoute += `
     <rtept lat="${waypoint.lat}" lon="${waypoint.lng}">
       <name>${this.escapeXML(waypoint.name)}</name>
@@ -434,7 +433,7 @@ export class RouteExportService {
     let kmlContent = kmlHeader;
 
     // Add placemarks for waypoints
-    waypoints.forEach((waypoint, index) => {
+    waypoints.forEach((waypoint, _index) => {
       const styleId = waypoint.type === 'campsite' ? 'campsiteStyle' : 'waypointStyle';
       const description = this.createWaypointDescription(waypoint, options, additionalData);
 
@@ -512,7 +511,7 @@ export class RouteExportService {
     let csvContent = headers.join(',') + '\n';
 
     let totalDistance = 0;
-    waypoints.forEach((waypoint, index) => {
+    waypoints.forEach((waypoint, _index) => {
       const row = [
         `"${this.escapeCSV(waypoint.name)}"`,
         waypoint.lat.toString(),
@@ -577,7 +576,6 @@ export class RouteExportService {
     errors: string[];
   }> {
     const warnings: string[] = [];
-    const errors: string[] = [];
 
     try {
       switch (format.toLowerCase()) {
@@ -633,7 +631,6 @@ export class RouteExportService {
         const lat = parseFloat(wpt.getAttribute('lat') || '0');
         const lon = parseFloat(wpt.getAttribute('lon') || '0');
         const name = wpt.querySelector('name')?.textContent || `Waypoint ${index + 1}`;
-        const desc = wpt.querySelector('desc')?.textContent || '';
         const type = wpt.querySelector('type')?.textContent || 'waypoint';
 
         if (lat && lon) {
@@ -866,7 +863,7 @@ export class RouteExportService {
   /**
    * Helper methods
    */
-  static validateExportData(waypoints: Waypoint[], options: ExportOptions): {
+  static validateExportData(waypoints: Waypoint[], _options: ExportOptions): {
     warnings: string[];
     errors: string[];
   } {
@@ -937,7 +934,7 @@ export class RouteExportService {
   static createWaypointDescription(
     waypoint: Waypoint,
     options: ExportOptions,
-    additionalData?: any
+    _additionalData?: any
   ): string {
     let description = `${waypoint.type.charAt(0).toUpperCase() + waypoint.type.slice(1)}: ${waypoint.name}`;
 

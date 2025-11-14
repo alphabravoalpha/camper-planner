@@ -130,7 +130,6 @@ export interface TripComparison {
 }
 
 const TRIP_STORAGE_KEY = 'camper-planner-trips';
-const TRIP_TEMPLATES_KEY = 'camper-planner-trip-templates';
 const TRIP_HISTORY_KEY = 'camper-planner-trip-history';
 const CURRENT_VERSION = '1.0.0';
 const MAX_HISTORY_ITEMS = 50;

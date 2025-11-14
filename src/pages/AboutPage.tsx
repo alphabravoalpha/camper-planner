@@ -5,7 +5,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 const AboutPage: React.FC = () => {
-  const { t } = useTranslation();
+  const { t: _t } = useTranslation();
 
   return (
     <div className="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">

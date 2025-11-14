@@ -53,59 +53,7 @@ export interface TollCalculationResult {
 }
 
 // European toll road data framework (extensible structure)
-const TOLL_ROUTES: TollRoute[] = [
-  // France - Major highways
-  {
-    id: 'fr_a1',
-    name: 'A1 Paris-Lille',
-    country: 'France',
-    startPoint: { lat: 48.8566, lng: 2.3522 },
-    endPoint: { lat: 50.6292, lng: 3.0573 },
-    tollType: 'distance_based',
-    vehicleCategories: { category1: 0.12, category2: 0.18, category3: 0.24 }, // EUR per km
-    currency: 'EUR',
-    isActive: true
-  },
-
-  // Austria - Vignette system
-  {
-    id: 'at_vignette',
-    name: 'Austrian Highway Vignette',
-    country: 'Austria',
-    startPoint: { lat: 47.0, lng: 14.0 },
-    endPoint: { lat: 47.0, lng: 14.0 },
-    tollType: 'vignette',
-    vehicleCategories: { category1: 9.6, category2: 19.2, category3: 28.8 }, // 10-day vignette
-    currency: 'EUR',
-    isActive: true
-  },
-
-  // Italy - Distance-based tolls
-  {
-    id: 'it_a1',
-    name: 'A1 Milano-Roma',
-    country: 'Italy',
-    startPoint: { lat: 45.4642, lng: 9.1900 },
-    endPoint: { lat: 41.9028, lng: 12.4964 },
-    tollType: 'distance_based',
-    vehicleCategories: { category1: 0.08, category2: 0.16, category3: 0.24 },
-    currency: 'EUR',
-    isActive: true
-  },
-
-  // Spain - Distance-based tolls
-  {
-    id: 'es_ap1',
-    name: 'AP-1 Burgos-Armiñón',
-    country: 'Spain',
-    startPoint: { lat: 42.3601, lng: -3.6869 },
-    endPoint: { lat: 42.8440, lng: -2.8925 },
-    tollType: 'distance_based',
-    vehicleCategories: { category1: 0.10, category2: 0.15, category3: 0.20 },
-    currency: 'EUR',
-    isActive: true
-  }
-];
+// TODO: Implement toll route database integration
 
 // Vignette requirements by country
 const VIGNETTE_REQUIREMENTS: VignetteRequirement[] = [

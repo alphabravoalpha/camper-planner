@@ -1,10 +1,10 @@
 // Planning Tools Component
 // Phase 5.4: Comprehensive trip planning with intelligent recommendations
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  Calendar, Clock, MapPin, AlertTriangle, CheckCircle, Info, TrendingUp,
-  Route, Users, Thermometer, Cloud, Car, Bed, Coffee, Camera, Fuel,
+  Calendar, Clock, AlertTriangle, CheckCircle, TrendingUp,
+  Route, Users, Thermometer, Car, Bed, Coffee, Camera, Fuel,
   Navigation, Target, BarChart3, Settings, ChevronDown, ChevronUp
 } from 'lucide-react';
 import { useRouteStore } from '../../store';
@@ -423,7 +423,7 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
                   </div>
                 </div>
 
-                {tripPlan.dailyStages.map((stage, index) => (
+                {tripPlan.dailyStages.map((stage, _index) => (
                   <div key={stage.day} className="border rounded-lg overflow-hidden">
                     <div
                       className="p-4 cursor-pointer hover:bg-gray-50"

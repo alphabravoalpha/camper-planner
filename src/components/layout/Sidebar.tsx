@@ -11,7 +11,7 @@ interface SidebarProps {
   className?: string;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ className }) => {
+const Sidebar: React.FC<SidebarProps> = ({ className: _className }) => {
   const { t } = useTranslation();
   const { sidebarOpen, toggleSidebar } = useUIStore();
 

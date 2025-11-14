@@ -1,7 +1,7 @@
 // Campsite Recommendations Component
 // Phase 4.4: Smart campsite recommendations for trip planning
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { FeatureFlags } from '../../config';
 import type { Campsite } from '../../services/CampsiteService';
 import { CampsiteRecommendationService } from '../../services/CampsiteRecommendationService';

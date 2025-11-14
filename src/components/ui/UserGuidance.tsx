@@ -92,7 +92,7 @@ const TIPS = {
 
 const UserGuidance: React.FC<UserGuidanceProps> = ({ className }) => {
   const { waypoints } = useRouteStore();
-  const { profile } = useVehicleStore();
+  const { profile: _profile } = useVehicleStore();
   const { addNotification } = useUIStore();
 
   const [currentStep, setCurrentStep] = useState<string | null>(null);

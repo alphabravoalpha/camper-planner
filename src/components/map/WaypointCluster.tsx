@@ -191,7 +191,6 @@ const WaypointCluster: React.FC<WaypointClusterProps> = ({
   return (
     <>
       {visibleClusters.map((cluster) => {
-        const isSelected = selectedCluster === cluster.id;
         const waypointCount = cluster.waypoints.length;
 
         if (waypointCount === 1) {

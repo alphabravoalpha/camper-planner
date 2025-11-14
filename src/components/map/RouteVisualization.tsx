@@ -280,7 +280,7 @@ const StraightLineRouteDisplay: React.FC<{ waypoints: Waypoint[] }> = ({ waypoin
 
   return (
     <>
-      {routeSegments.map((segment, index) => {
+      {routeSegments.map((segment, _index) => {
         const bearing = calculateBearing(segment.start.lat, segment.start.lng, segment.end.lat, segment.end.lng);
         const midpoint = calculateMidpoint(segment.start.lat, segment.start.lng, segment.end.lat, segment.end.lng);
         const arrowIcon = createDirectionArrowIcon(bearing);

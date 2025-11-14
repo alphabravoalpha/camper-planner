@@ -2,7 +2,7 @@
 // Phase 1.5: Basic map foundation with React-Leaflet
 
 import React, { useEffect, useRef, useState } from 'react';
-import { MapContainer as LeafletMapContainer, TileLayer, useMap, useMapEvents } from 'react-leaflet';
+import { MapContainer as LeafletMapContainer, useMap, useMapEvents } from 'react-leaflet';
 import { Map as LeafletMap } from 'leaflet';
 import { FeatureFlags } from '../../config';
 import { useMapStore, useRouteStore, useUIStore, useVehicleStore } from '../../store';
@@ -113,7 +113,7 @@ const MapController: React.FC = () => {
 const MapContainer: React.FC = () => {
   const { center, zoom, setCenter, setZoom } = useMapStore();
   const { waypoints, clearRoute, undo, redo, canUndo, canRedo, isValidForRouting, calculatedRoute } = useRouteStore();
-  const { profile } = useVehicleStore();
+  const { profile: _profile } = useVehicleStore();
   const { addNotification } = useUIStore();
   const [isMapReady, setIsMapReady] = useState(false);
   const [showConfirmClear, setShowConfirmClear] = useState(false);

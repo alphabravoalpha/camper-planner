@@ -341,7 +341,7 @@ const RouteCalculator: React.FC<RouteCalculatorProps> = ({
           <input
             type="checkbox"
             checked={autoCalculate}
-            onChange={(e) => {
+            onChange={(_e) => {
               // This would need to be lifted up to parent component or stored in state
               // For now, it's controlled by the parent prop
             }}
