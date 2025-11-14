@@ -4,7 +4,7 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { Marker, Popup } from 'react-leaflet';
 import { useMap } from 'react-leaflet';
-import L from 'leaflet';
+import * as L from 'leaflet';
 import { campsiteService } from '../../services/CampsiteService';
 import type { CampsiteRequest, CampsiteType } from '../../services/CampsiteService';
 import { CampsiteAdapter } from '../../adapters/CampsiteAdapter';
@@ -41,7 +41,7 @@ function clusterCampsites(campsites: UICampsite[], zoom: number, isMobile: boole
     (zoom > 12 ? 40 : zoom > 10 ? 60 : 100); // pixels
 
   const clusters: ClusteredCampsite[] = [];
-  const processed = new Set<string>();
+  const processed = new Set<number>();
 
   for (const campsite of campsites) {
     if (processed.has(campsite.id)) continue;
@@ -72,7 +72,7 @@ function clusterCampsites(campsites: UICampsite[], zoom: number, isMobile: boole
 
       clusters.push({
         ...campsite,
-        id: `cluster_${clusters.length}`,
+        id: -(clusters.length + 1), // Use negative IDs for clusters to avoid collision with real campsite IDs
         location: { lat: centerLat, lng: centerLng },
         name: `${cluster.length} campsites`,
         isCluster: true,
@@ -126,7 +126,7 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
   const [campsites, setCampsites] = useState<UICampsite[]>([]);
   const [_isLoading, setIsLoading] = useState(false);
   const [_error, setError] = useState<string | null>(null);
-  const [selectedCampsiteId, setSelectedCampsiteId] = useState<string | null>(null);
+  const [selectedCampsiteId, setSelectedCampsiteId] = useState<number | null>(null);
   const [zoom, setZoom] = useState(map.getZoom());
 
   // Track zoom changes for clustering
@@ -144,7 +144,7 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
       const mapCenter = map ? [map.getCenter().lat, map.getCenter().lng] as [number, number] : undefined;
 
       return CampsiteFilterService.filterCampsites(
-        campsites,
+        campsites as any, // TODO: Fix type mismatch between UICampsite and Campsite
         filterState,
         routeGeometry,
         mapCenter
@@ -181,7 +181,7 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
   // Cluster campsites based on zoom level
   const clusteredCampsites = useMemo(() => {
     if (!isVisible || zoom >= 15) return filteredCampsites; // No clustering at high zoom
-    return clusterCampsites(filteredCampsites, zoom, isMobile);
+    return clusterCampsites(filteredCampsites as UICampsite[], zoom, isMobile);
   }, [filteredCampsites, zoom, isVisible, isMobile]);
 
   // Load campsites for current map bounds
@@ -234,7 +234,7 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
     let minLat = Infinity, maxLat = -Infinity;
     let minLng = Infinity, maxLng = -Infinity;
 
-    routeGeometry.coordinates.forEach(coord => {
+    routeGeometry.coordinates.forEach((coord: number[]) => {
       const [lng, lat] = coord;
       minLat = Math.min(minLat, lat);
       maxLat = Math.max(maxLat, lat);
@@ -311,12 +311,13 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
   return (
     <>
       {clusteredCampsites.map(campsite => {
+        const clusterCampsite = campsite as ClusteredCampsite;
         const isSelected = selectedCampsiteId === campsite.id;
-        const isCluster = campsite.isCluster;
+        const isCluster = clusterCampsite.isCluster;
 
         // Create cluster icon for grouped campsites
         const icon = isCluster
-          ? L.divIcon({
+          ? (L as any).divIcon({
               html: `
                 <div style="
                   width: ${isMobile ? 32 : 40}px;
@@ -333,7 +334,7 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
                   box-shadow: 0 2px 8px rgba(0,0,0,0.3);
                   cursor: pointer;
                 ">
-                  ${campsite.clusterCount}
+                  ${clusterCampsite.clusterCount}
                 </div>
               `,
               className: 'campsite-cluster-icon',
@@ -341,8 +342,8 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
               iconAnchor: [isMobile ? 16 : 20, isMobile ? 16 : 20]
             })
           : createCampsiteIcon({
-              campsite,
-              vehicleCompatible: campsite.vehicleCompatible,
+              campsite: clusterCampsite,
+              vehicleCompatible: clusterCampsite.vehicleCompatible,
               isSelected,
               isMobile,
               size: isMobile ? 'small' : 'medium'
@@ -351,43 +352,43 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
         return (
           <Marker
             key={campsite.id}
-            position={[campsite.location.lat, campsite.location.lng]}
-            icon={icon}
+            position={[clusterCampsite.location.lat, clusterCampsite.location.lng]}
+            {...({ icon } as any)}
             eventHandlers={{
               click: () => {
                 setSelectedCampsiteId(campsite.id);
                 if (isCluster) {
                   // Zoom to cluster bounds
-                  if (campsite.clusterCampsites) {
-                    const bounds = L.latLngBounds(
-                      campsite.clusterCampsites.map(c => [c.location.lat, c.location.lng])
+                  if (clusterCampsite.clusterCampsites) {
+                    const bounds = (L as any).latLngBounds(
+                      clusterCampsite.clusterCampsites.map((c: UICampsite) => [c.location.lat, c.location.lng])
                     );
                     map.fitBounds(bounds, { padding: [20, 20] });
                   }
                 } else {
-                  onCampsiteClick?.(campsite);
+                  onCampsiteClick?.(clusterCampsite);
                 }
               }
             }}
           >
-            <Popup className="campsite-popup" maxWidth={isMobile ? 250 : 300}>
+            <Popup {...({ className: "campsite-popup" } as any)} maxWidth={isMobile ? 250 : 300}>
               {isCluster ? (
                 <div className="p-3">
                   <h3 className="font-medium text-gray-900 text-sm mb-2">
-                    {campsite.clusterCount} Campsites
+                    {clusterCampsite.clusterCount} Campsites
                   </h3>
                   <p className="text-xs text-gray-600 mb-2">
                     Click to zoom in and see individual campsites
                   </p>
                   <div className="space-y-1">
-                    {campsite.clusterCampsites?.slice(0, 3).map((c, idx) => (
+                    {clusterCampsite.clusterCampsites?.slice(0, 3).map((c: UICampsite, idx: number) => (
                       <div key={idx} className="text-xs text-gray-700">
                         • {c.name || c.type.replace('_', ' ')}
                       </div>
                     ))}
-                    {campsite.clusterCampsites && campsite.clusterCampsites.length > 3 && (
+                    {clusterCampsite.clusterCampsites && clusterCampsite.clusterCampsites.length > 3 && (
                       <div className="text-xs text-gray-500">
-                        and {campsite.clusterCampsites.length - 3} more...
+                        and {clusterCampsite.clusterCampsites.length - 3} more...
                       </div>
                     )}
                   </div>
@@ -397,45 +398,45 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
                   {/* Enhanced popup content same as before */}
                   <div className="flex items-start justify-between mb-2">
                     <h3 className="font-medium text-gray-900 text-sm leading-tight pr-2">
-                      {campsite.name || `${campsite.type.replace('_', ' ')} #${campsite.id}`}
+                      {clusterCampsite.name || `${clusterCampsite.type.replace('_', ' ')} #${clusterCampsite.id}`}
                     </h3>
                     <span className={`px-2 py-1 rounded text-xs font-medium whitespace-nowrap ${
-                      campsite.vehicleCompatible
+                      clusterCampsite.vehicleCompatible
                         ? 'bg-green-100 text-green-800'
                         : 'bg-red-100 text-red-800'
                     }`}>
-                      {campsite.vehicleCompatible ? '✓ Compatible' : '⚠ Check Size'}
+                      {clusterCampsite.vehicleCompatible ? '✓ Compatible' : '⚠ Check Size'}
                     </span>
                   </div>
 
                   <div className="mb-2">
                     <div className="text-xs text-gray-600 capitalize mb-1">
-                      {campsite.type.replace('_', ' ')}
+                      {clusterCampsite.type.replace('_', ' ')}
                     </div>
 
-                    {campsite.address && (
-                      <div className="text-xs text-gray-700 mb-1">📍 {campsite.address}</div>
+                    {clusterCampsite.address && (
+                      <div className="text-xs text-gray-700 mb-1">📍 {clusterCampsite.address}</div>
                     )}
-                    {campsite.phone && (
-                      <div className="text-xs text-gray-700 mb-1">📞 {campsite.phone}</div>
+                    {clusterCampsite.phone && (
+                      <div className="text-xs text-gray-700 mb-1">📞 {clusterCampsite.phone}</div>
                     )}
-                    {campsite.website && (
+                    {clusterCampsite.website && (
                       <div className="text-xs text-gray-700 mb-1">
-                        🌐 <a href={campsite.website} target="_blank" rel="noopener noreferrer"
+                        🌐 <a href={clusterCampsite.website} target="_blank" rel="noopener noreferrer"
                            className="text-blue-600 hover:text-blue-800 underline">Website</a>
                       </div>
                     )}
-                    {campsite.openingHours && (
-                      <div className="text-xs text-gray-700 mb-1">🕒 {campsite.openingHours}</div>
+                    {clusterCampsite.openingHours && (
+                      <div className="text-xs text-gray-700 mb-1">🕒 {clusterCampsite.openingHours}</div>
                     )}
                   </div>
 
                   {/* Amenities */}
-                  {campsite.amenities && Object.keys(campsite.amenities).length > 0 && (
+                  {clusterCampsite.amenities && Object.keys(clusterCampsite.amenities).length > 0 && (
                     <div className="mb-2">
                       <div className="text-xs font-medium text-gray-900 mb-1">Amenities:</div>
                       <div className="flex flex-wrap gap-1">
-                        {Object.entries(campsite.amenities).filter(([_, available]) => available).map(([amenity]) => (
+                        {Object.entries(clusterCampsite.amenities).filter(([_, available]) => available).map(([amenity]) => (
                           <span key={amenity} className="px-1.5 py-0.5 bg-blue-100 text-blue-800 text-xs rounded">
                             {amenity.replace(/_/g, ' ')}
                           </span>
@@ -445,28 +446,28 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
                   )}
 
                   {/* Vehicle restrictions */}
-                  {!campsite.vehicleCompatible && campsite.restrictions && (
+                  {!clusterCampsite.vehicleCompatible && clusterCampsite.restrictions && (
                     <div className="mt-2 p-2 bg-red-50 border border-red-200 rounded">
                       <div className="text-xs font-medium text-red-800 mb-1">⚠️ Vehicle Restrictions:</div>
                       <div className="text-xs text-red-700">
-                        {campsite.restrictions.maxHeight && (
-                          <div>Max height: {campsite.restrictions.maxHeight}m</div>
+                        {clusterCampsite.restrictions.maxHeight && (
+                          <div>Max height: {clusterCampsite.restrictions.maxHeight}m</div>
                         )}
-                        {campsite.restrictions.maxWidth && (
-                          <div>Max width: {campsite.restrictions.maxWidth}m</div>
+                        {clusterCampsite.restrictions.maxWidth && (
+                          <div>Max width: {clusterCampsite.restrictions.maxWidth}m</div>
                         )}
-                        {campsite.restrictions.maxLength && (
-                          <div>Max length: {campsite.restrictions.maxLength}m</div>
+                        {clusterCampsite.restrictions.maxLength && (
+                          <div>Max length: {clusterCampsite.restrictions.maxLength}m</div>
                         )}
-                        {campsite.restrictions.maxWeight && (
-                          <div>Max weight: {campsite.restrictions.maxWeight}t</div>
+                        {clusterCampsite.restrictions.maxWeight && (
+                          <div>Max weight: {clusterCampsite.restrictions.maxWeight}t</div>
                         )}
                       </div>
                     </div>
                   )}
 
                   <div className="mt-2 pt-2 border-t border-gray-200 text-xs text-gray-500">
-                    Data from {campsite.source} • ID: {campsite.osmId || campsite.id}
+                    Data from {clusterCampsite.source} • ID: {clusterCampsite.osmId || clusterCampsite.id}
                   </div>
                 </div>
               )}

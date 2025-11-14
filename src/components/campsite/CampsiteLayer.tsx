@@ -3,7 +3,7 @@
 
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { useMap } from 'react-leaflet';
-import L from 'leaflet';
+import * as L from 'leaflet';
 import { campsiteService } from '../../services/CampsiteService';
 import type { CampsiteRequest, CampsiteType } from '../../services/CampsiteService';
 import type { UICampsite } from '../../adapters/CampsiteAdapter';

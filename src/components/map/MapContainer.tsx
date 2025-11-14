@@ -29,7 +29,7 @@ import 'leaflet/dist/leaflet.css';
 import '../../styles/animations.css';
 
 // Fix for default markers in React-Leaflet
-import L from 'leaflet';
+import * as L from 'leaflet';
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 import markerRetina from 'leaflet/dist/images/marker-icon-2x.png';

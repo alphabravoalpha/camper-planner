@@ -1,7 +1,8 @@
 // Campsite Filter Service
 // Phase 4.3: Advanced filtering and search logic for campsites
 
-import type { Campsite, CampsiteRequest, CampsiteResponse } from './CampsiteService';
+import type { Campsite, CampsiteRequest } from './CampsiteService';
+import type { UICampsite } from '../adapters/CampsiteAdapter';
 import type { CampsiteFilterState } from '../components/campsite/CampsiteFilter';
 import type { RouteGeometry } from '../utils/routeDistance';
 import { filterCampsitesByRoute, calculateRouteRelevance, haversineDistance } from '../utils/routeDistance';
@@ -12,7 +13,7 @@ export interface EnhancedCampsiteRequest extends CampsiteRequest {
   currentLocation?: [number, number]; // [lat, lng]
 }
 
-export interface FilteredCampsite extends Campsite {
+export interface FilteredCampsite extends UICampsite {
   routeDistance?: number;
   relevanceScore?: number;
   searchScore?: number;
@@ -24,7 +25,7 @@ export class CampsiteFilterService {
    * Apply comprehensive filtering to campsites
    */
   static filterCampsites(
-    campsites: Campsite[],
+    campsites: UICampsite[],
     filterState: CampsiteFilterState,
     routeGeometry?: RouteGeometry,
     currentLocation?: [number, number]
@@ -104,7 +105,7 @@ export class CampsiteFilterService {
       return activeAmenities.every(amenity => {
         // Map filter amenity names to campsite amenity names
         const campsiteAmenityKey = this.mapAmenityKey(amenity);
-        return campsite.amenities[campsiteAmenityKey] === true;
+        return (campsite.amenities as any)[campsiteAmenityKey] === true;
       });
     });
   }
@@ -161,7 +162,7 @@ export class CampsiteFilterService {
   /**
    * Check if campsite is currently open
    */
-  private static isOpenNow(campsite: Campsite): boolean {
+  private static isOpenNow(campsite: FilteredCampsite): boolean {
     if (!campsite.openingHours) return true; // Assume open if no hours specified
 
     // This is a simplified implementation
@@ -184,7 +185,7 @@ export class CampsiteFilterService {
   /**
    * Check if campsite is free
    */
-  private static isFree(campsite: Campsite): boolean {
+  private static isFree(campsite: FilteredCampsite): boolean {
     // Check various indicators that the campsite might be free
     const name = campsite.name?.toLowerCase() || '';
 
@@ -205,7 +206,7 @@ export class CampsiteFilterService {
   /**
    * Check if campsite accepts reservations
    */
-  private static acceptsReservations(campsite: Campsite): boolean {
+  private static acceptsReservations(campsite: FilteredCampsite): boolean {
     // Check if campsite has booking capabilities
     const website = campsite.website?.toLowerCase() || '';
     const phone = campsite.phone || '';
@@ -393,8 +394,8 @@ export class CampsiteFilterService {
       // Location suggestions
       if (campsite.address && campsite.address.toLowerCase().includes(queryLower)) {
         // Extract city/region from address
-        const addressParts = campsite.address.split(',').map(part => part.trim());
-        addressParts.forEach(part => {
+        const addressParts = campsite.address.split(',').map((part: string) => part.trim());
+        addressParts.forEach((part: string) => {
           if (part.toLowerCase().includes(queryLower)) {
             suggestions.add(part);
           }

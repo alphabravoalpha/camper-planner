@@ -1,7 +1,7 @@
 // Map Utilities
 // Helper functions for map operations and calculations
 
-import L from 'leaflet';
+import * as L from 'leaflet';
 import type { Waypoint } from '../types';
 
 export interface BoundingBox {

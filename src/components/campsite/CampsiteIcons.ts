@@ -1,7 +1,7 @@
 // Campsite Icons Configuration
 // Phase 4.2: Distinct icons for different campsite types based on OSM tags
 
-import L from 'leaflet';
+import * as L from 'leaflet';
 import type { CampsiteType } from '../../services/CampsiteService';
 import type { UICampsite } from '../../adapters/CampsiteAdapter';
 
