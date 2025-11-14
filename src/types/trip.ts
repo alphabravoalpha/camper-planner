@@ -42,6 +42,8 @@ export interface RouteData {
   optimized: boolean;
   totalDistance?: number; // meters
   estimatedTime?: number; // seconds
+  distance?: number;    // meters (alias for compatibility)
+  duration?: number;    // seconds (alias for compatibility)
 }
 
 export interface Waypoint {

@@ -3,7 +3,8 @@
 
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { FeatureFlags } from '../../config';
-import type { CampsiteType, Campsite } from '../../services/CampsiteService';
+import type { CampsiteType } from '../../services/CampsiteService';
+import type { UICampsite } from '../../adapters/CampsiteAdapter';
 import { useRouteStore, useVehicleStore } from '../../store';
 import { cn } from '../../utils/cn';
 
@@ -49,7 +50,7 @@ export interface CampsiteFilterProps {
   filterState: CampsiteFilterState;
   onFilterChange: (filterState: CampsiteFilterState) => void;
   onSearchChange?: (query: string) => void;
-  onCampsiteSelect?: (campsite: Campsite) => void;
+  onCampsiteSelect?: (campsite: UICampsite) => void;
   campsiteCount?: number;
   isLoading?: boolean;
 }

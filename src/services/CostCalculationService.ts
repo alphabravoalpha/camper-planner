@@ -436,19 +436,8 @@ export class CostCalculationService {
     return (distanceKm / averageSpeed) * 60; // minutes
   }
 
-  private static _estimateAccommodationCost(_waypoint: Waypoint): number {
-    // Rough estimates for European camping costs
-    // TODO: Add support for campsite and accommodation types in future version
-    // switch (waypoint.type) {
-    //   case 'campsite':
-    //     return 25; // EUR per night
-    //   case 'accommodation':
-    //     return 80; // EUR per night for hotels
-    //   default:
-    //     return 0;
-    // }
-    return 0; // Default for now until campsite/accommodation types are added
-  }
+  // Accommodation cost estimation removed - to be implemented in future version
+  // when campsite and accommodation types are added to waypoints
 }
 
 // Export singleton instance

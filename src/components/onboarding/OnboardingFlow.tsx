@@ -97,12 +97,16 @@ const VehicleSetupStep: React.FC<{
 
     const profile = profiles[type as keyof typeof profiles];
     if (profile) {
-      setProfile({
-        ...profile,
-        id: Date.now().toString(),
-        name: `My ${profile.type}`,
-        createdAt: new Date().toISOString(),
-      });
+      // Extract only VehicleProfile properties
+      const vehicleProfile = {
+        type: profile.type as 'motorhome' | 'caravan' | 'campervan',
+        height: profile.height,
+        width: profile.width,
+        weight: profile.weight,
+        length: profile.length,
+        fuelType: profile.fuelType as 'petrol' | 'diesel' | 'lpg' | 'electric' | undefined
+      };
+      setProfile(vehicleProfile);
     }
 
     onVehicleSet(true);

@@ -2,6 +2,7 @@
 // Phase 4.3: Calculate distances from campsites to routes for filtering
 
 import type { Campsite } from '../services/CampsiteService';
+import type { UICampsite } from '../adapters/CampsiteAdapter';
 
 export interface RouteGeometry {
   coordinates: [number, number][]; // [lng, lat] format
@@ -13,19 +14,28 @@ export interface DistanceResult {
   segmentIndex: number;
 }
 
+// Helper to get coordinates from either Campsite or UICampsite
+function getCoordinates(campsite: Campsite | UICampsite): { lat: number; lng: number } {
+  if ('location' in campsite && campsite.location) {
+    return { lat: campsite.location.lat, lng: campsite.location.lng };
+  }
+  return { lat: (campsite as Campsite).lat, lng: (campsite as Campsite).lng };
+}
+
 /**
  * Calculate the shortest distance from a point to a route
  */
 export function calculateDistanceToRoute(
-  campsite: Campsite,
+  campsite: Campsite | UICampsite,
   routeGeometry: RouteGeometry
 ): DistanceResult | null {
   if (!routeGeometry?.coordinates || routeGeometry.coordinates.length < 2) {
     return null;
   }
 
-  const campsiteLat = campsite.lat;
-  const campsiteLng = campsite.lng;
+  const coords = getCoordinates(campsite);
+  const campsiteLat = coords.lat;
+  const campsiteLng = coords.lng;
 
   let minDistance = Infinity;
   let nearestPoint: [number, number] = [campsiteLat, campsiteLng];
@@ -131,11 +141,11 @@ function toRadians(degrees: number): number {
 /**
  * Filter campsites by distance from route
  */
-export function filterCampsitesByRoute(
-  campsites: Campsite[],
+export function filterCampsitesByRoute<T extends Campsite | UICampsite>(
+  campsites: T[],
   routeGeometry: RouteGeometry,
   maxDistance: number // kilometers
-): Array<Campsite & { routeDistance?: number }> {
+): Array<T & { routeDistance?: number }> {
   return campsites
     .map(campsite => {
       const distanceResult = calculateDistanceToRoute(campsite, routeGeometry);
@@ -220,7 +230,7 @@ export function isPointNearRoute(
  * Calculate route relevance score for campsite sorting
  */
 export function calculateRouteRelevance(
-  campsite: Campsite,
+  campsite: Campsite | UICampsite,
   routeGeometry: RouteGeometry,
   hasRoute: boolean = true
 ): number {

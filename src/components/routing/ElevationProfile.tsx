@@ -26,7 +26,9 @@ const ElevationProfile: React.FC<ElevationProfileProps> = ({ route, className })
     let cumulativeDistance = 0;
 
     coordinates.forEach((coord, index) => {
-      const [lng, lat, elevation] = coord;
+      const lng = coord[0];
+      const lat = coord[1];
+      const elevation = (coord as number[])[2]; // Optional elevation data
 
       if (elevation !== undefined) {
         // Calculate distance from previous point

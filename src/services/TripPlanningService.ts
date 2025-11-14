@@ -616,9 +616,13 @@ export class TripPlanningService {
     if (countries.some(c => ['Norway', 'Sweden', 'Finland'].includes(c))) {
       if (season === 'winter') {
         factors = {
-          ...factors,
+          season: 'winter' as const,
           temperature: { min: -15, max: 0 },
-          drivingConditions: 'challenging',
+          precipitation: 'high' as const,
+          touristDensity: 'low' as const,
+          campsiteAvailability: 'poor' as const,
+          drivingConditions: 'challenging' as const,
+          recommendations: factors.recommendations,
           warnings: [...factors.warnings, 'Arctic conditions possible', 'Winter tires mandatory']
         };
       }

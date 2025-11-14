@@ -99,10 +99,10 @@ export class RouteOptimizationService {
     const distanceMatrix = await this.buildDistanceMatrix(waypoints, criteria.vehicleProfile);
 
     // Apply TSP solver based on criteria
-    const optimizedOrder = await this.solveTSP(distanceMatrix, criteria, waypoints);
+    const optimizationResult = await this.solveTSP(distanceMatrix, criteria, waypoints);
 
     // Reorder waypoints based on optimization
-    const optimizedWaypoints = this.reorderWaypoints(waypoints, optimizedOrder, criteria.lockedWaypoints);
+    const optimizedWaypoints = this.reorderWaypoints(waypoints, optimizationResult.order, criteria.lockedWaypoints);
 
     // Calculate optimized route metrics
     const optimizedMetrics = await this.calculateRouteMetrics(optimizedWaypoints, criteria.vehicleProfile);
@@ -127,9 +127,9 @@ export class RouteOptimizationService {
       improvements,
       optimizationMetadata: {
         algorithm: criteria.objective === 'shortest' ? 'Distance-TSP' : criteria.objective === 'fastest' ? 'Time-TSP' : 'Balanced-TSP',
-        iterations: optimizedOrder.iterations,
+        iterations: optimizationResult.iterations,
         executionTime: Date.now() - startTime,
-        convergenceReached: optimizedOrder.converged
+        convergenceReached: optimizationResult.converged
       }
     };
   }
@@ -238,9 +238,9 @@ export class RouteOptimizationService {
 
           if (routeResponse.routes && routeResponse.routes.length > 0) {
             const route = routeResponse.routes[0];
-            distances[i][j] = route.distance / 1000; // Convert to km
-            durations[i][j] = route.duration / 60; // Convert to minutes
-            costs[i][j] = this.estimateRouteCost(route.distance, route.duration, vehicleProfile);
+            distances[i][j] = route.summary.distance / 1000; // Convert to km
+            durations[i][j] = route.summary.duration / 60; // Convert to minutes
+            costs[i][j] = this.estimateRouteCost(route.summary.distance, route.summary.duration, vehicleProfile);
           } else {
             // Fallback to straight-line distance
             distances[i][j] = this.calculateHaversineDistance(waypoints[i], waypoints[j]);
@@ -466,9 +466,9 @@ export class RouteOptimizationService {
       if (routeResponse.routes && routeResponse.routes.length > 0) {
         const route = routeResponse.routes[0];
         return {
-          distance: route.distance / 1000, // Convert to km
-          duration: route.duration / 60, // Convert to minutes
-          cost: this.estimateRouteCost(route.distance, route.duration, vehicleProfile)
+          distance: route.summary.distance / 1000, // Convert to km
+          duration: route.summary.duration / 60, // Convert to minutes
+          cost: this.estimateRouteCost(route.summary.distance, route.summary.duration, vehicleProfile)
         };
       }
     } catch (error) {

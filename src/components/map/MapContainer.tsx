@@ -127,11 +127,11 @@ const MapContainer: React.FC = () => {
 
   // Campsite state
   const [selectedCampsite, setSelectedCampsite] = useState<UICampsite | null>(null);
-  const [showCampsiteControls, setShowCampsiteControls] = useState(FeatureFlags.CAMPSITE_DISPLAY);
+  const [showCampsiteControls, setShowCampsiteControls] = useState<boolean>(FeatureFlags.CAMPSITE_DISPLAY);
   const [showCampsiteFilter, setShowCampsiteFilter] = useState(false);
   const [showCampsiteDetails, setShowCampsiteDetails] = useState(false);
   const [showCampsiteRecommendations, setShowCampsiteRecommendations] = useState(false);
-  const [campsitesVisible, setCampsitesVisible] = useState(FeatureFlags.CAMPSITE_DISPLAY);
+  const [campsitesVisible, setCampsitesVisible] = useState<boolean>(FeatureFlags.CAMPSITE_DISPLAY);
   const [campsiteCount, setCampsiteCount] = useState(0);
   const [campsiteFilterState, setCampsiteFilterState] = useState<CampsiteFilterState>(DEFAULT_FILTER_STATE);
   const [allCampsites, setAllCampsites] = useState<UICampsite[]>([]);

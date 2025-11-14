@@ -21,6 +21,9 @@ export interface RouteOptions {
   instructions?: boolean;
   elevation?: boolean;
   alternative_routes?: boolean;
+  alternatives?: boolean; // Alias for alternative_routes
+  steps?: boolean;
+  geometries?: string;
 }
 
 export interface RouteResponse {
@@ -536,7 +539,7 @@ export class RoutingService extends DataService {
   private initializeFallbackService(): void {
     // Note: For simplicity, we'll handle OSRM within this service
     // In a more complex setup, we could create a separate OSRMService
-    this.fallbackService = null; // Handled internally
+    // No separate fallback service needed - handled inline
   }
 
   /**

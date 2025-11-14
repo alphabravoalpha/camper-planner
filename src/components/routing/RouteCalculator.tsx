@@ -82,11 +82,12 @@ const RouteCalculator: React.FC<RouteCalculatorProps> = ({
     try {
       // Build route request
       const routeRequest: RouteRequest = {
-        waypoints: waypoints.map(wp => ({
+        waypoints: waypoints.map((wp, index) => ({
           lat: wp.lat,
           lng: wp.lng,
           name: wp.name || `Waypoint ${wp.id}`,
-          id: wp.id
+          id: wp.id,
+          type: index === 0 ? 'start' as const : index === waypoints.length - 1 ? 'end' as const : 'waypoint' as const
         })),
         vehicleProfile: profile || undefined,
         options: {

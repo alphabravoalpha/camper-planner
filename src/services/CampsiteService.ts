@@ -860,7 +860,7 @@ out center meta;
    */
   private initializeFallbackService(): void {
     // Fallback handled internally to avoid circular dependencies
-    this.fallbackService = null;
+    // No separate fallback service needed - handled inline
   }
 
   /**
@@ -928,9 +928,9 @@ out center meta;
   }
 
   /**
-   * Get cache statistics
+   * Get cache metadata (use base class getCacheStats for full cache statistics)
    */
-  async getCacheStats(): Promise<{ size: number; lastUpdated: number }> {
+  async getCacheMetadata(): Promise<{ size: number; lastUpdated: number }> {
     // This would require additional IndexedDB queries
     // Simplified implementation for now
     return {
