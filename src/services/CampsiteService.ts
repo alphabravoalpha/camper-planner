@@ -768,7 +768,7 @@ out center meta;
    */
   private async getCachedCampsites(request: CampsiteRequest, allowStale = false): Promise<CampsiteResponse | null> {
     try {
-      const cacheKey = this.generateCacheKey(request);
+      const cacheKey = this.generateCampsiteCacheKey(request);
       const metadata = await this.cacheManager.getCacheMetadata(cacheKey);
 
       if (metadata) {
@@ -808,7 +808,7 @@ out center meta;
    */
   private async setCacheMetadata(request: CampsiteRequest): Promise<void> {
     try {
-      const cacheKey = this.generateCacheKey(request);
+      const cacheKey = this.generateCampsiteCacheKey(request);
       await this.cacheManager.setCacheMetadata(cacheKey, {
         timestamp: Date.now(),
         service: 'overpass',
@@ -820,9 +820,24 @@ out center meta;
   }
 
   /**
-   * Generate cache key for request
+   * Override base class generateCacheKey to handle RequestContext
+   * (CampsiteService uses IndexedDB instead of base class cache)
    */
-  private generateCacheKey(request: CampsiteRequest): string {
+  protected override generateCacheKey(context: any): string {
+    // CampsiteService has cacheEnabled: false, so this shouldn't be called,
+    // but we need to implement it to avoid errors in base class
+    if (typeof context === 'object' && context.endpoint !== undefined) {
+      // This is a RequestContext from base class
+      return super.generateCacheKey(context);
+    }
+    // Fallback for any other case
+    return 'campsite_' + JSON.stringify(context);
+  }
+
+  /**
+   * Generate cache key for campsite request (IndexedDB)
+   */
+  private generateCampsiteCacheKey(request: CampsiteRequest): string {
     const { bounds, types = [], amenities = [] } = request;
     return `campsites_${bounds.south}_${bounds.west}_${bounds.north}_${bounds.east}_${types.join(',')}_${amenities.join(',')}`;
   }

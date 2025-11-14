@@ -5,11 +5,11 @@ import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { Marker, Popup } from 'react-leaflet';
 import { useMap } from 'react-leaflet';
 import L from 'leaflet';
-import { campsiteService } from '../../services/CampsiteService';
+import { campsiteService, CampsiteRequest, CampsiteType } from '../../services/CampsiteService';
+import { CampsiteAdapter, UICampsite } from '../../adapters/CampsiteAdapter';
 import { CampsiteFilterService } from '../../services/CampsiteFilterService';
 import { useRouteStore, useVehicleStore, useUIStore } from '../../store';
 import { FeatureFlags } from '../../config';
-import { Campsite, CampsiteRequest, CampsiteType } from '../../services/CampsiteService';
 import { CampsiteFilterState } from './CampsiteFilter';
 import { createCampsiteIcon } from './CampsiteIcons';
 
@@ -19,21 +19,21 @@ export interface SimpleCampsiteLayerProps {
   vehicleCompatibleOnly: boolean;
   searchQuery?: string;
   isVisible: boolean;
-  onCampsiteClick?: (campsite: Campsite) => void;
-  onCampsitesLoaded?: (count: number, campsites?: Campsite[]) => void;
+  onCampsiteClick?: (campsite: UICampsite) => void;
+  onCampsitesLoaded?: (count: number, campsites?: UICampsite[]) => void;
   isMobile?: boolean;
   filterState?: CampsiteFilterState;
 }
 
-interface ClusteredCampsite extends Campsite {
+interface ClusteredCampsite extends UICampsite {
   clusterId?: string;
   isCluster?: boolean;
   clusterCount?: number;
-  clusterCampsites?: Campsite[];
+  clusterCampsites?: UICampsite[];
 }
 
 // Simple clustering algorithm
-function clusterCampsites(campsites: Campsite[], zoom: number, isMobile: boolean = false): ClusteredCampsite[] {
+function clusterCampsites(campsites: UICampsite[], zoom: number, isMobile: boolean = false): ClusteredCampsite[] {
   const maxDistance = isMobile ?
     (zoom > 12 ? 30 : zoom > 10 ? 50 : 80) :
     (zoom > 12 ? 40 : zoom > 10 ? 60 : 100); // pixels
@@ -44,7 +44,7 @@ function clusterCampsites(campsites: Campsite[], zoom: number, isMobile: boolean
   for (const campsite of campsites) {
     if (processed.has(campsite.id)) continue;
 
-    const cluster: Campsite[] = [campsite];
+    const cluster: UICampsite[] = [campsite];
     processed.add(campsite.id);
 
     // Find nearby campsites
@@ -121,7 +121,7 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
   const { profile } = useVehicleStore();
   const { addNotification } = useUIStore();
 
-  const [campsites, setCampsites] = useState<Campsite[]>([]);
+  const [campsites, setCampsites] = useState<UICampsite[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedCampsiteId, setSelectedCampsiteId] = useState<string | null>(null);
@@ -200,18 +200,17 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
           west: bounds.getWest()
         },
         types: visibleTypes,
-        maxResults,
-        includeDetails: true,
-        vehicleProfile: profile || undefined
+        maxResults
       };
 
-      const response = await campsiteService.searchCampsites(request);
+      const serviceResponse = await campsiteService.searchCampsites(request);
+      const uiResponse = CampsiteAdapter.toUIResponse(serviceResponse, profile);
 
-      if (response.status === 'success') {
-        setCampsites(response.campsites);
-        onCampsitesLoaded?.(response.campsites.length, response.campsites);
+      if (uiResponse.status === 'success') {
+        setCampsites(uiResponse.campsites);
+        onCampsitesLoaded?.(uiResponse.campsites.length, uiResponse.campsites);
       } else {
-        throw new Error(response.error || 'Failed to load campsites');
+        throw new Error(uiResponse.error || 'Failed to load campsites');
       }
     } catch (err) {
       console.error('Error loading campsites:', err);
@@ -256,18 +255,17 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
           west: minLng - buffer
         },
         types: visibleTypes,
-        maxResults,
-        includeDetails: true,
-        vehicleProfile: profile || undefined
+        maxResults
       };
 
-      const response = await campsiteService.searchCampsites(request);
+      const serviceResponse = await campsiteService.searchCampsites(request);
+      const uiResponse = CampsiteAdapter.toUIResponse(serviceResponse, profile);
 
-      if (response.status === 'success') {
-        setCampsites(response.campsites);
-        onCampsitesLoaded?.(response.campsites.length, response.campsites);
+      if (uiResponse.status === 'success') {
+        setCampsites(uiResponse.campsites);
+        onCampsitesLoaded?.(uiResponse.campsites.length, uiResponse.campsites);
       } else {
-        throw new Error(response.error || 'Failed to load campsites');
+        throw new Error(uiResponse.error || 'Failed to load campsites');
       }
     } catch (err) {
       console.error('Error loading route campsites:', err);

@@ -2,7 +2,8 @@
 // Phase 4.2: Distinct icons for different campsite types based on OSM tags
 
 import L from 'leaflet';
-import { CampsiteType, Campsite } from '../../services/CampsiteService';
+import { CampsiteType } from '../../services/CampsiteService';
+import { UICampsite } from '../../adapters/CampsiteAdapter';
 
 export interface CampsiteIconConfig {
   icon: string;
@@ -81,7 +82,7 @@ export const MOBILE_ICON_CONFIGS = {
 };
 
 export interface CampsiteMarkerOptions {
-  campsite: Campsite;
+  campsite: UICampsite;
   vehicleCompatible?: boolean;
   isSelected?: boolean;
   isMobile?: boolean;
