@@ -1,8 +1,7 @@
 // Toll Calculation Service Framework
 // Phase 5.2: Framework for future toll road cost integration
 
-import { Waypoint } from '../store';
-import { VehicleProfile } from '../store';
+import type { Waypoint, VehicleProfile } from '../types';
 
 export interface TollRoute {
   id: string;

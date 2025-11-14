@@ -1,8 +1,7 @@
 // Trip Planning Service
 // Phase 5.4: Intelligent trip planning with duration estimation and feasibility analysis
 
-import { Waypoint } from '../store';
-import { VehicleProfile } from '../store';
+import type { Waypoint, VehicleProfile } from '../types';
 
 export interface DrivingLimits {
   maxDailyDistance: number; // km

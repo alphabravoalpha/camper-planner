@@ -44,7 +44,7 @@ export const calculateWaypointBounds = (waypoints: Waypoint[]): BoundingBox | nu
  * Zoom map to fit all waypoints with appropriate padding
  */
 export const zoomToFitWaypoints = (
-  map: L.Map,
+  map: any,
   waypoints: Waypoint[],
   options: FitBoundsOptions = {}
 ): boolean => {
@@ -56,7 +56,7 @@ export const zoomToFitWaypoints = (
   const {
     padding = [50, 50],
     maxZoom = 15,
-    minZoom = 3,
+    minZoom: _minZoom = 3,
     animate = true,
     duration = 1000
   } = options;
@@ -71,7 +71,7 @@ export const zoomToFitWaypoints = (
       });
     } else {
       // Multiple waypoints - fit bounds
-      const leafletBounds = L.latLngBounds(
+      const leafletBounds = (L as any).latLngBounds(
         [bounds.south, bounds.west],
         [bounds.north, bounds.east]
       );

@@ -171,7 +171,7 @@ export const sequences = {
   }),
 
   // Typewriter effect for text
-  typewriter: (text: string, speed: number = 50, reducedMotion: boolean = false) => {
+  typewriter: (text: string, _speed: number = 50, reducedMotion: boolean = false) => {
     if (reducedMotion) return text;
 
     // This would be implemented with a custom hook in React

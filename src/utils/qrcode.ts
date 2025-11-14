@@ -1,10 +1,11 @@
 // QR Code Generation Utility
 // Phase 6.2: Generate QR codes for trip sharing without external dependencies
 
+import * as React from 'react';
+
 // QR Code generation using a simple algorithm
 // This is a lightweight implementation for basic QR codes
 export class QRCodeGenerator {
-  private static readonly ERROR_CORRECTION_LEVEL = 'M'; // Medium error correction
   private static readonly QUIET_ZONE = 4;
 
   // Generate QR code as SVG string
@@ -162,7 +163,7 @@ export class QRCodeGenerator {
     };
   }
 
-  private static addFinderPattern(svg: string, x: number, y: number, moduleSize: number): void {
+  private static addFinderPattern(_svg: string, _x: number, _y: number, _moduleSize: number): void {
     // This is a simplified finder pattern
     // In a real QR code, these would be proper 7x7 patterns
     // For now, we'll just add a recognizable square pattern
@@ -218,7 +219,7 @@ export function useQRCode(text: string, size: number = 256) {
       return;
     }
 
-    setQRData(prev => ({ ...prev, loading: true, error: null }));
+    setQRData((prev: typeof qrData) => ({ ...prev, loading: true, error: null }));
 
     // Generate QR code asynchronously
     setTimeout(() => {
@@ -244,11 +245,6 @@ export function useQRCode(text: string, size: number = 256) {
   }, [text, size]);
 
   return qrData;
-}
-
-// For environments where React is not available
-declare global {
-  var React: any;
 }
 
 // Export a simple component-less version

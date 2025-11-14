@@ -55,6 +55,7 @@ export const tripDataUtils = {
       modified: Date.now()
     },
     vehicle: {
+      type: 'motorhome',
       height: 0,
       width: 0,
       weight: 0,

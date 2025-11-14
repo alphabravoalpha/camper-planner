@@ -97,7 +97,7 @@ export interface CampsiteMarkerOptions {
   size?: 'small' | 'medium' | 'large';
 }
 
-export function createCampsiteIcon(options: CampsiteMarkerOptions): ReturnType<typeof L.divIcon> {
+export function createCampsiteIcon(options: CampsiteMarkerOptions): any {
   const { campsite, vehicleCompatible = true, isSelected = false, isMobile = false, size = 'medium' } = options;
 
   // Get base config for campsite type
@@ -157,7 +157,7 @@ export function createCampsiteIcon(options: CampsiteMarkerOptions): ReturnType<t
     </div>
   `;
 
-  return L.divIcon({
+  return (L as any).divIcon({
     className: 'campsite-marker-icon',
     html: iconHtml,
     iconSize: [iconSize, iconSize],
@@ -167,11 +167,11 @@ export function createCampsiteIcon(options: CampsiteMarkerOptions): ReturnType<t
 }
 
 // Cluster icon creation for marker clustering
-export function createClusterIcon(cluster: any): ReturnType<typeof L.divIcon> {
+export function createClusterIcon(cluster: any): any {
   const childCount = cluster.getChildCount();
   const size = childCount < 10 ? 30 : childCount < 100 ? 40 : 50;
 
-  return L.divIcon({
+  return (L as any).divIcon({
     html: `
       <div style="
         width: ${size}px;

@@ -56,7 +56,7 @@ const CampsiteControls: React.FC<CampsiteControlsProps> = ({
   onMaxResultsChange,
   vehicleCompatibleOnly,
   onVehicleCompatibleChange,
-  searchQuery = '',
+  searchQuery: _searchQuery = '',
   onSearchChange,
   onCampsiteSelect,
   isVisible = true,

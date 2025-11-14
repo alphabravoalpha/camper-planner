@@ -4,31 +4,13 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { useMap } from 'react-leaflet';
 import L from 'leaflet';
-import 'leaflet.markercluster';
 import { campsiteService } from '../../services/CampsiteService';
-import type { Campsite, CampsiteRequest, CampsiteType } from '../../services/CampsiteService';
-import { useRouteStore, useVehicleStore, useUIStore } from '../../store';
+import type { CampsiteRequest, CampsiteType } from '../../services/CampsiteService';
+import type { UICampsite } from '../../adapters/CampsiteAdapter';
+import { campsiteAdapter } from '../../adapters/CampsiteAdapter';
+import { useRouteStore, useVehicleStore } from '../../store';
 import { FeatureFlags } from '../../config';
 import { createCampsiteIcon, createClusterIcon } from './CampsiteIcons';
-
-// Extend leaflet types for marker clustering
-declare module 'leaflet' {
-  namespace MarkerClusterGroup {
-    interface MarkerClusterGroupOptions {
-      chunkedLoading?: boolean;
-      chunkProgress?: (processed: number, total: number, elapsed: number) => void;
-      maxClusterRadius?: number;
-      disableClusteringAtZoom?: number;
-      spiderfyOnMaxZoom?: boolean;
-      showCoverageOnHover?: boolean;
-      zoomToBoundsOnClick?: boolean;
-      removeOutsideVisibleBounds?: boolean;
-      iconCreateFunction?: (cluster: any) => L.DivIcon;
-    }
-  }
-
-  function markerClusterGroup(options?: MarkerClusterGroup.MarkerClusterGroupOptions): any;
-}
 
 export interface CampsiteLayerProps {
   visibleTypes: CampsiteType[];
@@ -36,7 +18,7 @@ export interface CampsiteLayerProps {
   vehicleCompatibleOnly: boolean;
   searchQuery?: string;
   isVisible: boolean;
-  onCampsiteClick?: (campsite: Campsite) => void;
+  onCampsiteClick?: (campsite: UICampsite) => void;
   onCampsitesLoaded?: (count: number) => void;
   isMobile?: boolean;
 }
@@ -54,17 +36,20 @@ const CampsiteLayer: React.FC<CampsiteLayerProps> = ({
   const map = useMap();
   const { calculatedRoute } = useRouteStore();
   const { profile } = useVehicleStore();
-  const { addNotification } = useUIStore();
 
-  const [campsites, setCampsites] = useState<Campsite[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [selectedCampsiteId, setSelectedCampsiteId] = useState<string | null>(null);
+  const [campsites, setCampsites] = useState<UICampsite[]>([]);
+  const [selectedCampsiteId, setSelectedCampsiteId] = useState<number | null>(null);
   const [clusterGroup, setClusterGroup] = useState<any>(null);
 
   // Initialize marker cluster group
   useEffect(() => {
     if (!map || !FeatureFlags.CAMPSITE_DISPLAY) return;
+
+    // Check if markerClusterGroup is available (requires leaflet.markercluster plugin)
+    if (typeof (L as any).markerClusterGroup !== 'function') {
+      console.warn('leaflet.markercluster plugin not loaded, clustering disabled');
+      return;
+    }
 
     const cluster = (L as any).markerClusterGroup({
       chunkedLoading: true,
@@ -138,9 +123,6 @@ const CampsiteLayer: React.FC<CampsiteLayerProps> = ({
   const loadCampsites = useCallback(async () => {
     if (!map || !FeatureFlags.CAMPSITE_DISPLAY || !isVisible) return;
 
-    setIsLoading(true);
-    setError(null);
-
     try {
       const bounds = map.getBounds();
 
@@ -153,23 +135,23 @@ const CampsiteLayer: React.FC<CampsiteLayerProps> = ({
         },
         types: visibleTypes,
         maxResults,
-        includeDetails: true,
-        vehicleProfile: profile || undefined
+        vehicleFilter: profile ? {
+          height: profile.height,
+          length: profile.length,
+          weight: profile.weight,
+          motorhome: profile.type === 'motorhome',
+          caravan: profile.type === 'caravan'
+        } : undefined
       };
 
       const response = await campsiteService.searchCampsites(request);
 
-      if (response.status === 'success') {
-        setCampsites(response.campsites);
-      } else {
-        throw new Error(response.error || 'Failed to load campsites');
-      }
+      // Convert to UI format using adapter
+      const uiResponse = campsiteAdapter.toUIResponse(response, profile);
+      setCampsites(uiResponse.campsites);
     } catch (err) {
       console.error('Error loading campsites:', err);
-      setError(err instanceof Error ? err.message : 'Failed to load campsites');
       setCampsites([]);
-    } finally {
-      setIsLoading(false);
     }
   }, [map, visibleTypes, maxResults, profile, isVisible]);
 
@@ -183,7 +165,7 @@ const CampsiteLayer: React.FC<CampsiteLayerProps> = ({
     let minLat = Infinity, maxLat = -Infinity;
     let minLng = Infinity, maxLng = -Infinity;
 
-    routeGeometry.coordinates.forEach(coord => {
+    routeGeometry.coordinates.forEach((coord: [number, number]) => {
       const [lng, lat] = coord;
       minLat = Math.min(minLat, lat);
       maxLat = Math.max(maxLat, lat);
@@ -193,9 +175,6 @@ const CampsiteLayer: React.FC<CampsiteLayerProps> = ({
 
     // Add buffer around route (approximately 10km)
     const buffer = 0.1;
-
-    setIsLoading(true);
-    setError(null);
 
     try {
       const request: CampsiteRequest = {
@@ -207,23 +186,23 @@ const CampsiteLayer: React.FC<CampsiteLayerProps> = ({
         },
         types: visibleTypes,
         maxResults,
-        includeDetails: true,
-        vehicleProfile: profile || undefined
+        vehicleFilter: profile ? {
+          height: profile.height,
+          length: profile.length,
+          weight: profile.weight,
+          motorhome: profile.type === 'motorhome',
+          caravan: profile.type === 'caravan'
+        } : undefined
       };
 
       const response = await campsiteService.searchCampsites(request);
 
-      if (response.status === 'success') {
-        setCampsites(response.campsites);
-      } else {
-        throw new Error(response.error || 'Failed to load campsites');
-      }
+      // Convert to UI format using adapter
+      const uiResponse = campsiteAdapter.toUIResponse(response, profile);
+      setCampsites(uiResponse.campsites);
     } catch (err) {
       console.error('Error loading route campsites:', err);
-      setError(err instanceof Error ? err.message : 'Failed to load campsites');
       setCampsites([]);
-    } finally {
-      setIsLoading(false);
     }
   }, [calculatedRoute, visibleTypes, maxResults, profile, isVisible]);
 
@@ -262,9 +241,9 @@ const CampsiteLayer: React.FC<CampsiteLayerProps> = ({
 
     // Add filtered campsite markers
     filteredCampsites.forEach(campsite => {
-      const isSelected = selectedCampsiteId === campsite.id;
+      const isSelected = selectedCampsiteId === campsite.osmId;
 
-      const marker = L.marker(
+      const marker = (L as any).marker(
         [campsite.location.lat, campsite.location.lng],
         {
           icon: createCampsiteIcon({
@@ -278,7 +257,7 @@ const CampsiteLayer: React.FC<CampsiteLayerProps> = ({
       );
 
       // Create enhanced popup content
-      const popupContent = createCampsitePopup(campsite, profile);
+      const popupContent = createCampsitePopup(campsite);
       marker.bindPopup(popupContent, {
         maxWidth: isMobile ? 250 : 300,
         className: 'campsite-popup'
@@ -286,7 +265,7 @@ const CampsiteLayer: React.FC<CampsiteLayerProps> = ({
 
       // Handle marker click
       marker.on('click', () => {
-        setSelectedCampsiteId(campsite.id);
+        setSelectedCampsiteId(campsite.osmId || null);
         onCampsiteClick?.(campsite);
       });
 
@@ -295,14 +274,14 @@ const CampsiteLayer: React.FC<CampsiteLayerProps> = ({
 
     // Notify parent of loaded count
     onCampsitesLoaded?.(filteredCampsites.length);
-  }, [filteredCampsites, clusterGroup, selectedCampsiteId, onCampsiteClick, profile, isMobile]);
+  }, [filteredCampsites, clusterGroup, selectedCampsiteId, onCampsiteClick, isMobile, onCampsitesLoaded]);
 
   // Don't render anything (this is a data layer)
   return null;
 };
 
 // Enhanced popup content creation
-function createCampsitePopup(campsite: Campsite, vehicleProfile?: any): string {
+function createCampsitePopup(campsite: UICampsite): string {
   const amenityIcons: Record<string, string> = {
     electricity: '⚡',
     wifi: '📶',
@@ -331,7 +310,6 @@ function createCampsitePopup(campsite: Campsite, vehicleProfile?: any): string {
       <div class="text-xs font-medium text-red-800 mb-1">⚠️ Vehicle Restrictions:</div>
       <div class="text-xs text-red-700">
         ${campsite.restrictions.maxHeight ? `Max height: ${campsite.restrictions.maxHeight}m<br>` : ''}
-        ${campsite.restrictions.maxWidth ? `Max width: ${campsite.restrictions.maxWidth}m<br>` : ''}
         ${campsite.restrictions.maxLength ? `Max length: ${campsite.restrictions.maxLength}m<br>` : ''}
         ${campsite.restrictions.maxWeight ? `Max weight: ${campsite.restrictions.maxWeight}t` : ''}
       </div>

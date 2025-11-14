@@ -58,18 +58,16 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
   onClose,
   onAddAsWaypoint,
   onExportData,
-  className,
-  isExpanded = false
+  className
 }) => {
   const [activeTab, setActiveTab] = useState<'overview' | 'amenities' | 'contact' | 'booking'>('overview');
-  const [showFullDescription, setShowFullDescription] = useState(false);
   const { addWaypoint, waypoints } = useRouteStore();
   const { profile } = useVehicleStore();
   const { addNotification } = useUIStore();
 
   // Check if campsite is already a waypoint
   const isWaypoint = waypoints.some(wp =>
-    wp.lat === campsite.lat && wp.lng === campsite.lng
+    wp.lat === campsite.location.lat && wp.lng === campsite.location.lng
   );
 
   // Handle adding campsite as waypoint
@@ -84,10 +82,10 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
 
     const waypoint = {
       id: `campsite_${campsite.id}`,
-      lat: campsite.lat,
-      lng: campsite.lng,
+      lat: campsite.location.lat,
+      lng: campsite.location.lng,
       name: campsite.name || `${campsite.type} #${campsite.id}`,
-      type: 'campsite' as const
+      type: 'waypoint' as const
     };
 
     addWaypoint(waypoint);
@@ -106,12 +104,12 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
         id: campsite.id,
         name: campsite.name,
         type: campsite.type,
-        location: { lat: campsite.lat, lng: campsite.lng },
+        location: { lat: campsite.location.lat, lng: campsite.location.lng },
         address: campsite.address,
-        phone: campsite.contact?.phone,
-        website: campsite.contact?.website,
-        email: campsite.contact?.email,
-        openingHours: campsite.opening_hours,
+        phone: campsite.phone,
+        website: campsite.website,
+        email: campsite.email,
+        openingHours: campsite.openingHours,
         amenities: campsite.amenities,
         restrictions: campsite.restrictions,
         vehicleCompatible: campsite.access?.motorhome || false,
@@ -302,21 +300,21 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 01.553-.894L9 2l6 3 6-3v15l-6 3-6-3z" />
                   </svg>
                   <span>
-                    {campsite.lat.toFixed(5)}, {campsite.lng.toFixed(5)}
+                    {campsite.location.lat.toFixed(5)}, {campsite.location.lng.toFixed(5)}
                   </span>
                 </div>
               </div>
             </div>
 
             {/* Opening Hours */}
-            {campsite.opening_hours && (
+            {campsite.openingHours && (
               <div>
                 <h3 className="text-sm font-medium text-gray-900 mb-2">Opening Hours</h3>
                 <div className="flex items-center space-x-2 text-sm text-gray-700">
                   <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  <span>{campsite.opening_hours}</span>
+                  <span>{campsite.openingHours}</span>
                 </div>
               </div>
             )}
@@ -425,28 +423,28 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
         {/* Contact Tab */}
         {activeTab === 'contact' && (
           <div className="space-y-4">
-            {campsite.contact?.phone || campsite.contact?.website || campsite.contact?.email ? (
+            {campsite.phone || campsite.website || campsite.email ? (
               <div className="space-y-3">
-                {campsite.contact?.phone && (
+                {campsite.phone && (
                   <div>
                     <h3 className="text-sm font-medium text-gray-900 mb-2">Phone</h3>
                     <a
-                      href={formatPhoneLink(campsite.contact.phone)}
+                      href={formatPhoneLink(campsite.phone)}
                       className="flex items-center space-x-2 text-blue-600 hover:text-blue-800 text-sm"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                       </svg>
-                      <span>{campsite.contact.phone}</span>
+                      <span>{campsite.phone}</span>
                     </a>
                   </div>
                 )}
 
-                {campsite.contact?.website && (
+                {campsite.website && (
                   <div>
                     <h3 className="text-sm font-medium text-gray-900 mb-2">Website</h3>
                     <a
-                      href={campsite.contact.website}
+                      href={campsite.website}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center space-x-2 text-blue-600 hover:text-blue-800 text-sm"
@@ -454,7 +452,7 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                       </svg>
-                      <span className="truncate">{campsite.contact.website}</span>
+                      <span className="truncate">{campsite.website}</span>
                     </a>
                   </div>
                 )}
@@ -475,7 +473,7 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
                 {/* Directions button */}
                 <div className="pt-3 border-t border-gray-200">
                   <a
-                    href={`https://www.google.com/maps/dir/?api=1&destination=${campsite.lat},${campsite.lng}`}
+                    href={`https://www.google.com/maps/dir/?api=1&destination=${campsite.location.lat},${campsite.location.lng}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center justify-center space-x-2 w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
@@ -505,10 +503,10 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
               <h3 className="text-sm font-medium text-gray-900 mb-3">Booking & Reservations</h3>
 
               {/* Direct booking link if website available */}
-              {campsite.contact?.website && (
+              {campsite.website && (
                 <div className="mb-4">
                   <a
-                    href={campsite.contact.website}
+                    href={campsite.website}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center justify-center space-x-2 w-full px-4 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium"

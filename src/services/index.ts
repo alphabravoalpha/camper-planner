@@ -66,7 +66,9 @@ export abstract class DataService {
     // Clean up old entries if cache is full
     if (this.cache.size >= this.cacheOptions.maxSize) {
       const oldestKey = this.cache.keys().next().value;
-      this.cache.delete(oldestKey);
+      if (oldestKey !== undefined) {
+        this.cache.delete(oldestKey);
+      }
     }
 
     this.cache.set(key, {
@@ -79,12 +81,12 @@ export abstract class DataService {
   abstract get<T>(params: any): Promise<T>;
 
   // V2: Enhanced methods (will be implemented later)
-  protected async getWithCache<T>(params: any): Promise<T> {
+  protected async getWithCache<T>(_params: any): Promise<T> {
     // Implementation for V2
     throw new Error('getWithCache not implemented - V2 feature');
   }
 
-  protected async getOffline<T>(params: any): Promise<T> {
+  protected async getOffline<T>(_params: any): Promise<T> {
     // Implementation for V2
     throw new Error('getOffline not implemented - V2 feature');
   }
@@ -123,19 +125,19 @@ export class RoutingService extends DataService {
     );
   }
 
-  async get<T>(params: any): Promise<T> {
+  async get<T>(_params: any): Promise<T> {
     // Phase 3: Implement OpenRouteService integration
     throw new Error('RoutingService.get not implemented - Phase 3 feature');
   }
 
   // V1: Basic route calculation
-  async calculateRoute(waypoints: Array<[number, number]>, vehicleProfile: any): Promise<any> {
+  async calculateRoute(_waypoints: Array<[number, number]>, _vehicleProfile: any): Promise<any> {
     // Phase 3: Implementation
     throw new Error('calculateRoute not implemented - Phase 3 feature');
   }
 
   // V2: Multiple provider support
-  async calculateRouteWithFallback(waypoints: Array<[number, number]>, vehicleProfile: any): Promise<any> {
+  async calculateRouteWithFallback(_waypoints: Array<[number, number]>, _vehicleProfile: any): Promise<any> {
     // V2: Implementation with OSRM fallback
     throw new Error('calculateRouteWithFallback not implemented - V2 feature');
   }
@@ -151,19 +153,19 @@ export class CampsiteService extends DataService {
     );
   }
 
-  async get<T>(params: any): Promise<T> {
+  async get<T>(_params: any): Promise<T> {
     // Phase 4: Implement Overpass API integration
     throw new Error('CampsiteService.get not implemented - Phase 4 feature');
   }
 
   // V1: Basic campsite data
-  async getCampsites(bbox: [number, number, number, number]): Promise<any[]> {
+  async getCampsites(_bbox: [number, number, number, number]): Promise<any[]> {
     // Phase 4: Implementation
     throw new Error('getCampsites not implemented - Phase 4 feature');
   }
 
   // V2: Multiple data sources
-  async getCampsitesWithFallback(bbox: [number, number, number, number]): Promise<any[]> {
+  async getCampsitesWithFallback(_bbox: [number, number, number, number]): Promise<any[]> {
     // V2: Implementation with multiple sources
     throw new Error('getCampsitesWithFallback not implemented - V2 feature');
   }
@@ -179,19 +181,19 @@ export class ExportService extends DataService {
     );
   }
 
-  async get<T>(params: any): Promise<T> {
+  async get<T>(_params: any): Promise<T> {
     // Phase 6: Implement export functionality
     throw new Error('ExportService.get not implemented - Phase 6 feature');
   }
 
   // V1: GPX export
-  async exportToGPX(waypoints: any[], route: any): Promise<string> {
+  async exportToGPX(_waypoints: any[], _route: any): Promise<string> {
     // Phase 6: Implementation
     throw new Error('exportToGPX not implemented - Phase 6 feature');
   }
 
   // V1: JSON export
-  async exportToJSON(tripData: any): Promise<string> {
+  async exportToJSON(_tripData: any): Promise<string> {
     // Phase 6: Implementation
     throw new Error('exportToJSON not implemented - Phase 6 feature');
   }

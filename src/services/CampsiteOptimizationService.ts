@@ -5,9 +5,7 @@ import { routeOptimizationService } from './RouteOptimizationService';
 import type { OptimizationCriteria, OptimizationResult } from './RouteOptimizationService';
 import { campsiteService } from './CampsiteService';
 import type { Campsite } from './CampsiteService';
-import { CampsiteFilterService } from './CampsiteFilterService';
-import { Waypoint } from '../store';
-import { VehicleProfile } from '../store';
+import type { Waypoint, VehicleProfile } from '../types';
 
 export interface CampsiteOptimizationRequest {
   waypoints: Waypoint[];

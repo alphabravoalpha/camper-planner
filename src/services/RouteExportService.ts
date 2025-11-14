@@ -1,8 +1,7 @@
 // Route Export Service
 // Phase 6.1: Comprehensive route and trip data export functionality
 
-import type { Waypoint } from '../store';
-import type { VehicleProfile } from '../store';
+import type { Waypoint, VehicleProfile } from '../types';
 import type { Trip } from './TripStorageService';
 import type { TripPlan } from './TripPlanningService';
 import type { CostBreakdown } from './CostCalculationService';

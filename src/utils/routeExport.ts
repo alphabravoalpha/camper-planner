@@ -1,7 +1,7 @@
 // Route Export Utilities
 // Phase 3.4: Prepare route data for export (GPX format for Phase 6)
 
-import type { RouteResponse, RouteData, RouteStep } from '../services/RoutingService';
+import type { RouteResponse } from '../services/RoutingService';
 import type { Waypoint } from '../types';
 
 export interface ExportableRoute {
@@ -144,7 +144,7 @@ export function prepareRouteForExport(
       segmentPoints.push({
         lat: coord[1],
         lng: coord[0],
-        elevation: coord[2], // Third element if present
+        elevation: (coord as any)[2], // Third element if present
         distance: cumulativeDistance
       });
     }

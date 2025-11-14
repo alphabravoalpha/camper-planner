@@ -5,15 +5,17 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import { campsiteService } from '../../services/CampsiteService';
-import type { Campsite, CampsiteRequest, CampsiteType } from '../../services/CampsiteService';
-import { useRouteStore } from '../../store';
+import type { CampsiteRequest, CampsiteType } from '../../services/CampsiteService';
+import type { UICampsite } from '../../adapters/CampsiteAdapter';
+import { campsiteAdapter } from '../../adapters/CampsiteAdapter';
+import { useRouteStore, useVehicleStore } from '../../store';
 import { FeatureFlags } from '../../config';
 
 interface CampsiteMarkersProps {
-  bounds?: L.LatLngBounds;
+  bounds?: any; // Use any for Leaflet bounds to avoid type errors
   visibleTypes?: CampsiteType[];
   maxResults?: number;
-  onCampsiteClick?: (campsite: Campsite) => void;
+  onCampsiteClick?: (campsite: UICampsite) => void;
 }
 
 // Custom campsite icons
@@ -25,7 +27,7 @@ const createCampsiteIcon = (type: CampsiteType, vehicleCompatible: boolean = tru
     ? '🚐'
     : '🅿️'; // aires/parking
 
-  return L.divIcon({
+  return (L as any).divIcon({
     className: 'campsite-marker',
     html: `<div style="
       background: ${color};
@@ -51,18 +53,13 @@ const CampsiteMarkers: React.FC<CampsiteMarkersProps> = ({
   maxResults = 100,
   onCampsiteClick
 }) => {
-  const [campsites, setCampsites] = useState<Campsite[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
+  const [campsites, setCampsites] = useState<UICampsite[]>([]);
   const { calculatedRoute } = useRouteStore();
+  const { profile } = useVehicleStore();
 
   // Load campsites for current bounds
-  const loadCampsites = useCallback(async (searchBounds: L.LatLngBounds) => {
+  const loadCampsites = useCallback(async (searchBounds: any) => {
     if (!FeatureFlags.CAMPSITE_DISPLAY) return;
-
-    setIsLoading(true);
-    setError(null);
 
     try {
       const request: CampsiteRequest = {
@@ -74,24 +71,25 @@ const CampsiteMarkers: React.FC<CampsiteMarkersProps> = ({
         },
         types: visibleTypes,
         maxResults,
-        includeDetails: true
+        vehicleFilter: profile ? {
+          height: profile.height,
+          length: profile.length,
+          weight: profile.weight,
+          motorhome: profile.type === 'motorhome',
+          caravan: profile.type === 'caravan'
+        } : undefined
       };
 
       const response = await campsiteService.searchCampsites(request);
 
-      if (response.status === 'success') {
-        setCampsites(response.campsites);
-      } else {
-        throw new Error(response.error || 'Failed to load campsites');
-      }
+      // Convert to UI format using adapter
+      const uiResponse = campsiteAdapter.toUIResponse(response, profile);
+      setCampsites(uiResponse.campsites);
     } catch (err) {
       console.error('Error loading campsites:', err);
-      setError(err instanceof Error ? err.message : 'Failed to load campsites');
       setCampsites([]);
-    } finally {
-      setIsLoading(false);
     }
-  }, [visibleTypes, maxResults]);
+  }, [visibleTypes, maxResults, profile]);
 
   // Load campsites when bounds change
   useEffect(() => {
@@ -109,7 +107,7 @@ const CampsiteMarkers: React.FC<CampsiteMarkersProps> = ({
       let minLat = Infinity, maxLat = -Infinity;
       let minLng = Infinity, maxLng = -Infinity;
 
-      routeGeometry.coordinates.forEach(coord => {
+      routeGeometry.coordinates.forEach((coord: [number, number]) => {
         const [lng, lat] = coord;
         minLat = Math.min(minLat, lat);
         maxLat = Math.max(maxLat, lat);
@@ -119,7 +117,7 @@ const CampsiteMarkers: React.FC<CampsiteMarkersProps> = ({
 
       // Add buffer around route (approximately 10km)
       const buffer = 0.1; // degrees
-      const routeBounds = L.latLngBounds(
+      const routeBounds = (L as any).latLngBounds(
         [minLat - buffer, minLng - buffer],
         [maxLat + buffer, maxLng + buffer]
       );
@@ -220,9 +218,6 @@ const CampsiteMarkers: React.FC<CampsiteMarkersProps> = ({
                   <div className="text-xs text-red-700">
                     {campsite.restrictions.maxHeight && (
                       <div>Max height: {campsite.restrictions.maxHeight}m</div>
-                    )}
-                    {campsite.restrictions.maxWidth && (
-                      <div>Max width: {campsite.restrictions.maxWidth}m</div>
                     )}
                     {campsite.restrictions.maxLength && (
                       <div>Max length: {campsite.restrictions.maxLength}m</div>

@@ -2,6 +2,7 @@
 // Phase 6.3: Comprehensive accessibility improvements for WCAG compliance
 
 import { useEffect, useRef, useState } from 'react';
+import type { KeyboardEvent as ReactKeyboardEvent, RefObject } from 'react';
 
 // Screen reader announcements
 export class ScreenReaderAnnouncer {
@@ -72,21 +73,21 @@ export const useAnnounce = () => {
 // Keyboard navigation utilities
 export const keyboardNavigation = {
   // Common keyboard event handlers
-  handleEnterKey: (callback: () => void) => (event: React.KeyboardEvent) => {
+  handleEnterKey: (callback: () => void) => (event: ReactKeyboardEvent) => {
     if (event.key === 'Enter') {
       event.preventDefault();
       callback();
     }
   },
 
-  handleSpaceKey: (callback: () => void) => (event: React.KeyboardEvent) => {
+  handleSpaceKey: (callback: () => void) => (event: ReactKeyboardEvent) => {
     if (event.key === ' ') {
       event.preventDefault();
       callback();
     }
   },
 
-  handleEscapeKey: (callback: () => void) => (event: React.KeyboardEvent) => {
+  handleEscapeKey: (callback: () => void) => (event: ReactKeyboardEvent) => {
     if (event.key === 'Escape') {
       event.preventDefault();
       callback();
@@ -98,7 +99,7 @@ export const keyboardNavigation = {
     down?: () => void;
     left?: () => void;
     right?: () => void;
-  }) => (event: React.KeyboardEvent) => {
+  }) => (event: ReactKeyboardEvent) => {
     switch (event.key) {
       case 'ArrowUp':
         if (callbacks.up) {
@@ -128,7 +129,7 @@ export const keyboardNavigation = {
   },
 
   // Tab management
-  trapFocus: (containerRef: React.RefObject<HTMLElement>) => {
+  trapFocus: (containerRef: RefObject<HTMLElement>) => {
     const focusableElements = containerRef.current?.querySelectorAll(
       'a[href], button, textarea, input[type="text"], input[type="radio"], input[type="checkbox"], select'
     );
@@ -164,6 +165,8 @@ export const useFocusTrap = (isActive: boolean) => {
     if (!isActive || !containerRef.current) return;
 
     const handleKeyDown = keyboardNavigation.trapFocus(containerRef);
+
+    if (!handleKeyDown) return;
 
     document.addEventListener('keydown', handleKeyDown);
 

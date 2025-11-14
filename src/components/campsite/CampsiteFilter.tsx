@@ -136,14 +136,14 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
   filterState,
   onFilterChange,
   onSearchChange,
-  onCampsiteSelect,
+  onCampsiteSelect: _onCampsiteSelect,
   campsiteCount = 0,
   isLoading = false
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [activeTab, setActiveTab] = useState<'types' | 'amenities' | 'advanced' | 'search'>('types');
   const { calculatedRoute } = useRouteStore();
-  const { profile } = useVehicleStore();
+  const { profile: _profile } = useVehicleStore();
 
   // Persist filter state to localStorage
   const persistFilters = useCallback((filters: CampsiteFilterState) => {

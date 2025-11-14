@@ -1,7 +1,7 @@
 // Performance Monitoring and Optimization
 // Phase 6.4: Comprehensive performance testing and production monitoring
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 
 // Performance metrics interface
 export interface PerformanceMetrics {
