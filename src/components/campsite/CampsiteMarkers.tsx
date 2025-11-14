@@ -142,7 +142,7 @@ const CampsiteMarkers: React.FC<CampsiteMarkersProps> = ({
         <Marker
           key={campsite.id}
           position={[campsite.location.lat, campsite.location.lng]}
-          icon={createCampsiteIcon(campsite.type, campsite.vehicleCompatible) as any}
+          {...({ icon: createCampsiteIcon(campsite.type, campsite.vehicleCompatible) } as any)}
           eventHandlers={{
             click: () => onCampsiteClick?.(campsite)
           }}

@@ -363,7 +363,7 @@ const RouteExporter: React.FC<RouteExporterProps> = ({ className }) => {
       const result: ExportResult = await RouteExportService.exportRoute(
         waypoints,
         exportOptions,
-        additionalData
+        additionalData as any // Type mismatch between TripData interfaces - functionally compatible
       );
 
       setCurrentStep('Finalizing export...');

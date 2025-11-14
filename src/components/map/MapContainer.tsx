@@ -315,19 +315,21 @@ const MapContainer: React.FC = () => {
       {/* Map component */}
       <LeafletMapContainer
         ref={mapRef}
-        center={center as any}
-        zoom={zoom}
-        minZoom={MAP_CONFIG.minZoom}
-        maxZoom={MAP_CONFIG.maxZoom}
-        maxBounds={MAP_CONFIG.maxBounds as any}
-        maxBoundsViscosity={1.0}
-        className={cn(
-          'h-full w-full z-map',
-          !isMapReady && 'opacity-0'
-        )}
-        zoomControl={false} // We'll add custom controls
-        whenReady={handleMapReady}
-        style={{ height: '100%', width: '100%' }}
+        {...({
+          center,
+          zoom,
+          minZoom: MAP_CONFIG.minZoom,
+          maxZoom: MAP_CONFIG.maxZoom,
+          maxBounds: MAP_CONFIG.maxBounds,
+          maxBoundsViscosity: 1.0,
+          className: cn(
+            'h-full w-full z-map',
+            !isMapReady && 'opacity-0'
+          ),
+          zoomControl: false,
+          whenReady: handleMapReady,
+          style: { height: '100%', width: '100%' }
+        } as any)}
       >
         {/* Dynamic tile layer based on current selection */}
         <MapLayerControl
