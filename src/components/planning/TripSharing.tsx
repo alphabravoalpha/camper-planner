@@ -3,7 +3,8 @@
 
 import React, { useState, useCallback, useMemo, useRef } from 'react';
 import { useRouteStore, useVehicleStore, useTripStore, useUIStore } from '../../store';
-import { TripSharingService, ShareOptions, ShareResult } from '../../services/TripSharingService';
+import { TripSharingService } from '../../services/TripSharingService';
+import type { ShareOptions, ShareResult } from '../../services/TripSharingService';
 import { QRCodeGenerator } from '../../utils/qrcode';
 import { cn } from '../../utils/cn';
 

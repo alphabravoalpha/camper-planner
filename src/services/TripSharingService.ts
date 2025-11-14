@@ -1,7 +1,7 @@
 // Trip Sharing Service
 // Phase 6.2: Privacy-first trip sharing with URL generation and validation
 
-import { Waypoint, TripData, VehicleProfile } from '../types';
+import type { Waypoint, TripData, VehicleProfile } from '../types';
 
 // Interfaces for sharing functionality
 export interface ShareableTrip {

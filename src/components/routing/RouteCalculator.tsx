@@ -4,9 +4,9 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useRouteStore, useVehicleStore, useUIStore } from '../../store';
 import { routingService } from '../../services/RoutingService';
+import type { RouteRequest, RouteResponse, RoutingError, RouteRestrictions } from '../../services/RoutingService';
 import { FeatureFlags } from '../../config';
 import { cn } from '../../utils/cn';
-import { RouteRequest, RouteResponse, RoutingError, RouteRestrictions } from '../../services/RoutingService';
 
 interface RouteCalculatorProps {
   className?: string;

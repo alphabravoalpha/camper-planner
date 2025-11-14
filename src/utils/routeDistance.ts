@@ -1,7 +1,7 @@
 // Route Distance Calculation Utilities
 // Phase 4.3: Calculate distances from campsites to routes for filtering
 
-import { Campsite } from '../services/CampsiteService';
+import type { Campsite } from '../services/CampsiteService';
 
 export interface RouteGeometry {
   coordinates: [number, number][]; // [lng, lat] format

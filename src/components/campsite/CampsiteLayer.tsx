@@ -6,9 +6,9 @@ import { useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet.markercluster';
 import { campsiteService } from '../../services/CampsiteService';
+import type { Campsite, CampsiteRequest, CampsiteType } from '../../services/CampsiteService';
 import { useRouteStore, useVehicleStore, useUIStore } from '../../store';
 import { FeatureFlags } from '../../config';
-import { Campsite, CampsiteRequest, CampsiteType } from '../../services/CampsiteService';
 import { createCampsiteIcon, createClusterIcon } from './CampsiteIcons';
 
 // Extend leaflet types for marker clustering

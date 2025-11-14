@@ -3,15 +3,15 @@
 
 import React, { useState, useCallback } from 'react';
 import { FeatureFlags } from '../../config';
-import type { Campsite } from '../../services/CampsiteService';
+import type { UICampsite } from '../../adapters/CampsiteAdapter';
 import { useRouteStore, useVehicleStore, useUIStore } from '../../store';
 import { cn } from '../../utils/cn';
 
 export interface CampsiteDetailsProps {
-  campsite: Campsite;
+  campsite: UICampsite;
   onClose?: () => void;
-  onAddAsWaypoint?: (campsite: Campsite) => void;
-  onExportData?: (campsite: Campsite) => void;
+  onAddAsWaypoint?: (campsite: UICampsite) => void;
+  onExportData?: (campsite: UICampsite) => void;
   className?: string;
   isExpanded?: boolean;
 }

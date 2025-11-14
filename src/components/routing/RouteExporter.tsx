@@ -3,7 +3,8 @@
 
 import React, { useState, useCallback, useMemo } from 'react';
 import { useRouteStore, useVehicleStore, useTripStore, useUIStore } from '../../store';
-import { RouteExportService, ExportOptions, ExportResult } from '../../services/RouteExportService';
+import { RouteExportService } from '../../services/RouteExportService';
+import type { ExportOptions, ExportResult } from '../../services/RouteExportService';
 import { cn } from '../../utils/cn';
 
 interface RouteExporterProps {

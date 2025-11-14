@@ -4,10 +4,10 @@
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { useMap } from 'react-leaflet';
 import { campsiteService } from '../../services/CampsiteService';
+import type { Campsite, CampsiteRequest, CampsiteType } from '../../services/CampsiteService';
 import { useVehicleStore, useUIStore } from '../../store';
 import { FeatureFlags } from '../../config';
 import { cn } from '../../utils/cn';
-import { Campsite, CampsiteRequest, CampsiteType } from '../../services/CampsiteService';
 
 export interface CampsiteSearchProps {
   className?: string;

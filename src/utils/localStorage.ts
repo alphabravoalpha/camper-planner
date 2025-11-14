@@ -1,7 +1,7 @@
 // Local Storage Utilities
 // Handles trip data persistence and schema migration
 
-import { TripData, VehicleProfile } from '../types';
+import type { TripData, VehicleProfile } from '../types';
 
 export const LocalStorageKeys = {
   TRIPS: 'camper-planner-trips',

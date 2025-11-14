@@ -1,7 +1,8 @@
 // Campsite Service Implementation
 // Phase 4.1: Overpass API integration with IndexedDB caching and OpenCampingMap fallback
 
-import { DataService, DataServiceConfig, RequestContext } from './DataService';
+import { DataService } from './DataService';
+import type { DataServiceConfig, RequestContext } from './DataService';
 
 export interface CampsiteRequest {
   bounds: BoundingBox;

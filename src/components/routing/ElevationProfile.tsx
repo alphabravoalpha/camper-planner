@@ -2,7 +2,7 @@
 // Phase 3.4: Display elevation profile along the route
 
 import React, { useMemo } from 'react';
-import { RouteData } from '../../services/RoutingService';
+import type { RouteData } from '../../services/RoutingService';
 import { cn } from '../../utils/cn';
 
 interface ElevationProfileProps {

@@ -3,7 +3,8 @@
 
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { FeatureFlags } from '../../config';
-import { routeOptimizationService, OptimizationCriteria, OptimizationResult, WaypointInsertionResult } from '../../services/RouteOptimizationService';
+import { routeOptimizationService } from '../../services/RouteOptimizationService';
+import type { OptimizationCriteria, OptimizationResult, WaypointInsertionResult } from '../../services/RouteOptimizationService';
 import { useRouteStore, useVehicleStore, useUIStore } from '../../store';
 import { cn } from '../../utils/cn';
 

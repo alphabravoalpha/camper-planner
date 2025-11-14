@@ -3,7 +3,7 @@
 
 import React, { useState } from 'react';
 import { useRouteStore, useVehicleStore, useUIStore } from '../../store';
-import { RouteResponse, RouteData } from '../../services/RoutingService';
+import type { RouteResponse, RouteData } from '../../services/RoutingService';
 import { cn } from '../../utils/cn';
 
 interface RouteComparisonProps {

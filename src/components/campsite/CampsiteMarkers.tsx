@@ -5,9 +5,9 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import { campsiteService } from '../../services/CampsiteService';
+import type { Campsite, CampsiteRequest, CampsiteType } from '../../services/CampsiteService';
 import { useRouteStore } from '../../store';
 import { FeatureFlags } from '../../config';
-import { Campsite, CampsiteRequest, CampsiteType } from '../../services/CampsiteService';
 
 interface CampsiteMarkersProps {
   bounds?: L.LatLngBounds;

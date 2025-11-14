@@ -4,7 +4,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { FeatureFlags } from '../../config';
 import type { Campsite } from '../../services/CampsiteService';
-import { CampsiteRecommendationService, RecommendationCriteria, CampsiteRecommendation } from '../../services/CampsiteRecommendationService';
+import { CampsiteRecommendationService } from '../../services/CampsiteRecommendationService';
+import type { RecommendationCriteria, CampsiteRecommendation } from '../../services/CampsiteRecommendationService';
 import { useRouteStore, useVehicleStore, useUIStore } from '../../store';
 import { cn } from '../../utils/cn';
 

@@ -2,7 +2,7 @@
 // Helper functions for map operations and calculations
 
 import L from 'leaflet';
-import { Waypoint } from '../types';
+import type { Waypoint } from '../types';
 
 export interface BoundingBox {
   north: number;

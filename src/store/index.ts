@@ -3,7 +3,7 @@
 
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
-import { TripData, VehicleProfile, Waypoint } from '../types';
+import type { TripData, VehicleProfile, Waypoint } from '../types';
 
 // Map State Interface
 interface MapState {

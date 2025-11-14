@@ -1,8 +1,9 @@
 // Routing Service Implementation
 // Phase 3.2: OpenRouteService integration with fallback to OSRM
 
-import { DataService, DataServiceConfig, RequestContext } from './DataService';
-import { VehicleProfile, Waypoint } from '../types';
+import { DataService } from './DataService';
+import type { DataServiceConfig, RequestContext } from './DataService';
+import type { VehicleProfile, Waypoint } from '../types';
 import { APIConfig } from '../config/api';
 
 export interface RouteRequest {

@@ -5,12 +5,14 @@ import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { Marker, Popup } from 'react-leaflet';
 import { useMap } from 'react-leaflet';
 import L from 'leaflet';
-import { campsiteService, CampsiteRequest, CampsiteType } from '../../services/CampsiteService';
-import { CampsiteAdapter, UICampsite } from '../../adapters/CampsiteAdapter';
+import { campsiteService } from '../../services/CampsiteService';
+import type { CampsiteRequest, CampsiteType } from '../../services/CampsiteService';
+import { CampsiteAdapter } from '../../adapters/CampsiteAdapter';
+import type { UICampsite } from '../../adapters/CampsiteAdapter';
 import { CampsiteFilterService } from '../../services/CampsiteFilterService';
 import { useRouteStore, useVehicleStore, useUIStore } from '../../store';
 import { FeatureFlags } from '../../config';
-import { CampsiteFilterState } from './CampsiteFilter';
+import type { CampsiteFilterState } from './CampsiteFilter';
 import { createCampsiteIcon } from './CampsiteIcons';
 
 export interface SimpleCampsiteLayerProps {

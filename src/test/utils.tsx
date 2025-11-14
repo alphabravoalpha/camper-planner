@@ -2,7 +2,8 @@
 // Helper functions for testing React components
 
 import React from 'react';
-import { render, RenderOptions } from '@testing-library/react';
+import { render } from '@testing-library/react';
+import type { RenderOptions } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { I18nextProvider } from 'react-i18next';
 import i18n from '../i18n';

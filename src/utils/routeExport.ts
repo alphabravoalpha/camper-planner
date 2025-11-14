@@ -1,8 +1,8 @@
 // Route Export Utilities
 // Phase 3.4: Prepare route data for export (GPX format for Phase 6)
 
-import { RouteResponse, RouteData, RouteStep } from '../services/RoutingService';
-import { Waypoint } from '../types';
+import type { RouteResponse, RouteData, RouteStep } from '../services/RoutingService';
+import type { Waypoint } from '../types';
 
 export interface ExportableRoute {
   id: string;

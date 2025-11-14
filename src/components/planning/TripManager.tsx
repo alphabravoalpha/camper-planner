@@ -10,8 +10,8 @@ import {
 import { useRouteStore } from '../../store';
 import { useVehicleStore } from '../../store';
 import { useCostStore } from '../../store/costStore';
-import {
-  TripStorageService,
+import { TripStorageService } from '../../services/TripStorageService';
+import type {
   Trip,
   TripSummary,
   TripMetadata,

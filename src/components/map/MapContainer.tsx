@@ -18,12 +18,13 @@ import RouteOptimizer from '../routing/RouteOptimizer';
 import { TripManager, PlanningTools } from '../planning';
 import SimpleCampsiteLayer from '../campsite/SimpleCampsiteLayer';
 import CampsiteControls from '../campsite/CampsiteControls';
-import CampsiteFilter, { CampsiteFilterState, DEFAULT_FILTER_STATE } from '../campsite/CampsiteFilter';
+import CampsiteFilter, { DEFAULT_FILTER_STATE } from '../campsite/CampsiteFilter';
+import type { CampsiteFilterState } from '../campsite/CampsiteFilter';
 import CampsiteDetails from '../campsite/CampsiteDetails';
 import CampsiteRecommendations from '../campsite/CampsiteRecommendations';
 import UserGuidance from '../ui/UserGuidance';
 import ConfirmDialog from '../ui/ConfirmDialog';
-import { CampsiteType, Campsite } from '../../services/CampsiteService';
+import type { CampsiteType, Campsite } from '../../services/CampsiteService';
 import 'leaflet/dist/leaflet.css';
 import '../../styles/animations.css';
 

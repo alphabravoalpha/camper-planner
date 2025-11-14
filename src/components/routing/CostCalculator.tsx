@@ -6,8 +6,8 @@ import { Calculator, Euro, TrendingDown, Settings, Fuel, MapPin, Calendar, Info 
 import { useRouteStore } from '../../store';
 import { useVehicleStore } from '../../store';
 import { useCostStore, createRouteHash, isCacheValid } from '../../store/costStore';
-import {
-  CostCalculationService,
+import { CostCalculationService } from '../../services/CostCalculationService';
+import type {
   CostBreakdown,
   CostOptimization,
   FuelConsumptionSettings,

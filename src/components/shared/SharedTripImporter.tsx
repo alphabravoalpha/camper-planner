@@ -3,7 +3,8 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useRouteStore, useVehicleStore, useTripStore, useUIStore } from '../../store';
-import { TripSharingService, ValidationResult } from '../../services/TripSharingService';
+import { TripSharingService } from '../../services/TripSharingService';
+import type { ValidationResult } from '../../services/TripSharingService';
 import { cn } from '../../utils/cn';
 
 interface SharedTripImporterProps {

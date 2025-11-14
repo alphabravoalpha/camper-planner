@@ -1,9 +1,10 @@
 // Campsite Filter Service
 // Phase 4.3: Advanced filtering and search logic for campsites
 
-import { Campsite, CampsiteRequest, CampsiteResponse } from './CampsiteService';
-import { CampsiteFilterState } from '../components/campsite/CampsiteFilter';
-import { RouteGeometry, filterCampsitesByRoute, calculateRouteRelevance, haversineDistance } from '../utils/routeDistance';
+import type { Campsite, CampsiteRequest, CampsiteResponse } from './CampsiteService';
+import type { CampsiteFilterState } from '../components/campsite/CampsiteFilter';
+import type { RouteGeometry } from '../utils/routeDistance';
+import { filterCampsitesByRoute, calculateRouteRelevance, haversineDistance } from '../utils/routeDistance';
 
 export interface EnhancedCampsiteRequest extends CampsiteRequest {
   filterState?: CampsiteFilterState;

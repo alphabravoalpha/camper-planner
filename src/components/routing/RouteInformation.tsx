@@ -3,7 +3,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { useRouteStore, useVehicleStore } from '../../store';
-import { RouteResponse, RouteData, RouteSegment, RouteStep } from '../../services/RoutingService';
+import type { RouteResponse, RouteData, RouteSegment, RouteStep } from '../../services/RoutingService';
 import ElevationProfile from './ElevationProfile';
 import { cn } from '../../utils/cn';
 

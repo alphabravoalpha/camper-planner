@@ -3,7 +3,7 @@
 
 import React, { useState, useCallback, useEffect } from 'react';
 import { useVehicleStore, useUIStore } from '../../store';
-import { VehicleProfile } from '../../types';
+import type { VehicleProfile } from '../../types';
 import { FeatureFlags } from '../../config';
 import { cn } from '../../utils/cn';
 import Tooltip from '../ui/Tooltip';

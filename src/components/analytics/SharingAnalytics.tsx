@@ -2,7 +2,8 @@
 // Phase 6.2: Privacy-first analytics for tracking sharing usage without personal data
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { TripSharingService, ShareAnalytics } from '../../services/TripSharingService';
+import { TripSharingService } from '../../services/TripSharingService';
+import type { ShareAnalytics } from '../../services/TripSharingService';
 import { cn } from '../../utils/cn';
 
 interface SharingAnalyticsProps {

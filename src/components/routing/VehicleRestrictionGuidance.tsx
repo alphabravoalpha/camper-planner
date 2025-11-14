@@ -3,7 +3,7 @@
 
 import React from 'react';
 import { useRouteStore, useVehicleStore } from '../../store';
-import { RouteRestrictions } from '../../services/RoutingService';
+import type { RouteRestrictions } from '../../services/RoutingService';
 import { cn } from '../../utils/cn';
 
 interface VehicleRestrictionGuidanceProps {

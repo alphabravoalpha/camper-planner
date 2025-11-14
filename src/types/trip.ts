@@ -22,6 +22,7 @@ export interface TripMetadata {
 }
 
 export interface VehicleProfile {
+  type: 'motorhome' | 'caravan' | 'campervan'; // Vehicle type
   height: number; // meters
   width: number;  // meters
   weight: number; // tonnes

@@ -9,8 +9,8 @@ import {
 } from 'lucide-react';
 import { useRouteStore } from '../../store';
 import { useVehicleStore } from '../../store';
-import {
-  TripPlanningService,
+import { TripPlanningService } from '../../services/TripPlanningService';
+import type {
   TripPlan,
   DailyStage,
   TripMetrics,
