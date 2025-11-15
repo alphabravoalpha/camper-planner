@@ -9,18 +9,19 @@ export const FeatureFlags = {
   VEHICLE_PROFILES: true,         // Phase 3: Vehicle dimension input
   CAMPSITE_DISPLAY: true,         // Phase 4: Campsite integration
   ROUTE_OPTIMIZATION: true,       // Phase 5: Multi-stop optimization
-  DATA_EXPORT: false,             // Phase 6: GPX/JSON export
+  DATA_EXPORT: true,              // Phase 6: GPX/JSON export ✓
+  ROUTE_SHARING: true,            // Phase 6: Share routes ✓
 
   // Language Support
   MULTI_LANGUAGE_FRAMEWORK: true,    // Phase 1: i18n framework ready
   MULTI_LANGUAGE_COMPLETE: false,    // V2: Complete translations
 
   // V2 Features (Explicitly disabled in V1)
-  COMMUNITY_FEATURES: false,      // User reviews, route sharing
+  COMMUNITY_FEATURES: false,      // User reviews, community ratings
   WEATHER_INTEGRATION: false,     // Weather along route
   ADVANCED_BOOKING: false,        // Campsite booking integration
-  ROUTE_SHARING: false,           // Share routes between users
   USER_PROFILES: false,           // User accounts and profiles
+  CLOUD_SYNC: false,              // Cloud synchronization
 
   // Explicitly excluded features
   REAL_TIME_TRAFFIC: false,       // Real-time traffic data
