@@ -107,8 +107,11 @@ const AppContent: React.FC = () => {
 };
 
 function App() {
+  // Use basename for GitHub Pages deployment
+  const basename = import.meta.env.PROD ? '/camper-planner' : '/';
+
   return (
-    <Router>
+    <Router basename={basename}>
       <AppContent />
     </Router>
   );
