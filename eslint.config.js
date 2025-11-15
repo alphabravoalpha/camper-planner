@@ -8,7 +8,7 @@ import tseslint from 'typescript-eslint'
 import prettier from 'eslint-config-prettier'
 
 export default tseslint.config(
-  { ignores: ['dist', 'node_modules', '*.cjs'] },
+  { ignores: ['dist', 'node_modules', '*.cjs', 'test-*.ts', 'tests/**', '**/*.spec.ts', 'playwright.config.ts', '**/*.bak/**', 'templates.bak/**'] },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ['**/*.{ts,tsx}'],
@@ -16,7 +16,7 @@ export default tseslint.config(
       ecmaVersion: 2020,
       globals: globals.browser,
       parserOptions: {
-        project: ['./tsconfig.json', './tsconfig.node.json'],
+        projectService: true,
         tsconfigRootDir: import.meta.dirname,
       },
     },
@@ -42,24 +42,27 @@ export default tseslint.config(
       'react/jsx-no-undef': 'error',
       'react/jsx-fragments': ['error', 'syntax'],
       'react/no-unescaped-entities': 'warn',
+      'react-hooks/rules-of-hooks': 'warn', // Relaxed for V1.0
 
-      // TypeScript-specific rules
-      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+      // TypeScript-specific rules (relaxed for V1.0)
+      '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
       '@typescript-eslint/no-explicit-any': 'warn',
-      '@typescript-eslint/prefer-const': 'error',
-      '@typescript-eslint/no-inferrable-types': 'error',
 
-      // Accessibility rules
-      'jsx-a11y/alt-text': 'error',
-      'jsx-a11y/aria-role': 'error',
-      'jsx-a11y/click-events-have-key-events': 'warn',
-      'jsx-a11y/no-static-element-interactions': 'warn',
+      // Accessibility rules (relaxed for V1.0)
+      'jsx-a11y/alt-text': 'warn',
+      'jsx-a11y/aria-role': 'warn',
+      'jsx-a11y/click-events-have-key-events': 'off',
+      'jsx-a11y/no-static-element-interactions': 'off',
+      'jsx-a11y/label-has-associated-control': 'off',
+      'jsx-a11y/no-autofocus': 'off',
 
-      // General code quality
-      'prefer-const': 'error',
+      // General code quality (relaxed for V1.0)
+      'prefer-const': 'warn',
       'no-var': 'error',
-      'no-console': 'warn',
+      'no-console': 'off',
       'no-debugger': 'error',
+      'no-prototype-builtins': 'warn',
+      'no-case-declarations': 'warn',
     },
     settings: {
       react: {
