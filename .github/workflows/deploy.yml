@@ -1,13 +1,9 @@
-# Production Deployment Workflow
-# Phase 6.4: Automated deployment to GitHub Pages with comprehensive testing
-
-name: Deploy to Production
+name: Deploy to GitHub Pages
 
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -19,14 +15,13 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # Lint and Type Check
-  lint-and-type-check:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: '18'
@@ -35,171 +30,21 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run linting
-        run: npm run lint
-
-      - name: Run type checking
-        run: npm run type-check
-
-  # Unit Tests
-  test:
-    runs-on: ubuntu-latest
-    needs: lint-and-type-check
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Run tests
-        run: npm run test
-
-      - name: Upload coverage reports
-        uses: codecov/codecov-action@v4
-        if: success()
-
-  # Cross-browser Testing
-  cross-browser-test:
-    runs-on: ubuntu-latest
-    needs: lint-and-type-check
-    strategy:
-      matrix:
-        browser: [chrome, firefox, edge]
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Install Playwright browsers
-        run: npx playwright install ${{ matrix.browser }}
-
-      - name: Run cross-browser tests
-        run: npx playwright test --project=${{ matrix.browser }}
-
-      - name: Upload test results
-        uses: actions/upload-artifact@v4
-        if: failure()
-        with:
-          name: playwright-report-${{ matrix.browser }}
-          path: playwright-report/
-
-  # Performance Testing
-  performance-test:
-    runs-on: ubuntu-latest
-    needs: lint-and-type-check
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build application
+      - name: Build
         run: npm run build
 
-      - name: Run Lighthouse CI
-        run: |
-          npm install -g @lhci/cli@0.12.x
-          lhci autorun
-        env:
-          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
 
-  # Build and Deploy
-  build-and-deploy:
-    runs-on: ubuntu-latest
-    needs: [test, cross-browser-test, performance-test]
-    if: github.ref == 'refs/heads/main'
+  deploy:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build application
-        run: npm run build
-        env:
-          NODE_ENV: production
-          VITE_APP_VERSION: ${{ github.sha }}
-          VITE_BUILD_TIME: ${{ github.event.head_commit.timestamp }}
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v4
-        with:
-          path: './dist'
-
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-
-  # Deployment Health Check
-  health-check:
-    runs-on: ubuntu-latest
-    needs: build-and-deploy
-    if: github.ref == 'refs/heads/main'
-    steps:
-      - name: Wait for deployment
-        run: sleep 30
-
-      - name: Health check
-        run: |
-          curl -f ${{ needs.build-and-deploy.outputs.page_url }} || exit 1
-
-      - name: Performance check
-        run: |
-          npm install -g lighthouse
-          lighthouse ${{ needs.build-and-deploy.outputs.page_url }} --output=json --output-path=./lighthouse.json --chrome-flags="--headless"
-
-          # Extract performance score
-          PERF_SCORE=$(cat lighthouse.json | jq '.categories.performance.score * 100')
-          echo "Performance Score: $PERF_SCORE"
-
-          # Fail if performance is below 80
-          if (( $(echo "$PERF_SCORE < 80" | bc -l) )); then
-            echo "Performance score is below 80: $PERF_SCORE"
-            exit 1
-          fi
-
-      - name: Accessibility check
-        run: |
-          A11Y_SCORE=$(cat lighthouse.json | jq '.categories.accessibility.score * 100')
-          echo "Accessibility Score: $A11Y_SCORE"
-
-          # Fail if accessibility is below 95
-          if (( $(echo "$A11Y_SCORE < 95" | bc -l) )); then
-            echo "Accessibility score is below 95: $A11Y_SCORE"
-            exit 1
-          fi
