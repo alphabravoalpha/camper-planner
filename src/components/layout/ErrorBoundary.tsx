@@ -38,10 +38,10 @@ class ErrorBoundary extends Component<Props, State> {
       errorInfo
     });
 
-    // Log error to console in development
-    if (import.meta.env.DEV) {
-      console.error('Error Boundary caught an error:', error, errorInfo);
-    }
+    // Always log error to console for debugging
+    console.error('Error Boundary caught an error:', error, errorInfo);
+    console.error('Error stack:', error.stack);
+    console.error('Component stack:', errorInfo.componentStack);
 
     // In production, you could send this to an error reporting service
     // errorReportingService.reportError(error, errorInfo);
@@ -89,12 +89,12 @@ class ErrorBoundary extends Component<Props, State> {
                   We're sorry, but something unexpected happened. Please try refreshing the page.
                 </p>
 
-                {import.meta.env.DEV && this.state.error && (
+                {this.state.error && (
                   <details className="mt-4 text-left">
                     <summary className="text-sm text-gray-500 cursor-pointer">
-                      Error Details (Development)
+                      Error Details {import.meta.env.DEV ? '(Development)' : ''}
                     </summary>
-                    <pre className="mt-2 text-xs text-red-600 bg-red-50 p-2 rounded overflow-auto">
+                    <pre className="mt-2 text-xs text-red-600 bg-red-50 p-2 rounded overflow-auto max-h-64">
                       {this.state.error.toString()}
                       {this.state.errorInfo?.componentStack}
                     </pre>

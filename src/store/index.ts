@@ -114,6 +114,30 @@ export const useVehicleStore = create<VehicleState>()(
     {
       name: 'camper-planner-vehicle',
       partialize: (state) => ({ profile: state.profile }),
+      storage: {
+        getItem: (name) => {
+          try {
+            const value = localStorage.getItem(name);
+            return value ? JSON.parse(value) : null;
+          } catch {
+            return null;
+          }
+        },
+        setItem: (name, value) => {
+          try {
+            localStorage.setItem(name, JSON.stringify(value));
+          } catch {
+            // Silently fail if localStorage is not available
+          }
+        },
+        removeItem: (name) => {
+          try {
+            localStorage.removeItem(name);
+          } catch {
+            // Silently fail
+          }
+        },
+      },
     }
   )
 );
@@ -372,6 +396,30 @@ export const useRouteStore = create<RouteState>()(
         estimatedTime: state.estimatedTime,
         // Don't persist history to avoid bloating localStorage
       }),
+      storage: {
+        getItem: (name) => {
+          try {
+            const value = localStorage.getItem(name);
+            return value ? JSON.parse(value) : null;
+          } catch {
+            return null;
+          }
+        },
+        setItem: (name, value) => {
+          try {
+            localStorage.setItem(name, JSON.stringify(value));
+          } catch {
+            // Silently fail if localStorage is not available
+          }
+        },
+        removeItem: (name) => {
+          try {
+            localStorage.removeItem(name);
+          } catch {
+            // Silently fail
+          }
+        },
+      },
     }
   )
 );
@@ -411,6 +459,30 @@ export const useTripStore = create<TripState>()(
         savedTrips: state.savedTrips,
         currentTrip: state.currentTrip
       }),
+      storage: {
+        getItem: (name) => {
+          try {
+            const value = localStorage.getItem(name);
+            return value ? JSON.parse(value) : null;
+          } catch {
+            return null;
+          }
+        },
+        setItem: (name, value) => {
+          try {
+            localStorage.setItem(name, JSON.stringify(value));
+          } catch {
+            // Silently fail if localStorage is not available
+          }
+        },
+        removeItem: (name) => {
+          try {
+            localStorage.removeItem(name);
+          } catch {
+            // Silently fail
+          }
+        },
+      },
     }
   )
 );
