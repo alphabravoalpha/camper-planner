@@ -7,6 +7,7 @@ import { aria, useAnnounce, useFocusTrap } from '../../utils/accessibility';
 import { useRouteStore, useVehicleStore } from '../../store';
 import { useCostStore } from '../../store/costStore';
 import { type VehicleProfile } from '../../types';
+import { MOTORHOME_PRESETS } from '../../data/vehicleDatabase';
 
 interface OnboardingStep {
   id: string;
@@ -50,12 +51,13 @@ const WelcomeStep: React.FC = () => {
 };
 
 // =============================================================================
-// Step 2: Vehicle Setup - Collect actual dimensions
+// Step 2: Vehicle Setup - Use existing motorhome presets dropdown
 // =============================================================================
 interface VehicleSetupStepProps {
   onVehicleSet: (profile: VehicleProfile) => void;
   vehicleData: {
     type: string;
+    presetId: string;
     height: number;
     width: number;
     length: number;
@@ -69,90 +71,136 @@ const VehicleSetupStep: React.FC<VehicleSetupStepProps> = ({
   vehicleData,
   setVehicleData,
 }) => {
-  const presets: Record<string, { height: number; width: number; length: number; weight: number; fuelType: string }> = {
-    motorhome: { height: 3.2, width: 2.3, length: 7, weight: 3.5, fuelType: 'diesel' },
-    camper_van: { height: 2.5, width: 2.0, length: 5.5, weight: 2.8, fuelType: 'diesel' },
-    caravan: { height: 2.8, width: 2.2, length: 6, weight: 1.5, fuelType: 'petrol' },
-    car_tent: { height: 1.6, width: 1.8, length: 4.5, weight: 1.2, fuelType: 'petrol' },
-  };
+  // Group presets by category (same logic as VehicleProfilePanel)
+  const compactCampervans = MOTORHOME_PRESETS.filter(m => m.length < 5.5);
+  const mediumMotorhomes = MOTORHOME_PRESETS.filter(m => m.length >= 5.5 && m.length < 7);
+  const largeMotorhomes = MOTORHOME_PRESETS.filter(m => m.length >= 7 && m.length < 10);
+  const carCaravan = MOTORHOME_PRESETS.filter(m => m.length >= 10);
 
-  const vehicleTypes = [
-    { id: 'motorhome', name: 'Motorhome', icon: '🚐', description: 'Large self-contained RV' },
-    { id: 'camper_van', name: 'Camper Van', icon: '🚌', description: 'Converted van' },
-    { id: 'caravan', name: 'Caravan', icon: '🏠', description: 'Towed trailer' },
-    { id: 'car_tent', name: 'Car + Tent', icon: '🏕️', description: 'Car camping' },
-  ];
+  const handlePresetChange = (presetId: string) => {
+    if (presetId === 'custom') {
+      setVehicleData({
+        ...vehicleData,
+        type: 'custom',
+        presetId: 'custom',
+      });
+      return;
+    }
 
-  const handleTypeChange = (type: string) => {
-    const preset = presets[type];
-    setVehicleData({
-      type,
-      height: preset.height,
-      width: preset.width,
-      length: preset.length,
-      weight: preset.weight,
-    });
+    const preset = MOTORHOME_PRESETS.find(m => m.id === presetId);
+    if (preset) {
+      // Determine vehicle type from preset
+      let type = 'motorhome';
+      if (preset.length < 5.5) type = 'camper_van';
+      else if (preset.length >= 10) type = 'caravan';
+
+      setVehicleData({
+        type,
+        presetId: preset.id,
+        height: preset.height,
+        width: preset.width,
+        length: preset.length,
+        weight: preset.weight,
+      });
+    }
   };
 
   const handleDimensionChange = (field: keyof typeof vehicleData, value: string) => {
     const numValue = parseFloat(value) || 0;
-    setVehicleData({ ...vehicleData, [field]: numValue });
+    setVehicleData({ ...vehicleData, [field]: numValue, presetId: 'custom', type: 'custom' });
   };
 
   // Update vehicle store whenever data changes
   useEffect(() => {
     if (vehicleData.height > 0 && vehicleData.width > 0 && vehicleData.length > 0 && vehicleData.weight > 0) {
+      const preset = MOTORHOME_PRESETS.find(m => m.id === vehicleData.presetId);
       onVehicleSet({
         id: 'onboarding-vehicle',
-        name: `My ${vehicleData.type}`,
+        name: preset?.name || 'Custom Vehicle',
         type: vehicleData.type,
         height: vehicleData.height,
         width: vehicleData.width,
         length: vehicleData.length,
         weight: vehicleData.weight,
-        fuelType: presets[vehicleData.type]?.fuelType || 'diesel',
+        fuelType: vehicleData.type === 'caravan' ? 'petrol' : 'diesel',
         createdAt: new Date().toISOString(),
       });
     }
   }, [vehicleData, onVehicleSet]);
+
+  const selectedPreset = MOTORHOME_PRESETS.find(m => m.id === vehicleData.presetId);
 
   return (
     <div className="space-y-5">
       <div className="text-center">
         <h2 className="text-xl font-bold text-gray-900 mb-1">Tell Us About Your Vehicle</h2>
         <p className="text-gray-600 text-sm">
-          Your vehicle dimensions ensure routes avoid roads that won't fit.
+          Select your vehicle to auto-fill dimensions, or enter custom values.
         </p>
       </div>
 
-      {/* Vehicle Type Selection */}
-      <div className="grid grid-cols-2 gap-2">
-        {vehicleTypes.map((vehicle) => (
-          <button
-            key={vehicle.id}
-            onClick={() => handleTypeChange(vehicle.id)}
-            className={cn(
-              'p-3 border-2 rounded-lg text-left transition-colors',
-              vehicleData.type === vehicle.id
-                ? 'border-blue-500 bg-blue-50'
-                : 'border-gray-200 hover:border-blue-300 hover:bg-gray-50'
-            )}
-            {...aria.button()}
-          >
-            <div className="flex items-center space-x-2">
-              <span className="text-xl">{vehicle.icon}</span>
-              <div>
-                <h3 className="font-medium text-gray-900 text-sm">{vehicle.name}</h3>
-                <p className="text-xs text-gray-500">{vehicle.description}</p>
-              </div>
-            </div>
-          </button>
-        ))}
+      {/* Vehicle Preset Dropdown */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          🚐 Select Your Vehicle
+        </label>
+        <select
+          value={vehicleData.presetId}
+          onChange={(e) => handlePresetChange(e.target.value)}
+          className="w-full px-3 py-3 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
+        >
+          <option value="">Choose a vehicle...</option>
+          <optgroup label="🚌 Compact Campervans">
+            {compactCampervans.map((preset) => (
+              <option key={preset.id} value={preset.id}>
+                {preset.name} ({preset.length}m × {preset.height}m)
+              </option>
+            ))}
+          </optgroup>
+          <optgroup label="🚐 Medium Motorhomes">
+            {mediumMotorhomes.map((preset) => (
+              <option key={preset.id} value={preset.id}>
+                {preset.name} ({preset.length}m × {preset.height}m)
+              </option>
+            ))}
+          </optgroup>
+          <optgroup label="🏠 Large Motorhomes">
+            {largeMotorhomes.map((preset) => (
+              <option key={preset.id} value={preset.id}>
+                {preset.name} ({preset.length}m × {preset.height}m)
+              </option>
+            ))}
+          </optgroup>
+          <optgroup label="🚗 Car + Caravan">
+            {carCaravan.map((preset) => (
+              <option key={preset.id} value={preset.id}>
+                {preset.name} ({preset.length}m)
+              </option>
+            ))}
+          </optgroup>
+          <optgroup label="✏️ Custom">
+            <option value="custom">Enter dimensions manually</option>
+          </optgroup>
+        </select>
       </div>
 
-      {/* Dimension Inputs */}
+      {/* Selected vehicle info */}
+      {selectedPreset && (
+        <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+          <div className="text-sm text-blue-800">
+            <strong>{selectedPreset.name}</strong>
+            <div className="text-blue-600 mt-1">
+              Base: {selectedPreset.base} • {selectedPreset.make}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Dimension Inputs - Always visible for fine-tuning */}
       <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-        <h3 className="font-medium text-gray-900 mb-3 text-sm">Vehicle Dimensions</h3>
+        <h3 className="font-medium text-gray-900 mb-3 text-sm">
+          {vehicleData.presetId === 'custom' ? 'Enter Your Dimensions' : 'Fine-tune Dimensions'}
+        </h3>
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className="block text-xs text-gray-600 mb-1">Height (m)</label>
@@ -204,7 +252,7 @@ const VehicleSetupStep: React.FC<VehicleSetupStepProps> = ({
           </div>
         </div>
         <p className="text-xs text-gray-500 mt-3">
-          💡 Check your vehicle registration or measure from ground to highest point (including any roof equipment).
+          💡 Adjust if you have roof equipment (AC, solar panels, antenna) that adds height.
         </p>
       </div>
     </div>
@@ -390,6 +438,7 @@ const InteractiveTutorialStep: React.FC<InteractiveTutorialStepProps> = ({
 interface SummaryStepProps {
   vehicleData: {
     type: string;
+    presetId: string;
     height: number;
     width: number;
     length: number;
@@ -404,11 +453,19 @@ interface SummaryStepProps {
 const SummaryStep: React.FC<SummaryStepProps> = ({ vehicleData, fuelData }) => {
   const { waypoints, calculatedRoute } = useRouteStore();
 
-  const vehicleTypeNames: Record<string, string> = {
-    motorhome: 'Motorhome',
-    camper_van: 'Camper Van',
-    caravan: 'Caravan',
-    car_tent: 'Car + Tent',
+  // Get vehicle name from preset or fallback to type
+  const getVehicleName = () => {
+    const preset = MOTORHOME_PRESETS.find(m => m.id === vehicleData.presetId);
+    if (preset) return preset.name;
+
+    const vehicleTypeNames: Record<string, string> = {
+      motorhome: 'Motorhome',
+      camper_van: 'Camper Van',
+      caravan: 'Caravan',
+      car_tent: 'Car + Tent',
+      custom: 'Custom Vehicle',
+    };
+    return vehicleTypeNames[vehicleData.type] || 'Vehicle';
   };
 
   const fuelTypeNames: Record<string, string> = {
@@ -437,7 +494,7 @@ const SummaryStep: React.FC<SummaryStepProps> = ({ vehicleData, fuelData }) => {
         <div className="flex justify-between items-center py-2 border-b border-gray-200">
           <span className="text-sm text-gray-600">Vehicle</span>
           <span className="text-sm font-medium">
-            {vehicleTypeNames[vehicleData.type]} ({vehicleData.height}m × {vehicleData.width}m × {vehicleData.length}m)
+            {getVehicleName()} ({vehicleData.height}m × {vehicleData.width}m × {vehicleData.length}m)
           </span>
         </div>
         <div className="flex justify-between items-center py-2 border-b border-gray-200">
@@ -553,6 +610,7 @@ const OnboardingFlow: React.FC<OnboardingFlowProps> = ({
   // Shared state across steps
   const [vehicleData, setVehicleData] = useState({
     type: 'camper_van',
+    presetId: '', // Empty until user selects
     height: 2.5,
     width: 2.0,
     length: 5.5,
