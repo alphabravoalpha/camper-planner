@@ -7,7 +7,12 @@ import { aria, useAnnounce, useFocusTrap } from '../../utils/accessibility';
 import { useRouteStore, useVehicleStore } from '../../store';
 import { useCostStore } from '../../store/costStore';
 import { type VehicleProfile } from '../../types';
-import { MOTORHOME_PRESETS } from '../../data/vehicleDatabase';
+import {
+  VEHICLE_DATABASE,
+  MOTORHOME_PRESETS,
+  getModelsForMake,
+  getVariantsForModel,
+} from '../../data/vehicleDatabase';
 
 interface OnboardingStep {
   id: string;
@@ -51,13 +56,15 @@ const WelcomeStep: React.FC = () => {
 };
 
 // =============================================================================
-// Step 2: Vehicle Setup - Use existing motorhome presets dropdown
+// Step 2: Vehicle Setup - Make/Model/Variant cascading dropdowns
 // =============================================================================
 interface VehicleSetupStepProps {
   onVehicleSet: (profile: VehicleProfile) => void;
   vehicleData: {
-    type: string;
-    presetId: string;
+    makeId: string;
+    modelId: string;
+    variantId: string;
+    vehicleName: string;
     height: number;
     width: number;
     length: number;
@@ -71,135 +78,171 @@ const VehicleSetupStep: React.FC<VehicleSetupStepProps> = ({
   vehicleData,
   setVehicleData,
 }) => {
-  // Group presets by category (same logic as VehicleProfilePanel)
-  const compactCampervans = MOTORHOME_PRESETS.filter(m => m.length < 5.5);
-  const mediumMotorhomes = MOTORHOME_PRESETS.filter(m => m.length >= 5.5 && m.length < 7);
-  const largeMotorhomes = MOTORHOME_PRESETS.filter(m => m.length >= 7 && m.length < 10);
-  const carCaravan = MOTORHOME_PRESETS.filter(m => m.length >= 10);
+  // Get available models and variants based on selection
+  const availableModels = vehicleData.makeId ? getModelsForMake(vehicleData.makeId) : [];
+  const availableVariants = vehicleData.makeId && vehicleData.modelId
+    ? getVariantsForModel(vehicleData.makeId, vehicleData.modelId)
+    : [];
 
-  const handlePresetChange = (presetId: string) => {
-    if (presetId === 'custom') {
+  // Handle make selection
+  const handleMakeChange = (makeId: string) => {
+    setVehicleData({
+      ...vehicleData,
+      makeId,
+      modelId: '',
+      variantId: '',
+      vehicleName: '',
+    });
+  };
+
+  // Handle model selection
+  const handleModelChange = (modelId: string) => {
+    setVehicleData({
+      ...vehicleData,
+      modelId,
+      variantId: '',
+      vehicleName: '',
+    });
+  };
+
+  // Handle variant selection - auto-populate dimensions
+  const handleVariantChange = (variantId: string) => {
+    const variant = availableVariants.find(v => v.id === variantId);
+    if (variant) {
+      const make = VEHICLE_DATABASE.find(m => m.id === vehicleData.makeId);
+      const model = make?.models.find(m => m.id === vehicleData.modelId);
+      const vehicleName = `${make?.name} ${model?.name} ${variant.name}`;
+
       setVehicleData({
         ...vehicleData,
-        type: 'custom',
-        presetId: 'custom',
-      });
-      return;
-    }
-
-    const preset = MOTORHOME_PRESETS.find(m => m.id === presetId);
-    if (preset) {
-      // Determine vehicle type from preset
-      let type = 'motorhome';
-      if (preset.length < 5.5) type = 'camper_van';
-      else if (preset.length >= 10) type = 'caravan';
-
-      setVehicleData({
-        type,
-        presetId: preset.id,
-        height: preset.height,
-        width: preset.width,
-        length: preset.length,
-        weight: preset.weight,
+        variantId,
+        vehicleName,
+        height: variant.height,
+        width: variant.width,
+        length: variant.length,
+        weight: variant.weight,
       });
     }
   };
 
-  const handleDimensionChange = (field: keyof typeof vehicleData, value: string) => {
+  // Handle dimension changes (for fine-tuning)
+  const handleDimensionChange = (field: 'height' | 'width' | 'length' | 'weight', value: string) => {
     const numValue = parseFloat(value) || 0;
-    setVehicleData({ ...vehicleData, [field]: numValue, presetId: 'custom', type: 'custom' });
+    setVehicleData({
+      ...vehicleData,
+      [field]: numValue,
+      vehicleName: vehicleData.vehicleName || 'Custom Vehicle',
+    });
   };
 
   // Update vehicle store whenever data changes
   useEffect(() => {
     if (vehicleData.height > 0 && vehicleData.width > 0 && vehicleData.length > 0 && vehicleData.weight > 0) {
-      const preset = MOTORHOME_PRESETS.find(m => m.id === vehicleData.presetId);
       onVehicleSet({
         id: 'onboarding-vehicle',
-        name: preset?.name || 'Custom Vehicle',
-        type: vehicleData.type,
+        name: vehicleData.vehicleName || 'Custom Vehicle',
+        type: 'motorhome',
         height: vehicleData.height,
         width: vehicleData.width,
         length: vehicleData.length,
         weight: vehicleData.weight,
-        fuelType: vehicleData.type === 'caravan' ? 'petrol' : 'diesel',
+        fuelType: 'diesel',
         createdAt: new Date().toISOString(),
       });
     }
   }, [vehicleData, onVehicleSet]);
 
-  const selectedPreset = MOTORHOME_PRESETS.find(m => m.id === vehicleData.presetId);
+  // Get selected names for display
+  const selectedMake = VEHICLE_DATABASE.find(m => m.id === vehicleData.makeId);
+  const selectedModel = selectedMake?.models.find(m => m.id === vehicleData.modelId);
+  const selectedVariant = availableVariants.find(v => v.id === vehicleData.variantId);
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       <div className="text-center">
         <h2 className="text-xl font-bold text-gray-900 mb-1">Tell Us About Your Vehicle</h2>
         <p className="text-gray-600 text-sm">
-          Select your vehicle to auto-fill dimensions, or enter custom values.
+          Select your base vehicle to auto-fill dimensions
         </p>
       </div>
 
-      {/* Vehicle Preset Dropdown */}
+      {/* Make Dropdown */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          🚐 Select Your Vehicle
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Make
         </label>
         <select
-          value={vehicleData.presetId}
-          onChange={(e) => handlePresetChange(e.target.value)}
-          className="w-full px-3 py-3 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
+          value={vehicleData.makeId}
+          onChange={(e) => handleMakeChange(e.target.value)}
+          className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
         >
-          <option value="">Choose a vehicle...</option>
-          <optgroup label="🚌 Compact Campervans">
-            {compactCampervans.map((preset) => (
-              <option key={preset.id} value={preset.id}>
-                {preset.name} ({preset.length}m × {preset.height}m)
-              </option>
-            ))}
-          </optgroup>
-          <optgroup label="🚐 Medium Motorhomes">
-            {mediumMotorhomes.map((preset) => (
-              <option key={preset.id} value={preset.id}>
-                {preset.name} ({preset.length}m × {preset.height}m)
-              </option>
-            ))}
-          </optgroup>
-          <optgroup label="🏠 Large Motorhomes">
-            {largeMotorhomes.map((preset) => (
-              <option key={preset.id} value={preset.id}>
-                {preset.name} ({preset.length}m × {preset.height}m)
-              </option>
-            ))}
-          </optgroup>
-          <optgroup label="🚗 Car + Caravan">
-            {carCaravan.map((preset) => (
-              <option key={preset.id} value={preset.id}>
-                {preset.name} ({preset.length}m)
-              </option>
-            ))}
-          </optgroup>
-          <optgroup label="✏️ Custom">
-            <option value="custom">Enter dimensions manually</option>
-          </optgroup>
+          <option value="">Select make...</option>
+          {VEHICLE_DATABASE.map((make) => (
+            <option key={make.id} value={make.id}>
+              {make.name} ({make.country})
+            </option>
+          ))}
         </select>
       </div>
 
+      {/* Model Dropdown */}
+      {vehicleData.makeId && (
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Model
+          </label>
+          <select
+            value={vehicleData.modelId}
+            onChange={(e) => handleModelChange(e.target.value)}
+            className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
+          >
+            <option value="">Select model...</option>
+            {availableModels.map((model) => (
+              <option key={model.id} value={model.id}>
+                {model.name}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
+
+      {/* Variant Dropdown */}
+      {vehicleData.modelId && (
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Size / Variant
+          </label>
+          <select
+            value={vehicleData.variantId}
+            onChange={(e) => handleVariantChange(e.target.value)}
+            className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
+          >
+            <option value="">Select variant...</option>
+            {availableVariants.map((variant) => (
+              <option key={variant.id} value={variant.id}>
+                {variant.name} ({variant.length}m × {variant.height}m)
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
+
       {/* Selected vehicle info */}
-      {selectedPreset && (
+      {selectedVariant && (
         <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
           <div className="text-sm text-blue-800">
-            <strong>{selectedPreset.name}</strong>
+            <strong>{selectedMake?.name} {selectedModel?.name} {selectedVariant.name}</strong>
             <div className="text-blue-600 mt-1">
-              Base: {selectedPreset.base} • {selectedPreset.make}
+              {selectedVariant.length}m L × {selectedVariant.width}m W × {selectedVariant.height}m H • {selectedVariant.weight}t
             </div>
           </div>
         </div>
       )}
 
-      {/* Dimension Inputs - Always visible for fine-tuning */}
+      {/* Dimension Inputs - For fine-tuning or custom entry */}
       <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
         <h3 className="font-medium text-gray-900 mb-3 text-sm">
-          {vehicleData.presetId === 'custom' ? 'Enter Your Dimensions' : 'Fine-tune Dimensions'}
+          {selectedVariant ? 'Fine-tune Dimensions' : 'Or Enter Dimensions Manually'}
         </h3>
         <div className="grid grid-cols-2 gap-3">
           <div>
@@ -252,7 +295,7 @@ const VehicleSetupStep: React.FC<VehicleSetupStepProps> = ({
           </div>
         </div>
         <p className="text-xs text-gray-500 mt-3">
-          💡 Adjust if you have roof equipment (AC, solar panels, antenna) that adds height.
+          💡 Include roof equipment (AC, solar panels, antenna) in height measurement.
         </p>
       </div>
     </div>
@@ -263,7 +306,7 @@ const VehicleSetupStep: React.FC<VehicleSetupStepProps> = ({
 // Step 3: Fuel Setup - Fuel type and consumption
 // =============================================================================
 interface FuelSetupStepProps {
-  vehicleType: string;
+  vehicleLength: number;
   fuelData: {
     fuelType: string;
     consumption: number;
@@ -272,15 +315,17 @@ interface FuelSetupStepProps {
 }
 
 const FuelSetupStep: React.FC<FuelSetupStepProps> = ({
-  vehicleType,
+  vehicleLength,
   fuelData,
   setFuelData,
 }) => {
-  const defaultConsumption: Record<string, number> = {
-    motorhome: 14,
-    camper_van: 10,
-    caravan: 12,
-    car_tent: 8,
+  // Estimate default consumption based on vehicle length
+  const getDefaultConsumption = (length: number): number => {
+    if (length < 5) return 9;      // Compact campervan
+    if (length < 6) return 11;     // Medium campervan
+    if (length < 7) return 13;     // Large campervan / small motorhome
+    if (length < 8) return 15;     // Medium motorhome
+    return 17;                     // Large motorhome
   };
 
   const fuelTypes = [
@@ -290,15 +335,15 @@ const FuelSetupStep: React.FC<FuelSetupStepProps> = ({
     { id: 'electricity', name: 'Electric', icon: '⚡' },
   ];
 
-  // Initialize with defaults based on vehicle type
+  // Initialize with defaults based on vehicle length
   useEffect(() => {
     if (fuelData.consumption === 0) {
       setFuelData({
         ...fuelData,
-        consumption: defaultConsumption[vehicleType] || 12,
+        consumption: getDefaultConsumption(vehicleLength),
       });
     }
-  }, [vehicleType]);
+  }, [vehicleLength]);
 
   return (
     <div className="space-y-5">
@@ -437,8 +482,10 @@ const InteractiveTutorialStep: React.FC<InteractiveTutorialStepProps> = ({
 // =============================================================================
 interface SummaryStepProps {
   vehicleData: {
-    type: string;
-    presetId: string;
+    makeId: string;
+    modelId: string;
+    variantId: string;
+    vehicleName: string;
     height: number;
     width: number;
     length: number;
@@ -453,19 +500,9 @@ interface SummaryStepProps {
 const SummaryStep: React.FC<SummaryStepProps> = ({ vehicleData, fuelData }) => {
   const { waypoints, calculatedRoute } = useRouteStore();
 
-  // Get vehicle name from preset or fallback to type
+  // Get vehicle name
   const getVehicleName = () => {
-    const preset = MOTORHOME_PRESETS.find(m => m.id === vehicleData.presetId);
-    if (preset) return preset.name;
-
-    const vehicleTypeNames: Record<string, string> = {
-      motorhome: 'Motorhome',
-      camper_van: 'Camper Van',
-      caravan: 'Caravan',
-      car_tent: 'Car + Tent',
-      custom: 'Custom Vehicle',
-    };
-    return vehicleTypeNames[vehicleData.type] || 'Vehicle';
+    return vehicleData.vehicleName || 'Custom Vehicle';
   };
 
   const fuelTypeNames: Record<string, string> = {
@@ -609,8 +646,10 @@ const OnboardingFlow: React.FC<OnboardingFlowProps> = ({
 
   // Shared state across steps
   const [vehicleData, setVehicleData] = useState({
-    type: 'camper_van',
-    presetId: '', // Empty until user selects
+    makeId: '',
+    modelId: '',
+    variantId: '',
+    vehicleName: '',
     height: 2.5,
     width: 2.0,
     length: 5.5,
@@ -684,7 +723,7 @@ const OnboardingFlow: React.FC<OnboardingFlowProps> = ({
       description: 'Fuel settings',
       content: (
         <FuelSetupStep
-          vehicleType={vehicleData.type}
+          vehicleLength={vehicleData.length}
           fuelData={fuelData}
           setFuelData={setFuelData}
         />
