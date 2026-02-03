@@ -1,17 +1,24 @@
 // Simplified Campsite Layer Component
 // Phase 4.2: Campsite display with basic clustering (no external dependencies)
 
-import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import React, { useEffect, useState, useCallback, useMemo, useRef } from 'react';
 import { Marker, Popup } from 'react-leaflet';
 import { useMap } from 'react-leaflet';
-import L from 'leaflet';
+import * as L from 'leaflet';
 import { campsiteService } from '../../services/CampsiteService';
 import { CampsiteFilterService } from '../../services/CampsiteFilterService';
 import { useRouteStore, useVehicleStore, useUIStore } from '../../store';
 import { FeatureFlags } from '../../config';
-import { Campsite, CampsiteRequest, CampsiteType } from '../../services/CampsiteService';
-import { CampsiteFilterState } from './CampsiteFilter';
-import { createCampsiteIcon } from './CampsiteIcons';
+import { type Campsite, type CampsiteRequest, type CampsiteType } from '../../services/CampsiteService';
+import { type CampsiteFilterState } from './CampsiteFilter';
+import { createCampsiteIcon, createClusterIcon } from './CampsiteIcons';
+
+// Extend Window interface for custom properties
+declare global {
+  interface Window {
+    campsiteDebounceTimer?: NodeJS.Timeout;
+  }
+}
 
 export interface SimpleCampsiteLayerProps {
   visibleTypes: CampsiteType[];
@@ -23,6 +30,8 @@ export interface SimpleCampsiteLayerProps {
   onCampsitesLoaded?: (count: number, campsites?: Campsite[]) => void;
   isMobile?: boolean;
   filterState?: CampsiteFilterState;
+  highlightedCampsiteId?: string | null;
+  selectedCampsiteId?: string | null;
 }
 
 interface ClusteredCampsite extends Campsite {
@@ -30,16 +39,18 @@ interface ClusteredCampsite extends Campsite {
   isCluster?: boolean;
   clusterCount?: number;
   clusterCampsites?: Campsite[];
+  location?: { lat: number; lng: number };
 }
 
-// Simple clustering algorithm
+// Simple clustering algorithm - reduced distances so markers stay separate longer
 function clusterCampsites(campsites: Campsite[], zoom: number, isMobile: boolean = false): ClusteredCampsite[] {
+  // Reduced clustering distances - only cluster when markers would truly overlap
   const maxDistance = isMobile ?
-    (zoom > 12 ? 30 : zoom > 10 ? 50 : 80) :
-    (zoom > 12 ? 40 : zoom > 10 ? 60 : 100); // pixels
+    (zoom > 12 ? 15 : zoom > 10 ? 25 : 40) :
+    (zoom > 12 ? 20 : zoom > 10 ? 30 : 50); // pixels - reduced from previous values
 
   const clusters: ClusteredCampsite[] = [];
-  const processed = new Set<string>();
+  const processed = new Set<number>();
 
   for (const campsite of campsites) {
     if (processed.has(campsite.id)) continue;
@@ -52,8 +63,8 @@ function clusterCampsites(campsites: Campsite[], zoom: number, isMobile: boolean
       if (processed.has(other.id) || other.id === campsite.id) continue;
 
       const distance = calculatePixelDistance(
-        campsite.location.lat, campsite.location.lng,
-        other.location.lat, other.location.lng,
+        campsite.lat, campsite.lng,
+        other.lat, other.lng,
         zoom
       );
 
@@ -65,12 +76,12 @@ function clusterCampsites(campsites: Campsite[], zoom: number, isMobile: boolean
 
     if (cluster.length > 1) {
       // Create cluster marker
-      const centerLat = cluster.reduce((sum, c) => sum + c.location.lat, 0) / cluster.length;
-      const centerLng = cluster.reduce((sum, c) => sum + c.location.lng, 0) / cluster.length;
+      const centerLat = cluster.reduce((sum, c) => sum + c.lat, 0) / cluster.length;
+      const centerLng = cluster.reduce((sum, c) => sum + c.lng, 0) / cluster.length;
 
       clusters.push({
         ...campsite,
-        id: `cluster_${clusters.length}`,
+        id: Date.now() + clusters.length,
         location: { lat: centerLat, lng: centerLng },
         name: `${cluster.length} campsites`,
         isCluster: true,
@@ -114,50 +125,229 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
   onCampsiteClick,
   onCampsitesLoaded,
   isMobile = false,
-  filterState
+  filterState,
+  highlightedCampsiteId,
+  selectedCampsiteId
 }) => {
   const map = useMap();
-  const { calculatedRoute } = useRouteStore();
+  const { calculatedRoute, waypoints, addWaypoint } = useRouteStore();
   const { profile } = useVehicleStore();
   const { addNotification } = useUIStore();
 
+  // Check if a campsite is already in the route
+  const isCampsiteInRoute = useCallback((campsite: Campsite): boolean => {
+    return waypoints.some(wp =>
+      Math.abs(wp.lat - campsite.lat) < 0.0001 &&
+      Math.abs(wp.lng - campsite.lng) < 0.0001
+    );
+  }, [waypoints]);
+
+  // Add a campsite as a waypoint
+  const handleAddToRoute = useCallback((campsite: Campsite, e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent popup from closing
+
+    if (isCampsiteInRoute(campsite)) {
+      addNotification({
+        type: 'warning',
+        message: `${campsite.name || 'This campsite'} is already in your route`
+      });
+      return;
+    }
+
+    const newWaypoint = {
+      id: `campsite-${campsite.id}-${Date.now()}`,
+      lat: campsite.lat,
+      lng: campsite.lng,
+      type: 'campsite' as const,
+      name: campsite.name || `${campsite.type.replace('_', ' ')} #${campsite.id}`,
+      notes: campsite.address || ''
+    };
+
+    addWaypoint(newWaypoint);
+    addNotification({
+      type: 'success',
+      message: `Added "${newWaypoint.name}" to your route`
+    });
+  }, [addWaypoint, addNotification, isCampsiteInRoute]);
+
   const [campsites, setCampsites] = useState<Campsite[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [selectedCampsiteId, setSelectedCampsiteId] = useState<string | null>(null);
+  const [error, setError] = useState<{ message: string; suggestion?: string; retryable?: boolean } | null>(null);
+  // const [selectedCampsiteId, setSelectedCampsiteId] = useState<number | null>(null); // Unused for now
   const [zoom, setZoom] = useState(map.getZoom());
+
+  // Refs to hold the latest loading functions to avoid stale closures in event handlers
+  const loadCampsitesRef = useRef<(() => Promise<void>) | null>(null);
+  const loadCampsitesAroundRouteRef = useRef<(() => Promise<void>) | null>(null);
 
   // Track zoom changes for clustering
   useEffect(() => {
     const handleZoomEnd = () => setZoom(map.getZoom());
     map.on('zoomend', handleZoomEnd);
-    return () => map.off('zoomend', handleZoomEnd);
+    return () => {
+      map.off('zoomend', handleZoomEnd);
+    };
   }, [map]);
+
+  // Classify errors and provide helpful user-facing messages
+  const classifyError = useCallback((err: unknown): { message: string; suggestion?: string; retryable?: boolean } => {
+    if (!(err instanceof Error)) {
+      return {
+        message: 'Failed to load campsites',
+        suggestion: 'Please try again or zoom to a different area.',
+        retryable: true
+      };
+    }
+
+    const errorMsg = err.message.toLowerCase();
+
+    // Timeout errors
+    if (errorMsg.includes('timeout')) {
+      return {
+        message: 'Request timed out while loading campsites',
+        suggestion: 'The area may be too large. Try zooming in to search a smaller area.',
+        retryable: true
+      };
+    }
+
+    // Network errors
+    if (errorMsg.includes('failed to fetch') || errorMsg.includes('network')) {
+      return {
+        message: 'Network connection failed',
+        suggestion: 'Please check your internet connection and try again.',
+        retryable: true
+      };
+    }
+
+    // Rate limit errors
+    if (errorMsg.includes('rate limit') || errorMsg.includes('too many requests')) {
+      return {
+        message: 'Too many requests',
+        suggestion: 'Please wait a moment before searching again.',
+        retryable: true
+      };
+    }
+
+    // Bounding box too large
+    if (errorMsg.includes('bounding box too large')) {
+      return {
+        message: 'Search area too large',
+        suggestion: 'Please zoom in to search a smaller area.',
+        retryable: false
+      };
+    }
+
+    // No data found
+    if (errorMsg.includes('no data') || errorMsg.includes('404')) {
+      return {
+        message: 'No campsites found in this area',
+        suggestion: 'Try zooming out or searching a different location.',
+        retryable: false
+      };
+    }
+
+    // Server errors
+    if (errorMsg.includes('http 5')) {
+      return {
+        message: 'Campsite service temporarily unavailable',
+        suggestion: 'Please try again in a few moments.',
+        retryable: true
+      };
+    }
+
+    // Default error
+    return {
+      message: err.message || 'Failed to load campsites',
+      suggestion: 'Please try again. If the problem persists, try zooming to a different area.',
+      retryable: true
+    };
+  }, []);
+
+  // Helper function to check if a campsite is compatible with the user's vehicle
+  const isVehicleCompatible = useCallback((campsite: Campsite): boolean => {
+    // If no vehicle profile is set, assume all campsites are compatible
+    if (!profile) return true;
+
+    // Only use dimensional restrictions (max_height, max_length, max_weight)
+    // These are explicit and reliable when present in OSM data
+    // NOTE: We intentionally DON'T check access.motorhome/caravan because most
+    // OSM campsites don't have this tag, and the parseBoolean() function returns
+    // false for undefined values, which would incorrectly filter out ALL untagged campsites
+
+    // Height check - reject if vehicle is too tall
+    if (profile.height && campsite.access?.max_height) {
+      if (profile.height > campsite.access.max_height) return false;
+    }
+
+    // Length check - reject if vehicle is too long
+    if (profile.length && campsite.access?.max_length) {
+      if (profile.length > campsite.access.max_length) return false;
+    }
+
+    // Weight check - reject if vehicle is too heavy
+    if (profile.weight && campsite.access?.max_weight) {
+      if (profile.weight > campsite.access.max_weight) return false;
+    }
+
+    // If no explicit size restrictions found that exceed vehicle dimensions, assume compatible
+    return true;
+  }, [profile]);
 
   // Filter campsites based on filter state or fallback to props
   const filteredCampsites = useMemo(() => {
-    if (filterState) {
+    const uniqueTypes = [...new Set(campsites.map(c => c.type))];
+    console.log('SimpleCampsiteLayer: Filtering campsites', {
+      campsitesCount: campsites.length,
+      uniqueTypes,
+      visibleTypes,
+      filterState: !!filterState,
+      vehicleCompatibleOnly,
+      hasProfile: !!profile,
+      typeMatches: uniqueTypes.map(t => ({ type: t, visible: visibleTypes.includes(t) }))
+    });
+
+    if (filterState && false) { // TEMPORARILY DISABLE advanced filtering until it's fixed
       // Use advanced filtering
       const routeGeometry = calculatedRoute?.routes?.[0]?.geometry;
       const mapCenter = map ? [map.getCenter().lat, map.getCenter().lng] as [number, number] : undefined;
 
-      return CampsiteFilterService.filterCampsites(
+      const advancedFiltered = filterState ? CampsiteFilterService.filterCampsites(
         campsites,
-        filterState,
+        filterState as CampsiteFilterState,
         routeGeometry,
         mapCenter
-      );
-    } else {
-      // Fallback to basic filtering for backwards compatibility
-      let filtered = campsites;
+      ) : campsites;
 
-      // Filter by vehicle compatibility
+      console.log('SimpleCampsiteLayer: Advanced filtering result', {
+        inputCount: campsites.length,
+        outputCount: advancedFiltered.length,
+        filteredOut: campsites.length - advancedFiltered.length
+      });
+
+      return advancedFiltered;
+    } else {
+      // First, compute vehicleCompatible for all campsites based on current vehicle profile
+      let filtered = campsites.map(campsite => ({
+        ...campsite,
+        vehicleCompatible: isVehicleCompatible(campsite)
+      }));
+
+      console.log('SimpleCampsiteLayer: Before filtering', {
+        count: filtered.length,
+        compatibleCount: filtered.filter(c => c.vehicleCompatible).length,
+        incompatibleCount: filtered.filter(c => !c.vehicleCompatible).length
+      });
+
+      // Filter by vehicle compatibility if the option is enabled
       if (vehicleCompatibleOnly) {
+        const beforeCount = filtered.length;
         filtered = filtered.filter(campsite => campsite.vehicleCompatible);
+        console.log('SimpleCampsiteLayer: After vehicle filter', { before: beforeCount, after: filtered.length, removed: beforeCount - filtered.length });
       }
 
       // Filter by search query
       if (searchQuery.trim()) {
+        const beforeCount = filtered.length;
         const query = searchQuery.toLowerCase();
         filtered = filtered.filter(campsite =>
           campsite.name?.toLowerCase().includes(query) ||
@@ -167,24 +357,56 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
             amenity.toLowerCase().includes(query)
           )
         );
+        console.log('SimpleCampsiteLayer: After search filter', { before: beforeCount, after: filtered.length, removed: beforeCount - filtered.length, query });
       }
 
       // Filter by visible types
+      const beforeCount = filtered.length;
       filtered = filtered.filter(campsite => visibleTypes.includes(campsite.type));
+      console.log('SimpleCampsiteLayer: After type filter', { before: beforeCount, after: filtered.length, removed: beforeCount - filtered.length });
 
       return filtered;
     }
-  }, [campsites, vehicleCompatibleOnly, searchQuery, visibleTypes, filterState, calculatedRoute, map]);
+  }, [campsites, vehicleCompatibleOnly, searchQuery, visibleTypes, filterState, calculatedRoute, map, isVehicleCompatible, profile]);
 
   // Cluster campsites based on zoom level
   const clusteredCampsites = useMemo(() => {
+    console.log('SimpleCampsiteLayer: Clustering campsites', {
+      filteredCount: filteredCampsites.length,
+      zoom,
+      isVisible,
+      willCluster: zoom < 15
+    });
+
     if (!isVisible || zoom >= 15) return filteredCampsites; // No clustering at high zoom
-    return clusterCampsites(filteredCampsites, zoom, isMobile);
+    const result = clusterCampsites(filteredCampsites, zoom, isMobile);
+
+    console.log('SimpleCampsiteLayer: Clustering result', {
+      inputCount: filteredCampsites.length,
+      outputCount: result.length
+    });
+
+    return result;
   }, [filteredCampsites, zoom, isVisible, isMobile]);
 
   // Load campsites for current map bounds
   const loadCampsites = useCallback(async () => {
+    console.log('SimpleCampsiteLayer: loadCampsites called', {
+      hasMap: !!map,
+      featureEnabled: FeatureFlags.CAMPSITE_DISPLAY,
+      isVisible,
+      visibleTypes,
+      maxResults
+    });
+
     if (!map || !FeatureFlags.CAMPSITE_DISPLAY || !isVisible) return;
+
+    // Only load campsites at reasonable zoom levels (7+ for performance and API limits)
+    const currentZoom = map.getZoom();
+    if (currentZoom < 7) {
+      console.log('SimpleCampsiteLayer: Zoom level too low for campsite loading', { currentZoom, minRequired: 7 });
+      return;
+    }
 
     setIsLoading(true);
     setError(null);
@@ -192,20 +414,42 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
     try {
       const bounds = map.getBounds();
 
+      // Validate bounds before making API call
+      if (!bounds) {
+        console.warn('SimpleCampsiteLayer: No bounds available from map');
+        setIsLoading(false);
+        return;
+      }
+
+      const north = bounds.getNorth();
+      const south = bounds.getSouth();
+      const east = bounds.getEast();
+      const west = bounds.getWest();
+
+      // Validate bound values
+      if (typeof north === 'undefined' || typeof south === 'undefined' ||
+          typeof east === 'undefined' || typeof west === 'undefined' ||
+          isNaN(north) || isNaN(south) || isNaN(east) || isNaN(west)) {
+        console.warn('SimpleCampsiteLayer: Invalid bounds values', { north, south, east, west });
+        setIsLoading(false);
+        return;
+      }
+
       const request: CampsiteRequest = {
-        bounds: {
-          north: bounds.getNorth(),
-          south: bounds.getSouth(),
-          east: bounds.getEast(),
-          west: bounds.getWest()
-        },
+        bounds: { north, south, east, west },
         types: visibleTypes,
         maxResults,
         includeDetails: true,
-        vehicleProfile: profile || undefined
+        vehicleFilter: profile || undefined
       };
 
       const response = await campsiteService.searchCampsites(request);
+
+      console.log('SimpleCampsiteLayer: Search response', {
+        status: response.status,
+        campsiteCount: response.campsites?.length || 0,
+        bounds: request.bounds
+      });
 
       if (response.status === 'success') {
         setCampsites(response.campsites);
@@ -215,13 +459,14 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
       }
     } catch (err) {
       console.error('Error loading campsites:', err);
-      setError(err instanceof Error ? err.message : 'Failed to load campsites');
+      const errorInfo = classifyError(err);
+      setError(errorInfo);
       setCampsites([]);
       onCampsitesLoaded?.(0, []);
     } finally {
       setIsLoading(false);
     }
-  }, [map, visibleTypes, maxResults, profile, isVisible, onCampsitesLoaded]);
+  }, [map, visibleTypes, maxResults, profile, isVisible, onCampsitesLoaded, classifyError]);
 
   // Auto-load campsites around route
   const loadCampsitesAroundRoute = useCallback(async () => {
@@ -233,7 +478,7 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
     let minLat = Infinity, maxLat = -Infinity;
     let minLng = Infinity, maxLng = -Infinity;
 
-    routeGeometry.coordinates.forEach(coord => {
+    routeGeometry.coordinates.forEach((coord: [number, number]) => {
       const [lng, lat] = coord;
       minLat = Math.min(minLat, lat);
       maxLat = Math.max(maxLat, lat);
@@ -258,7 +503,7 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
         types: visibleTypes,
         maxResults,
         includeDetails: true,
-        vehicleProfile: profile || undefined
+        vehicleFilter: profile || undefined
       };
 
       const response = await campsiteService.searchCampsites(request);
@@ -271,7 +516,8 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
       }
     } catch (err) {
       console.error('Error loading route campsites:', err);
-      setError(err instanceof Error ? err.message : 'Failed to load campsites');
+      const errorInfo = classifyError(err);
+      setError(errorInfo);
       setCampsites([]);
       onCampsitesLoaded?.(0, []);
     } finally {
@@ -279,88 +525,188 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
     }
   }, [calculatedRoute, visibleTypes, maxResults, profile, isVisible, onCampsitesLoaded]);
 
-  // Load campsites when map moves or parameters change
+  // Keep refs updated with the latest loading functions to avoid stale closures
   useEffect(() => {
-    if (!isVisible) return;
+    loadCampsitesRef.current = loadCampsites;
+  }, [loadCampsites]);
+
+  useEffect(() => {
+    loadCampsitesAroundRouteRef.current = loadCampsitesAroundRoute;
+  }, [loadCampsitesAroundRoute]);
+
+  // State to track last loaded bounds for intelligent loading
+  const [lastLoadedBounds, setLastLoadedBounds] = useState<L.LatLngBounds | null>(null);
+  const [lastLoadedZoom, setLastLoadedZoom] = useState<number>(0);
+
+  // Load campsites when map moves with intelligent loading
+  useEffect(() => {
+    if (!isVisible || !map) return;
 
     const handleMoveEnd = () => {
-      const timer = setTimeout(loadCampsites, 1000); // Debounce
-      return () => clearTimeout(timer);
+      clearTimeout(window.campsiteDebounceTimer);
+      window.campsiteDebounceTimer = setTimeout(() => {
+        const currentBounds = map.getBounds();
+        const currentZoom = map.getZoom();
+
+        // Skip loading if the movement is minor and zoom hasn't changed significantly
+        if (lastLoadedBounds && Math.abs(currentZoom - lastLoadedZoom) < 1) {
+          const boundsExpansion = 0.1; // 10% expansion threshold
+          const currentSouth = currentBounds.getSouth();
+          const currentNorth = currentBounds.getNorth();
+          const currentWest = currentBounds.getWest();
+          const currentEast = currentBounds.getEast();
+          const lastSouth = lastLoadedBounds.getSouth();
+          const lastNorth = lastLoadedBounds.getNorth();
+          const lastWest = lastLoadedBounds.getWest();
+          const lastEast = lastLoadedBounds.getEast();
+
+          const latDiff = Math.abs(currentSouth - lastSouth) + Math.abs(currentNorth - lastNorth);
+          const lngDiff = Math.abs(currentWest - lastWest) + Math.abs(currentEast - lastEast);
+          const latRange = lastNorth - lastSouth;
+          const lngRange = lastEast - lastWest;
+
+          // If movement is less than 10% of the current view, skip loading
+          if (latDiff < latRange * boundsExpansion && lngDiff < lngRange * boundsExpansion) {
+            console.log('SimpleCampsiteLayer: Skipping load - minor map movement');
+            return;
+          }
+        }
+
+        // Update tracking variables
+        setLastLoadedBounds(currentBounds);
+        setLastLoadedZoom(currentZoom);
+        // Use ref to call latest version of loadCampsites (avoids stale closure)
+        loadCampsitesRef.current?.();
+      }, 250); // Reduced from 500ms to 250ms for faster response
     };
 
     map.on('moveend', handleMoveEnd);
 
-    // Initial load
-    loadCampsites();
+    // Initial load - use ref for consistency
+    loadCampsitesRef.current?.();
 
     return () => {
       map.off('moveend', handleMoveEnd);
+      clearTimeout(window.campsiteDebounceTimer);
     };
-  }, [map, loadCampsites, isVisible]);
+  }, [map, isVisible]); // Using ref avoids needing loadCampsites in dependencies
 
   // Load campsites around route when route changes
   useEffect(() => {
     if (calculatedRoute && isVisible) {
-      loadCampsitesAroundRoute();
+      // Use ref to call latest version (avoids stale closure)
+      loadCampsitesAroundRouteRef.current?.();
     }
-  }, [calculatedRoute, loadCampsitesAroundRoute, isVisible]);
+  }, [calculatedRoute, isVisible]); // Removed loadCampsitesAroundRoute from dependencies
 
   // Don't render if not visible
   if (!isVisible || !FeatureFlags.CAMPSITE_DISPLAY) return null;
 
+  // Debug logging
+  console.log('SimpleCampsiteLayer: Rendering markers', {
+    totalCampsites: clusteredCampsites.length,
+    isLoading,
+    isVisible,
+    zoom
+  });
+
   return (
     <>
-      {clusteredCampsites.map(campsite => {
-        const isSelected = selectedCampsiteId === campsite.id;
-        const isCluster = campsite.isCluster;
+      {/* Loading indicator */}
+      {isLoading && (
+        <div
+          className="fixed top-24 right-4 z-50 bg-white shadow-lg rounded-lg px-4 py-2 flex items-center space-x-2 animate-fade-in"
+          style={{ pointerEvents: 'none' }}
+        >
+          <div className="animate-spin h-4 w-4 border-2 border-blue-500 border-t-transparent rounded-full"></div>
+          <span className="text-sm text-gray-700">Loading campsites...</span>
+        </div>
+      )}
 
-        // Create cluster icon for grouped campsites
-        const icon = isCluster
-          ? L.divIcon({
-              html: `
-                <div style="
-                  width: ${isMobile ? 32 : 40}px;
-                  height: ${isMobile ? 32 : 40}px;
-                  background: linear-gradient(135deg, #22c55e, #16a34a);
-                  border: 3px solid #ffffff;
-                  border-radius: 50%;
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  font-size: ${isMobile ? 10 : 12}px;
-                  font-weight: bold;
-                  color: white;
-                  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-                  cursor: pointer;
-                ">
-                  ${campsite.clusterCount}
-                </div>
-              `,
-              className: 'campsite-cluster-icon',
-              iconSize: [isMobile ? 32 : 40, isMobile ? 32 : 40],
-              iconAnchor: [isMobile ? 16 : 20, isMobile ? 16 : 20]
-            })
-          : createCampsiteIcon({
-              campsite,
-              vehicleCompatible: campsite.vehicleCompatible,
-              isSelected,
-              isMobile,
-              size: isMobile ? 'small' : 'medium'
-            });
+      {/* Error indicator with retry */}
+      {error && !isLoading && (
+        <div className="fixed top-24 right-4 z-50 max-w-sm bg-red-50 shadow-lg rounded-lg p-4 border border-red-200 animate-slide-in-right">
+          <div className="flex items-start space-x-3">
+            <svg className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+            </svg>
+            <div className="flex-1 min-w-0">
+              <h4 className="text-sm font-medium text-red-900">{error.message}</h4>
+              {error.suggestion && (
+                <p className="text-xs text-red-700 mt-1">{error.suggestion}</p>
+              )}
+              <div className="flex items-center space-x-2 mt-2">
+                {error.retryable && (
+                  <button
+                    onClick={() => {
+                      setError(null);
+                      loadCampsites();
+                    }}
+                    className="inline-flex items-center px-2 py-1 text-xs font-medium text-red-700 bg-white border border-red-300 rounded hover:bg-red-50 transition-colors"
+                  >
+                    <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                    Retry
+                  </button>
+                )}
+                <button
+                  onClick={() => setError(null)}
+                  className="inline-flex items-center px-2 py-1 text-xs font-medium text-red-700 hover:text-red-900"
+                >
+                  Dismiss
+                </button>
+              </div>
+            </div>
+            <button
+              onClick={() => setError(null)}
+              className="flex-shrink-0 text-red-400 hover:text-red-600 transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {clusteredCampsites.map(campsite => {
+        const isHighlighted = highlightedCampsiteId === campsite.id.toString();
+        const isSelected = selectedCampsiteId === campsite.id.toString();
+        const isCluster = (campsite as ClusteredCampsite).isCluster;
+
+        // Check if this campsite is already in the route
+        const campsiteInRoute = isCampsiteInRoute(campsite);
+
+        // Create custom icon for this campsite/cluster
+        const customIcon = isCluster ?
+          createClusterIcon({ getChildCount: () => (campsite as ClusteredCampsite).clusterCount || 0 }) :
+          createCampsiteIcon({
+            campsite,
+            vehicleCompatible: campsite.vehicleCompatible,
+            isSelected,
+            isHighlighted,
+            isInRoute: campsiteInRoute,
+            isMobile,
+            showTooltip: true
+          });
 
         return (
           <Marker
             key={campsite.id}
-            position={[campsite.location.lat, campsite.location.lng]}
-            icon={icon}
+            position={isCluster && (campsite as ClusteredCampsite).location
+              ? [(campsite as ClusteredCampsite).location!.lat, (campsite as ClusteredCampsite).location!.lng]
+              : [campsite.lat, campsite.lng]}
+            // @ts-expect-error - React-Leaflet v4 types don't include icon prop but it works
+            icon={customIcon}
             eventHandlers={{
               click: () => {
-                setSelectedCampsiteId(campsite.id);
+                // setSelectedCampsiteId(campsite.id); // Unused for now
                 if (isCluster) {
                   // Zoom to cluster bounds
-                  if (campsite.clusterCampsites) {
+                  if ((campsite as ClusteredCampsite).clusterCampsites) {
                     const bounds = L.latLngBounds(
-                      campsite.clusterCampsites.map(c => [c.location.lat, c.location.lng])
+                      (campsite as ClusteredCampsite).clusterCampsites!.map((c: Campsite) => [c.lat, c.lng])
                     );
                     map.fitBounds(bounds, { padding: [20, 20] });
                   }
@@ -370,24 +716,24 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
               }
             }}
           >
-            <Popup className="campsite-popup" maxWidth={isMobile ? 250 : 300}>
+            <Popup>
               {isCluster ? (
                 <div className="p-3">
                   <h3 className="font-medium text-gray-900 text-sm mb-2">
-                    {campsite.clusterCount} Campsites
+                    {(campsite as ClusteredCampsite).clusterCount} Campsites
                   </h3>
                   <p className="text-xs text-gray-600 mb-2">
                     Click to zoom in and see individual campsites
                   </p>
                   <div className="space-y-1">
-                    {campsite.clusterCampsites?.slice(0, 3).map((c, idx) => (
+                    {(campsite as ClusteredCampsite).clusterCampsites?.slice(0, 3).map((c: Campsite, idx: number) => (
                       <div key={idx} className="text-xs text-gray-700">
                         • {c.name || c.type.replace('_', ' ')}
                       </div>
                     ))}
-                    {campsite.clusterCampsites && campsite.clusterCampsites.length > 3 && (
+                    {(campsite as ClusteredCampsite).clusterCampsites && (campsite as ClusteredCampsite).clusterCampsites!.length > 3 && (
                       <div className="text-xs text-gray-500">
-                        and {campsite.clusterCampsites.length - 3} more...
+                        and {(campsite as ClusteredCampsite).clusterCampsites!.length - 3} more...
                       </div>
                     )}
                   </div>
@@ -425,8 +771,8 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
                            className="text-blue-600 hover:text-blue-800 underline">Website</a>
                       </div>
                     )}
-                    {campsite.openingHours && (
-                      <div className="text-xs text-gray-700 mb-1">🕒 {campsite.openingHours}</div>
+                    {campsite.opening_hours && (
+                      <div className="text-xs text-gray-700 mb-1">🕒 {campsite.opening_hours}</div>
                     )}
                   </div>
 
@@ -449,23 +795,34 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
                     <div className="mt-2 p-2 bg-red-50 border border-red-200 rounded">
                       <div className="text-xs font-medium text-red-800 mb-1">⚠️ Vehicle Restrictions:</div>
                       <div className="text-xs text-red-700">
-                        {campsite.restrictions.maxHeight && (
-                          <div>Max height: {campsite.restrictions.maxHeight}m</div>
-                        )}
-                        {campsite.restrictions.maxWidth && (
-                          <div>Max width: {campsite.restrictions.maxWidth}m</div>
-                        )}
-                        {campsite.restrictions.maxLength && (
-                          <div>Max length: {campsite.restrictions.maxLength}m</div>
-                        )}
-                        {campsite.restrictions.maxWeight && (
-                          <div>Max weight: {campsite.restrictions.maxWeight}t</div>
-                        )}
+                        {campsite.restrictions}
                       </div>
                     </div>
                   )}
 
-                  <div className="mt-2 pt-2 border-t border-gray-200 text-xs text-gray-500">
+                  {/* Add to Route button */}
+                  <div className="mt-3 pt-2 border-t border-gray-200">
+                    {isCampsiteInRoute(campsite) ? (
+                      <div className="flex items-center justify-center py-2 px-3 bg-green-50 text-green-700 rounded-md text-xs font-medium">
+                        <svg className="w-4 h-4 mr-1.5" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                        Already in route
+                      </div>
+                    ) : (
+                      <button
+                        onClick={(e) => handleAddToRoute(campsite, e)}
+                        className="w-full flex items-center justify-center py-2 px-3 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-sm font-medium transition-colors"
+                      >
+                        <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                        </svg>
+                        Add to Route
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="mt-2 text-xs text-gray-500">
                     Data from {campsite.source} • ID: {campsite.osmId || campsite.id}
                   </div>
                 </div>

@@ -54,8 +54,8 @@ export interface CampsiteFilterProps {
   isLoading?: boolean;
 }
 
-// Default filter state
-export const DEFAULT_FILTER_STATE: CampsiteFilterState = {
+// Default filter state function (compatible with React Fast Refresh)
+export const getDefaultFilterState = (): CampsiteFilterState => ({
   visibleTypes: ['campsite', 'caravan_site', 'aire'],
   amenities: {
     electricity: false,
@@ -81,7 +81,7 @@ export const DEFAULT_FILTER_STATE: CampsiteFilterState = {
   searchLocation: '',
   maxResults: 100,
   sortBy: 'distance'
-};
+});
 
 // Campsite type configurations
 const CAMPSITE_TYPES = [
@@ -159,7 +159,7 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
       if (saved) {
         const parsedFilters = JSON.parse(saved);
         // Merge with default state to handle new filter options
-        const mergedFilters = { ...DEFAULT_FILTER_STATE, ...parsedFilters };
+        const mergedFilters = { ...getDefaultFilterState(), ...parsedFilters };
         onFilterChange(mergedFilters);
       }
     } catch (error) {
@@ -196,8 +196,9 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
 
   // Clear all filters
   const clearAllFilters = useCallback(() => {
-    onFilterChange(DEFAULT_FILTER_STATE);
-    persistFilters(DEFAULT_FILTER_STATE);
+    const defaultState = getDefaultFilterState();
+    onFilterChange(defaultState);
+    persistFilters(defaultState);
   }, [onFilterChange, persistFilters]);
 
   // Count active filters
@@ -563,6 +564,56 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
                         <option key={option.value} value={option.value}>{option.label}</option>
                       ))}
                     </select>
+                  </div>
+                </div>
+
+                {/* Map Legend */}
+                <div className="p-3 bg-gray-50 border border-gray-200 rounded mt-4">
+                  <div className="text-xs font-medium text-gray-700 mb-2">Map Legend</div>
+                  <div className="space-y-2">
+                    {/* Campsite type legend */}
+                    <div className="flex items-center space-x-2">
+                      <div className="w-5 h-6 flex-shrink-0">
+                        <svg viewBox="0 0 20 28" className="w-full h-full">
+                          <path d="M10 0C4.5 0 0 4.5 0 10c0 7.5 10 18 10 18s10-10.5 10-18C20 4.5 15.5 0 10 0z" fill="#22c55e" stroke="#16a34a" strokeWidth="1.5"/>
+                        </svg>
+                      </div>
+                      <span className="text-xs text-gray-700">Campsite (tent/caravan)</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <div className="w-5 h-6 flex-shrink-0">
+                        <svg viewBox="0 0 20 28" className="w-full h-full">
+                          <path d="M10 0C4.5 0 0 4.5 0 10c0 7.5 10 18 10 18s10-10.5 10-18C20 4.5 15.5 0 10 0z" fill="#3b82f6" stroke="#2563eb" strokeWidth="1.5"/>
+                        </svg>
+                      </div>
+                      <span className="text-xs text-gray-700">Caravan/Motorhome site</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <div className="w-5 h-6 flex-shrink-0">
+                        <svg viewBox="0 0 20 28" className="w-full h-full">
+                          <path d="M10 0C4.5 0 0 4.5 0 10c0 7.5 10 18 10 18s10-10.5 10-18C20 4.5 15.5 0 10 0z" fill="#8b5cf6" stroke="#7c3aed" strokeWidth="1.5"/>
+                        </svg>
+                      </div>
+                      <span className="text-xs text-gray-700">Aire de Service</span>
+                    </div>
+
+                    {/* Status indicators */}
+                    <div className="pt-2 mt-2 border-t border-gray-200">
+                      <div className="flex items-center space-x-2">
+                        <div className="w-5 h-6 flex-shrink-0">
+                          <svg viewBox="0 0 20 28" className="w-full h-full">
+                            <path d="M10 0C4.5 0 0 4.5 0 10c0 7.5 10 18 10 18s10-10.5 10-18C20 4.5 15.5 0 10 0z" fill="#ef4444" stroke="#dc2626" strokeWidth="1.5"/>
+                          </svg>
+                        </div>
+                        <span className="text-xs text-gray-700">May not fit your vehicle</span>
+                      </div>
+                      <div className="flex items-center space-x-2 mt-1">
+                        <div className="w-5 h-5 flex-shrink-0 flex items-center justify-center">
+                          <div className="w-4 h-4 rounded-full bg-green-500 text-white text-[8px] font-bold flex items-center justify-center border-2 border-white shadow">3</div>
+                        </div>
+                        <span className="text-xs text-gray-700">Clustered markers (zoom in)</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
