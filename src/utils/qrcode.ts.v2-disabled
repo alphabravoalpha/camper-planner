@@ -218,7 +218,7 @@ export function useQRCode(text: string, size: number = 256) {
       return;
     }
 
-    setQRData(prev => ({ ...prev, loading: true, error: null }));
+    setQRData((prev: { svg: string; dataUrl: string; loading: boolean; error: string | null }) => ({ ...prev, loading: true, error: null }));
 
     // Generate QR code asynchronously
     setTimeout(() => {

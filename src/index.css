@@ -1,11 +1,14 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+/* Import design tokens first */
+@import './styles/design-tokens.css';
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+:root {
+  font-family: var(--font-sans);
+  line-height: var(--leading-normal);
+  font-weight: var(--font-normal);
+
+  color-scheme: light;
+  color: var(--color-neutral-900);
+  background-color: var(--color-neutral-50);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;

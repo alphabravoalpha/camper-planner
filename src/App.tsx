@@ -2,9 +2,11 @@
 // Router setup and global providers
 
 import React, { Suspense } from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider, useLocation, Outlet } from 'react-router-dom';
 import { ErrorBoundary, Header, LoadingSpinner, MainLayout, Sidebar } from './components/layout';
 import { useUIStore } from './store';
+import { useOnboarding } from './hooks/useOnboarding';
+import OnboardingFlow from './components/onboarding/OnboardingFlow';
 import './i18n'; // Initialize i18next
 
 // Lazy load pages for better performance
@@ -12,21 +14,35 @@ const PlannerPage = React.lazy(() => import('./pages/PlannerPage'));
 const AboutPage = React.lazy(() => import('./pages/AboutPage'));
 const HelpPage = React.lazy(() => import('./pages/HelpPage'));
 const SettingsPage = React.lazy(() => import('./pages/SettingsPage'));
-const MapTestPage = React.lazy(() => import('./pages/MapTestPage'));
-const PlannerPageDebug = React.lazy(() => import('./pages/PlannerPageDebug'));
 const NotFoundPage = React.lazy(() => import('./pages/NotFoundPage'));
 
-// App Content Component (inside Router context)
-const AppContent: React.FC = () => {
+// Debug pages - only loaded in development
+const MapTestPage = import.meta.env.DEV ? React.lazy(() => import('./pages/MapTestPage')) : null;
+const PlannerPageDebug = import.meta.env.DEV ? React.lazy(() => import('./pages/PlannerPageDebug')) : null;
+
+// Root Layout Component (now uses Outlet)
+const RootLayout: React.FC = () => {
   const location = useLocation();
   const { isLoading, error, sidebarOpen } = useUIStore();
+  const { showOnboarding, completeOnboarding, skipOnboarding } = useOnboarding();
 
   // Determine if current page should have sidebar
-  const shouldShowSidebar = location.pathname === '/';
+  // Note: The sidebar is disabled for the planner page since MapContainer has its own
+  // compact toolbar with slide-out panels for all features (trip manager, planning tools,
+  // cost calculator, route optimizer, etc.). This provides a cleaner, more map-focused UX.
+  const shouldShowSidebar = false; // Disabled: sidebar functionality moved to MapContainer toolbar
 
   return (
     <ErrorBoundary>
       <div className="h-screen flex flex-col bg-gray-50">
+        {/* Onboarding Flow - Show for first-time users */}
+        {showOnboarding && location.pathname === '/' && (
+          <OnboardingFlow
+            onComplete={completeOnboarding}
+            onSkip={skipOnboarding}
+          />
+        )}
+
         {/* Header */}
         <Header />
 
@@ -94,15 +110,7 @@ const AppContent: React.FC = () => {
               </div>
             }
           >
-            <Routes>
-              <Route path="/" element={<PlannerPage />} />
-              <Route path="/about" element={<AboutPage />} />
-              <Route path="/help" element={<HelpPage />} />
-              <Route path="/settings" element={<SettingsPage />} />
-              <Route path="/test-map" element={<MapTestPage />} />
-              <Route path="/debug" element={<PlannerPageDebug />} />
-              <Route path="*" element={<NotFoundPage />} />
-            </Routes>
+            <Outlet />
           </Suspense>
         </MainLayout>
       </div>
@@ -110,12 +118,52 @@ const AppContent: React.FC = () => {
   );
 };
 
+// Router configuration with future flags
+const router = createBrowserRouter(
+  [
+    {
+      path: "/",
+      element: <RootLayout />,
+      children: [
+        {
+          index: true,
+          element: <PlannerPage />,
+        },
+        {
+          path: "about",
+          element: <AboutPage />,
+        },
+        {
+          path: "help",
+          element: <HelpPage />,
+        },
+        {
+          path: "settings",
+          element: <SettingsPage />,
+        },
+        // Debug routes - only available in development
+        ...(import.meta.env.DEV && MapTestPage ? [{
+          path: "test-map",
+          element: <MapTestPage />,
+        }] : []),
+        ...(import.meta.env.DEV && PlannerPageDebug ? [{
+          path: "debug",
+          element: <PlannerPageDebug />,
+        }] : []),
+        {
+          path: "*",
+          element: <NotFoundPage />,
+        },
+      ],
+    },
+  ],
+  {
+    basename: "/camper-planner",
+  }
+);
+
 function App() {
-  return (
-    <Router basename="/camper-planner">
-      <AppContent />
-    </Router>
-  );
+  return <RouterProvider router={router} />;
 }
 
 export default App;

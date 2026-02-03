@@ -1,10 +1,10 @@
 // Enhanced Landing Page
 // Phase 6.4: Launch-ready marketing content and user acquisition
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { cn } from '../../utils/cn';
 import { useAnimations } from '../../utils/animations';
-import { useAnalytics } from '../../utils/analytics';
+// import { useAnalytics } from '../../utils/analytics'; // V2 disabled
 
 interface LandingPageProps {
   onGetStarted: () => void;
@@ -14,10 +14,10 @@ interface LandingPageProps {
 // Hero Section
 const HeroSection: React.FC<{ onGetStarted: () => void }> = ({ onGetStarted }) => {
   const animations = useAnimations();
-  const { trackFeature } = useAnalytics();
+  // const { trackFeature } = useAnalytics(); // V2 disabled
 
   const handleGetStarted = () => {
-    trackFeature('landing', 'get_started_click');
+    // trackFeature('landing', 'get_started_click'); // V2 disabled
     onGetStarted();
   };
 
@@ -79,7 +79,7 @@ const HeroSection: React.FC<{ onGetStarted: () => void }> = ({ onGetStarted }) =
               </button>
               <button
                 onClick={() => {
-                  trackFeature('landing', 'watch_demo_click');
+                  // trackFeature('landing', 'watch_demo_click'); // V2 disabled
                   document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
                 }}
                 className={cn(
@@ -312,10 +312,10 @@ const SocialProofSection: React.FC = () => {
 // CTA Section
 const CTASection: React.FC<{ onGetStarted: () => void }> = ({ onGetStarted }) => {
   const animations = useAnimations();
-  const { trackFeature } = useAnalytics();
+  // const { trackFeature } = useAnalytics(); // V2 disabled
 
   const handleGetStarted = () => {
-    trackFeature('landing', 'cta_click');
+    // trackFeature('landing', 'cta_click'); // V2 disabled
     onGetStarted();
   };
 
@@ -367,11 +367,11 @@ const CTASection: React.FC<{ onGetStarted: () => void }> = ({ onGetStarted }) =>
 
 // Main Landing Page Component
 const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted, className }) => {
-  const { trackFeature } = useAnalytics();
+  // const { trackFeature } = useAnalytics(); // V2 disabled
 
   useEffect(() => {
-    trackFeature('landing', 'page_view');
-  }, [trackFeature]);
+    // trackFeature('landing', 'page_view'); // V2 disabled
+  }, []); // V2 disabled - removed trackFeature dependency
 
   return (
     <div className={cn('min-h-screen bg-white', className)}>

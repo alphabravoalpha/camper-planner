@@ -3,7 +3,7 @@
 
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { FeatureFlags } from '../../config';
-import { routeOptimizationService, OptimizationCriteria, OptimizationResult, WaypointInsertionResult } from '../../services/RouteOptimizationService';
+import { routeOptimizationService, type OptimizationCriteria, type OptimizationResult, type WaypointInsertionResult } from '../../services/RouteOptimizationService';
 import { useRouteStore, useVehicleStore, useUIStore } from '../../store';
 import { cn } from '../../utils/cn';
 
@@ -44,7 +44,7 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
   onWaypointInsert,
   isVisible = true
 }) => {
-  const { waypoints, calculatedRoute, setWaypoints, reorderWaypoints } = useRouteStore();
+  const { waypoints, reorderWaypoints } = useRouteStore();
   const { profile } = useVehicleStore();
   const { addNotification } = useUIStore();
 
@@ -147,7 +147,7 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
   }, []);
 
   // Handle insertion mode
-  const handleInsertionMode = useCallback((lat: number, lng: number) => {
+  const __handleInsertionMode = useCallback((lat: number, lng: number) => {
     if (!insertionMode) return;
 
     const newWaypoint = {

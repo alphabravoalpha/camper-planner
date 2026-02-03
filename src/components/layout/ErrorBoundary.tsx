@@ -1,7 +1,7 @@
 // Error Boundary Component
 // Catches and handles application errors gracefully
 
-import React, { Component, ErrorInfo, ReactNode } from 'react';
+import { Component, type ErrorInfo, type ReactNode } from 'react';
 
 interface Props {
   children: ReactNode;

@@ -3,8 +3,8 @@
 
 import React, { useState, useEffect } from 'react';
 import {
-  Save, Plus, Copy, Download, Upload, Search, Filter, Star, Calendar, MapPin,
-  Clock, Euro, Users, Tag, Trash2, Edit3, ExternalLink, BarChart3, X, Check,
+  Save, Copy, Download, Upload, Search, Star, Calendar, MapPin,
+  Clock, Euro, Users, Trash2, ExternalLink, BarChart3, X,
   Globe, Navigation, Mountain, Heart, Briefcase, Car
 } from 'lucide-react';
 import { useRouteStore } from '../../store';
@@ -12,15 +12,14 @@ import { useVehicleStore } from '../../store';
 import { useCostStore } from '../../store/costStore';
 import {
   TripStorageService,
-  Trip,
-  TripSummary,
-  TripMetadata,
-  TripComparison
+  type Trip,
+  type TripSummary,
+  type TripMetadata,
+  type TripComparison
 } from '../../services/TripStorageService';
-import {
-  TripTemplatesService,
-  TripTemplate
-} from '../../services/TripTemplatesService';
+import MultiFormatExportService, { type ExportOptions } from '../../services/MultiFormatExportService';
+import { type RouteResponse } from '../../services/RoutingService';
+// TripTemplatesService temporarily disabled for MVP
 
 interface TripManagerProps {
   className?: string;
@@ -47,13 +46,13 @@ const TripManager: React.FC<TripManagerProps> = ({
 }) => {
   // Store hooks
   const { waypoints } = useRouteStore();
-  const { selectedProfile } = useVehicleStore();
+  const { profile: selectedProfile } = useVehicleStore();
   const { fuelConsumptionSettings, fuelPriceSettings } = useCostStore();
 
   // State
   const [viewMode, setViewMode] = useState<ViewMode>('my_trips');
   const [trips, setTrips] = useState<TripSummary[]>([]);
-  const [templates, setTemplates] = useState<TripTemplate[]>([]);
+  const [templates, setTemplates] = useState<any[]>([]);
   const [recentTrips, setRecentTrips] = useState<TripSummary[]>([]);
   const [selectedTrips, setSelectedTrips] = useState<string[]>([]);
   const [comparison, setComparison] = useState<TripComparison | null>(null);
@@ -77,6 +76,19 @@ const TripManager: React.FC<TripManagerProps> = ({
   const [showImportModal, setShowImportModal] = useState(false);
   const [importData, setImportData] = useState('');
 
+  // Export modal state
+  const [showExportModal, setShowExportModal] = useState(false);
+  const [exportingTripId, setExportingTripId] = useState<string | null>(null);
+  const [exportFormat, setExportFormat] = useState<'gpx' | 'kml' | 'json' | 'csv'>('gpx');
+  const [exportOptions, setExportOptions] = useState<Partial<ExportOptions>>({
+    includeWaypoints: true,
+    includeTrackPoints: true,
+    includeInstructions: true,
+    includeElevation: true,
+    includeMetadata: true,
+    creator: 'European Camper Trip Planner'
+  });
+
   // Load data on component mount
   useEffect(() => {
     loadTrips();
@@ -94,7 +106,7 @@ const TripManager: React.FC<TripManagerProps> = ({
 
   const filteredTemplates = templates.filter(template => {
     const matchesSearch = template.metadata.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      template.metadata.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
+      template.metadata.tags.some((tag: string) => tag.toLowerCase().includes(searchQuery.toLowerCase()));
     const matchesCategory = categoryFilter === 'all' || template.metadata.category === categoryFilter;
     const matchesDifficulty = difficultyFilter === 'all' || template.metadata.difficulty === difficultyFilter;
     return matchesSearch && matchesCategory && matchesDifficulty;
@@ -112,8 +124,8 @@ const TripManager: React.FC<TripManagerProps> = ({
 
   const loadTemplates = async () => {
     try {
-      const allTemplates = TripTemplatesService.getTemplates();
-      setTemplates(allTemplates);
+      // TripTemplatesService disabled for MVP
+      setTemplates([]);
     } catch (err) {
       setError('Failed to load templates');
       console.error('Load templates error:', err);
@@ -259,23 +271,58 @@ const TripManager: React.FC<TripManagerProps> = ({
     }
   };
 
-  const handleExportTrip = async (tripId: string) => {
+  const handleExportTrip = (tripId: string) => {
+    setExportingTripId(tripId);
+    setShowExportModal(true);
+  };
+
+  const confirmExportTrip = async () => {
+    if (!exportingTripId) return;
+
     try {
-      const exportData = await TripStorageService.exportTrip(tripId);
-      if (exportData) {
-        const blob = new Blob([exportData], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `trip-${tripId}-${Date.now()}.json`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+      setIsLoading(true);
+      const trip = await TripStorageService.loadTrip(exportingTripId);
+
+      if (!trip) {
+        throw new Error('Trip not found');
+      }
+
+      // Create RouteResponse from trip data
+      const routeResponse = createRouteResponseFromTrip(trip);
+
+      // Set up export options with trip name
+      const finalExportOptions: ExportOptions = {
+        format: exportFormat,
+        includeWaypoints: exportOptions.includeWaypoints ?? true,
+        includeTrackPoints: exportOptions.includeTrackPoints ?? true,
+        includeInstructions: exportOptions.includeInstructions ?? true,
+        includeElevation: exportOptions.includeElevation ?? true,
+        includeMetadata: exportOptions.includeMetadata ?? true,
+        creator: exportOptions.creator || 'European Camper Trip Planner',
+        description: `${trip.metadata.name} - ${trip.metadata.description || 'Exported from Trip Manager'}`
+      };
+
+      // Use MultiFormatExportService to download the route
+      const success = await MultiFormatExportService.downloadRoute(
+        routeResponse,
+        trip.data.waypoints,
+        exportFormat,
+        trip.metadata.name,
+        finalExportOptions
+      );
+
+      if (success) {
+        setShowExportModal(false);
+        setExportingTripId(null);
+        // Reset form would go here if needed
+      } else {
+        throw new Error('Export download failed');
       }
     } catch (err) {
       setError('Failed to export trip');
       console.error('Export trip error:', err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -303,15 +350,11 @@ const TripManager: React.FC<TripManagerProps> = ({
     }
   };
 
-  const handleUseTemplate = async (template: TripTemplate) => {
+  const handleUseTemplate = async (_template: any) => {
     setIsLoading(true);
     try {
-      const trip = TripTemplatesService.templateToTrip(template);
-      const savedTrip = await TripStorageService.saveTrip(trip);
-      if (onTripLoad) {
-        onTripLoad(savedTrip);
-      }
-      await loadTrips();
+      // TripTemplatesService disabled for MVP
+      setError('Templates not available in MVP version');
     } catch (err) {
       setError('Failed to create trip from template');
       console.error('Template to trip error:', err);
@@ -337,6 +380,70 @@ const TripManager: React.FC<TripManagerProps> = ({
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // Helper function to calculate distance between waypoints
+  const calculateDistance = (waypoint1: any, waypoint2: any): number => {
+    const R = 6371; // Earth's radius in km
+    const dLat = (waypoint2.lat - waypoint1.lat) * Math.PI / 180;
+    const dLng = (waypoint2.lng - waypoint1.lng) * Math.PI / 180;
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(waypoint1.lat * Math.PI / 180) * Math.cos(waypoint2.lat * Math.PI / 180) *
+      Math.sin(dLng / 2) * Math.sin(dLng / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  };
+
+  const calculateTotalDistance = (waypoints: any[]): number => {
+    if (waypoints.length < 2) return 0;
+    let total = 0;
+    for (let i = 0; i < waypoints.length - 1; i++) {
+      total += calculateDistance(waypoints[i], waypoints[i + 1]);
+    }
+    return total;
+  };
+
+  // Helper function to create RouteResponse from trip data
+  const createRouteResponseFromTrip = (trip: Trip): RouteResponse => {
+    const waypoints = trip.data.waypoints;
+    return {
+      id: `trip_${trip.metadata.id}`,
+      status: 'success',
+      routes: [{
+        geometry: {
+          coordinates: waypoints.map(wp => [wp.lng, wp.lat]),
+          type: "LineString"
+        },
+        summary: {
+          distance: waypoints.length > 1 ? calculateTotalDistance(waypoints) * 1000 : 0,
+          duration: waypoints.length > 1 ? calculateTotalDistance(waypoints) / 70 * 3600 : 0
+        },
+        waypoints: waypoints.map((_, i) => i), // Waypoint indices in geometry
+        segments: [{
+          distance: waypoints.length > 1 ? calculateTotalDistance(waypoints) * 1000 : 0,
+          duration: waypoints.length > 1 ? calculateTotalDistance(waypoints) / 70 * 3600 : 0,
+          steps: waypoints.map((wp, index) => ({
+            instruction: index === 0 ? `Start at ${wp.name}` : `Continue to ${wp.name}`,
+            name: wp.name,
+            distance: index > 0 ? calculateDistance(waypoints[index-1], wp) * 1000 : 0,
+            duration: index > 0 ? calculateDistance(waypoints[index-1], wp) / 70 * 3600 : 0,
+            geometry: { coordinates: [wp.lng, wp.lat] },
+            maneuver: { location: [wp.lng, wp.lat] },
+            wayPoints: [0, 1]
+          }))
+        }]
+      }],
+      metadata: {
+        service: 'openrouteservice',
+        profile: trip.data.vehicleProfile?.type || 'driving-hgv',
+        timestamp: Date.now(),
+        query: {
+          waypoints: waypoints,
+          vehicleProfile: trip.data.vehicleProfile
+        },
+        attribution: 'OpenRouteService'
+      }
+    };
   };
 
   const estimateCountries = (waypoints: any[]): string[] => {
@@ -690,7 +797,7 @@ const TripManager: React.FC<TripManagerProps> = ({
 
                   <div className="text-sm mb-3">
                     <strong>Best months: </strong>
-                    {template.templateInfo.recommendedMonths.map(month =>
+                    {template.templateInfo.recommendedMonths.map((month: number) =>
                       new Date(2024, month - 1, 1).toLocaleDateString('en', { month: 'short' })
                     ).join(', ')}
                   </div>
@@ -699,7 +806,7 @@ const TripManager: React.FC<TripManagerProps> = ({
                     <div className="text-sm">
                       <strong>Highlights:</strong>
                       <ul className="mt-1 space-y-1">
-                        {template.templateInfo.highlights.slice(0, 2).map((highlight, index) => (
+                        {template.templateInfo.highlights.slice(0, 2).map((highlight: string, index: number) => (
                           <li key={index} className="text-gray-600">• {highlight}</li>
                         ))}
                         {template.templateInfo.highlights.length > 2 && (
@@ -1041,6 +1148,113 @@ const TripManager: React.FC<TripManagerProps> = ({
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
               >
                 Import Trip
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Export Trip Modal */}
+      {showExportModal && exportingTripId && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
+            <div className="p-4 border-b">
+              <h3 className="text-lg font-semibold">Export Trip</h3>
+            </div>
+            <div className="p-4 space-y-4">
+              {/* Format Selection */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Export Format
+                </label>
+                <div className="grid grid-cols-2 gap-2">
+                  {[
+                    { id: 'gpx', label: 'GPX', desc: 'For GPS devices' },
+                    { id: 'kml', label: 'KML', desc: 'For Google Earth' },
+                    { id: 'json', label: 'JSON', desc: 'Complete trip data' },
+                    { id: 'csv', label: 'CSV', desc: 'For spreadsheets' }
+                  ].map(format => (
+                    <label key={format.id} className="relative">
+                      <input
+                        type="radio"
+                        name="exportFormat"
+                        value={format.id}
+                        checked={exportFormat === format.id}
+                        onChange={(e) => setExportFormat(e.target.value as 'gpx' | 'kml' | 'json' | 'csv')}
+                        className="sr-only"
+                      />
+                      <div className={`p-2 border-2 rounded-lg cursor-pointer transition-all text-center ${
+                        exportFormat === format.id
+                          ? "border-blue-500 bg-blue-50"
+                          : "border-gray-200 hover:border-gray-300"
+                      }`}>
+                        <div className="font-medium text-sm">{format.label}</div>
+                        <div className="text-xs text-gray-500">{format.desc}</div>
+                      </div>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              {/* Export Options */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Include Data
+                </label>
+                <div className="space-y-2">
+                  {[
+                    { key: 'includeWaypoints', label: 'Route Waypoints' },
+                    { key: 'includeTrackPoints', label: 'Track Points' },
+                    { key: 'includeInstructions', label: 'Turn Instructions' },
+                    { key: 'includeElevation', label: 'Elevation Data' },
+                    { key: 'includeMetadata', label: 'Trip Metadata' }
+                  ].map(option => (
+                    <label key={option.key} className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        checked={exportOptions[option.key as keyof typeof exportOptions] as boolean}
+                        onChange={(e) => setExportOptions(prev => ({
+                          ...prev,
+                          [option.key]: e.target.checked
+                        }))}
+                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                      />
+                      <span className="text-sm font-medium text-gray-900">{option.label}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              {/* Creator */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Creator
+                </label>
+                <input
+                  type="text"
+                  value={exportOptions.creator || ''}
+                  onChange={(e) => setExportOptions(prev => ({ ...prev, creator: e.target.value }))}
+                  placeholder="European Camper Trip Planner"
+                  className="w-full px-3 py-2 border rounded-lg text-sm"
+                />
+              </div>
+            </div>
+            <div className="p-4 border-t flex justify-end gap-2">
+              <button
+                onClick={() => {
+                  setShowExportModal(false);
+                  setExportingTripId(null);
+                }}
+                className="px-4 py-2 border rounded-lg hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmExportTrip}
+                disabled={isLoading}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+              >
+                {isLoading ? 'Exporting...' : 'Export Trip'}
               </button>
             </div>
           </div>

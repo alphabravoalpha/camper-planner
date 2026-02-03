@@ -1,0 +1,138 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e6]:
+      - generic [ref=e7]:
+        - button "Toggle sidebar" [ref=e8] [cursor=pointer]:
+          - img [ref=e9]
+        - link "Camper Planner" [ref=e11] [cursor=pointer]:
+          - /url: /camper-planner
+          - img [ref=e13]
+          - heading "Camper Planner" [level=1] [ref=e16]
+      - generic [ref=e17]:
+        - button "EN" [disabled] [ref=e18]:
+          - img [ref=e19]
+          - generic [ref=e21]: EN
+        - button "Toggle menu" [ref=e22] [cursor=pointer]:
+          - img [ref=e23]
+  - main [ref=e26]:
+    - generic [ref=e29]:
+      - generic [ref=e30]:
+        - generic [ref=e31]:
+          - link "Leaflet" [ref=e32] [cursor=pointer]:
+            - /url: https://leafletjs.com
+            - img [ref=e33]
+            - text: Leaflet
+          - text: "| ©"
+          - link "OpenStreetMap" [ref=e37] [cursor=pointer]:
+            - /url: https://www.openstreetmap.org/copyright
+          - text: contributors
+        - button "Open layer control" [ref=e39] [cursor=pointer]:
+          - generic [ref=e40]: 🗺️
+      - button "Vehicle profile" [ref=e43] [cursor=pointer]:
+        - generic [ref=e44]:
+          - generic [ref=e45]: 🚐
+          - generic [ref=e47]: Setup Vehicle
+      - generic [ref=e51]:
+        - generic [ref=e52]:
+          - heading "Vehicle Configuration" [level=2] [ref=e53]
+          - button [ref=e54] [cursor=pointer]:
+            - img [ref=e55]
+        - generic [ref=e58]:
+          - generic [ref=e59]:
+            - generic [ref=e60]:
+              - heading "🚐 Vehicle Profile" [level=2] [ref=e61]
+              - paragraph [ref=e62]: Set your vehicle dimensions for safe routing
+            - button "Metric" [ref=e65] [cursor=pointer]
+          - generic [ref=e66]:
+            - button "🚐 Base Vehicle" [ref=e67] [cursor=pointer]
+            - button "🚌 Motorhome" [ref=e68] [cursor=pointer]
+            - button "✏️ Custom" [ref=e69] [cursor=pointer]
+          - generic [ref=e70]:
+            - paragraph [ref=e71]: Select your base vehicle to auto-fill dimensions
+            - generic [ref=e72]:
+              - generic [ref=e73]: Make
+              - combobox [ref=e74]:
+                - option "Select make..." [selected]
+                - option "Fiat (Italy)"
+                - option "Peugeot (France)"
+                - option "Citroën (France)"
+                - option "Mercedes-Benz (Germany)"
+                - option "Volkswagen (Germany)"
+                - option "Ford (USA/Europe)"
+                - option "Renault (France)"
+                - option "MAN (Germany)"
+                - option "Opel / Vauxhall (Germany/UK)"
+                - option "Iveco (Italy)"
+          - generic [ref=e75]:
+            - generic [ref=e76]:
+              - generic [ref=e77]:
+                - generic [ref=e78]: 📏
+                - generic [ref=e79]: Height
+                - img [ref=e81]
+              - generic [ref=e83]:
+                - spinbutton "Height" [ref=e84]: "3.5"
+                - generic:
+                  - generic: m
+            - generic [ref=e85]:
+              - generic [ref=e86]:
+                - generic [ref=e87]: ↔️
+                - generic [ref=e88]: Width
+                - img [ref=e90]
+              - generic [ref=e92]:
+                - spinbutton "Width" [ref=e93]: "1.9"
+                - generic:
+                  - generic: m
+            - generic [ref=e94]:
+              - generic [ref=e95]:
+                - generic [ref=e96]: 📐
+                - generic [ref=e97]: Length
+                - img [ref=e99]
+              - generic [ref=e101]:
+                - spinbutton "Length" [ref=e102]: "5.0"
+                - generic:
+                  - generic: m
+            - generic [ref=e103]:
+              - generic [ref=e104]:
+                - generic [ref=e105]: ⚖️
+                - generic [ref=e106]: Weight
+                - img [ref=e108]
+              - generic [ref=e110]:
+                - spinbutton "Weight" [ref=e111]: "3.0"
+                - generic:
+                  - generic: t
+          - generic [ref=e112]:
+            - button "Save" [disabled] [ref=e113]:
+              - generic [ref=e114]: Save
+            - button "Reset" [ref=e115] [cursor=pointer]
+          - paragraph [ref=e117]:
+            - text: 💡
+            - strong [ref=e118]: "Tip:"
+            - text: Routes will avoid roads with height/weight restrictions your vehicle cannot handle.
+      - generic [ref=e119]:
+        - generic [ref=e121]:
+          - button "Zoom in" [ref=e122] [cursor=pointer]:
+            - img [ref=e123]
+          - button "Zoom out" [ref=e125] [cursor=pointer]:
+            - img [ref=e126]
+        - button "Open more options" [ref=e127] [cursor=pointer]:
+          - img [ref=e128]
+        - paragraph [ref=e131]: Tap map to add waypoints
+      - generic [ref=e134]:
+        - generic [ref=e135]: 0 waypoints
+        - generic [ref=e136]: Long-press map to add waypoint
+      - generic:
+        - generic [ref=e138]:
+          - generic [ref=e139]:
+            - generic [ref=e140]:
+              - generic [ref=e141]: 🗺️
+              - heading "Welcome to Camper Planner! 🚐" [level=3] [ref=e142]
+            - button [ref=e143] [cursor=pointer]:
+              - img [ref=e144]
+          - paragraph [ref=e146]: Plan your perfect European camping trip by clicking on the map to add waypoints.
+          - generic [ref=e147]: 💡 Click anywhere on the map to start
+        - button "Toggle help panel" [ref=e150] [cursor=pointer]:
+          - img [ref=e151]
+```

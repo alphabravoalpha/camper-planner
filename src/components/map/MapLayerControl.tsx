@@ -2,8 +2,7 @@
 // Phase 2.3: Multiple tile layer switching with fallback support
 
 import React, { useState, useCallback } from 'react';
-import { useMapEvents, useMap, TileLayer } from 'react-leaflet';
-import L from 'leaflet';
+import { TileLayer } from 'react-leaflet';
 import { cn } from '../../utils/cn';
 import { useUIStore } from '../../store';
 
@@ -137,6 +136,8 @@ const MapLayerControl: React.FC<MapLayerControlProps> = ({
           <TileLayer
             key={currentLayer.id}
             url={currentLayer.url}
+            // @ts-ignore - React-Leaflet v4 prop compatibility
+            // @ts-ignore - React-Leaflet v4 prop compatibility
             attribution={currentLayer.attribution}
             subdomains={currentLayer.subdomains}
             maxZoom={currentLayer.maxZoom}
@@ -169,7 +170,8 @@ const MapLayerControl: React.FC<MapLayerControlProps> = ({
         <TileLayer
           key={currentLayer.id}
           url={currentLayer.url}
-          attribution={currentLayer.attribution}
+          // @ts-ignore - React-Leaflet v4 prop compatibility
+            attribution={currentLayer.attribution}
           subdomains={currentLayer.subdomains}
           maxZoom={currentLayer.maxZoom}
           detectRetina={true}

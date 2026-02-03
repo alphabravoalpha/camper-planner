@@ -1,9 +1,9 @@
 // Planning Tools Component
 // Phase 5.4: Comprehensive trip planning with intelligent recommendations
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  Calendar, Clock, MapPin, AlertTriangle, CheckCircle, Info, TrendingUp,
+  Calendar, Clock, AlertTriangle, CheckCircle, Info, TrendingUp,
   Route, Users, Thermometer, Cloud, Car, Bed, Coffee, Camera, Fuel,
   Navigation, Target, BarChart3, Settings, ChevronDown, ChevronUp
 } from 'lucide-react';
@@ -11,12 +11,12 @@ import { useRouteStore } from '../../store';
 import { useVehicleStore } from '../../store';
 import {
   TripPlanningService,
-  TripPlan,
-  DailyStage,
-  TripMetrics,
-  PlanningRecommendation,
-  SeasonalFactors,
-  DrivingLimits
+  type TripPlan,
+  type DailyStage,
+  type TripMetrics,
+  type PlanningRecommendation,
+  type SeasonalFactors,
+  type DrivingLimits
 } from '../../services/TripPlanningService';
 
 interface PlanningToolsProps {
@@ -35,7 +35,7 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
 }) => {
   // Store hooks
   const { waypoints } = useRouteStore();
-  const { selectedProfile } = useVehicleStore();
+  const { profile } = useVehicleStore();
 
   // State
   const [viewMode, setViewMode] = useState<ViewMode>('overview');
@@ -59,7 +59,7 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
       setMetrics(null);
       setRecommendations([]);
     }
-  }, [waypoints, selectedProfile, season, startDate]);
+  }, [waypoints, profile, season, startDate]);
 
   const calculateTripPlan = async () => {
     setIsCalculating(true);
@@ -71,23 +71,23 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
       // Create trip plan
       const plan = TripPlanningService.createTripPlan(
         waypoints,
-        selectedProfile || undefined,
+        profile || undefined,
         startDateTime,
         season
       );
 
       // Calculate metrics
-      const tripMetrics = TripPlanningService.calculateTripMetrics(plan, selectedProfile || undefined);
+      const tripMetrics = TripPlanningService.calculateTripMetrics(plan, profile || undefined);
 
       // Get driving limits
-      const limits = TripPlanningService.getDrivingLimits(selectedProfile || undefined, season);
+      const limits = TripPlanningService.getDrivingLimits(profile || undefined, season);
 
       // Generate recommendations
       const planningRecs = TripPlanningService.generatePlanningRecommendations(
         plan,
         tripMetrics,
         season,
-        selectedProfile || undefined
+        profile || undefined
       );
 
       // Get seasonal factors
@@ -232,8 +232,8 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
             <div className="flex items-center gap-2 px-3 py-2 bg-white border rounded-lg text-sm">
               <Car className="w-4 h-4 text-gray-400" />
               <span className="capitalize">
-                {selectedProfile?.type || 'Default'}
-                {selectedProfile?.length && ` (${selectedProfile.length}m)`}
+                {profile?.type || 'Default'}
+                {profile?.length && ` (${profile.length}m)`}
               </span>
             </div>
           </div>
@@ -423,7 +423,7 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
                   </div>
                 </div>
 
-                {tripPlan.dailyStages.map((stage, index) => (
+                {tripPlan.dailyStages.map((stage) => (
                   <div key={stage.day} className="border rounded-lg overflow-hidden">
                     <div
                       className="p-4 cursor-pointer hover:bg-gray-50"

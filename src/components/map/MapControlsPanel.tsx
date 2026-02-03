@@ -2,14 +2,14 @@
 // Phase 2.3: Comprehensive map controls with fullscreen and advanced features
 
 import React, { useState, useCallback } from 'react';
-import { Map as LeafletMap } from 'leaflet';
+import * as L from 'leaflet';
 import { cn } from '../../utils/cn';
 import { useRouteStore, useUIStore } from '../../store';
 import { zoomToFitWaypoints, calculateRouteDistance, formatDistance } from '../../utils/mapUtils';
 import { useMapKeyboardShortcuts } from '../../hooks/useMapKeyboardShortcuts';
 
 interface MapControlsPanelProps {
-  map: LeafletMap | null;
+  map: L.Map | null;
   isFullscreen: boolean;
   onToggleFullscreen: () => void;
   onResetView: () => void;
@@ -81,7 +81,7 @@ const MapControlsPanel: React.FC<MapControlsPanelProps> = ({
   const routeDistance = calculateRouteDistance(waypoints);
 
   return (
-    <div className="absolute top-4 right-4 z-30 flex flex-col space-y-2 hidden sm:flex">
+    <div className="absolute top-4 right-3 z-40 flex flex-col space-y-2 hidden sm:flex">
       {/* Main Controls */}
       <div className="bg-white rounded-lg shadow-md overflow-hidden">
         {/* Zoom Controls */}
@@ -213,33 +213,7 @@ const MapControlsPanel: React.FC<MapControlsPanelProps> = ({
         </div>
       )}
 
-      {/* Route Info Panel (when waypoints exist) */}
-      {waypoints.length > 0 && (
-        <div className="bg-white rounded-lg shadow-md p-3 min-w-48">
-          <h3 className="font-semibold text-gray-900 mb-2 text-sm">Route Info</h3>
-          <div className="space-y-1 text-xs">
-            <div className="flex justify-between">
-              <span className="text-gray-600">Waypoints:</span>
-              <span className="font-medium">{waypoints.length}</span>
-            </div>
-            {routeDistance > 0 && (
-              <div className="flex justify-between">
-                <span className="text-gray-600">Distance:</span>
-                <span className="font-medium">{formatDistance(routeDistance)}</span>
-              </div>
-            )}
-            <div className="flex justify-between">
-              <span className="text-gray-600">Status:</span>
-              <span className={cn(
-                "font-medium",
-                waypoints.length >= 2 ? "text-green-600" : "text-orange-600"
-              )}>
-                {waypoints.length >= 2 ? "Ready for routing" : "Need more waypoints"}
-              </span>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Route Info Panel removed - info now shown in RouteCalculator component */}
     </div>
   );
 };

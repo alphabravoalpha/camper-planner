@@ -20,7 +20,7 @@ export interface ExportableWaypoint {
   lat: number;
   lng: number;
   elevation?: number;
-  type: 'start' | 'waypoint' | 'end';
+  type: 'start' | 'waypoint' | 'end' | 'campsite' | 'accommodation';
   order: number;
 }
 
@@ -144,6 +144,7 @@ export function prepareRouteForExport(
       segmentPoints.push({
         lat: coord[1],
         lng: coord[0],
+        // @ts-ignore - Optional elevation coordinate access - third element may or may not exist, handled safely
         elevation: coord[2], // Third element if present
         distance: cumulativeDistance
       });

@@ -115,7 +115,7 @@ i18n
 
     // Load missing keys in development
     saveMissing: import.meta.env.DEV,
-    missingKeyHandler: (lng, ns, key) => {
+    missingKeyHandler: (_lng, _ns, key) => {
       if (import.meta.env.DEV) {
         console.warn(`Missing translation key: ${key}`);
       }

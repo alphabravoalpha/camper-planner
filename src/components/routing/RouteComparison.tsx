@@ -3,7 +3,7 @@
 
 import React, { useState } from 'react';
 import { useRouteStore, useVehicleStore, useUIStore } from '../../store';
-import { RouteResponse, RouteData } from '../../services/RoutingService';
+import { type RouteResponse, type RouteData } from '../../services/RoutingService';
 import { cn } from '../../utils/cn';
 
 interface RouteComparisonProps {
@@ -34,7 +34,7 @@ const RouteComparison: React.FC<RouteComparisonProps> = ({ className }) => {
       label: 'Main Route',
       isCurrent: true
     },
-    ...(calculatedRoute.alternativeRoutes || []).map((altRoute, index) => ({
+    ...(calculatedRoute.alternativeRoutes || []).map((altRoute: RouteData, index: number) => ({
       id: `alt-${index}`,
       route: altRoute,
       label: `Alternative ${index + 1}`,

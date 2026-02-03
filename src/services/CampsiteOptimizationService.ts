@@ -1,11 +1,10 @@
 // Campsite-Aware Route Optimization Service
 // Phase 5.1: Integration of campsite stops with route optimization
 
-import { routeOptimizationService, OptimizationCriteria, OptimizationResult } from './RouteOptimizationService';
-import { campsiteService, Campsite } from './CampsiteService';
-import { CampsiteFilterService } from './CampsiteFilterService';
-import { Waypoint } from '../store';
-import { VehicleProfile } from '../store';
+import { routeOptimizationService, type OptimizationCriteria, type OptimizationResult } from './RouteOptimizationService';
+import { campsiteService, type Campsite } from './CampsiteService';
+import { type Waypoint } from '../store';
+import { type VehicleProfile } from '../store';
 
 export interface CampsiteOptimizationRequest {
   waypoints: Waypoint[];

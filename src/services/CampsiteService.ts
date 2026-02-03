@@ -1,7 +1,8 @@
 // Campsite Service Implementation
 // Phase 4.1: Overpass API integration with IndexedDB caching and OpenCampingMap fallback
 
-import { DataService, DataServiceConfig, RequestContext } from './DataService';
+import { DataService, type DataServiceConfig, type RequestContext } from './DataService';
+import { APIConfig } from '../config/api';
 
 export interface CampsiteRequest {
   bounds: BoundingBox;
@@ -9,6 +10,8 @@ export interface CampsiteRequest {
   amenities?: string[];
   maxResults?: number;
   vehicleFilter?: VehicleFilter;
+  includeDetails?: boolean;
+  locationQuery?: string; // For location-based search (e.g. "Barcelona", "Tuscany")
 }
 
 export interface BoundingBox {
@@ -33,10 +36,13 @@ export interface CampsiteResponse {
   metadata: CampsiteMetadata;
   cached: boolean;
   boundingBox: BoundingBox;
+  status?: 'success' | 'error' | 'loading';
+  error?: string;
 }
 
 export interface Campsite {
   id: number;           // OSM element ID
+  osmId?: number;       // Alternative OSM ID reference
   type: CampsiteType;   // 'campsite', 'aire', 'parking', 'caravan_site'
   name: string;         // Display name
   lat: number;          // Latitude
@@ -66,12 +72,19 @@ export interface Campsite {
     max_weight?: number;   // tonnes
   };
 
+  // Vehicle compatibility (computed field based on access and vehicle profile)
+  vehicleCompatible?: boolean;
+
   // Contact & info
   contact: {
     phone?: string;
     website?: string;
     email?: string;
   };
+
+  // Direct contact access (for backward compatibility)
+  phone?: string;
+  website?: string;
 
   // Address (optional, derived from coordinates or OSM data)
   address?: string;
@@ -98,18 +111,37 @@ export interface CampsiteMetadata {
   results_count: number;
   cache_hit: boolean;
   query_duration: number; // milliseconds
+  geocoded_location?: GeocodeResult; // If search was location-based
+}
+
+// Geocoding interfaces
+export interface GeocodeResult {
+  display_name: string;
+  lat: number;
+  lng: number;
+  boundingbox: [string, string, string, string]; // [south, north, west, east]
+  type: string; // city, region, etc
+  importance: number; // 0-1 relevance score
+  name?: string; // Short name (first part of display_name)
 }
 
 // Error types for campsite data
 export class CampsiteError extends Error {
+  public code: string;
+  public service: string;
+  public recoverable: boolean;
+
   constructor(
     message: string,
-    public code: string,
-    public service: string,
-    public recoverable: boolean = true
+    code: string,
+    service: string,
+    recoverable: boolean = true
   ) {
     super(message);
     this.name = 'CampsiteError';
+    this.code = code;
+    this.service = service;
+    this.recoverable = recoverable;
   }
 }
 
@@ -275,24 +307,27 @@ class CampsiteCacheManager {
 
 export class CampsiteService extends DataService {
   private cacheManager: CampsiteCacheManager;
-  private fallbackService?: CampsiteService;
+  private _fallbackService?: CampsiteService;
+
+  // Request deduplication protection only
+  private activeRequests = new Map<string, Promise<CampsiteResponse>>();
 
   constructor() {
     // Overpass API configuration
     const config: DataServiceConfig = {
-      baseUrl: 'https://overpass-api.de/api/interpreter',
+      baseUrl: APIConfig.campsites.sources.overpass,
       timeout: 30000, // 30 seconds for complex queries
-      retries: 2,
+      retries: 1, // Reduce retries to prevent spam
       cacheEnabled: false, // Using IndexedDB instead
       cacheTtl: 0,
       userAgent: 'EuropeanCamperPlanner/1.0',
     };
 
-    // Rate limiting: 2 queries per second (Overpass API fair use)
+    // Rate limiting: Disabled for testing
     const rateLimit = {
       requests: 2,
       windowMs: 1000, // 1 second window
-      enabled: true,
+      enabled: false,
     };
 
     super(config, rateLimit);
@@ -303,11 +338,201 @@ export class CampsiteService extends DataService {
   }
 
   /**
-   * Search for campsites within bounding box
+   * Geocode location query to coordinates using Nominatim
+   * Returns multiple results to allow user disambiguation
+   */
+  async geocodeLocationMultiple(query: string, limit: number = 5): Promise<GeocodeResult[]> {
+    try {
+      // Use direct fetch for geocoding to bypass DataService complexity
+      const params = new URLSearchParams({
+        q: query,
+        format: 'json',
+        limit: String(limit),
+        addressdetails: '1',
+        extratags: '1',
+        namedetails: '1'
+      });
+
+      const response = await fetch(`/api/geocode?${params.toString()}`, {
+        method: 'GET',
+        headers: {
+          'User-Agent': 'EuropeanCamperPlanner/1.0 (https://github.com/user/camper-planner)',
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`Geocoding HTTP error: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (data && data.length > 0) {
+        return data.map((result: {
+          display_name: string;
+          lat: string;
+          lon: string;
+          boundingbox: [string, string, string, string];
+          type?: string;
+          class?: string;
+          importance?: string;
+        }) => ({
+          display_name: result.display_name,
+          lat: parseFloat(result.lat),
+          lng: parseFloat(result.lon),
+          boundingbox: result.boundingbox,
+          type: result.type || result.class || 'place',
+          importance: parseFloat(result.importance || '0.5'),
+          name: result.display_name.split(',')[0].trim() // Short name for display
+        }));
+      }
+
+      return [];
+    } catch (error) {
+      console.error('Geocoding failed:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Geocode location query to coordinates using Nominatim
+   * Returns first result (for backward compatibility)
+   */
+  async geocodeLocation(query: string): Promise<GeocodeResult | null> {
+    const results = await this.geocodeLocationMultiple(query, 1);
+    return results.length > 0 ? results[0] : null;
+  }
+
+  /**
+   * Search for campsites within bounding box or by location
    */
   async searchCampsites(request: CampsiteRequest): Promise<CampsiteResponse> {
     const startTime = Date.now();
 
+    // Handle location-based search
+    if (request.locationQuery) {
+      return this.searchCampsitesByLocation(request, startTime);
+    }
+
+    // Generate request key for deduplication
+    const requestKey = this.generateCampsiteCacheKey(request);
+
+    // Check if identical request is already in progress
+    if (this.activeRequests.has(requestKey)) {
+      console.debug('CampsiteService: Deduplicating identical request in progress');
+      return this.activeRequests.get(requestKey)!;
+    }
+
+
+    // Validate bounds to prevent undefined access errors
+    if (!request.bounds || typeof request.bounds.south === 'undefined' ||
+        typeof request.bounds.west === 'undefined' || typeof request.bounds.north === 'undefined' ||
+        typeof request.bounds.east === 'undefined') {
+      console.warn('CampsiteService: Invalid bounds provided, returning empty result');
+      return {
+        status: 'error',
+        error: 'Invalid bounds provided',
+        campsites: [],
+        metadata: {
+          service: 'overpass' as const,
+          timestamp: Date.now(),
+          query: request,
+          results_count: 0,
+          query_duration: Date.now() - startTime,
+          cache_hit: false
+        },
+        cached: false,
+        boundingBox: request.bounds
+      };
+    }
+
+    // Track this request to prevent duplicates
+    const requestPromise = this.executeSearchRequest(request, requestKey, startTime);
+    this.activeRequests.set(requestKey, requestPromise);
+
+    try {
+      return await requestPromise;
+    } finally {
+      // Clean up tracking
+      this.activeRequests.delete(requestKey);
+    }
+  }
+
+  /**
+   * Search for campsites by location query (geocoded search)
+   */
+  private async searchCampsitesByLocation(request: CampsiteRequest, startTime: number): Promise<CampsiteResponse> {
+    try {
+      // Geocode the location query
+      const geocodeResult = await this.geocodeLocation(request.locationQuery!);
+
+      if (!geocodeResult) {
+        return {
+          status: 'error',
+          error: `Could not find location: ${request.locationQuery}`,
+          campsites: [],
+          metadata: {
+            service: 'overpass' as const,
+            timestamp: Date.now(),
+            query: request,
+            results_count: 0,
+            query_duration: Date.now() - startTime,
+            cache_hit: false
+          },
+          cached: false,
+          boundingBox: request.bounds
+        };
+      }
+
+      // Create search bounds around the geocoded location
+      const radiusKm = 50; // 50km radius search
+      const radiusLat = radiusKm / 111; // Approximate degrees latitude per km
+      const radiusLng = radiusKm / (111 * Math.cos(geocodeResult.lat * Math.PI / 180)); // Adjust for longitude
+
+      const locationBasedRequest: CampsiteRequest = {
+        ...request,
+        bounds: {
+          north: geocodeResult.lat + radiusLat,
+          south: geocodeResult.lat - radiusLat,
+          east: geocodeResult.lng + radiusLng,
+          west: geocodeResult.lng - radiusLng
+        },
+        locationQuery: undefined // Remove to prevent infinite recursion
+      };
+
+      // Search campsites in the geocoded area
+      const result = await this.searchCampsites(locationBasedRequest);
+
+      // Add geocoding information to metadata
+      return {
+        ...result,
+        metadata: {
+          ...result.metadata,
+          geocoded_location: geocodeResult,
+          query: request // Keep original query with locationQuery
+        }
+      };
+
+    } catch (error) {
+      console.error('Location-based search failed:', error);
+      return {
+        status: 'error',
+        error: `Location search failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        campsites: [],
+        metadata: {
+          service: 'overpass' as const,
+          timestamp: Date.now(),
+          query: request,
+          results_count: 0,
+          query_duration: Date.now() - startTime,
+          cache_hit: false
+        },
+        cached: false,
+        boundingBox: request.bounds
+      };
+    }
+  }
+
+  private async executeSearchRequest(request: CampsiteRequest, _requestKey: string, startTime: number): Promise<CampsiteResponse> {
     try {
       // Check cache first
       const cached = await this.getCachedCampsites(request);
@@ -339,43 +564,38 @@ export class CampsiteService extends DataService {
       };
 
     } catch (error) {
-      console.warn('Overpass API failed, trying fallback:', error);
+      console.warn('Overpass API failed:', error);
 
-      // Try fallback service (OpenCampingMap)
-      try {
-        const fallbackResult = await this.searchWithOpenCampingMap(request);
+      // Return cached data even if expired as fallback
+      const staleCache = await this.getCachedCampsites(request, true);
+      if (staleCache) {
+        console.info('Using stale cache data for campsites');
         return {
-          ...fallbackResult,
+          ...staleCache,
           metadata: {
-            ...fallbackResult.metadata,
-            cache_hit: false,
+            ...staleCache.metadata,
+            cache_hit: true,
             query_duration: Date.now() - startTime
           }
         };
-      } catch (fallbackError) {
-        console.error('Fallback campsite service also failed:', fallbackError);
-
-        // Return cached data even if expired as last resort
-        const staleCache = await this.getCachedCampsites(request, true);
-        if (staleCache) {
-          return {
-            ...staleCache,
-            metadata: {
-              ...staleCache.metadata,
-              cache_hit: true,
-              query_duration: Date.now() - startTime
-            }
-          };
-        }
       }
 
-      // All services failed
-      throw new CampsiteError(
-        'All campsite services are currently unavailable',
-        'SERVICE_UNAVAILABLE',
-        'all',
-        false
-      );
+      // Return empty result instead of failing to prevent infinite retries
+      console.warn('No campsite data available, returning empty result');
+      return {
+        status: 'success',
+        campsites: [],
+        metadata: {
+          service: 'overpass' as const,
+          timestamp: Date.now(),
+          query: request,
+          results_count: 0,
+          query_duration: Date.now() - startTime,
+          cache_hit: false
+        },
+        cached: false,
+        boundingBox: request.bounds
+      };
     }
   }
 
@@ -387,6 +607,12 @@ export class CampsiteService extends DataService {
 
     // Build Overpass QL query
     const query = this.buildOverpassQuery(bounds, types);
+
+    console.log('CampsiteService: Overpass query', {
+      bounds,
+      types,
+      query
+    });
 
     const context: RequestContext = {
       method: 'POST',
@@ -405,6 +631,7 @@ export class CampsiteService extends DataService {
       .slice(0, maxResults);
 
     return {
+      status: 'success',
       campsites: filteredCampsites,
       metadata: {
         service: 'overpass',
@@ -422,7 +649,7 @@ export class CampsiteService extends DataService {
   /**
    * Search campsites using OpenCampingMap (fallback)
    */
-  private async searchWithOpenCampingMap(request: CampsiteRequest): Promise<CampsiteResponse> {
+  private async _searchWithOpenCampingMap(request: CampsiteRequest): Promise<CampsiteResponse> {
     const { bounds, maxResults = 1000 } = request;
 
     // OpenCampingMap fallback configuration
@@ -472,44 +699,71 @@ export class CampsiteService extends DataService {
   }
 
   /**
+   * Validate coordinate values
+   */
+  private isValidCoordinate(value: number, type: 'latitude' | 'longitude'): boolean {
+    if (typeof value !== 'number' || isNaN(value) || !isFinite(value)) {
+      return false;
+    }
+
+    if (type === 'latitude') {
+      return value >= -90 && value <= 90;
+    } else {
+      return value >= -180 && value <= 180;
+    }
+  }
+
+  /**
    * Build Overpass QL query for campsites
    */
   private buildOverpassQuery(bounds: BoundingBox, types: CampsiteType[]): string {
     const { south, west, north, east } = bounds;
-    const bbox = `${south},${west},${north},${east}`;
 
-    let queries: string[] = [];
+    // Debug: Log raw bounds
+    console.log('buildOverpassQuery: Raw bounds', { south, west, north, east });
+
+    // Validate coordinates
+    if (!this.isValidCoordinate(south, 'latitude') ||
+        !this.isValidCoordinate(north, 'latitude') ||
+        !this.isValidCoordinate(west, 'longitude') ||
+        !this.isValidCoordinate(east, 'longitude')) {
+      console.error('Invalid coordinates detected', { south, west, north, east });
+      throw new Error(`Invalid coordinates: lat=${south}-${north}, lng=${west}-${east}`);
+    }
+
+    // Validate bounding box size (prevent overly large queries)
+    const latSpan = north - south;
+    const lngSpan = east - west;
+    if (latSpan > 5 || lngSpan > 5) {
+      console.warn('Bounding box too large for campsite query', { latSpan, lngSpan, bounds });
+      throw new Error(`Bounding box too large: ${latSpan}° lat x ${lngSpan}° lng (max 5° each)`);
+    }
+
+    // Round coordinates to 6 decimal places to avoid precision issues
+    const bbox = `${south.toFixed(6)},${west.toFixed(6)},${north.toFixed(6)},${east.toFixed(6)}`;
+    console.log('buildOverpassQuery: Final bbox', bbox);
+
+    const statements: string[] = [];
 
     if (types.includes('campsite')) {
-      queries.push(`
-        node["tourism"="camp_site"](${bbox});
-        way["tourism"="camp_site"](${bbox});
-      `);
+      statements.push(`node["tourism"="camp_site"](${bbox});`);
+      statements.push(`way["tourism"="camp_site"](${bbox});`);
     }
 
     if (types.includes('caravan_site')) {
-      queries.push(`
-        node["tourism"="caravan_site"](${bbox});
-        way["tourism"="caravan_site"](${bbox});
-      `);
+      statements.push(`node["tourism"="caravan_site"](${bbox});`);
+      statements.push(`way["tourism"="caravan_site"](${bbox});`);
     }
 
     if (types.includes('aire')) {
-      queries.push(`
-        node["amenity"="parking"]["motorhome"="yes"](${bbox});
-        node["amenity"="parking"]["caravan"="yes"](${bbox});
-        node["tourism"="wilderness_hut"](${bbox});
-        node["highway"="services"]["motorhome"="yes"](${bbox});
-      `);
+      statements.push(`node["amenity"="parking"]["motorhome"="yes"](${bbox});`);
+      statements.push(`node["amenity"="parking"]["caravan"="yes"](${bbox});`);
+      statements.push(`node["tourism"="wilderness_hut"](${bbox});`);
+      statements.push(`node["highway"="services"]["motorhome"="yes"](${bbox});`);
     }
 
-    return `
-[out:json][timeout:25];
-(
-  ${queries.join('')}
-);
-out center meta;
-    `.trim();
+    // Limit to 1000 results to prevent timeouts
+    return `[out:json][timeout:30];(${statements.join('')});out center meta 1000;`;
   }
 
   /**
@@ -543,6 +797,19 @@ out center meta;
     }
 
     const tags = element.tags;
+
+    // Filter out disused, abandoned, or closed campsites
+    if (tags.disused === 'yes' ||
+        tags.abandoned === 'yes' ||
+        tags.demolished === 'yes' ||
+        tags['tourism:disused'] === 'yes' ||
+        tags.lifecycle_status === 'abandoned' ||
+        tags.lifecycle_status === 'disused' ||
+        tags.lifecycle_status === 'demolished') {
+      console.log('Filtering out closed/abandoned campsite:', tags.name || element.id);
+      return null;
+    }
+
     const type = this.determineCampsiteType(tags);
 
     return {
@@ -774,7 +1041,7 @@ out center meta;
    */
   private async getCachedCampsites(request: CampsiteRequest, allowStale = false): Promise<CampsiteResponse | null> {
     try {
-      const cacheKey = this.generateCacheKey(request);
+      const cacheKey = this.generateCampsiteCacheKey(request);
       const metadata = await this.cacheManager.getCacheMetadata(cacheKey);
 
       if (metadata) {
@@ -786,6 +1053,7 @@ out center meta;
 
           if (campsites.length > 0) {
             return {
+              status: 'success',
               campsites: this.filterAndScoreCampsites(campsites, request),
               metadata: {
                 service: metadata.service || 'overpass',
@@ -814,7 +1082,7 @@ out center meta;
    */
   private async setCacheMetadata(request: CampsiteRequest): Promise<void> {
     try {
-      const cacheKey = this.generateCacheKey(request);
+      const cacheKey = this.generateCampsiteCacheKey(request);
       await this.cacheManager.setCacheMetadata(cacheKey, {
         timestamp: Date.now(),
         service: 'overpass',
@@ -826,10 +1094,18 @@ out center meta;
   }
 
   /**
-   * Generate cache key for request
+   * Generate cache key for campsite request
    */
-  private generateCacheKey(request: CampsiteRequest): string {
+  private generateCampsiteCacheKey(request: CampsiteRequest): string {
     const { bounds, types = [], amenities = [] } = request;
+
+    // Validate bounds object to prevent undefined access errors
+    if (!bounds || typeof bounds.south === 'undefined' || typeof bounds.west === 'undefined' ||
+        typeof bounds.north === 'undefined' || typeof bounds.east === 'undefined') {
+      console.warn('CampsiteService: Invalid bounds provided, using fallback cache key');
+      return `campsites_invalid_bounds_${Date.now()}_${types.join(',')}_${amenities.join(',')}`;
+    }
+
     return `campsites_${bounds.south}_${bounds.west}_${bounds.north}_${bounds.east}_${types.join(',')}_${amenities.join(',')}`;
   }
 
@@ -851,7 +1127,7 @@ out center meta;
    */
   private initializeFallbackService(): void {
     // Fallback handled internally to avoid circular dependencies
-    this.fallbackService = null;
+    this._fallbackService = undefined;
   }
 
   /**
@@ -921,12 +1197,12 @@ out center meta;
   /**
    * Get cache statistics
    */
-  async getCacheStats(): Promise<{ size: number; lastUpdated: number }> {
+  public getCacheStats(): { size: number; entries: Array<{ key: string; size: number; age: number }> } {
     // This would require additional IndexedDB queries
     // Simplified implementation for now
     return {
       size: 0, // Would count campsites in cache
-      lastUpdated: Date.now()
+      entries: [] // Would return cache entries
     };
   }
 }

@@ -3,7 +3,9 @@
 
 import React, { useState, useCallback, useMemo } from 'react';
 import { useRouteStore, useVehicleStore, useTripStore, useUIStore } from '../../store';
-import { RouteExportService, ExportOptions, ExportResult } from '../../services/RouteExportService';
+import MultiFormatExportService, { type ExportOptions } from '../../services/MultiFormatExportService';
+import { type ExportResult } from '../../services/GPXExportService';
+import { type RouteResponse } from '../../services/RoutingService';
 import { cn } from '../../utils/cn';
 
 interface RouteExporterProps {
@@ -96,22 +98,6 @@ const ExportOptionsPanel: React.FC<{
         </div>
       </div>
 
-      {/* GPS Device Compatibility */}
-      {options.format === 'gpx' && (
-        <div>
-          <h4 className="text-sm font-medium text-gray-900 mb-3">GPS Device Compatibility</h4>
-          <select
-            value={options.gpsDeviceCompatibility}
-            onChange={(e) => updateOption('gpsDeviceCompatibility', e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          >
-            <option value="universal">Universal (Most Compatible)</option>
-            <option value="garmin">Garmin Devices</option>
-            <option value="tomtom">TomTom Devices</option>
-            <option value="smartphone">Smartphone Apps</option>
-          </select>
-        </div>
-      )}
 
       {/* Data Inclusion Options */}
       <div>
@@ -119,11 +105,9 @@ const ExportOptionsPanel: React.FC<{
         <div className="space-y-2">
           {[
             { key: 'includeWaypoints', label: 'Route Waypoints', desc: 'All route points and navigation' },
-            { key: 'includeCampsites', label: 'Campsites & POIs', desc: 'Campground locations and details' },
-            { key: 'includeRoute', label: 'Route Geometry', desc: 'Detailed route path and turns' },
-            { key: 'includeVehicleInfo', label: 'Vehicle Profile', desc: 'Vehicle dimensions and restrictions' },
-            { key: 'includeCostData', label: 'Cost Information', desc: 'Fuel, tolls, and expense data' },
-            { key: 'includePlanningData', label: 'Trip Planning', desc: 'Schedule and planning details' },
+            { key: 'includeTrackPoints', label: 'Track Points', desc: 'Detailed route path and turns' },
+            { key: 'includeInstructions', label: 'Turn Instructions', desc: 'Step-by-step navigation instructions' },
+            { key: 'includeElevation', label: 'Elevation Data', desc: 'Height information for route points' },
             { key: 'includeMetadata', label: 'Trip Metadata', desc: 'Creation date, author, descriptions' }
           ].map(option => (
             <label key={option.key} className="flex items-start space-x-3">
@@ -150,8 +134,8 @@ const ExportOptionsPanel: React.FC<{
             <label className="block text-xs font-medium text-gray-700 mb-1">Trip Name</label>
             <input
               type="text"
-              value={options.customName || ''}
-              onChange={(e) => updateOption('customName', e.target.value)}
+              value={options.description || ''}
+              onChange={(e) => updateOption('description', e.target.value)}
               placeholder="My European Camper Trip"
               className="w-full p-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
@@ -167,12 +151,12 @@ const ExportOptionsPanel: React.FC<{
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1">Author</label>
+            <label className="block text-xs font-medium text-gray-700 mb-1">Creator</label>
             <input
               type="text"
-              value={options.author || ''}
-              onChange={(e) => updateOption('author', e.target.value)}
-              placeholder="Your name"
+              value={options.creator || ''}
+              onChange={(e) => updateOption('creator', e.target.value)}
+              placeholder="European Camper Trip Planner"
               className="w-full p-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
@@ -190,27 +174,13 @@ const ImportPanel: React.FC<{
   const [isImporting, setIsImporting] = useState(false);
   const { addNotification } = useUIStore();
 
-  const handleFileUpload = useCallback(async (file: File) => {
+  const handleFileUpload = useCallback(async (_file: File) => {
     setIsImporting(true);
 
     try {
-      const content = await file.text();
-      const format = file.name.split('.').pop()?.toLowerCase() || '';
-
-      const result = await RouteExportService.importRoute(content, format);
-
-      if (result.success) {
-        addNotification({
-          type: 'success',
-          message: `Successfully imported ${result.waypoints.length} waypoints`
-        });
-        onImportComplete(result);
-      } else {
-        addNotification({
-          type: 'error',
-          message: `Import failed: ${result.errors.join(', ')}`
-        });
-      }
+      // Import functionality would need to be implemented in MultiFormatExportService
+      // For now, show a placeholder message
+      throw new Error('Import functionality not yet implemented in new export service');
     } catch (error) {
       addNotification({
         type: 'error',
@@ -300,13 +270,11 @@ const RouteExporter: React.FC<RouteExporterProps> = ({ className }) => {
   const [exportOptions, setExportOptions] = useState<ExportOptions>({
     format: 'gpx',
     includeWaypoints: true,
-    includeCampsites: true,
-    includeRoute: true,
-    includeVehicleInfo: true,
-    includeCostData: false,
-    includePlanningData: false,
+    includeTrackPoints: true,
+    includeInstructions: true,
+    includeElevation: true,
     includeMetadata: true,
-    gpsDeviceCompatibility: 'universal'
+    creator: 'European Camper Trip Planner'
   });
 
   // Check if export is possible
@@ -317,13 +285,33 @@ const RouteExporter: React.FC<RouteExporterProps> = ({ className }) => {
   // Get export data size estimate
   const estimatedSize = useMemo(() => {
     let size = waypoints.length * 0.5; // Base waypoint size in KB
-    if (exportOptions.includeRoute && calculatedRoute) size += 10;
-    if (exportOptions.includeCampsites) size += waypoints.length * 0.2;
-    if (exportOptions.includeVehicleInfo) size += 1;
-    if (exportOptions.includeCostData) size += 2;
-    if (exportOptions.includePlanningData) size += 5;
+    if (exportOptions.includeTrackPoints && calculatedRoute) size += 10;
+    if (exportOptions.includeInstructions) size += waypoints.length * 0.3;
+    if (exportOptions.includeElevation) size += waypoints.length * 0.1;
+    if (exportOptions.includeMetadata) size += 1;
     return Math.round(size * 10) / 10;
   }, [waypoints.length, exportOptions, calculatedRoute]);
+
+  // Helper function to calculate distance between waypoints
+  const calculateDistance = useCallback((waypoint1: any, waypoint2: any): number => {
+    const R = 6371; // Earth's radius in km
+    const dLat = (waypoint2.lat - waypoint1.lat) * Math.PI / 180;
+    const dLng = (waypoint2.lng - waypoint1.lng) * Math.PI / 180;
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(waypoint1.lat * Math.PI / 180) * Math.cos(waypoint2.lat * Math.PI / 180) *
+      Math.sin(dLng / 2) * Math.sin(dLng / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  }, []);
+
+  const calculateTotalDistance = useCallback((waypoints: any[]): number => {
+    if (waypoints.length < 2) return 0;
+    let total = 0;
+    for (let i = 0; i < waypoints.length - 1; i++) {
+      total += calculateDistance(waypoints[i], waypoints[i + 1]);
+    }
+    return total;
+  }, [calculateDistance]);
 
   // Simulated export progress steps
   const executeExport = useCallback(async () => {
@@ -352,48 +340,79 @@ const RouteExporter: React.FC<RouteExporterProps> = ({ className }) => {
       setCurrentStep('Generating export file...');
       setExportProgress(80);
 
-      const additionalData = {
-        trip: currentTrip || undefined,
-        vehicle: vehicleProfile || undefined,
-        planning: undefined, // TODO: Add when planning store is available
-        costs: undefined // TODO: Add when cost data is available
+      // Create a mock RouteResponse from waypoints for export
+      const mockRouteResponse: RouteResponse = {
+        id: `export_${Date.now()}`,
+        status: 'success',
+        routes: [{
+          geometry: {
+            coordinates: waypoints.map(wp => [wp.lng, wp.lat]),
+            type: "LineString"
+          },
+          summary: {
+            distance: waypoints.length > 1 ? calculateTotalDistance(waypoints) * 1000 : 0,
+            duration: waypoints.length > 1 ? calculateTotalDistance(waypoints) / 70 * 3600 : 0
+          },
+          waypoints: waypoints.map((_, i) => i),
+          segments: [{
+            distance: waypoints.length > 1 ? calculateTotalDistance(waypoints) * 1000 : 0,
+            duration: waypoints.length > 1 ? calculateTotalDistance(waypoints) / 70 * 3600 : 0,
+            steps: waypoints.map((wp, index) => ({
+              instruction: index === 0 ? `Start at ${wp.name}` : `Continue to ${wp.name}`,
+              name: wp.name,
+              distance: index > 0 ? calculateDistance(waypoints[index-1], wp) * 1000 : 0,
+              duration: index > 0 ? calculateDistance(waypoints[index-1], wp) / 70 * 3600 : 0,
+              geometry: { coordinates: [wp.lng, wp.lat] },
+              maneuver: { location: [wp.lng, wp.lat] },
+              wayPoints: [0, 1]
+            }))
+          }]
+        }],
+        metadata: {
+          service: 'openrouteservice',
+          profile: vehicleProfile?.type || 'driving-hgv',
+          timestamp: Date.now(),
+          query: {
+            waypoints: waypoints,
+            vehicleProfile: vehicleProfile || undefined
+          },
+          attribution: 'OpenRouteService'
+        }
       };
 
-      const result: ExportResult = await RouteExportService.exportRoute(
+      const routeName = exportOptions.description || 'Camper Route';
+      const result: ExportResult = await MultiFormatExportService.exportRoute(
+        mockRouteResponse,
         waypoints,
-        exportOptions,
-        additionalData
+        exportOptions.format as 'gpx' | 'kml' | 'json' | 'csv',
+        routeName,
+        exportOptions as ExportOptions
       );
 
       setCurrentStep('Finalizing export...');
       setExportProgress(100);
       await new Promise(resolve => setTimeout(resolve, 200));
 
-      if (result.success && result.content) {
-        // Create and download file
-        const blob = new Blob([result.content], { type: result.mimeType });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = result.filename;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+      if (result.success && result.data && result.filename) {
+        // Use the download functionality from MultiFormatExportService
+        const success = await MultiFormatExportService.downloadRoute(
+          mockRouteResponse,
+          waypoints,
+          exportOptions.format as 'gpx' | 'kml' | 'json' | 'csv',
+          routeName,
+          exportOptions as ExportOptions
+        );
 
-        addNotification({
-          type: 'success',
-          message: `Route exported successfully as ${result.filename}`
-        });
-
-        if (result.warnings.length > 0) {
+        if (success) {
           addNotification({
-            type: 'warning',
-            message: `Export completed with warnings: ${result.warnings.join(', ')}`
+            type: 'success',
+            message: `Route exported successfully as ${result.filename}`
           });
+        } else {
+          throw new Error('Download failed');
         }
       } else {
-        throw new Error(result.errors.join(', ') || 'Export failed');
+        throw new Error(result.error || 'Export failed');
       }
     } catch (error) {
       addNotification({
@@ -488,9 +507,9 @@ const RouteExporter: React.FC<RouteExporterProps> = ({ className }) => {
                   <span className="ml-2 font-medium">{estimatedSize} KB</span>
                 </div>
                 <div>
-                  <span className="text-gray-600">Compatibility:</span>
-                  <span className="ml-2 font-medium capitalize">
-                    {exportOptions.format === 'gpx' ? exportOptions.gpsDeviceCompatibility : 'Universal'}
+                  <span className="text-gray-600">Creator:</span>
+                  <span className="ml-2 font-medium">
+                    {exportOptions.creator || 'European Camper Trip Planner'}
                   </span>
                 </div>
               </div>

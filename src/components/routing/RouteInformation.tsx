@@ -3,7 +3,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { useRouteStore, useVehicleStore } from '../../store';
-import { RouteResponse, RouteData, RouteSegment, RouteStep } from '../../services/RoutingService';
+import { type RouteResponse, type RouteSegment } from '../../services/RoutingService';
 import ElevationProfile from './ElevationProfile';
 import { cn } from '../../utils/cn';
 
@@ -142,7 +142,7 @@ const RouteSegments: React.FC<{ segments: RouteSegment[] }> = ({ segments }) => 
 
 // Turn-by-Turn Directions Component
 const TurnByTurnDirections: React.FC<{ segments: RouteSegment[] }> = ({ segments }) => {
-  const [expandedSegment, setExpandedSegment] = useState<number | null>(0);
+  const [_expandedSegment, _setExpandedSegment] = useState<number | null>(0);
 
   const allSteps = useMemo(() => {
     return segments.flatMap((segment, segmentIndex) =>

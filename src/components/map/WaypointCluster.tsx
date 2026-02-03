@@ -213,14 +213,20 @@ const WaypointCluster: React.FC<WaypointClusterProps> = ({
           );
         }
 
-        // Cluster of multiple waypoints
+        // Cluster of multiple waypoints - add selected styling
         const clusterIcon = createClusterIcon(waypointCount, getClusterSize(waypointCount));
+
+        // Apply selected styling to cluster if it's selected
+        if (isSelected) {
+          clusterIcon.options.className = `${clusterIcon.options.className} ring-2 ring-blue-400 ring-offset-2`;
+        }
 
         return (
           <Marker
             key={cluster.id}
             position={cluster.center}
-            icon={clusterIcon}
+            // @ts-ignore - React-Leaflet v4 prop compatibility
+          icon={clusterIcon}
             eventHandlers={{
               click: () => handleClusterClick(cluster)
             }}

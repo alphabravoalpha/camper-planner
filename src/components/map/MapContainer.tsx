@@ -2,10 +2,10 @@
 // Phase 1.5: Basic map foundation with React-Leaflet
 
 import React, { useEffect, useRef, useState } from 'react';
-import { MapContainer as LeafletMapContainer, TileLayer, useMap, useMapEvents } from 'react-leaflet';
-import { Map as LeafletMap } from 'leaflet';
+import { MapContainer as LeafletMapContainer, useMap, useMapEvents } from 'react-leaflet';
+import * as L from 'leaflet';
 import { FeatureFlags } from '../../config';
-import { useMapStore, useRouteStore, useUIStore, useVehicleStore } from '../../store';
+import { useMapStore, useRouteStore, useUIStore } from '../../store';
 import { mapStorage } from '../../utils/mapStorage';
 import { cn } from '../../utils/cn';
 import WaypointManager from './WaypointManager';
@@ -18,17 +18,18 @@ import RouteOptimizer from '../routing/RouteOptimizer';
 import { TripManager, PlanningTools } from '../planning';
 import SimpleCampsiteLayer from '../campsite/SimpleCampsiteLayer';
 import CampsiteControls from '../campsite/CampsiteControls';
-import CampsiteFilter, { type CampsiteFilterState, DEFAULT_FILTER_STATE } from '../campsite/CampsiteFilter';
+import CampsiteFilter, { type CampsiteFilterState, getDefaultFilterState } from '../campsite/CampsiteFilter';
 import CampsiteDetails from '../campsite/CampsiteDetails';
-import CampsiteRecommendations from '../campsite/CampsiteRecommendations';
+// import CampsiteRecommendations from '../campsite/CampsiteRecommendations'; // V2 disabled
 import UserGuidance from '../ui/UserGuidance';
 import ConfirmDialog from '../ui/ConfirmDialog';
-import { type CampsiteType, type Campsite } from '../../services/CampsiteService';
+import ComponentErrorBoundary from '../ui/ComponentErrorBoundary';
+import { UnifiedSearch } from '../search';
+import { type Campsite } from '../../services/CampsiteService';
 import 'leaflet/dist/leaflet.css';
 import '../../styles/animations.css';
 
 // Fix for default markers in React-Leaflet
-import L from 'leaflet';
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 import markerRetina from 'leaflet/dist/images/marker-icon-2x.png';
@@ -84,6 +85,21 @@ const MapEventHandler: React.FC<MapEventHandlerProps> = ({ onMapMove }) => {
   return null;
 };
 
+// Component to capture map instance for external use
+interface MapInstanceCaptureProps {
+  onMapReady: (mapInstance: L.Map) => void;
+}
+
+const MapInstanceCapture: React.FC<MapInstanceCaptureProps> = ({ onMapReady }) => {
+  const map = useMap();
+
+  useEffect(() => {
+    onMapReady(map);
+  }, [map, onMapReady]);
+
+  return null;
+};
+
 // Component to sync map with store state
 const MapController: React.FC = () => {
   const map = useMap();
@@ -112,7 +128,6 @@ const MapController: React.FC = () => {
 const MapContainer: React.FC = () => {
   const { center, zoom, setCenter, setZoom } = useMapStore();
   const { waypoints, clearRoute, undo, redo, canUndo, canRedo, isValidForRouting, calculatedRoute } = useRouteStore();
-  const { profile } = useVehicleStore();
   const { addNotification } = useUIStore();
   const [isMapReady, setIsMapReady] = useState(false);
   const [showConfirmClear, setShowConfirmClear] = useState(false);
@@ -121,17 +136,25 @@ const MapContainer: React.FC = () => {
   const [layerControlCollapsed, setLayerControlCollapsed] = useState(true);
   const [showRouteInfo, setShowRouteInfo] = useState(false);
   const [routeInfoTab, setRouteInfoTab] = useState<'info' | 'comparison'>('info');
-  const mapRef = useRef<LeafletMap>(null);
+  const mapRef = useRef<L.Map | null>(null);
+  const [mapInstance, setMapInstance] = useState<L.Map | null>(null);
+
+  // Callback to capture map instance for external components
+  const handleMapInstanceCapture = (map: L.Map) => {
+    setMapInstance(map);
+    mapRef.current = map;
+  };
 
   // Campsite state
   const [selectedCampsite, setSelectedCampsite] = useState<Campsite | null>(null);
-  const [showCampsiteControls, setShowCampsiteControls] = useState(FeatureFlags.CAMPSITE_DISPLAY);
+  const [highlightedCampsiteId, setHighlightedCampsiteId] = useState<string | null>(null);
+  const [showCampsiteControls, setShowCampsiteControls] = useState<boolean>(FeatureFlags.CAMPSITE_DISPLAY);
   const [showCampsiteFilter, setShowCampsiteFilter] = useState(false);
   const [showCampsiteDetails, setShowCampsiteDetails] = useState(false);
   const [showCampsiteRecommendations, setShowCampsiteRecommendations] = useState(false);
-  const [campsitesVisible, setCampsitesVisible] = useState(FeatureFlags.CAMPSITE_DISPLAY);
+  const [campsitesVisible, setCampsitesVisible] = useState<boolean>(FeatureFlags.CAMPSITE_DISPLAY);
   const [campsiteCount, setCampsiteCount] = useState(0);
-  const [campsiteFilterState, setCampsiteFilterState] = useState<CampsiteFilterState>(DEFAULT_FILTER_STATE);
+  const [campsiteFilterState, setCampsiteFilterState] = useState<CampsiteFilterState>(getDefaultFilterState);
   const [allCampsites, setAllCampsites] = useState<Campsite[]>([]);
 
   // Route optimization state
@@ -145,6 +168,9 @@ const MapContainer: React.FC = () => {
 
   // Planning tools state
   const [showPlanningTools, setShowPlanningTools] = useState(false);
+
+  // Mobile state - must be at top with other useState
+  const [isMobile, setIsMobile] = useState(false);
 
   // Load persisted map state on mount
   useEffect(() => {
@@ -176,6 +202,27 @@ const MapContainer: React.FC = () => {
     document.addEventListener('fullscreenchange', handleFullscreenChange);
     return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
   }, [isFullscreen]);
+
+  // Check if window is mobile size - must be before any early returns
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Fallback: ensure map becomes visible after 2 seconds even if whenReady doesn't fire
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!isMapReady) {
+        // eslint-disable-next-line no-console
+        console.warn('Map ready timeout - forcing map to be visible');
+        setIsMapReady(true);
+      }
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, [isMapReady]);
 
   if (!FeatureFlags.BASIC_MAP_DISPLAY) {
     return (
@@ -252,7 +299,7 @@ const MapContainer: React.FC = () => {
     });
   };
 
-  const handleMapReady = () => {
+  const handleMapReadyState = () => {
     setIsMapReady(true);
   };
 
@@ -286,15 +333,6 @@ const MapContainer: React.FC = () => {
     }
   };
 
-  // Check if window is mobile size
-  const [isMobile, setIsMobile] = useState(false);
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
   return (
     <div className={cn(
       "h-full relative transition-all duration-300",
@@ -313,18 +351,16 @@ const MapContainer: React.FC = () => {
       {/* Map component */}
       <LeafletMapContainer
         ref={mapRef}
+        // @ts-ignore - React-Leaflet v4 prop compatibility
         center={center}
         zoom={zoom}
         minZoom={MAP_CONFIG.minZoom}
         maxZoom={MAP_CONFIG.maxZoom}
         maxBounds={MAP_CONFIG.maxBounds}
         maxBoundsViscosity={1.0}
-        className={cn(
-          'h-full w-full z-map',
-          !isMapReady && 'opacity-0'
-        )}
+        className="h-full w-full z-map"
         zoomControl={false} // We'll add custom controls
-        whenReady={handleMapReady}
+        whenReady={handleMapReadyState}
         style={{ height: '100%', width: '100%' }}
       >
         {/* Dynamic tile layer based on current selection */}
@@ -342,6 +378,8 @@ const MapContainer: React.FC = () => {
 
         {/* Map state synchronization */}
         <MapController />
+        {/* Map instance capture for external components */}
+        <MapInstanceCapture onMapReady={handleMapInstanceCapture} />
 
         {/* Waypoint system */}
         <WaypointManager />
@@ -352,56 +390,103 @@ const MapContainer: React.FC = () => {
             visibleTypes={campsiteFilterState.visibleTypes}
             maxResults={campsiteFilterState.maxResults}
             vehicleCompatibleOnly={campsiteFilterState.vehicleCompatibleOnly}
-            searchQuery={campsiteFilterState.searchQuery}
+            searchQuery=""
             isVisible={campsitesVisible}
             onCampsiteClick={handleCampsiteClick}
             onCampsitesLoaded={handleCampsitesLoaded}
             isMobile={isMobile}
             filterState={showCampsiteFilter ? campsiteFilterState : undefined}
+            highlightedCampsiteId={highlightedCampsiteId}
+            selectedCampsiteId={selectedCampsite?.id?.toString() || null}
           />
         )}
       </LeafletMapContainer>
 
-      {/* Vehicle Profile Configuration */}
-      <VehicleProfileSidebar />
-
-      {/* Route Calculator Panel */}
-      {FeatureFlags.BASIC_ROUTING && (
-        <div className="absolute top-4 right-20 z-30 w-80">
-          <RouteCalculator />
+      {/* Unified Search Bar - positioned at top center */}
+      {FeatureFlags.CAMPSITE_DISPLAY && (
+        <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-30 w-full max-w-md px-4 hidden md:block">
+          <ComponentErrorBoundary componentName="UnifiedSearch">
+            <UnifiedSearch
+              map={mapInstance}
+              visibleTypes={campsiteFilterState.visibleTypes}
+              onCampsiteSelect={handleCampsiteClick}
+              onCampsiteHover={setHighlightedCampsiteId}
+              onLocationSelect={(location) => {
+                addNotification({
+                  type: 'info',
+                  message: `Navigated to ${location.name}`
+                });
+              }}
+            />
+          </ComponentErrorBoundary>
         </div>
       )}
 
-      {/* Campsite Controls Panel */}
+      {/* Waypoint hint for new users - shown when no waypoints exist */}
+      {waypoints.length === 0 && isMapReady && (
+        <div className="absolute bottom-24 left-1/2 transform -translate-x-1/2 z-20 pointer-events-none hidden sm:block animate-fade-in">
+          <div className="bg-white/95 backdrop-blur-sm px-5 py-3 rounded-xl shadow-lg border border-gray-200">
+            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+                <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-gray-900">Start your trip</p>
+                <p className="text-xs text-gray-500">Right-click on the map to add waypoints, or search for a location above</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Vehicle Profile Configuration */}
+      <ComponentErrorBoundary componentName="VehicleProfileSidebar">
+        <VehicleProfileSidebar />
+      </ComponentErrorBoundary>
+
+      {/* Route Calculator Panel - positioned to avoid overlap with map controls */}
+      {FeatureFlags.BASIC_ROUTING && (
+        <div className="absolute top-4 right-14 z-20 w-64 hidden lg:block">
+          <ComponentErrorBoundary componentName="RouteCalculator">
+            <RouteCalculator />
+          </ComponentErrorBoundary>
+        </div>
+      )}
+
+      {/* Campsite Controls Panel - positioned in top-left area, below tool buttons */}
       {FeatureFlags.CAMPSITE_DISPLAY && showCampsiteControls && !showCampsiteFilter && (
-        <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-30 w-80">
-          <CampsiteControls
-            visibleTypes={campsiteFilterState.visibleTypes}
-            onTypesChange={(types) => setCampsiteFilterState({...campsiteFilterState, visibleTypes: types})}
-            maxResults={campsiteFilterState.maxResults}
-            onMaxResultsChange={(max) => setCampsiteFilterState({...campsiteFilterState, maxResults: max})}
-            vehicleCompatibleOnly={campsiteFilterState.vehicleCompatibleOnly}
-            onVehicleCompatibleChange={(compatible) => setCampsiteFilterState({...campsiteFilterState, vehicleCompatibleOnly: compatible})}
-            searchQuery={campsiteFilterState.searchQuery}
-            onSearchChange={(query) => setCampsiteFilterState({...campsiteFilterState, searchQuery: query})}
-            onCampsiteSelect={handleCampsiteClick}
-            isVisible={campsitesVisible}
-            onVisibilityChange={setCampsitesVisible}
-            campsiteCount={campsiteCount}
-          />
+        <div className="absolute top-4 left-16 z-20 w-72 hidden md:block">
+          <ComponentErrorBoundary componentName="CampsiteControls">
+            <CampsiteControls
+              visibleTypes={campsiteFilterState.visibleTypes}
+              onTypesChange={(types) => setCampsiteFilterState({...campsiteFilterState, visibleTypes: types})}
+              maxResults={campsiteFilterState.maxResults}
+              onMaxResultsChange={(max) => setCampsiteFilterState({...campsiteFilterState, maxResults: max})}
+              vehicleCompatibleOnly={campsiteFilterState.vehicleCompatibleOnly}
+              onVehicleCompatibleChange={(compatible) => setCampsiteFilterState({...campsiteFilterState, vehicleCompatibleOnly: compatible})}
+              isVisible={campsitesVisible}
+              onVisibilityChange={setCampsitesVisible}
+              campsiteCount={campsiteCount}
+            />
+          </ComponentErrorBoundary>
         </div>
       )}
 
       {/* Advanced Campsite Filter Panel */}
       {FeatureFlags.CAMPSITE_DISPLAY && showCampsiteFilter && (
-        <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-30 w-96">
-          <CampsiteFilter
-            filterState={campsiteFilterState}
-            onFilterChange={setCampsiteFilterState}
-            onSearchChange={(query) => setCampsiteFilterState({...campsiteFilterState, searchQuery: query})}
-            onCampsiteSelect={handleCampsiteClick}
-            campsiteCount={campsiteCount}
-          />
+        <div className="absolute top-4 left-16 z-20 w-80 hidden md:block">
+          <ComponentErrorBoundary componentName="CampsiteFilter">
+            <CampsiteFilter
+              filterState={campsiteFilterState}
+              onFilterChange={setCampsiteFilterState}
+              onSearchChange={(query) => setCampsiteFilterState({...campsiteFilterState, searchQuery: query})}
+              onCampsiteSelect={handleCampsiteClick}
+              campsiteCount={campsiteCount}
+            />
+          </ComponentErrorBoundary>
         </div>
       )}
 
@@ -434,18 +519,16 @@ const MapContainer: React.FC = () => {
         onToggleLayerControl={handleToggleLayerControl}
       />
 
-      {/* Legacy controls for undo/redo and clear (positioned below vehicle profile) */}
-      <div className="absolute top-20 left-4 z-30 flex flex-col space-y-2">
-        {/* Undo/Redo controls */}
+      {/* Compact left toolbar - organized into logical groups */}
+      <div className="absolute top-4 left-4 z-30 flex flex-col space-y-2 hidden sm:flex">
+        {/* Primary actions: Undo/Redo */}
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
           <button
             onClick={undo}
             disabled={!canUndo()}
             className={cn(
               "block w-10 h-10 flex items-center justify-center border-b border-gray-200 transition-colors",
-              canUndo()
-                ? "hover:bg-gray-50 text-gray-700"
-                : "text-gray-300 cursor-not-allowed"
+              canUndo() ? "hover:bg-gray-50 text-gray-700" : "text-gray-300 cursor-not-allowed"
             )}
             title="Undo (Ctrl+Z)"
             aria-label="Undo last action"
@@ -459,9 +542,7 @@ const MapContainer: React.FC = () => {
             disabled={!canRedo()}
             className={cn(
               "block w-10 h-10 flex items-center justify-center transition-colors",
-              canRedo()
-                ? "hover:bg-gray-50 text-gray-700"
-                : "text-gray-300 cursor-not-allowed"
+              canRedo() ? "hover:bg-gray-50 text-gray-700" : "text-gray-300 cursor-not-allowed"
             )}
             title="Redo (Ctrl+Y)"
             aria-label="Redo last action"
@@ -472,38 +553,89 @@ const MapContainer: React.FC = () => {
           </button>
         </div>
 
-        {/* Clear waypoints button (show only if waypoints exist) */}
-        {waypoints.length > 0 && (
+        {/* Trip & Tools: Manager, Planning, Cost */}
+        <div className="bg-white rounded-lg shadow-md overflow-hidden">
           <button
-            onClick={() => setShowConfirmClear(true)}
-            className="bg-red-600 text-white rounded-lg shadow-md p-2 hover:bg-red-700 transition-colors"
-            title="Clear all waypoints (Ctrl+Shift+C)"
-            aria-label="Clear all waypoints"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-            </svg>
-          </button>
-        )}
-
-        {/* Route Information Toggle (show only if route exists) */}
-        {FeatureFlags.BASIC_ROUTING && calculatedRoute && (
-          <button
-            onClick={() => setShowRouteInfo(!showRouteInfo)}
+            onClick={() => setShowTripManager(!showTripManager)}
             className={cn(
-              "bg-blue-600 text-white rounded-lg shadow-md p-2 hover:bg-blue-700 transition-colors",
-              showRouteInfo && "bg-blue-700"
+              "block w-10 h-10 flex items-center justify-center border-b border-gray-200 transition-colors",
+              showTripManager ? "bg-indigo-50 text-indigo-600" : "hover:bg-gray-50 text-gray-700"
             )}
-            title="Toggle route information"
-            aria-label="Toggle route information"
+            title="Trip manager"
+            aria-label="Toggle trip manager"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
             </svg>
           </button>
+          {waypoints.length >= 2 && (
+            <>
+              <button
+                onClick={() => setShowPlanningTools(!showPlanningTools)}
+                className={cn(
+                  "block w-10 h-10 flex items-center justify-center border-b border-gray-200 transition-colors",
+                  showPlanningTools ? "bg-violet-50 text-violet-600" : "hover:bg-gray-50 text-gray-700"
+                )}
+                title="Trip planning tools"
+                aria-label="Toggle planning tools"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+              </button>
+              <button
+                onClick={() => setShowCostCalculator(!showCostCalculator)}
+                className={cn(
+                  "block w-10 h-10 flex items-center justify-center transition-colors",
+                  showCostCalculator ? "bg-emerald-50 text-emerald-600" : "hover:bg-gray-50 text-gray-700"
+                )}
+                title="Trip cost calculator"
+                aria-label="Toggle cost calculator"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </button>
+            </>
+          )}
+        </div>
+
+        {/* Route actions: Info, Optimize */}
+        {FeatureFlags.BASIC_ROUTING && calculatedRoute && (
+          <div className="bg-white rounded-lg shadow-md overflow-hidden">
+            <button
+              onClick={() => setShowRouteInfo(!showRouteInfo)}
+              className={cn(
+                "block w-10 h-10 flex items-center justify-center transition-colors",
+                showRouteInfo ? "bg-blue-50 text-blue-600" : "hover:bg-gray-50 text-gray-700",
+                FeatureFlags.ROUTE_OPTIMIZATION && waypoints.length >= 3 && "border-b border-gray-200"
+              )}
+              title="Route information"
+              aria-label="Toggle route information"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            </button>
+            {FeatureFlags.ROUTE_OPTIMIZATION && waypoints.length >= 3 && (
+              <button
+                onClick={() => setShowRouteOptimizer(!showRouteOptimizer)}
+                className={cn(
+                  "block w-10 h-10 flex items-center justify-center transition-colors",
+                  showRouteOptimizer ? "bg-orange-50 text-orange-600" : "hover:bg-gray-50 text-gray-700"
+                )}
+                title="Optimize route order"
+                aria-label="Toggle route optimizer"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </button>
+            )}
+          </div>
         )}
 
-        {/* Campsite Controls Toggle */}
+        {/* Campsite toggle */}
         {FeatureFlags.CAMPSITE_DISPLAY && (
           <button
             onClick={() => {
@@ -517,107 +649,31 @@ const MapContainer: React.FC = () => {
               }
             }}
             className={cn(
-              "bg-green-600 text-white rounded-lg shadow-md p-2 hover:bg-green-700 transition-colors",
-              (showCampsiteControls || showCampsiteFilter) && "bg-green-700"
+              "w-10 h-10 flex items-center justify-center rounded-lg shadow-md transition-colors",
+              (showCampsiteControls || showCampsiteFilter)
+                ? "bg-green-600 text-white hover:bg-green-700"
+                : "bg-white text-gray-700 hover:bg-gray-50"
             )}
-            title={showCampsiteFilter ? "Hide filters" : showCampsiteControls ? "Advanced filters" : "Show campsite controls"}
+            title={showCampsiteFilter ? "Hide filters" : showCampsiteControls ? "Advanced filters" : "Show campsites"}
             aria-label="Toggle campsite controls"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              {showCampsiteFilter ? (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              ) : (
-                <>
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                  {showCampsiteControls && (
-                    <circle cx="12" cy="8" r="1" fill="currentColor" />
-                  )}
-                </>
-              )}
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
           </button>
         )}
 
-        {/* Route Optimizer Toggle */}
-        {FeatureFlags.ROUTE_OPTIMIZATION && waypoints.length >= 3 && (
+        {/* Clear waypoints - danger action, separate */}
+        {waypoints.length > 0 && (
           <button
-            onClick={() => setShowRouteOptimizer(!showRouteOptimizer)}
-            className={cn(
-              "bg-orange-600 text-white rounded-lg shadow-md p-2 hover:bg-orange-700 transition-colors",
-              showRouteOptimizer && "bg-orange-700"
-            )}
-            title="Route optimization"
-            aria-label="Toggle route optimizer"
+            onClick={() => setShowConfirmClear(true)}
+            className="w-10 h-10 flex items-center justify-center bg-white text-red-600 rounded-lg shadow-md hover:bg-red-50 transition-colors"
+            title="Clear all waypoints"
+            aria-label="Clear all waypoints"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-            </svg>
-          </button>
-        )}
-
-        {/* Cost Calculator Toggle */}
-        {waypoints.length >= 2 && (
-          <button
-            onClick={() => setShowCostCalculator(!showCostCalculator)}
-            className={cn(
-              "bg-emerald-600 text-white rounded-lg shadow-md p-2 hover:bg-emerald-700 transition-colors",
-              showCostCalculator && "bg-emerald-700"
-            )}
-            title="Trip cost calculator"
-            aria-label="Toggle cost calculator"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-            </svg>
-          </button>
-        )}
-
-        {/* Trip Manager Toggle */}
-        <button
-          onClick={() => setShowTripManager(!showTripManager)}
-          className={cn(
-            "bg-indigo-600 text-white rounded-lg shadow-md p-2 hover:bg-indigo-700 transition-colors",
-            showTripManager && "bg-indigo-700"
-          )}
-          title="Trip manager"
-          aria-label="Toggle trip manager"
-        >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-          </svg>
-        </button>
-
-        {/* Planning Tools Toggle */}
-        {waypoints.length >= 2 && (
-          <button
-            onClick={() => setShowPlanningTools(!showPlanningTools)}
-            className={cn(
-              "bg-violet-600 text-white rounded-lg shadow-md p-2 hover:bg-violet-700 transition-colors",
-              showPlanningTools && "bg-violet-700"
-            )}
-            title="Trip planning tools"
-            aria-label="Toggle planning tools"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v6a2 2 0 002 2h2m0 0h2m-2 0v6a2 2 0 002 2h6a2 2 0 002-2v-6a2 2 0 00-2-2h-2m-2 0V5a2 2 0 00-2-2H9v2z" />
-            </svg>
-          </button>
-        )}
-
-        {/* Campsite Recommendations Toggle */}
-        {FeatureFlags.CAMPSITE_DISPLAY && allCampsites.length > 0 && (
-          <button
-            onClick={handleToggleRecommendations}
-            className={cn(
-              "bg-purple-600 text-white rounded-lg shadow-md p-2 hover:bg-purple-700 transition-colors",
-              showCampsiteRecommendations && "bg-purple-700"
-            )}
-            title="Toggle campsite recommendations"
-            aria-label="Toggle campsite recommendations"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
             </svg>
           </button>
         )}
@@ -635,7 +691,7 @@ const MapContainer: React.FC = () => {
             </span>
             {waypoints.length === 0 ? (
               <span className="text-green-600 text-xs">
-                Click map to add
+                Right-click map to add
               </span>
             ) : waypoints.length === 1 ? (
               <span className="text-orange-600 text-xs">
@@ -664,7 +720,7 @@ const MapContainer: React.FC = () => {
             </span>
             {waypoints.length === 0 ? (
               <span className="text-green-600 text-sm font-medium">
-                Tap map to start
+                Long-press map to add waypoint
               </span>
             ) : waypoints.length === 1 ? (
               <span className="text-orange-600 text-sm font-medium">
@@ -754,11 +810,10 @@ const MapContainer: React.FC = () => {
         </div>
       )}
 
-      {/* Campsite Recommendations Panel */}
-      {showCampsiteRecommendations && FeatureFlags.CAMPSITE_DISPLAY && (
+      {/* Campsite Recommendations Panel - V2 DISABLED */}
+      {/* {showCampsiteRecommendations && FeatureFlags.CAMPSITE_DISPLAY && (
         <div className="fixed inset-y-0 right-0 z-40 w-full sm:w-96 bg-white border-l border-gray-200 shadow-xl transform transition-transform sm:translate-x-0">
           <div className="h-full flex flex-col">
-            {/* Panel Header */}
             <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-purple-50">
               <h2 className="text-lg font-semibold text-gray-900">Campsite Recommendations</h2>
               <button
@@ -771,18 +826,12 @@ const MapContainer: React.FC = () => {
                 </svg>
               </button>
             </div>
-
-            {/* Recommendations Content */}
             <div className="flex-1 overflow-hidden">
-              <CampsiteRecommendations
-                campsites={allCampsites}
-                onCampsiteSelect={handleCampsiteClick}
-                className="h-full border-0 rounded-none"
-              />
+              V2 Feature Disabled
             </div>
           </div>
         </div>
-      )}
+      )} */}
 
       {/* Route Optimizer Panel */}
       {showRouteOptimizer && FeatureFlags.ROUTE_OPTIMIZATION && (

@@ -230,7 +230,7 @@ export const localStorageUtils = {
     let totalSize = 0;
     let itemCount = 0;
 
-    for (let key in localStorage) {
+    for (const key in localStorage) {
       if (localStorage.hasOwnProperty(key)) {
         const itemSize = localStorage.getItem(key)?.length || 0;
         totalSize += itemSize;

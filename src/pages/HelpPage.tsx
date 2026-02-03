@@ -3,9 +3,18 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { useOnboarding } from '../hooks/useOnboarding';
+import { useNavigate } from 'react-router-dom';
 
 const HelpPage: React.FC = () => {
-  const { t } = useTranslation();
+  const { } = useTranslation();
+  const { resetOnboarding } = useOnboarding();
+  const navigate = useNavigate();
+
+  const handleShowTutorial = () => {
+    resetOnboarding();
+    navigate('/');
+  };
 
   return (
     <div className="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
@@ -20,14 +29,23 @@ const HelpPage: React.FC = () => {
               🚀 Quick Start Guide
             </h2>
             <div className="space-y-4">
-              <div className="bg-blue-50 p-4 rounded-lg">
+              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 p-4 rounded-lg">
                 <h3 className="font-medium text-blue-900 mb-2">
-                  Phase 1 Complete - Foundation Ready!
+                  New to Camper Trip Planner?
                 </h3>
-                <p className="text-blue-800 text-sm">
-                  The application foundation is now set up with all core infrastructure.
-                  Interactive mapping and trip planning features will be added in subsequent phases.
+                <p className="text-blue-800 text-sm mb-3">
+                  Take our interactive tutorial to learn how to plan your perfect European camper trip.
                 </p>
+                <button
+                  onClick={handleShowTutorial}
+                  className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors"
+                >
+                  <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Start Tutorial
+                </button>
               </div>
             </div>
           </section>
@@ -40,27 +58,28 @@ const HelpPage: React.FC = () => {
               <div className="border border-green-200 rounded-lg p-4">
                 <h3 className="font-medium text-green-900 mb-2 flex items-center">
                   <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
-                  Core Infrastructure
+                  Available Now
                 </h3>
                 <ul className="text-sm text-green-800 space-y-1">
-                  <li>• React + TypeScript foundation</li>
-                  <li>• Tailwind CSS styling system</li>
-                  <li>• State management (Zustand)</li>
-                  <li>• Internationalization framework</li>
-                  <li>• Local storage utilities</li>
+                  <li>• Interactive map with waypoints</li>
+                  <li>• Vehicle-safe routing</li>
+                  <li>• Campsite search & filtering</li>
+                  <li>• Route optimization (TSP solver)</li>
+                  <li>• Cost calculation & trip management</li>
+                  <li>• GPX/KML/JSON export</li>
                 </ul>
               </div>
 
               <div className="border border-yellow-200 rounded-lg p-4">
                 <h3 className="font-medium text-yellow-900 mb-2 flex items-center">
                   <span className="w-2 h-2 bg-yellow-500 rounded-full mr-2"></span>
-                  Coming Next (Phase 2)
+                  In Progress (Phase 6)
                 </h3>
                 <ul className="text-sm text-yellow-800 space-y-1">
-                  <li>• Interactive European map</li>
-                  <li>• Click to add waypoints</li>
-                  <li>• Drag to reorder route</li>
-                  <li>• Mobile-responsive interface</li>
+                  <li>• User onboarding & tutorial</li>
+                  <li>• Error handling improvements</li>
+                  <li>• Mobile experience polish</li>
+                  <li>• Performance optimization</li>
                 </ul>
               </div>
             </div>
@@ -84,11 +103,11 @@ const HelpPage: React.FC = () => {
               </div>
 
               <div className="flex items-start space-x-3">
-                <div className="w-6 h-6 bg-yellow-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
                 </div>
                 <div>
-                  <h4 className="font-medium text-gray-900">Phase 2: Interactive Mapping</h4>
+                  <h4 className="font-medium text-gray-900">Phase 2: Interactive Mapping ✅</h4>
                   <p className="text-sm text-gray-600">
                     Leaflet.js integration, waypoint management, route visualization
                   </p>
@@ -96,11 +115,11 @@ const HelpPage: React.FC = () => {
               </div>
 
               <div className="flex items-start space-x-3">
-                <div className="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <div className="w-3 h-3 bg-gray-400 rounded-full"></div>
+                <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
                 </div>
                 <div>
-                  <h4 className="font-medium text-gray-900">Phase 3: Vehicle & Routing</h4>
+                  <h4 className="font-medium text-gray-900">Phase 3: Vehicle & Routing ✅</h4>
                   <p className="text-sm text-gray-600">
                     Vehicle profiles, camper-safe routing with OpenRouteService
                   </p>
@@ -108,11 +127,11 @@ const HelpPage: React.FC = () => {
               </div>
 
               <div className="flex items-start space-x-3">
-                <div className="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <div className="w-3 h-3 bg-gray-400 rounded-full"></div>
+                <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
                 </div>
                 <div>
-                  <h4 className="font-medium text-gray-900">Phase 4: Campsite Integration</h4>
+                  <h4 className="font-medium text-gray-900">Phase 4: Campsite Integration ✅</h4>
                   <p className="text-sm text-gray-600">
                     European campsite database, filtering, search functionality
                   </p>
@@ -120,11 +139,11 @@ const HelpPage: React.FC = () => {
               </div>
 
               <div className="flex items-start space-x-3">
-                <div className="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <div className="w-3 h-3 bg-gray-400 rounded-full"></div>
+                <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
                 </div>
                 <div>
-                  <h4 className="font-medium text-gray-900">Phase 5: Planning Tools</h4>
+                  <h4 className="font-medium text-gray-900">Phase 5: Planning Tools ✅</h4>
                   <p className="text-sm text-gray-600">
                     Route optimization, cost estimation, trip management
                   </p>
@@ -132,13 +151,13 @@ const HelpPage: React.FC = () => {
               </div>
 
               <div className="flex items-start space-x-3">
-                <div className="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <div className="w-3 h-3 bg-gray-400 rounded-full"></div>
+                <div className="w-6 h-6 bg-yellow-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
                 </div>
                 <div>
-                  <h4 className="font-medium text-gray-900">Phase 6: Export & Polish</h4>
+                  <h4 className="font-medium text-gray-900">Phase 6: Export & Polish 🔄</h4>
                   <p className="text-sm text-gray-600">
-                    GPX export, trip sharing, UI polish for production launch
+                    GPX export ✅, user onboarding 🔄, polish & launch prep
                   </p>
                 </div>
               </div>

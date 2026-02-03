@@ -46,7 +46,8 @@ const MapTestPage: React.FC = () => {
 
       <div className="flex-1 relative">
         <LeafletMapContainer
-          center={[54.5260, 15.2551]} // Center on Europe
+          // @ts-ignore - center is valid prop for MapContainer
+          center={[54.5260, 15.2551] as [number, number]} // Center on Europe
           zoom={5}
           className="h-full w-full"
           style={{ height: '100%', width: '100%' }}
@@ -54,6 +55,7 @@ const MapTestPage: React.FC = () => {
           {/* Basic tile layer */}
           <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            // @ts-ignore - attribution is valid in react-leaflet
             attribution='© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           />
 

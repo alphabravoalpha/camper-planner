@@ -1,7 +1,7 @@
 // Route Optimization Utility Functions
 // Phase 5.1: Helper functions for optimization visualization and analytics
 
-import { Waypoint } from '../store/routeStore';
+import type { Waypoint } from '../types';
 import { type OptimizationResult } from '../services/RouteOptimizationService';
 
 export interface OptimizationVisualization {

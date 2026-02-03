@@ -229,7 +229,8 @@ const MarkerComponent: React.FC<MarkerComponentProps> = ({
   return (
     <Marker
       position={[marker.lat, marker.lng]}
-      icon={icon}
+      // @ts-ignore - React-Leaflet v4 prop compatibility
+          icon={icon}
       draggable={isDraggable}
       eventHandlers={{
         click: () => onClick?.(marker),

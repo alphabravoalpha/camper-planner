@@ -6,12 +6,16 @@ import { useTranslation } from 'react-i18next';
 import { FeatureFlags } from '@/config';
 import { useUIStore } from '@/store';
 import { cn } from '@/utils/cn';
+import RouteOptimization from '@/components/planning/RouteOptimization';
+import TripCostCalculator from '@/components/planning/TripCostCalculator';
+import TripManager from '@/components/planning/TripManager';
+import PlanningTools from '@/components/planning/PlanningTools';
 
 interface SidebarProps {
   className?: string;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ className }) => {
+const Sidebar: React.FC<SidebarProps> = ({ className: _className }) => {
   const { t } = useTranslation();
   const { sidebarOpen, toggleSidebar } = useUIStore();
 
@@ -47,6 +51,50 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+      ),
+    },
+    {
+      key: 'optimization',
+      title: 'Route Optimization',
+      description: 'Phase 5+: Multi-stop route optimization',
+      featureFlag: 'ROUTE_OPTIMIZATION' as keyof typeof FeatureFlags,
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+        </svg>
+      ),
+    },
+    {
+      key: 'costs',
+      title: 'Trip Cost Calculator',
+      description: 'Phase 5+: Fuel cost estimation and trip budgeting',
+      featureFlag: 'COST_CALCULATION' as keyof typeof FeatureFlags,
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      ),
+    },
+    {
+      key: 'trips',
+      title: 'Trip Manager',
+      description: 'Phase 5+: Save and manage multiple trips locally',
+      featureFlag: 'TRIP_MANAGEMENT' as keyof typeof FeatureFlags,
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+        </svg>
+      ),
+    },
+    {
+      key: 'planning',
+      title: 'Planning Tools',
+      description: 'Phase 5+: Duration estimation and itinerary planning',
+      featureFlag: 'PLANNING_TOOLS' as keyof typeof FeatureFlags,
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
         </svg>
       ),
     },
@@ -117,11 +165,21 @@ const SidebarContent: React.FC<SidebarContentProps> = ({ sections }) => {
               </div>
 
               {FeatureFlags[section.featureFlag] ? (
-                <div className="bg-green-50 border border-green-200 rounded-lg p-3">
-                  <p className="text-sm text-green-800">
-                    Feature controls will appear here
-                  </p>
-                </div>
+                section.key === 'optimization' ? (
+                  <RouteOptimization />
+                ) : section.key === 'costs' ? (
+                  <TripCostCalculator />
+                ) : section.key === 'trips' ? (
+                  <TripManager />
+                ) : section.key === 'planning' ? (
+                  <PlanningTools />
+                ) : (
+                  <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                    <p className="text-sm text-green-800">
+                      Feature controls will appear here
+                    </p>
+                  </div>
+                )
               ) : (
                 <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
                   <p className="text-xs text-gray-500">
@@ -134,15 +192,15 @@ const SidebarContent: React.FC<SidebarContentProps> = ({ sections }) => {
 
           {/* Phase Information */}
           <div className="mt-8 pt-6 border-t border-gray-200">
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <h4 className="text-sm font-medium text-blue-900 mb-2">
-                Current Phase: 1.4
+            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+              <h4 className="text-sm font-medium text-green-900 mb-2">
+                Current Phase: 4 - Campsite Integration ✅
               </h4>
-              <p className="text-xs text-blue-700">
-                Layout Components - Building responsive UI foundation
+              <p className="text-xs text-green-700">
+                Campsite Integration - Display and filter campsites along routes
               </p>
-              <div className="mt-2 text-xs text-blue-600">
-                Next: Phase 1.5 - Basic Map Component
+              <div className="mt-2 text-xs text-green-600">
+                Next: Phase 5 - Planning Tools
               </div>
             </div>
           </div>

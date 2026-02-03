@@ -1,20 +1,23 @@
 // API Configuration
 // External service endpoints and settings
 
+// API Configuration with development proxy support
+const isDevelopment = import.meta.env.DEV;
+
 export const APIConfig = {
   routing: {
     primary: 'openrouteservice',
     fallback: 'osrm',
     endpoints: {
-      openrouteservice: 'https://api.openrouteservice.org/v2',
-      osrm: 'https://router.project-osrm.org'
+      openrouteservice: isDevelopment ? '/api/ors/v2' : 'https://api.openrouteservice.org/v2',
+      osrm: isDevelopment ? '/api/osrm' : 'https://router.project-osrm.org'
     }
   },
 
   campsites: {
     primary: 'overpass',
     sources: {
-      overpass: 'https://overpass-api.de/api/interpreter',
+      overpass: isDevelopment ? '/api/overpass' : 'https://overpass-api.de/api/interpreter',
       opencampingmap: 'https://opencampingmap.org/api'
     }
   },

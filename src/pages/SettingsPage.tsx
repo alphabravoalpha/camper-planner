@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { FeatureFlags } from '@/config';
 
 const SettingsPage: React.FC = () => {
-  const { t } = useTranslation();
+  const { } = useTranslation();
 
   if (!FeatureFlags.USER_PROFILES) {
     return (

@@ -22,10 +22,15 @@ export interface TripMetadata {
 }
 
 export interface VehicleProfile {
+  id?: string;
+  name?: string;
+  createdAt?: string;
+  type?: string;
   height: number; // meters
   width: number;  // meters
   weight: number; // tonnes
   length: number; // meters
+  fuelType?: string;
 }
 
 export interface RouteData {
@@ -39,7 +44,7 @@ export interface Waypoint {
   id: string;
   lat: number;
   lng: number;
-  type: 'start' | 'waypoint' | 'end';
+  type: 'start' | 'waypoint' | 'end' | 'campsite' | 'accommodation';
   name: string;
 
   // V2 fields (optional, added later)

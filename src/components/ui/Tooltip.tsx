@@ -1,7 +1,7 @@
 // Tooltip Component
 // Phase 2.4: Contextual help and accessibility-focused tooltips
 
-import React, { useState, useRef, useEffect, ReactNode } from 'react';
+import React, { useState, useRef, useEffect, type ReactNode } from 'react';
 import { cn } from '../../utils/cn';
 
 export type TooltipPosition = 'top' | 'bottom' | 'left' | 'right' | 'auto';

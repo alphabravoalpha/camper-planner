@@ -1,8 +1,8 @@
 // Routing Service Implementation
 // Phase 3.2: OpenRouteService integration with fallback to OSRM
 
-import { DataService, DataServiceConfig, RequestContext } from './DataService';
-import { VehicleProfile, Waypoint } from '../types';
+import { DataService, type DataServiceConfig, type RequestContext } from './DataService';
+import { type VehicleProfile, type Waypoint } from '../types';
 import { APIConfig } from '../config/api';
 
 export interface RouteRequest {
@@ -20,6 +20,9 @@ export interface RouteOptions {
   instructions?: boolean;
   elevation?: boolean;
   alternative_routes?: boolean;
+  alternatives?: boolean;
+  steps?: boolean;
+  geometries?: string;
 }
 
 export interface RouteResponse {
@@ -85,14 +88,21 @@ export interface RouteMetadata {
 
 // Error types for routing
 export class RoutingError extends Error {
+  public code: string;
+  public service: string;
+  public recoverable: boolean;
+
   constructor(
     message: string,
-    public code: string,
-    public service: string,
-    public recoverable: boolean = true
+    code: string,
+    service: string,
+    recoverable: boolean = true
   ) {
     super(message);
     this.name = 'RoutingError';
+    this.code = code;
+    this.service = service;
+    this.recoverable = recoverable;
   }
 }
 
@@ -108,7 +118,7 @@ export class RoutingService extends DataService {
       cacheEnabled: true,
       cacheTtl: 3600000, // 1 hour cache
       userAgent: 'EuropeanCamperPlanner/1.0',
-      apiKey: process.env.REACT_APP_ORS_API_KEY,
+      apiKey: import.meta.env.VITE_ORS_API_KEY,
     };
 
     // Rate limiting: 2000 requests per day (OpenRouteService free tier)
@@ -144,7 +154,7 @@ export class RoutingService extends DataService {
           status: 'error',
           routes: [],
           metadata: {
-            service: 'validation',
+            service: 'openrouteservice',
             profile: this.determineProfile(request.vehicleProfile, request.options?.profile),
             timestamp: Date.now(),
             query: request,
@@ -180,6 +190,11 @@ export class RoutingService extends DataService {
 
       return result;
     } catch (error) {
+      // Don't attempt fallback for non-recoverable errors (validation errors)
+      if (error instanceof RoutingError && !error.recoverable) {
+        throw error;
+      }
+
       console.warn('OpenRouteService failed, trying fallback:', error);
 
       // Try fallback service (OSRM) but warn about lack of vehicle restrictions
@@ -537,7 +552,7 @@ export class RoutingService extends DataService {
   private initializeFallbackService(): void {
     // Note: For simplicity, we'll handle OSRM within this service
     // In a more complex setup, we could create a separate OSRMService
-    this.fallbackService = null; // Handled internally
+    this.fallbackService = undefined; // Handled internally
   }
 
   /**

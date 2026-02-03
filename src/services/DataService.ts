@@ -33,6 +33,14 @@ export interface RequestContext {
   customTimeout?: number;
 }
 
+export interface ServiceError {
+  type: 'network' | 'timeout' | 'rate_limit' | 'server' | 'client' | 'unknown';
+  message: string;
+  originalError?: Error;
+  suggestion?: string;
+  retryable: boolean;
+}
+
 export abstract class DataService {
   protected config: DataServiceConfig;
   protected cache: Map<string, CacheEntry<any>>;
@@ -123,7 +131,16 @@ export abstract class DataService {
     };
 
     if (method !== 'GET' && body) {
-      requestOptions.body = JSON.stringify(body);
+      // Check Content-Type to determine how to encode the body
+      const contentType = requestHeaders['Content-Type'] || requestHeaders['content-type'];
+
+      if (contentType && contentType.includes('text/plain')) {
+        // Send as raw text for Overpass QL queries
+        requestOptions.body = body as string;
+      } else {
+        // JSON encode for other requests
+        requestOptions.body = JSON.stringify(body);
+      }
     }
 
     // Retry logic
@@ -165,6 +182,94 @@ export abstract class DataService {
     }
 
     throw lastError!;
+  }
+
+  /**
+   * Classify error and provide user-friendly message with recovery suggestions
+   */
+  protected classifyError(error: Error, context?: string): ServiceError {
+    const errorMessage = error.message.toLowerCase();
+
+    // Timeout errors
+    if (error.name === 'AbortError' || errorMessage.includes('timeout')) {
+      return {
+        type: 'timeout',
+        message: `Request timed out${context ? ` while ${context}` : ''}`,
+        originalError: error,
+        suggestion: 'The service is taking too long to respond. Please try again or zoom in to search a smaller area.',
+        retryable: true
+      };
+    }
+
+    // Network errors
+    if (errorMessage.includes('failed to fetch') || errorMessage.includes('network')) {
+      return {
+        type: 'network',
+        message: `Network connection failed${context ? ` while ${context}` : ''}`,
+        originalError: error,
+        suggestion: 'Please check your internet connection and try again.',
+        retryable: true
+      };
+    }
+
+    // Rate limit errors
+    if (errorMessage.includes('rate limit')) {
+      return {
+        type: 'rate_limit',
+        message: `Too many requests${context ? ` while ${context}` : ''}`,
+        originalError: error,
+        suggestion: error.message.includes('wait') ? error.message : 'Please wait a moment before trying again.',
+        retryable: true
+      };
+    }
+
+    // Server errors (5xx)
+    if (errorMessage.includes('http 5')) {
+      return {
+        type: 'server',
+        message: `Service temporarily unavailable${context ? ` while ${context}` : ''}`,
+        originalError: error,
+        suggestion: 'The service is experiencing issues. Please try again in a few moments.',
+        retryable: true
+      };
+    }
+
+    // Client errors (4xx)
+    if (errorMessage.includes('http 4')) {
+      const is404 = errorMessage.includes('404');
+      const is429 = errorMessage.includes('429');
+
+      if (is429) {
+        return {
+          type: 'rate_limit',
+          message: `Too many requests${context ? ` while ${context}` : ''}`,
+          originalError: error,
+          suggestion: 'Please wait a moment before searching again.',
+          retryable: true
+        };
+      }
+
+      return {
+        type: 'client',
+        message: is404
+          ? `No data found${context ? ` while ${context}` : ''}`
+          : `Request failed${context ? ` while ${context}` : ''}`,
+        originalError: error,
+        suggestion: is404
+          ? 'Try searching a different location or zooming out to see more results.'
+          : 'Please check your request and try again.',
+        retryable: false
+      };
+    }
+
+    // Unknown error
+    return {
+      type: 'unknown',
+      message: `Something went wrong${context ? ` while ${context}` : ''}`,
+      originalError: error,
+      suggestion: 'Please try again. If the problem persists, try refreshing the page.',
+      retryable: true
+    };
   }
 
   /**

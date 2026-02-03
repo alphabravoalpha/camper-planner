@@ -2,7 +2,7 @@
 // Phase 3.4: Display elevation profile along the route
 
 import React, { useMemo } from 'react';
-import { RouteData } from '../../services/RoutingService';
+import { type RouteData } from '../../services/RoutingService';
 import { cn } from '../../utils/cn';
 
 interface ElevationProfileProps {
@@ -16,6 +16,19 @@ interface ElevationPoint {
   index: number; // coordinate index
 }
 
+// Calculate distance between two coordinates (Haversine formula)
+function calculateDistance(lat1: number, lng1: number, lat2: number, lng2: number): number {
+  const R = 6371000; // Earth's radius in meters
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLng = (lng2 - lng1) * Math.PI / 180;
+  const a =
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+    Math.sin(dLng/2) * Math.sin(dLng/2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  return R * c;
+}
+
 const ElevationProfile: React.FC<ElevationProfileProps> = ({ route, className }) => {
   // Extract elevation data from route geometry
   const elevationData = useMemo(() => {
@@ -26,6 +39,7 @@ const ElevationProfile: React.FC<ElevationProfileProps> = ({ route, className })
     let cumulativeDistance = 0;
 
     coordinates.forEach((coord, index) => {
+      // @ts-expect-error - Coordinate array access is safe - coordinates are guaranteed to have at least lat/lng from geometry
       const [lng, lat, elevation] = coord;
 
       if (elevation !== undefined) {
@@ -50,36 +64,10 @@ const ElevationProfile: React.FC<ElevationProfileProps> = ({ route, className })
     return elevationPoints.length > 0 ? elevationPoints : null;
   }, [route.geometry]);
 
-  // Calculate distance between two coordinates (Haversine formula)
-  function calculateDistance(lat1: number, lng1: number, lat2: number, lng2: number): number {
-    const R = 6371000; // Earth's radius in meters
-    const dLat = (lat2 - lat1) * Math.PI / 180;
-    const dLng = (lng2 - lng1) * Math.PI / 180;
-    const a =
-      Math.sin(dLat/2) * Math.sin(dLat/2) +
-      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-      Math.sin(dLng/2) * Math.sin(dLng/2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    return R * c;
-  }
-
-  if (!elevationData) {
-    return (
-      <div className={cn('bg-white rounded-lg border border-gray-200 p-6', className)}>
-        <div className="text-center text-gray-500">
-          <svg className="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-          </svg>
-          <h3 className="text-lg font-medium text-gray-900 mb-1">No Elevation Data</h3>
-          <p>Elevation profile not available for this route</p>
-          <p className="text-sm mt-1">Enable elevation in route options to see the profile</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Calculate elevation statistics
+  // Calculate elevation statistics - must be called before early return
   const stats = useMemo(() => {
+    if (!elevationData) return null;
+
     const elevations = elevationData.map(p => p.elevation);
     const minElevation = Math.min(...elevations);
     const maxElevation = Math.max(...elevations);
@@ -103,6 +91,21 @@ const ElevationProfile: React.FC<ElevationProfileProps> = ({ route, className })
       totalDistance: Math.round(totalDistance / 1000 * 10) / 10 // km
     };
   }, [elevationData]);
+
+  if (!elevationData || !stats) {
+    return (
+      <div className={cn('bg-white rounded-lg border border-gray-200 p-6', className)}>
+        <div className="text-center text-gray-500">
+          <svg className="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+          </svg>
+          <h3 className="text-lg font-medium text-gray-900 mb-1">No Elevation Data</h3>
+          <p>Elevation profile not available for this route</p>
+          <p className="text-sm mt-1">Enable elevation in route options to see the profile</p>
+        </div>
+      </div>
+    );
+  }
 
   // SVG dimensions
   const SVG_WIDTH = 600;

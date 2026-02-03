@@ -90,7 +90,7 @@ export const LoadingSkeleton: React.FC<{
   lines?: number;
   variant?: 'text' | 'card' | 'avatar' | 'button';
 }> = ({ className, lines = 3, variant = 'text' }) => {
-  const skeletonLine = (
+  const __skeletonLine = (
     <div className="animate-pulse bg-gray-200 rounded h-4 w-full" />
   );
 

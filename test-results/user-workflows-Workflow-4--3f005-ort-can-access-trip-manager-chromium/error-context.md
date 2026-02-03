@@ -1,0 +1,170 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e6]:
+      - link "European Camper Planner Free trip planning for Europe" [ref=e8] [cursor=pointer]:
+        - /url: /camper-planner
+        - img [ref=e10]
+        - generic [ref=e12]:
+          - heading "European Camper Planner" [level=1] [ref=e13]
+          - paragraph [ref=e14]: Free trip planning for Europe
+      - navigation [ref=e15]:
+        - link "Trip Planner" [ref=e16] [cursor=pointer]:
+          - /url: /camper-planner
+        - link "About" [ref=e17] [cursor=pointer]:
+          - /url: /camper-planner/about
+        - link "Help" [ref=e18] [cursor=pointer]:
+          - /url: /camper-planner/help
+      - button "EN" [disabled] [ref=e20]:
+        - img [ref=e21]
+        - generic [ref=e23]: EN
+  - main [ref=e25]:
+    - generic [ref=e28]:
+      - generic [ref=e29]:
+        - generic [ref=e30]:
+          - link "Leaflet" [ref=e31] [cursor=pointer]:
+            - /url: https://leafletjs.com
+            - img [ref=e32]
+            - text: Leaflet
+          - text: "| ©"
+          - link "OpenStreetMap" [ref=e36] [cursor=pointer]:
+            - /url: https://www.openstreetmap.org/copyright
+          - text: contributors
+        - button "Open layer control" [ref=e38] [cursor=pointer]:
+          - generic [ref=e39]: 🗺️
+      - generic [ref=e43]:
+        - img [ref=e45]
+        - textbox "Search for a location or campsite..." [ref=e47]
+      - generic:
+        - generic:
+          - generic:
+            - generic:
+              - img
+            - generic:
+              - paragraph: Start your trip
+              - paragraph: Right-click on the map to add waypoints, or search for a location above
+      - button "Vehicle profile" [ref=e50] [cursor=pointer]:
+        - generic [ref=e51]:
+          - generic [ref=e52]: 🚐
+          - generic [ref=e54]: Setup Vehicle
+      - generic [ref=e56]:
+        - heading "Route Calculation" [level=3] [ref=e58]
+        - generic [ref=e59]:
+          - button "Calculate Route" [disabled] [ref=e60]:
+            - img [ref=e61]
+            - generic [ref=e63]: Calculate Route
+          - generic [ref=e64]:
+            - checkbox "Auto-calculate" [checked] [disabled] [ref=e65]
+            - generic [ref=e66]: Auto-calculate
+        - generic [ref=e67]: Add at least 2 waypoints to enable route calculation
+      - generic [ref=e69]:
+        - generic [ref=e70]:
+          - generic [ref=e71]:
+            - button "🏕️ Campsites" [ref=e72] [cursor=pointer]:
+              - generic [ref=e73]: 🏕️
+              - generic [ref=e74]: Campsites
+            - generic [ref=e75]: (3/3 types)
+          - button [ref=e77] [cursor=pointer]:
+            - img [ref=e78]
+        - generic [ref=e81]:
+          - generic [ref=e82]:
+            - button "⛺" [ref=e83] [cursor=pointer]:
+              - generic [ref=e84]: ⛺
+            - button "🚐" [ref=e85] [cursor=pointer]:
+              - generic [ref=e86]: 🚐
+            - button "🅿️" [ref=e87] [cursor=pointer]:
+              - generic [ref=e88]: 🅿️
+          - generic [ref=e89]: "Max: 100 • All sites"
+      - generic [ref=e90]:
+        - generic [ref=e91]:
+          - button "Zoom in" [ref=e92] [cursor=pointer]:
+            - img [ref=e93]
+          - button "Zoom out" [ref=e95] [cursor=pointer]:
+            - img [ref=e96]
+        - generic [ref=e97]:
+          - button "Zoom to fit all waypoints" [disabled] [ref=e98]:
+            - img [ref=e99]
+          - button "Reset to Europe view" [ref=e101] [cursor=pointer]:
+            - img [ref=e102]
+          - button "Toggle map layer control" [ref=e104] [cursor=pointer]:
+            - img [ref=e105]
+          - button "Enter fullscreen mode" [ref=e107] [cursor=pointer]:
+            - img [ref=e108]
+        - button "Toggle keyboard shortcuts help" [ref=e110] [cursor=pointer]:
+          - img [ref=e111]
+      - generic [ref=e113]:
+        - generic [ref=e114]:
+          - button "Undo last action" [disabled] [ref=e115]:
+            - img [ref=e116]
+          - button "Redo last action" [disabled] [ref=e118]:
+            - img [ref=e119]
+        - button "Toggle trip manager" [active] [ref=e122] [cursor=pointer]:
+          - img [ref=e123]
+        - button "Toggle campsite controls" [ref=e125] [cursor=pointer]:
+          - img [ref=e126]
+      - generic [ref=e130]:
+        - generic [ref=e131]: "Zoom: 5 | Center: 54.5260, 15.2551"
+        - generic [ref=e132]:
+          - generic [ref=e133]: "Waypoints: 0"
+          - generic [ref=e134]: Right-click map to add
+      - generic [ref=e136]:
+        - generic [ref=e137]:
+          - heading "Trip Manager" [level=2] [ref=e138]
+          - button "Close trip manager" [ref=e139] [cursor=pointer]:
+            - img [ref=e140]
+        - generic [ref=e143]:
+          - generic [ref=e144]:
+            - generic [ref=e145]:
+              - img [ref=e146]
+              - heading "Trip Manager" [level=2] [ref=e148]
+            - generic [ref=e149]:
+              - button "Save Current" [disabled] [ref=e150]:
+                - img [ref=e151]
+                - text: Save Current
+              - button [ref=e155] [cursor=pointer]:
+                - img [ref=e156]
+          - generic [ref=e159]:
+            - button "My Trips" [ref=e160] [cursor=pointer]:
+              - img [ref=e161]
+              - text: My Trips
+            - button "Templates" [ref=e165] [cursor=pointer]:
+              - img [ref=e166]
+              - text: Templates
+            - button "Recent" [ref=e168] [cursor=pointer]:
+              - img [ref=e169]
+              - text: Recent
+          - generic [ref=e173]:
+            - generic [ref=e174]:
+              - img [ref=e175]
+              - textbox "Search trips, tags, or countries..." [ref=e178]
+            - combobox [ref=e180]:
+              - option "All Categories" [selected]
+              - option "Leisure"
+              - option "Adventure"
+              - option "Romantic"
+              - option "Family"
+              - option "Business"
+          - generic [ref=e182]:
+            - generic [ref=e183]:
+              - heading "My Trips (0)" [level=3] [ref=e184]
+              - button "Import" [ref=e186] [cursor=pointer]:
+                - img [ref=e187]
+                - text: Import
+            - generic [ref=e190]:
+              - img [ref=e191]
+              - paragraph [ref=e193]: No trips found. Start by saving your current route or using a template.
+      - generic:
+        - generic [ref=e195]:
+          - generic [ref=e196]:
+            - generic [ref=e197]:
+              - generic [ref=e198]: 🗺️
+              - heading "Welcome to Camper Planner! 🚐" [level=3] [ref=e199]
+            - button [ref=e200] [cursor=pointer]:
+              - img [ref=e201]
+          - paragraph [ref=e203]: Plan your perfect European camping trip by clicking on the map to add waypoints.
+          - generic [ref=e204]: 💡 Click anywhere on the map to start
+        - button "Toggle help panel" [ref=e207] [cursor=pointer]:
+          - img [ref=e208]
+```

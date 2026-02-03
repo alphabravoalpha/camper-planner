@@ -1,10 +1,10 @@
 // Route Visualization Component
 // Phase 3.2: Enhanced route visualization with calculated routing data
 
-import React, { useMemo } from 'react';
-import { Polyline, Marker } from 'react-leaflet';
+import React, { useMemo, useState, useCallback } from 'react';
+import { Polyline, Marker, Popup } from 'react-leaflet';
 import L, { DivIcon } from 'leaflet';
-import { useRouteStore } from '../../store';
+import { useRouteStore, useUIStore } from '../../store';
 import { type Waypoint } from '../../types';
 import { type RouteResponse, type RestrictedSegment } from '../../services/RoutingService';
 import { FeatureFlags } from '../../config';
@@ -42,6 +42,45 @@ const calculateBearing = (lat1: number, lng1: number, lat2: number, lng2: number
 // Calculate midpoint between two coordinates
 const calculateMidpoint = (lat1: number, lng1: number, lat2: number, lng2: number): [number, number] => {
   return [(lat1 + lat2) / 2, (lng1 + lng2) / 2];
+};
+
+// Format distance for display
+const formatDistance = (meters: number): string => {
+  if (meters < 1000) {
+    return `${Math.round(meters)}m`;
+  }
+  return `${(meters / 1000).toFixed(1)}km`;
+};
+
+// Format duration for display
+const formatDuration = (seconds: number): string => {
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+
+  if (hours > 0) {
+    return `${hours}h ${minutes}m`;
+  }
+  return `${minutes}m`;
+};
+
+// Create distance/time label icon
+const createRouteInfoIcon = (distance: number, duration: number, isHighlighted = false): DivIcon => {
+  const distanceText = formatDistance(distance);
+  const durationText = formatDuration(duration);
+
+  return L.divIcon({
+    html: `
+      <div class="route-info-label ${isHighlighted ? 'highlighted' : ''}">
+        <div class="bg-white border-2 border-blue-500 rounded-lg px-2 py-1 shadow-lg text-xs font-medium text-gray-800">
+          <div class="text-blue-600 font-semibold">${distanceText}</div>
+          <div class="text-gray-600">${durationText}</div>
+        </div>
+      </div>
+    `,
+    className: 'route-info-marker',
+    iconSize: [60, 30],
+    iconAnchor: [30, 15]
+  });
 };
 
 // Create restriction warning icon
@@ -92,11 +131,53 @@ interface WaypointNumberProps {
 }
 
 const WaypointNumber: React.FC<WaypointNumberProps> = ({ waypoint, index, total }) => {
+  const { updateWaypoint, removeWaypoint } = useRouteStore();
+  const { addNotification } = useUIStore();
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedName, setEditedName] = useState(waypoint.name || '');
+  const [editedNotes, setEditedNotes] = useState(waypoint.notes || '');
+
   const getWaypointStyle = () => {
     if (waypoint.type === 'start') return 'bg-green-500 border-green-600';
     if (waypoint.type === 'end') return 'bg-red-500 border-red-600';
     return 'bg-blue-500 border-blue-600';
   };
+
+  const handleSaveEdit = useCallback(() => {
+    const updates: Partial<Waypoint> = {};
+
+    if (editedName.trim() !== (waypoint.name || '')) {
+      updates.name = editedName.trim();
+    }
+
+    if (editedNotes !== (waypoint.notes || '')) {
+      updates.notes = editedNotes;
+    }
+
+    if (Object.keys(updates).length > 0) {
+      updateWaypoint(waypoint.id, updates);
+      addNotification({
+        type: 'success',
+        message: 'Waypoint updated successfully'
+      });
+    }
+
+    setIsEditing(false);
+  }, [waypoint.id, waypoint.name, waypoint.notes, editedName, editedNotes, updateWaypoint, addNotification]);
+
+  const handleCancelEdit = useCallback(() => {
+    setEditedName(waypoint.name || '');
+    setEditedNotes(waypoint.notes || '');
+    setIsEditing(false);
+  }, [waypoint.name, waypoint.notes]);
+
+  const handleDelete = useCallback(() => {
+    removeWaypoint(waypoint.id);
+    addNotification({
+      type: 'success',
+      message: `Removed ${waypoint.name || 'waypoint'} from route`
+    });
+  }, [waypoint.id, waypoint.name, removeWaypoint, addNotification]);
 
   const getWaypointLabel = () => {
     if (waypoint.type === 'start') return 'S';
@@ -104,66 +185,237 @@ const WaypointNumber: React.FC<WaypointNumberProps> = ({ waypoint, index, total 
     return (index + 1).toString();
   };
 
+  const getWaypointIcon = () => {
+    if (waypoint.type === 'start') return '🏁';
+    if (waypoint.type === 'end') return '🏁';
+    if (waypoint.type === 'campsite') return '🏕️';
+    if (waypoint.type === 'accommodation') return '🏨';
+    return '📍';
+  };
+
   const numberIcon = L.divIcon({
     html: `
-      <div class="relative">
-        <!-- Main number circle -->
+      <div class="relative waypoint-marker">
+        <!-- Main waypoint container -->
         <div class="${cn(
-          'w-8 h-8 rounded-full border-2 text-white font-bold text-sm',
+          'relative w-10 h-10 rounded-full border-3 text-white font-bold text-sm',
           'flex items-center justify-center shadow-lg',
-          'transform hover:scale-110 transition-transform duration-200',
+          'transform hover:scale-110 transition-all duration-300',
+          'cursor-pointer',
           getWaypointStyle()
         )}">
-          ${getWaypointLabel()}
+          <!-- Icon background -->
+          <div class="absolute inset-1 rounded-full bg-white bg-opacity-20"></div>
+
+          <!-- Main content -->
+          <div class="relative z-10 flex flex-col items-center">
+            <div class="text-xs">${getWaypointIcon()}</div>
+            <div class="text-xs font-bold -mt-1">${getWaypointLabel()}</div>
+          </div>
         </div>
 
-        <!-- Pulse animation for active waypoint -->
+        <!-- Pulse animation for important waypoints -->
         <div class="${cn(
-          'absolute inset-0 rounded-full border-2 animate-ping opacity-30',
+          'absolute inset-0 rounded-full border-2 animate-pulse opacity-20',
           getWaypointStyle()
         )}"></div>
 
         <!-- Route progress indicator -->
         ${total > 1 ? `
-          <div class="absolute -bottom-2 left-1/2 transform -translate-x-1/2">
-            <div class="w-1 h-3 bg-gray-300 rounded-full">
+          <div class="absolute -bottom-3 left-1/2 transform -translate-x-1/2">
+            <div class="w-2 h-4 bg-gray-300 rounded-full border border-gray-400">
               <div
-                class="w-full bg-blue-500 rounded-full transition-all duration-300"
+                class="w-full bg-gradient-to-t from-green-500 to-blue-500 rounded-full transition-all duration-500"
                 style="height: ${((index + 1) / total) * 100}%"
               ></div>
             </div>
           </div>
         ` : ''}
+
+        <!-- Waypoint name label -->
+        <div class="absolute top-12 left-1/2 transform -translate-x-1/2 whitespace-nowrap">
+          <div class="bg-white bg-opacity-90 text-gray-800 text-xs font-medium px-2 py-1 rounded shadow-md border">
+            ${waypoint.name || `Stop ${index + 1}`}
+          </div>
+        </div>
       </div>
     `,
-    className: 'waypoint-number-overlay',
-    iconSize: [32, 40],
-    iconAnchor: [16, 20],
-    popupAnchor: [0, -20]
+    className: 'enhanced-waypoint-marker',
+    iconSize: [40, 60],
+    iconAnchor: [20, 30],
+    popupAnchor: [0, -30]
   });
 
   return (
     <Marker
       position={[waypoint.lat, waypoint.lng]}
+      // @ts-ignore - React-Leaflet v4 prop compatibility
       icon={numberIcon}
       zIndexOffset={2000} // Highest priority - above everything
-    />
+    >
+      <Popup
+        eventHandlers={{
+          click: (e: any) => e.originalEvent?.stopPropagation()
+        }}
+      >
+        <div className="p-3 min-w-[250px]" onClick={(e) => e.stopPropagation()}>
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2">
+              <span className="text-lg">{getWaypointIcon()}</span>
+              <h3 className="font-semibold text-sm">{waypoint.name || `Waypoint ${index + 1}`}</h3>
+            </div>
+            {!isEditing && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  setIsEditing(true);
+                }}
+                className="bg-blue-600 text-white hover:bg-blue-700 px-2 py-1 rounded text-xs font-medium transition-colors"
+                title="Edit waypoint"
+              >
+                Edit
+              </button>
+            )}
+          </div>
+
+          {isEditing ? (
+            /* Edit Mode */
+            <div className="space-y-3">
+              <div>
+                <label className="block text-xs font-medium text-gray-700 mb-1">
+                  Name
+                </label>
+                <input
+                  type="text"
+                  value={editedName}
+                  onChange={(e) => setEditedName(e.target.value)}
+                  onClick={(e) => e.stopPropagation()}
+                  onFocus={(e) => e.stopPropagation()}
+                  className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Enter waypoint name"
+                  autoFocus
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-gray-700 mb-1">
+                  Notes
+                </label>
+                <textarea
+                  value={editedNotes}
+                  onChange={(e) => setEditedNotes(e.target.value)}
+                  onClick={(e) => e.stopPropagation()}
+                  onFocus={(e) => e.stopPropagation()}
+                  className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                  rows={3}
+                  placeholder="Add notes about this waypoint..."
+                />
+              </div>
+
+              <div className="flex space-x-2 pt-2 border-t border-gray-200">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    handleSaveEdit();
+                  }}
+                  className="flex-1 px-3 py-1 text-xs bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
+                >
+                  Save
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    handleCancelEdit();
+                  }}
+                  className="flex-1 px-3 py-1 text-xs bg-gray-600 text-white rounded hover:bg-gray-700 transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          ) : (
+            /* View Mode */
+            <div className="space-y-2 text-xs">
+              <div className="flex justify-between">
+                <span>Type:</span>
+                <span className="font-medium capitalize">{waypoint.type.replace('_', ' ')}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Position:</span>
+                <span className="font-medium">{index + 1} of {total}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Coordinates:</span>
+                <span className="font-mono text-xs">{waypoint.lat.toFixed(4)}, {waypoint.lng.toFixed(4)}</span>
+              </div>
+
+              {waypoint.visitDate && (
+                <div className="flex justify-between">
+                  <span>Visit Date:</span>
+                  <span className="font-medium">{waypoint.visitDate}</span>
+                </div>
+              )}
+
+              {waypoint.duration && (
+                <div className="flex justify-between">
+                  <span>Stay Duration:</span>
+                  <span className="font-medium">{waypoint.duration}h</span>
+                </div>
+              )}
+
+              {waypoint.notes && (
+                <div className="mt-2 p-2 bg-gray-50 rounded text-xs">
+                  <div className="font-medium text-gray-700 mb-1">Notes:</div>
+                  <div className="text-gray-600">{waypoint.notes}</div>
+                </div>
+              )}
+
+              <div className="flex space-x-2 pt-2 border-t border-gray-200">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    setIsEditing(true);
+                  }}
+                  className="flex-1 px-3 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    handleDelete();
+                  }}
+                  className="flex-1 px-3 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </Popup>
+    </Marker>
   );
 };
 
 // Calculate route visualization component - displays actual calculated routes
 const CalculatedRouteDisplay: React.FC<{ route: RouteResponse }> = ({ route }) => {
-  if (!route || !route.routes || route.routes.length === 0) return null;
+  const routeData = route?.routes?.[0]; // Use first route if available
 
-  const routeData = route.routes[0]; // Use first route
-
-  // Extract coordinates from the route geometry
+  // Extract coordinates from the route geometry - must be called before early return
   const routeCoordinates = useMemo(() => {
-    if (!routeData.geometry || !routeData.geometry.coordinates) return [];
+    if (!routeData?.geometry?.coordinates) return [];
 
     // Convert from [lng, lat] to [lat, lng] for Leaflet
     return routeData.geometry.coordinates.map(([lng, lat]) => [lat, lng] as [number, number]);
   }, [routeData]);
+
+  if (!route || !route.routes || route.routes.length === 0) return null;
 
   // Determine route color based on service and vehicle profile
   const getRouteColor = () => {
@@ -203,7 +455,8 @@ const CalculatedRouteDisplay: React.FC<{ route: RouteResponse }> = ({ route }) =
       {/* Route outline for better visibility */}
       <Polyline
         positions={routeCoordinates}
-        color="#ffffff"
+        // @ts-ignore - React-Leaflet v4 prop compatibility
+          color="#ffffff"
         weight={8}
         opacity={0.6}
         className="calculated-route-outline"
@@ -213,12 +466,69 @@ const CalculatedRouteDisplay: React.FC<{ route: RouteResponse }> = ({ route }) =
       {/* Main calculated route polyline */}
       <Polyline
         positions={routeCoordinates}
-        color={getRouteColor()}
+        // @ts-ignore - React-Leaflet v4 prop compatibility
+          color={getRouteColor()}
         weight={6}
         opacity={0.8}
         className="calculated-route"
         dashArray={getDashArray()}
       />
+
+      {/* Route segment information */}
+      {routeData.segments?.map((segment, index) => {
+        // Calculate segment midpoint for info display
+        const segmentStart = routeCoordinates[Math.floor((index * routeCoordinates.length) / routeData.segments.length)];
+        const segmentEnd = routeCoordinates[Math.floor(((index + 1) * routeCoordinates.length) / routeData.segments.length)];
+
+        if (segmentStart && segmentEnd) {
+          const midpoint = calculateMidpoint(segmentStart[0], segmentStart[1], segmentEnd[0], segmentEnd[1]);
+          const infoIcon = createRouteInfoIcon(segment.distance, segment.duration);
+
+          return (
+            <Marker
+              key={`segment-info-${index}`}
+              position={midpoint}
+              // @ts-ignore - React-Leaflet v4 prop compatibility
+              icon={infoIcon}
+              zIndexOffset={1500}
+            >
+              <Popup>
+                <div className="p-2">
+                  <h3 className="font-semibold text-sm mb-2">Route Segment {index + 1}</h3>
+                  <div className="space-y-1 text-xs">
+                    <div className="flex justify-between">
+                      <span>Distance:</span>
+                      <span className="font-medium">{formatDistance(segment.distance)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Duration:</span>
+                      <span className="font-medium">{formatDuration(segment.duration)}</span>
+                    </div>
+                    {segment.steps && segment.steps.length > 0 && (
+                      <div className="mt-2">
+                        <div className="text-gray-600 font-medium">Instructions:</div>
+                        <div className="max-h-24 overflow-y-auto">
+                          {segment.steps.slice(0, 3).map((step, stepIndex) => (
+                            <div key={stepIndex} className="text-xs text-gray-700 mt-1">
+                              • {step.instruction}
+                            </div>
+                          ))}
+                          {segment.steps.length > 3 && (
+                            <div className="text-xs text-gray-500 mt-1">
+                              ... and {segment.steps.length - 3} more steps
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </Popup>
+            </Marker>
+          );
+        }
+        return null;
+      })}
 
       {/* Restriction violation indicators */}
       {route.restrictions?.restrictedSegments?.map((restriction, index) => {
@@ -233,9 +543,36 @@ const CalculatedRouteDisplay: React.FC<{ route: RouteResponse }> = ({ route }) =
             <Marker
               key={`restriction-${index}`}
               position={midpoint}
+              // @ts-ignore - React-Leaflet v4 prop compatibility
               icon={icon}
               zIndexOffset={3000} // Highest priority - above everything else
-            />
+            >
+              <Popup>
+                <div className="p-2">
+                  <h3 className="font-semibold text-sm mb-2 text-red-600">Route Restriction</h3>
+                  <div className="space-y-1 text-xs">
+                    <div className="flex justify-between">
+                      <span>Type:</span>
+                      <span className="font-medium capitalize">{restriction.restriction}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Severity:</span>
+                      <span className={`font-medium capitalize ${
+                        restriction.severity === 'error' ? 'text-red-600' : 'text-amber-600'
+                      }`}>
+                        {restriction.severity}
+                      </span>
+                    </div>
+                    <div className="mt-2 text-gray-600">
+                      {restriction.severity === 'error'
+                        ? 'Vehicle cannot pass this section'
+                        : 'Caution: Check vehicle dimensions'
+                      }
+                    </div>
+                  </div>
+                </div>
+              </Popup>
+            </Marker>
           );
         }
         return null;
@@ -280,7 +617,7 @@ const StraightLineRouteDisplay: React.FC<{ waypoints: Waypoint[] }> = ({ waypoin
 
   return (
     <>
-      {routeSegments.map((segment, index) => {
+      {routeSegments.map((segment, _index) => {
         const bearing = calculateBearing(segment.start.lat, segment.start.lng, segment.end.lat, segment.end.lng);
         const midpoint = calculateMidpoint(segment.start.lat, segment.start.lng, segment.end.lat, segment.end.lng);
         const arrowIcon = createDirectionArrowIcon(bearing);
@@ -291,7 +628,8 @@ const StraightLineRouteDisplay: React.FC<{ waypoints: Waypoint[] }> = ({ waypoin
             {/* Route line */}
             <Polyline
               positions={[[segment.start.lat, segment.start.lng], [segment.end.lat, segment.end.lng]]}
-              color={segmentColor}
+              // @ts-ignore - React-Leaflet v4 prop compatibility
+          color={segmentColor}
               weight={4}
               opacity={0.6}
               className="straight-line-route"
@@ -301,7 +639,8 @@ const StraightLineRouteDisplay: React.FC<{ waypoints: Waypoint[] }> = ({ waypoin
             {/* Direction arrow at midpoint */}
             <Marker
               position={midpoint}
-              icon={arrowIcon}
+              // @ts-ignore - React-Leaflet v4 prop compatibility
+          icon={arrowIcon}
               zIndexOffset={1000}
             />
           </React.Fragment>

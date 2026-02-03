@@ -8,10 +8,9 @@ import { useVehicleStore } from '../../store';
 import { useCostStore, createRouteHash, isCacheValid } from '../../store/costStore';
 import {
   CostCalculationService,
-  CostBreakdown,
-  CostOptimization,
-  FuelConsumptionSettings,
-  FuelPriceSettings
+  type CostBreakdown,
+  type CostOptimization,
+  type FuelConsumptionSettings
 } from '../../services/CostCalculationService';
 
 interface CostCalculatorProps {
@@ -26,7 +25,7 @@ const CostCalculator: React.FC<CostCalculatorProps> = ({
   isVisible = true
 }) => {
   const { waypoints } = useRouteStore();
-  const { selectedProfile } = useVehicleStore();
+  const { profile } = useVehicleStore();
   const {
     fuelConsumptionSettings,
     fuelPriceSettings,
@@ -45,8 +44,8 @@ const CostCalculator: React.FC<CostCalculatorProps> = ({
 
   // Calculate route hash for caching
   const routeHash = useMemo(() => {
-    return createRouteHash(waypoints, selectedProfile);
-  }, [waypoints, selectedProfile]);
+    return createRouteHash(waypoints, profile);
+  }, [waypoints, profile]);
 
   // Auto-calculate costs when route or settings change
   useEffect(() => {
@@ -65,7 +64,7 @@ const CostCalculator: React.FC<CostCalculatorProps> = ({
     }
 
     calculateCosts();
-  }, [waypoints, selectedProfile, fuelConsumptionSettings, fuelPriceSettings]);
+  }, [waypoints, profile, fuelConsumptionSettings, fuelPriceSettings]);
 
   // Notify parent component of cost updates
   useEffect(() => {
@@ -84,7 +83,7 @@ const CostCalculator: React.FC<CostCalculatorProps> = ({
       // Calculate cost breakdown
       const breakdown = await CostCalculationService.calculateRouteCosts(
         waypoints,
-        selectedProfile || undefined,
+        profile || undefined,
         fuelConsumptionSettings,
         fuelPriceSettings
       );
@@ -102,7 +101,7 @@ const CostCalculator: React.FC<CostCalculatorProps> = ({
       if (preferences.showOptimizationSuggestions) {
         const optimizationResult = await CostCalculationService.calculateCostOptimizations(
           breakdown,
-          selectedProfile || undefined
+          profile || undefined
         );
         setOptimization(optimizationResult);
       }

@@ -16,7 +16,7 @@ export default defineConfig({
   ],
 
   use: {
-    baseURL: process.env.BASE_URL || 'http://localhost:5173',
+    baseURL: process.env.BASE_URL || 'http://localhost:3000/camper-planner/',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
@@ -59,7 +59,8 @@ export default defineConfig({
 
   webServer: {
     command: 'npm run dev',
-    port: 5173,
+    port: 3000,
     reuseExistingServer: !process.env.CI,
+    timeout: 120000,
   },
 });

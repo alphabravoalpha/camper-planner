@@ -1,7 +1,7 @@
 // Error Boundary Component
 // React Error Boundary for graceful error handling
 
-import React, { Component, ReactNode } from 'react';
+import { Component, type ReactNode } from 'react';
 import { cn } from '../../utils/cn';
 
 interface ErrorBoundaryState {
@@ -33,7 +33,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
     });
 
     // Log error to console in development
-    if (process.env.NODE_ENV === 'development') {
+    if (import.meta.env.DEV) {
       console.error('ErrorBoundary caught an error:', error, errorInfo);
     }
   }

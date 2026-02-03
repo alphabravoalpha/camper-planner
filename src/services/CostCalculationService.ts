@@ -1,13 +1,13 @@
 // Cost Calculation Service
 // Phase 5.2: Comprehensive trip cost calculation and optimization
 
-import { Waypoint } from '../store';
-import { VehicleProfile } from '../store';
+import { type Waypoint } from '../store';
+import { type VehicleProfile } from '../store';
 
 export interface FuelConsumptionSettings {
   consumptionType: 'l_per_100km' | 'mpg_imperial' | 'mpg_us';
   consumption: number;
-  fuelType: 'petrol' | 'diesel' | 'lpg' | 'electric';
+  fuelType: 'petrol' | 'diesel' | 'lpg' | 'electricity';
   tankCapacity?: number; // liters
 }
 
@@ -118,7 +118,7 @@ export class CostCalculationService {
       consumptionType: 'l_per_100km',
       consumption: defaults?.diesel || 12,
       fuelType: 'diesel',
-      tankCapacity: vehicleProfile.fuelCapacity || 80
+      tankCapacity: 80 // Default fuel capacity
     };
   }
 
@@ -282,7 +282,7 @@ export class CostCalculationService {
   static calculateFuelCost(
     distanceKm: number,
     consumptionSettings: FuelConsumptionSettings,
-    priceSettings: FuelPriceSettings
+    _priceSettings: FuelPriceSettings
   ): number {
     const consumptionLPer100km = this.convertConsumption(
       consumptionSettings.consumption,
@@ -292,7 +292,7 @@ export class CostCalculationService {
 
     const fuelUsed = (distanceKm / 100) * consumptionLPer100km;
     const prices = this.getCurrentFuelPrices();
-    const fuelPrice = prices[consumptionSettings.fuelType];
+    const fuelPrice = (prices as Record<string, number>)[consumptionSettings.fuelType];
 
     return fuelUsed * fuelPrice;
   }

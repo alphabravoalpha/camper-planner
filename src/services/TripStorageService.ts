@@ -1,10 +1,10 @@
 // Trip Storage Service
 // Phase 5.3: Comprehensive trip management with local storage persistence
 
-import { Waypoint } from '../store';
-import { VehicleProfile } from '../store';
-import { CostBreakdown, FuelConsumptionSettings, FuelPriceSettings } from './CostCalculationService';
-import { OptimizationResult } from './RouteOptimizationService';
+import { type Waypoint } from '../store';
+import { type VehicleProfile } from '../store';
+import { type CostBreakdown, type FuelConsumptionSettings, type FuelPriceSettings } from './CostCalculationService';
+import { type OptimizationResult } from './RouteOptimizationService';
 
 export interface TripMetadata {
   id: string;
@@ -131,7 +131,7 @@ export interface TripComparison {
 }
 
 const TRIP_STORAGE_KEY = 'camper-planner-trips';
-const TRIP_TEMPLATES_KEY = 'camper-planner-trip-templates';
+const _TRIP_TEMPLATES_KEY = 'camper-planner-trip-templates';
 const TRIP_HISTORY_KEY = 'camper-planner-trip-history';
 const CURRENT_VERSION = '1.0.0';
 const MAX_HISTORY_ITEMS = 50;
@@ -142,7 +142,10 @@ export class TripStorageService {
    */
   static async saveTrip(trip: Omit<Trip, 'timestamps'>): Promise<Trip> {
     const now = new Date();
-    const existingTrip = await this.loadTrip(trip.metadata.id);
+
+    // Get existing trip without triggering lastOpened update
+    const allTrips = await this.getAllTrips();
+    const existingTrip = allTrips.find(t => t.metadata.id === trip.metadata.id);
 
     const fullTrip: Trip = {
       ...trip,
@@ -155,7 +158,6 @@ export class TripStorageService {
     };
 
     // Save to storage
-    const allTrips = await this.getAllTrips();
     const existingIndex = allTrips.findIndex(t => t.metadata.id === trip.metadata.id);
 
     if (existingIndex >= 0) {
@@ -273,7 +275,13 @@ export class TripStorageService {
   static async deleteTrip(tripId: string): Promise<boolean> {
     try {
       const allTrips = await this.getAllTrips();
+      const initialLength = allTrips.length;
       const filteredTrips = allTrips.filter(t => t.metadata.id !== tripId);
+
+      if (filteredTrips.length === initialLength) {
+        // No trip was removed
+        return false;
+      }
 
       localStorage.setItem(TRIP_STORAGE_KEY, JSON.stringify(filteredTrips));
       return true;

@@ -3,32 +3,16 @@
 
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { useMap } from 'react-leaflet';
-import L from 'leaflet';
+import * as L from 'leaflet';
 import 'leaflet.markercluster';
+import '../../types/leaflet';
 import { campsiteService } from '../../services/CampsiteService';
 import { useRouteStore, useVehicleStore, useUIStore } from '../../store';
 import { FeatureFlags } from '../../config';
-import { Campsite, CampsiteRequest, CampsiteType } from '../../services/CampsiteService';
+import { type Campsite, type CampsiteRequest, type CampsiteType } from '../../services/CampsiteService';
 import { createCampsiteIcon, createClusterIcon } from './CampsiteIcons';
 
-// Extend leaflet types for marker clustering
-declare module 'leaflet' {
-  namespace MarkerClusterGroup {
-    interface MarkerClusterGroupOptions {
-      chunkedLoading?: boolean;
-      chunkProgress?: (processed: number, total: number, elapsed: number) => void;
-      maxClusterRadius?: number;
-      disableClusteringAtZoom?: number;
-      spiderfyOnMaxZoom?: boolean;
-      showCoverageOnHover?: boolean;
-      zoomToBoundsOnClick?: boolean;
-      removeOutsideVisibleBounds?: boolean;
-      iconCreateFunction?: (cluster: any) => L.DivIcon;
-    }
-  }
-
-  function markerClusterGroup(options?: MarkerClusterGroup.MarkerClusterGroupOptions): any;
-}
+// Marker clustering types are defined in src/types/leaflet-cluster.d.ts
 
 export interface CampsiteLayerProps {
   visibleTypes: CampsiteType[];
@@ -54,12 +38,12 @@ const CampsiteLayer: React.FC<CampsiteLayerProps> = ({
   const map = useMap();
   const { calculatedRoute } = useRouteStore();
   const { profile } = useVehicleStore();
-  const { addNotification } = useUIStore();
+  const { } = useUIStore();
 
   const [campsites, setCampsites] = useState<Campsite[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [selectedCampsiteId, setSelectedCampsiteId] = useState<string | null>(null);
+  const [, setIsLoading] = useState(false);
+  const [, setError] = useState<string | null>(null);
+  const [selectedCampsiteId, setSelectedCampsiteId] = useState<number | null>(null);
   const [clusterGroup, setClusterGroup] = useState<any>(null);
 
   // Initialize marker cluster group
@@ -74,6 +58,7 @@ const CampsiteLayer: React.FC<CampsiteLayerProps> = ({
       showCoverageOnHover: false,
       zoomToBoundsOnClick: true,
       removeOutsideVisibleBounds: true,
+      // @ts-ignore - MarkerClusterGroup type definitions don't match leaflet.markercluster implementation
       iconCreateFunction: createClusterIcon,
       chunkProgress: (processed: number, total: number) => {
         if (processed === total) {
@@ -154,7 +139,7 @@ const CampsiteLayer: React.FC<CampsiteLayerProps> = ({
         types: visibleTypes,
         maxResults,
         includeDetails: true,
-        vehicleProfile: profile || undefined
+        vehicleFilter: profile || undefined
       };
 
       const response = await campsiteService.searchCampsites(request);
@@ -183,7 +168,7 @@ const CampsiteLayer: React.FC<CampsiteLayerProps> = ({
     let minLat = Infinity, maxLat = -Infinity;
     let minLng = Infinity, maxLng = -Infinity;
 
-    routeGeometry.coordinates.forEach(coord => {
+    routeGeometry.coordinates.forEach((coord: [number, number]) => {
       const [lng, lat] = coord;
       minLat = Math.min(minLat, lat);
       maxLat = Math.max(maxLat, lat);
@@ -208,7 +193,7 @@ const CampsiteLayer: React.FC<CampsiteLayerProps> = ({
         types: visibleTypes,
         maxResults,
         includeDetails: true,
-        vehicleProfile: profile || undefined
+        vehicleFilter: profile || undefined
       };
 
       const response = await campsiteService.searchCampsites(request);
@@ -265,7 +250,7 @@ const CampsiteLayer: React.FC<CampsiteLayerProps> = ({
       const isSelected = selectedCampsiteId === campsite.id;
 
       const marker = L.marker(
-        [campsite.location.lat, campsite.location.lng],
+        [campsite.lat, campsite.lng],
         {
           icon: createCampsiteIcon({
             campsite,
@@ -302,7 +287,7 @@ const CampsiteLayer: React.FC<CampsiteLayerProps> = ({
 };
 
 // Enhanced popup content creation
-function createCampsitePopup(campsite: Campsite, vehicleProfile?: any): string {
+function createCampsitePopup(campsite: Campsite, _vehicleProfile?: any): string {
   const amenityIcons: Record<string, string> = {
     electricity: '⚡',
     wifi: '📶',
@@ -326,14 +311,15 @@ function createCampsitePopup(campsite: Campsite, vehicleProfile?: any): string {
       </span>
     `).join('') : '';
 
-  const restrictionsHtml = !campsite.vehicleCompatible && campsite.restrictions ? `
+  const restrictionsHtml = !campsite.vehicleCompatible && campsite.access ? `
     <div class="mt-2 p-2 bg-red-50 border border-red-200 rounded">
       <div class="text-xs font-medium text-red-800 mb-1">⚠️ Vehicle Restrictions:</div>
       <div class="text-xs text-red-700">
-        ${campsite.restrictions.maxHeight ? `Max height: ${campsite.restrictions.maxHeight}m<br>` : ''}
-        ${campsite.restrictions.maxWidth ? `Max width: ${campsite.restrictions.maxWidth}m<br>` : ''}
-        ${campsite.restrictions.maxLength ? `Max length: ${campsite.restrictions.maxLength}m<br>` : ''}
-        ${campsite.restrictions.maxWeight ? `Max weight: ${campsite.restrictions.maxWeight}t` : ''}
+        ${campsite.access.max_height ? `Max height: ${campsite.access.max_height}m<br>` : ''}
+        ${campsite.access.max_weight ? `Max weight: ${campsite.access.max_weight}t<br>` : ''}
+        ${campsite.access.max_length ? `Max length: ${campsite.access.max_length}m<br>` : ''}
+        ${!campsite.access.motorhome ? `No motorhomes<br>` : ''}
+        ${!campsite.access.caravan ? `No caravans` : ''}
       </div>
     </div>
   ` : '';
@@ -367,7 +353,7 @@ function createCampsitePopup(campsite: Campsite, vehicleProfile?: any): string {
             🌐 <a href="${campsite.website}" target="_blank" rel="noopener noreferrer"
                class="text-blue-600 hover:text-blue-800 underline">Website</a>
           </div>` : ''}
-        ${campsite.openingHours ? `<div class="text-xs text-gray-700 mb-1">🕒 ${campsite.openingHours}</div>` : ''}
+        ${campsite.opening_hours ? `<div class="text-xs text-gray-700 mb-1">🕒 ${campsite.opening_hours}</div>` : ''}
       </div>
 
       <!-- Amenities -->

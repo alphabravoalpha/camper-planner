@@ -3,7 +3,7 @@
 
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { FuelConsumptionSettings, FuelPriceSettings } from '../services/CostCalculationService';
+import { type FuelConsumptionSettings, type FuelPriceSettings } from '../services/CostCalculationService';
 
 interface CostState {
   // Fuel consumption settings

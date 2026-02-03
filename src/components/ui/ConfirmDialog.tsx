@@ -25,6 +25,28 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   onConfirm,
   onCancel
 }) => {
+  // Handle keyboard events - must be called before any early returns
+  React.useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onCancel();
+      } else if (e.key === 'Enter') {
+        onConfirm();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    // Prevent body scroll
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'auto';
+    };
+  }, [isOpen, onCancel, onConfirm]);
+
   if (!isOpen) return null;
 
   const confirmButtonClass = cn(
@@ -35,28 +57,6 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
       'bg-yellow-600 text-white hover:bg-yellow-700 focus:ring-yellow-500': confirmVariant === 'warning',
     }
   );
-
-  // Handle keyboard events
-  React.useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        onCancel();
-      } else if (e.key === 'Enter') {
-        onConfirm();
-      }
-    };
-
-    if (isOpen) {
-      document.addEventListener('keydown', handleKeyDown);
-      // Prevent body scroll
-      document.body.style.overflow = 'hidden';
-    }
-
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = 'auto';
-    };
-  }, [isOpen, onCancel, onConfirm]);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">

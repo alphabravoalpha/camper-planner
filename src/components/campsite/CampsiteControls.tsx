@@ -5,7 +5,6 @@ import React, { useState } from 'react';
 import { FeatureFlags } from '../../config';
 import { type CampsiteType, type Campsite } from '../../services/CampsiteService';
 import { cn } from '../../utils/cn';
-import CampsiteSearch from './CampsiteSearch';
 
 interface CampsiteControlsProps {
   className?: string;
@@ -15,9 +14,6 @@ interface CampsiteControlsProps {
   onMaxResultsChange: (max: number) => void;
   vehicleCompatibleOnly: boolean;
   onVehicleCompatibleChange: (compatible: boolean) => void;
-  searchQuery?: string;
-  onSearchChange?: (query: string) => void;
-  onCampsiteSelect?: (campsite: Campsite) => void;
   isVisible?: boolean;
   onVisibilityChange?: (visible: boolean) => void;
   onRefresh?: () => void;
@@ -56,8 +52,6 @@ const CampsiteControls: React.FC<CampsiteControlsProps> = ({
   onMaxResultsChange,
   vehicleCompatibleOnly,
   onVehicleCompatibleChange,
-  onSearchChange,
-  onCampsiteSelect,
   isVisible = true,
   onVisibilityChange,
   onRefresh,
@@ -157,18 +151,7 @@ const CampsiteControls: React.FC<CampsiteControlsProps> = ({
         </div>
       </div>
 
-      {/* Search bar */}
-      {isVisible && (
-        <div className="p-3 border-b border-gray-200">
-          <CampsiteSearch
-            visibleTypes={visibleTypes}
-            onSearchChange={onSearchChange}
-            onCampsiteSelect={onCampsiteSelect}
-            maxResults={50}
-            placeholder="Search campsites..."
-          />
-        </div>
-      )}
+      {/* Search bar removed - using unified search at top of map instead */}
 
       {/* Compact view */}
       {!isExpanded && (
@@ -284,20 +267,52 @@ const CampsiteControls: React.FC<CampsiteControlsProps> = ({
             </div>
           </div>
 
-          {/* Help text */}
-          <div className="p-3 bg-blue-50 border border-blue-200 rounded text-xs">
-            <div className="flex items-start space-x-2">
-              <svg className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <div className="text-blue-800">
-                <div className="font-medium mb-1">Campsite Display Tips:</div>
-                <ul className="space-y-0.5 text-blue-700">
-                  <li>• Green markers: Vehicle compatible</li>
-                  <li>• Red markers: Check size restrictions</li>
-                  <li>• Click markers for details</li>
-                  <li>• Data auto-loads around your route</li>
-                </ul>
+          {/* Map Legend */}
+          <div className="p-3 bg-gray-50 border border-gray-200 rounded">
+            <div className="text-xs font-medium text-gray-700 mb-2">Map Legend</div>
+            <div className="space-y-2">
+              {/* Campsite type legend */}
+              <div className="flex items-center space-x-2">
+                <div className="w-5 h-6 flex-shrink-0">
+                  <svg viewBox="0 0 20 28" className="w-full h-full">
+                    <path d="M10 0C4.5 0 0 4.5 0 10c0 7.5 10 18 10 18s10-10.5 10-18C20 4.5 15.5 0 10 0z" fill="#22c55e" stroke="#16a34a" strokeWidth="1.5"/>
+                  </svg>
+                </div>
+                <span className="text-xs text-gray-700">Campsite (tent/caravan)</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <div className="w-5 h-6 flex-shrink-0">
+                  <svg viewBox="0 0 20 28" className="w-full h-full">
+                    <path d="M10 0C4.5 0 0 4.5 0 10c0 7.5 10 18 10 18s10-10.5 10-18C20 4.5 15.5 0 10 0z" fill="#3b82f6" stroke="#2563eb" strokeWidth="1.5"/>
+                  </svg>
+                </div>
+                <span className="text-xs text-gray-700">Caravan/Motorhome site</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <div className="w-5 h-6 flex-shrink-0">
+                  <svg viewBox="0 0 20 28" className="w-full h-full">
+                    <path d="M10 0C4.5 0 0 4.5 0 10c0 7.5 10 18 10 18s10-10.5 10-18C20 4.5 15.5 0 10 0z" fill="#8b5cf6" stroke="#7c3aed" strokeWidth="1.5"/>
+                  </svg>
+                </div>
+                <span className="text-xs text-gray-700">Aire de Service</span>
+              </div>
+
+              {/* Status indicators */}
+              <div className="pt-2 mt-2 border-t border-gray-200">
+                <div className="flex items-center space-x-2">
+                  <div className="w-5 h-6 flex-shrink-0">
+                    <svg viewBox="0 0 20 28" className="w-full h-full">
+                      <path d="M10 0C4.5 0 0 4.5 0 10c0 7.5 10 18 10 18s10-10.5 10-18C20 4.5 15.5 0 10 0z" fill="#ef4444" stroke="#dc2626" strokeWidth="1.5"/>
+                    </svg>
+                  </div>
+                  <span className="text-xs text-gray-700">May not fit your vehicle</span>
+                </div>
+                <div className="flex items-center space-x-2 mt-1">
+                  <div className="w-5 h-5 flex-shrink-0 flex items-center justify-center">
+                    <div className="w-4 h-4 rounded-full bg-green-500 text-white text-[8px] font-bold flex items-center justify-center border-2 border-white shadow">3</div>
+                  </div>
+                  <span className="text-xs text-gray-700">Clustered markers (zoom in)</span>
+                </div>
               </div>
             </div>
           </div>

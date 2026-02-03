@@ -1,0 +1,200 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e6]:
+      - link "European Camper Planner Free trip planning for Europe" [ref=e8] [cursor=pointer]:
+        - /url: /camper-planner
+        - img [ref=e10]
+        - generic [ref=e12]:
+          - heading "European Camper Planner" [level=1] [ref=e13]
+          - paragraph [ref=e14]: Free trip planning for Europe
+      - navigation [ref=e15]:
+        - link "Trip Planner" [ref=e16] [cursor=pointer]:
+          - /url: /camper-planner
+        - link "About" [ref=e17] [cursor=pointer]:
+          - /url: /camper-planner/about
+        - link "Help" [ref=e18] [cursor=pointer]:
+          - /url: /camper-planner/help
+      - button "EN" [disabled] [ref=e20]:
+        - img [ref=e21]
+        - generic [ref=e23]: EN
+  - main [ref=e25]:
+    - generic [ref=e28]:
+      - generic [ref=e29]:
+        - generic [ref=e30]:
+          - link "Leaflet" [ref=e31] [cursor=pointer]:
+            - /url: https://leafletjs.com
+            - img [ref=e32]
+            - text: Leaflet
+          - text: "| ©"
+          - link "OpenStreetMap" [ref=e36] [cursor=pointer]:
+            - /url: https://www.openstreetmap.org/copyright
+          - text: contributors
+        - button "Open layer control" [ref=e38] [cursor=pointer]:
+          - generic [ref=e39]: 🗺️
+      - generic [ref=e43]:
+        - img [ref=e45]
+        - textbox "Search for a location or campsite..." [ref=e47]
+      - generic:
+        - generic:
+          - generic:
+            - generic:
+              - img
+            - generic:
+              - paragraph: Start your trip
+              - paragraph: Right-click on the map to add waypoints, or search for a location above
+      - button "Vehicle profile" [ref=e50] [cursor=pointer]:
+        - generic [ref=e51]:
+          - generic [ref=e52]: 🚐
+          - generic [ref=e54]: Setup Vehicle
+      - generic [ref=e58]:
+        - generic [ref=e59]:
+          - heading "Vehicle Configuration" [level=2] [ref=e60]
+          - button [ref=e61] [cursor=pointer]:
+            - img [ref=e62]
+        - generic [ref=e65]:
+          - generic [ref=e66]:
+            - generic [ref=e67]:
+              - heading "🚐 Vehicle Profile" [level=2] [ref=e68]
+              - paragraph [ref=e69]: Set your vehicle dimensions for safe routing
+            - button "Metric" [ref=e72] [cursor=pointer]
+          - generic [ref=e73]:
+            - button "🚐 Base Vehicle" [ref=e74] [cursor=pointer]
+            - button "🚌 Motorhome" [ref=e75] [cursor=pointer]
+            - button "✏️ Custom" [ref=e76] [cursor=pointer]
+          - generic [ref=e77]:
+            - paragraph [ref=e78]: Select your base vehicle to auto-fill dimensions
+            - generic [ref=e79]:
+              - generic [ref=e80]: Make
+              - combobox [ref=e81]:
+                - option "Select make..." [selected]
+                - option "Fiat (Italy)"
+                - option "Peugeot (France)"
+                - option "Citroën (France)"
+                - option "Mercedes-Benz (Germany)"
+                - option "Volkswagen (Germany)"
+                - option "Ford (USA/Europe)"
+                - option "Renault (France)"
+                - option "MAN (Germany)"
+                - option "Opel / Vauxhall (Germany/UK)"
+                - option "Iveco (Italy)"
+          - generic [ref=e82]:
+            - generic [ref=e83]:
+              - generic [ref=e84]:
+                - generic [ref=e85]: 📏
+                - generic [ref=e86]: Height
+                - img [ref=e88]
+              - generic [ref=e90]:
+                - spinbutton "Height" [ref=e91]: "3.5"
+                - generic:
+                  - generic: m
+            - generic [ref=e92]:
+              - generic [ref=e93]:
+                - generic [ref=e94]: ↔️
+                - generic [ref=e95]: Width
+                - img [ref=e97]
+              - generic [ref=e99]:
+                - spinbutton "Width" [ref=e100]: "1.9"
+                - generic:
+                  - generic: m
+            - generic [ref=e101]:
+              - generic [ref=e102]:
+                - generic [ref=e103]: 📐
+                - generic [ref=e104]: Length
+                - img [ref=e106]
+              - generic [ref=e108]:
+                - spinbutton "Length" [ref=e109]: "5.0"
+                - generic:
+                  - generic: m
+            - generic [ref=e110]:
+              - generic [ref=e111]:
+                - generic [ref=e112]: ⚖️
+                - generic [ref=e113]: Weight
+                - img [ref=e115]
+              - generic [ref=e117]:
+                - spinbutton "Weight" [ref=e118]: "3.0"
+                - generic:
+                  - generic: t
+          - generic [ref=e119]:
+            - button "Save" [disabled] [ref=e120]:
+              - generic [ref=e121]: Save
+            - button "Reset" [ref=e122] [cursor=pointer]
+          - paragraph [ref=e124]:
+            - text: 💡
+            - strong [ref=e125]: "Tip:"
+            - text: Routes will avoid roads with height/weight restrictions your vehicle cannot handle.
+      - generic [ref=e127]:
+        - heading "Route Calculation" [level=3] [ref=e129]
+        - generic [ref=e130]:
+          - button "Calculate Route" [disabled] [ref=e131]:
+            - img [ref=e132]
+            - generic [ref=e134]: Calculate Route
+          - generic [ref=e135]:
+            - checkbox "Auto-calculate" [checked] [disabled] [ref=e136]
+            - generic [ref=e137]: Auto-calculate
+        - generic [ref=e138]: Add at least 2 waypoints to enable route calculation
+      - generic [ref=e140]:
+        - generic [ref=e141]:
+          - generic [ref=e142]:
+            - button "🏕️ Campsites" [ref=e143] [cursor=pointer]:
+              - generic [ref=e144]: 🏕️
+              - generic [ref=e145]: Campsites
+            - generic [ref=e146]: (3/3 types)
+          - button [ref=e148] [cursor=pointer]:
+            - img [ref=e149]
+        - generic [ref=e152]:
+          - generic [ref=e153]:
+            - button "⛺" [ref=e154] [cursor=pointer]:
+              - generic [ref=e155]: ⛺
+            - button "🚐" [ref=e156] [cursor=pointer]:
+              - generic [ref=e157]: 🚐
+            - button "🅿️" [ref=e158] [cursor=pointer]:
+              - generic [ref=e159]: 🅿️
+          - generic [ref=e160]: "Max: 100 • All sites"
+      - generic [ref=e161]:
+        - generic [ref=e162]:
+          - button "Zoom in" [ref=e163] [cursor=pointer]:
+            - img [ref=e164]
+          - button "Zoom out" [ref=e166] [cursor=pointer]:
+            - img [ref=e167]
+        - generic [ref=e168]:
+          - button "Zoom to fit all waypoints" [disabled] [ref=e169]:
+            - img [ref=e170]
+          - button "Reset to Europe view" [ref=e172] [cursor=pointer]:
+            - img [ref=e173]
+          - button "Toggle map layer control" [ref=e175] [cursor=pointer]:
+            - img [ref=e176]
+          - button "Enter fullscreen mode" [ref=e178] [cursor=pointer]:
+            - img [ref=e179]
+        - button "Toggle keyboard shortcuts help" [ref=e181] [cursor=pointer]:
+          - img [ref=e182]
+      - generic [ref=e184]:
+        - generic [ref=e185]:
+          - button "Undo last action" [disabled] [ref=e186]:
+            - img [ref=e187]
+          - button "Redo last action" [disabled] [ref=e189]:
+            - img [ref=e190]
+        - button "Toggle trip manager" [ref=e193] [cursor=pointer]:
+          - img [ref=e194]
+        - button "Toggle campsite controls" [ref=e196] [cursor=pointer]:
+          - img [ref=e197]
+      - generic [ref=e201]:
+        - generic [ref=e202]: "Zoom: 5 | Center: 54.5260, 15.2551"
+        - generic [ref=e203]:
+          - generic [ref=e204]: "Waypoints: 0"
+          - generic [ref=e205]: Right-click map to add
+      - generic:
+        - generic [ref=e207]:
+          - generic [ref=e208]:
+            - generic [ref=e209]:
+              - generic [ref=e210]: 🗺️
+              - heading "Welcome to Camper Planner! 🚐" [level=3] [ref=e211]
+            - button [ref=e212] [cursor=pointer]:
+              - img [ref=e213]
+          - paragraph [ref=e215]: Plan your perfect European camping trip by clicking on the map to add waypoints.
+          - generic [ref=e216]: 💡 Click anywhere on the map to start
+        - button "Toggle help panel" [ref=e219] [cursor=pointer]:
+          - img [ref=e220]
+```

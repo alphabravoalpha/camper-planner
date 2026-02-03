@@ -6,7 +6,7 @@ import { useRouteStore, useVehicleStore, useUIStore } from '../../store';
 import { routingService } from '../../services/RoutingService';
 import { FeatureFlags } from '../../config';
 import { cn } from '../../utils/cn';
-import { RouteRequest, RouteResponse, RoutingError, RouteRestrictions } from '../../services/RoutingService';
+import { type RouteRequest, type RouteResponse, RoutingError, type RouteRestrictions } from '../../services/RoutingService';
 
 interface RouteCalculatorProps {
   className?: string;
@@ -86,7 +86,8 @@ const RouteCalculator: React.FC<RouteCalculatorProps> = ({
           lat: wp.lat,
           lng: wp.lng,
           name: wp.name || `Waypoint ${wp.id}`,
-          id: wp.id
+          id: wp.id,
+          type: wp.type
         })),
         vehicleProfile: profile || undefined,
         options: {
@@ -302,10 +303,33 @@ const RouteCalculator: React.FC<RouteCalculatorProps> = ({
         </div>
       )}
 
-      {/* Error display */}
+      {/* Error display with retry button */}
       {calculationError && (
-        <div className="mb-3 p-2 bg-red-50 border border-red-200 rounded text-xs text-red-800">
-          {calculationError}
+        <div className="mb-3 p-3 bg-red-50 border border-red-200 rounded">
+          <div className="flex items-start justify-between">
+            <div className="flex items-start space-x-2">
+              <svg className="w-4 h-4 text-red-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+              <div>
+                <p className="text-xs text-red-800 font-medium">{calculationError}</p>
+                <p className="text-xs text-red-600 mt-1">The routing service may be temporarily unavailable. Please try again in a few seconds.</p>
+              </div>
+            </div>
+          </div>
+          <button
+            onClick={() => {
+              setCalculationError(null);
+              calculateRoute();
+            }}
+            disabled={isCalculating}
+            className="mt-2 w-full flex items-center justify-center space-x-2 px-3 py-2 bg-red-100 hover:bg-red-200 text-red-800 rounded text-xs font-medium transition-colors disabled:opacity-50"
+          >
+            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            <span>Try again</span>
+          </button>
         </div>
       )}
 
@@ -341,7 +365,7 @@ const RouteCalculator: React.FC<RouteCalculatorProps> = ({
           <input
             type="checkbox"
             checked={autoCalculate}
-            onChange={(e) => {
+            onChange={(_e) => {
               // This would need to be lifted up to parent component or stored in state
               // For now, it's controlled by the parent prop
             }}

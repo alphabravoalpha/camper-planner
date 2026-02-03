@@ -7,9 +7,12 @@ export const FeatureFlags = {
   WAYPOINT_SYSTEM: true,          // Phase 2: Waypoint management
   BASIC_ROUTING: true,            // Phase 3: Vehicle-safe routing
   VEHICLE_PROFILES: true,         // Phase 3: Vehicle dimension input
-  CAMPSITE_DISPLAY: true,         // Phase 4: Campsite integration
+  CAMPSITE_DISPLAY: true,  // Phase 4: Re-enabled after fixing infinite request loop
   ROUTE_OPTIMIZATION: true,       // Phase 5: Multi-stop optimization
-  DATA_EXPORT: false,             // Phase 6: GPX/JSON export
+  COST_CALCULATION: true,         // Phase 5: Fuel cost estimation and trip budgeting
+  TRIP_MANAGEMENT: true,          // Phase 5: Save and manage multiple trips locally
+  PLANNING_TOOLS: true,           // Phase 5: Duration estimation and itinerary planning
+  DATA_EXPORT: true,              // Phase 6: GPX/JSON export (MVP REQUIRED)
 
   // Language Support
   MULTI_LANGUAGE_FRAMEWORK: true,    // Phase 1: i18n framework ready

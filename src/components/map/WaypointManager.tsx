@@ -1,7 +1,7 @@
 // Waypoint Manager Component
 // Phase 2.2: Enhanced waypoint system with drag-and-drop, editing, and context menu
 
-import React, { useCallback, useState, useRef } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Marker, Popup, useMapEvents } from 'react-leaflet';
 import L, { DivIcon } from 'leaflet';
 import { useRouteStore, useMapStore, useUIStore } from '../../store';
@@ -12,8 +12,8 @@ import ConfirmDialog from '../ui/ConfirmDialog';
 import RouteVisualization from './RouteVisualization';
 import { useKeyboardShortcuts } from '../../hooks/useKeyboardShortcuts';
 
-// Enhanced waypoint icon creation with improved visual feedback
-const createWaypointIcon = (type: 'start' | 'waypoint' | 'end', index: number, isSelected = false, isDragging = false): DivIcon => {
+// Enhanced waypoint icon creation with improved visual feedback and touch optimization
+const createWaypointIcon = (type: 'start' | 'waypoint' | 'end', index: number, isSelected = false, isDragging = false, isMobile = false): DivIcon => {
   const iconColors = {
     start: 'bg-green-500 border-green-600 text-white shadow-green-200',
     waypoint: 'bg-blue-500 border-blue-600 text-white shadow-blue-200',
@@ -26,21 +26,36 @@ const createWaypointIcon = (type: 'start' | 'waypoint' | 'end', index: number, i
     end: '🏁'
   };
 
+  // Larger icons on mobile for better touch targets
+  const iconSize = isMobile ? 56 : 48;
+  const textSize = isMobile ? 'text-lg' : 'text-base';
+
+  // Use full class names - Tailwind doesn't support dynamic class interpolation
+  const sizeClass = isMobile ? 'w-14 h-14' : 'w-12 h-12';
+
   const baseClass = cn(
-    'flex items-center justify-center rounded-full border-3 font-bold cursor-pointer relative',
-    'w-12 h-12 text-base transform transition-all duration-200',
+    'flex items-center justify-center rounded-full border-3 font-bold cursor-pointer relative touch-manipulation',
+    sizeClass,
+    textSize,
+    'transform transition-all duration-200',
     iconColors[type]
   );
 
   const effectsClass = cn(
     isSelected && 'scale-125 ring-4 ring-white ring-opacity-60',
     isDragging && 'scale-110 shadow-2xl z-50',
-    !isDragging && !isSelected && 'hover:scale-105 hover:shadow-lg shadow-md'
+    !isDragging && !isSelected && 'hover:scale-105 active:scale-95 hover:shadow-lg shadow-md'
   );
+
+  // Add extra touch padding on mobile
+  const touchPadding = isMobile ? `
+    <div class="absolute -inset-2 rounded-full" style="touch-action: none;"></div>
+  ` : '';
 
   return L.divIcon({
     html: `
       <div class="${baseClass} ${effectsClass}">
+        ${touchPadding}
         <!-- Main icon content -->
         <span class="relative z-10">${iconSymbols[type]}</span>
 
@@ -56,14 +71,14 @@ const createWaypointIcon = (type: 'start' | 'waypoint' | 'end', index: number, i
 
         <!-- Drag drop zone indicator -->
         ${isDragging ? `
-          <div class="absolute -inset-2 rounded-full border-2 border-dashed border-yellow-400 bg-yellow-100 bg-opacity-20"></div>
+          <div class="absolute -inset-3 rounded-full border-2 border-dashed border-yellow-400 bg-yellow-100 bg-opacity-20"></div>
         ` : ''}
       </div>
     `,
-    className: cn('waypoint-marker', isDragging && 'dragging'),
-    iconSize: [48, 48],
-    iconAnchor: [24, 24],
-    popupAnchor: [0, -24]
+    className: cn('waypoint-marker', isDragging && 'dragging', isMobile && 'touch-target'),
+    iconSize: [iconSize, iconSize],
+    iconAnchor: [iconSize / 2, iconSize / 2],
+    popupAnchor: [0, -iconSize / 2]
   });
 };
 
@@ -113,7 +128,10 @@ const WaypointMarker: React.FC<WaypointMarkerProps> = ({
   const [editedName, setEditedName] = useState(waypoint.name);
   const [editedNotes, setEditedNotes] = useState(waypoint.notes || '');
   const [isDragging, setIsDragging] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
+  const [, setIsHovered] = useState(false);
+
+  // Detect if on mobile/touch device
+  const isMobile = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
   const isSelected = selectedWaypoint === waypoint.id;
 
@@ -128,6 +146,10 @@ const WaypointMarker: React.FC<WaypointMarkerProps> = ({
 
   const handleDragStart = useCallback(() => {
     setIsDragging(true);
+    // Haptic feedback for touch devices
+    if ('vibrate' in navigator) {
+      navigator.vibrate(50);
+    }
   }, []);
 
   const handleDragEnd = useCallback((e: any) => {
@@ -135,6 +157,10 @@ const WaypointMarker: React.FC<WaypointMarkerProps> = ({
     const newLat = e.target.getLatLng().lat;
     const newLng = e.target.getLatLng().lng;
     onDragEnd(waypoint.id, newLat, newLng);
+    // Haptic feedback for successful drop
+    if ('vibrate' in navigator) {
+      navigator.vibrate([50, 100, 50]);
+    }
   }, [waypoint.id, onDragEnd]);
 
   const handleMouseOver = useCallback(() => {
@@ -244,12 +270,16 @@ const WaypointMarker: React.FC<WaypointMarkerProps> = ({
     }
   ];
 
-  const icon = createWaypointIcon(waypoint.type, index + 1, isSelected, isDragging);
+  // Normalize waypoint type for icon creation
+  const iconType: 'start' | 'waypoint' | 'end' =
+    waypoint.type === 'campsite' || waypoint.type === 'accommodation' ? 'waypoint' : waypoint.type;
+  const icon = createWaypointIcon(iconType, index + 1, isSelected, isDragging, isMobile);
 
   return (
     <>
       <Marker
         position={[waypoint.lat, waypoint.lng]}
+        // @ts-ignore - React-Leaflet v4 prop compatibility
         icon={icon}
         draggable={true}
         eventHandlers={{
@@ -261,8 +291,12 @@ const WaypointMarker: React.FC<WaypointMarkerProps> = ({
           mouseout: handleMouseOut
         }}
       >
-        <Popup>
-          <div className="min-w-72 p-2">
+        <Popup
+          eventHandlers={{
+            click: (e: any) => e.originalEvent?.stopPropagation()
+          }}
+        >
+          <div className="min-w-72 p-2" onClick={(e) => e.stopPropagation()}>
             {/* Waypoint Header */}
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center space-x-2">
@@ -283,14 +317,20 @@ const WaypointMarker: React.FC<WaypointMarkerProps> = ({
                 </span>
               </div>
               <button
-                onClick={() => setIsEditing(!isEditing)}
-                className="text-blue-600 hover:text-blue-800 p-1 rounded hover:bg-blue-50 transition-colors"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  setIsEditing(!isEditing);
+                }}
+                className="bg-blue-600 text-white hover:bg-blue-700 px-3 py-2 rounded text-sm font-bold transition-colors flex items-center space-x-2 border-2 border-blue-800 shadow-lg"
                 title="Edit waypoint"
                 aria-label="Edit waypoint"
+                style={{ minWidth: '80px', zIndex: 1000 }}
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                 </svg>
+                <span>EDIT</span>
               </button>
             </div>
 
@@ -305,6 +345,8 @@ const WaypointMarker: React.FC<WaypointMarkerProps> = ({
                     type="text"
                     value={editedName}
                     onChange={(e) => setEditedName(e.target.value)}
+                    onClick={(e) => e.stopPropagation()}
+                    onFocus={(e) => e.stopPropagation()}
                     className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Enter waypoint name"
                     autoFocus
@@ -318,6 +360,8 @@ const WaypointMarker: React.FC<WaypointMarkerProps> = ({
                   <textarea
                     value={editedNotes}
                     onChange={(e) => setEditedNotes(e.target.value)}
+                    onClick={(e) => e.stopPropagation()}
+                    onFocus={(e) => e.stopPropagation()}
                     className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
                     rows={3}
                     placeholder="Add notes about this waypoint..."
@@ -326,13 +370,21 @@ const WaypointMarker: React.FC<WaypointMarkerProps> = ({
 
                 <div className="flex space-x-2 pt-2 border-t border-gray-200">
                   <button
-                    onClick={handleSaveEdit}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      handleSaveEdit();
+                    }}
                     className="flex-1 px-3 py-1 text-xs bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
                   >
                     Save
                   </button>
                   <button
-                    onClick={handleCancelEdit}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      handleCancelEdit();
+                    }}
                     className="flex-1 px-3 py-1 text-xs bg-gray-600 text-white rounded hover:bg-gray-700 transition-colors"
                   >
                     Cancel
@@ -365,19 +417,31 @@ const WaypointMarker: React.FC<WaypointMarkerProps> = ({
 
                 <div className="flex space-x-2 pt-2 border-t border-gray-200">
                   <button
-                    onClick={() => setIsEditing(true)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      setIsEditing(true);
+                    }}
                     className="flex-1 px-3 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
                   >
                     Edit
                   </button>
                   <button
-                    onClick={handleDelete}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      handleDelete();
+                    }}
                     className="flex-1 px-3 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
                   >
                     Delete
                   </button>
                   <button
-                    onClick={() => setSelectedWaypoint(null)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      setSelectedWaypoint(null);
+                    }}
                     className="px-3 py-1 text-xs bg-gray-600 text-white rounded hover:bg-gray-700 transition-colors"
                   >
                     Close
@@ -401,13 +465,23 @@ const WaypointMarker: React.FC<WaypointMarkerProps> = ({
 };
 
 interface MapClickHandlerProps {
-  onAddWaypoint: (lat: number, lng: number) => void;
+  onMapRightClick: (lat: number, lng: number, x: number, y: number) => void;
 }
 
-const MapClickHandler: React.FC<MapClickHandlerProps> = ({ onAddWaypoint }) => {
+const MapClickHandler: React.FC<MapClickHandlerProps> = ({ onMapRightClick }) => {
   useMapEvents({
-    click: (e) => {
-      onAddWaypoint(e.latlng.lat, e.latlng.lng);
+    contextmenu: (e: any) => {
+      // @ts-ignore - LeafletMouseEvent type compatibility
+      e.originalEvent.preventDefault();
+      const { lat, lng } = e.latlng;
+      const { clientX, clientY } = e.originalEvent;
+      onMapRightClick(lat, lng, clientX, clientY);
+    },
+    dblclick: (e: any) => {
+      // @ts-ignore - LeafletMouseEvent type compatibility - Double-click as backup
+      const { lat, lng } = e.latlng;
+      const { clientX, clientY } = e.originalEvent;
+      onMapRightClick(lat, lng, clientX, clientY);
     }
   });
 
@@ -420,13 +494,13 @@ const WaypointManager: React.FC = () => {
     addWaypoint,
     removeWaypoint,
     updateWaypoint,
-    insertWaypoint,
-    clearRoute,
-    undo,
-    redo,
-    canUndo,
-    canRedo,
-    isValidForRouting
+    insertWaypoint
+    // clearRoute,
+    // undo,
+    // redo,
+    // canUndo,
+    // canRedo,
+    // isValidForRouting
   } = useRouteStore();
   const { addNotification } = useUIStore();
 
@@ -443,8 +517,28 @@ const WaypointManager: React.FC = () => {
     onConfirm: () => {}
   });
 
+  // State for map context menu
+  const [mapContextMenu, setMapContextMenu] = useState<{
+    isOpen: boolean;
+    position: { x: number; y: number };
+    coordinates: { lat: number; lng: number };
+  }>({
+    isOpen: false,
+    position: { x: 0, y: 0 },
+    coordinates: { lat: 0, lng: 0 }
+  });
+
   // Initialize keyboard shortcuts
   useKeyboardShortcuts();
+
+  // Handle map right-click for context menu
+  const handleMapRightClick = useCallback((lat: number, lng: number, x: number, y: number) => {
+    setMapContextMenu({
+      isOpen: true,
+      position: { x, y },
+      coordinates: { lat, lng }
+    });
+  }, []);
 
   const handleAddWaypoint = useCallback((lat: number, lng: number) => {
     // Create waypoint with temporary type (will be updated by store)
@@ -534,56 +628,11 @@ const WaypointManager: React.FC = () => {
     }
   }, [updateWaypoint, addNotification]);
 
-  const handleClearAllConfirm = useCallback(() => {
-    setConfirmDialog({
-      isOpen: true,
-      title: 'Clear All Waypoints',
-      message: `Are you sure you want to remove all ${waypoints.length} waypoints? This action cannot be undone.`,
-      onConfirm: () => {
-        try {
-          clearRoute();
-          addNotification({
-            type: 'success',
-            message: 'All waypoints cleared'
-          });
-        } catch (error) {
-          addNotification({
-            type: 'error',
-            message: 'Failed to clear waypoints'
-          });
-        }
-        setConfirmDialog(prev => ({ ...prev, isOpen: false }));
-      }
-    });
-  }, [waypoints.length, clearRoute, addNotification]);
-
-  const handleUndoRedo = useCallback((action: 'undo' | 'redo') => {
-    try {
-      if (action === 'undo' && canUndo()) {
-        undo();
-        addNotification({
-          type: 'success',
-          message: 'Action undone'
-        });
-      } else if (action === 'redo' && canRedo()) {
-        redo();
-        addNotification({
-          type: 'success',
-          message: 'Action redone'
-        });
-      }
-    } catch (error) {
-      addNotification({
-        type: 'error',
-        message: `Failed to ${action} action`
-      });
-    }
-  }, [undo, redo, canUndo, canRedo, addNotification]);
 
   return (
     <>
-      {/* Map click handler for adding waypoints */}
-      <MapClickHandler onAddWaypoint={handleAddWaypoint} />
+      {/* Map right-click handler for context menu - only render if context is available */}
+      {typeof window !== 'undefined' && <MapClickHandler onMapRightClick={handleMapRightClick} />}
 
       {/* Route visualization with connecting lines and direction arrows */}
       <RouteVisualization />
@@ -611,6 +660,40 @@ const WaypointManager: React.FC = () => {
         onConfirm={confirmDialog.onConfirm}
         onCancel={() => setConfirmDialog(prev => ({ ...prev, isOpen: false }))}
       />
+
+      {/* Map Context Menu with fixed positioning */}
+      {mapContextMenu.isOpen && (
+        <div
+          className="fixed z-[10000] bg-white rounded-lg shadow-lg border border-gray-200 py-1 min-w-[160px]"
+          style={{
+            left: mapContextMenu.position.x,
+            top: mapContextMenu.position.y,
+          }}
+          onMouseLeave={() => setMapContextMenu(prev => ({ ...prev, isOpen: false }))}
+        >
+          <button
+            onClick={() => {
+              handleAddWaypoint(mapContextMenu.coordinates.lat, mapContextMenu.coordinates.lng);
+              setMapContextMenu(prev => ({ ...prev, isOpen: false }));
+            }}
+            className="w-full px-3 py-2 text-left text-sm hover:bg-gray-100 flex items-center space-x-2"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            <span>Add Waypoint</span>
+          </button>
+        </div>
+      )}
+
+      {/* Click outside to close context menu */}
+      {mapContextMenu.isOpen && (
+        <div
+          className="fixed inset-0 z-[9999]"
+          onClick={() => setMapContextMenu(prev => ({ ...prev, isOpen: false }))}
+        />
+      )}
     </>
   );
 };

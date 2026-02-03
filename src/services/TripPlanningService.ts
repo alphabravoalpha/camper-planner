@@ -1,8 +1,8 @@
 // Trip Planning Service
 // Phase 5.4: Intelligent trip planning with duration estimation and feasibility analysis
 
-import { Waypoint } from '../store';
-import { VehicleProfile } from '../store';
+import { type Waypoint } from '../store';
+import { type VehicleProfile } from '../store';
 
 export interface DrivingLimits {
   maxDailyDistance: number; // km
@@ -378,6 +378,7 @@ export class TripPlanningService {
    * Determine accommodation type for waypoint
    */
   static determineAccommodationType(waypoint: Waypoint, season: string): DailyStage['accommodationType'] {
+    if (!waypoint) return 'campsite';
     if (waypoint.type === 'campsite') return 'campsite';
     if (waypoint.type === 'accommodation') return 'hotel';
 
@@ -479,7 +480,7 @@ export class TripPlanningService {
     const recommendations: string[] = [];
 
     // Analyze individual stages
-    stages.forEach((stage, index) => {
+    stages.forEach((stage, _index) => {
       let stageScore = 100;
 
       if (stage.feasibility === 'excellent') stageScore = 100;
@@ -610,27 +611,27 @@ export class TripPlanningService {
       }
     };
 
-    let factors = baseFactors[season];
+    const factors = baseFactors[season];
 
     // Adjust based on countries
     if (countries.some(c => ['Norway', 'Sweden', 'Finland'].includes(c))) {
       if (season === 'winter') {
-        factors = {
+        return {
           ...factors,
           temperature: { min: -15, max: 0 },
-          drivingConditions: 'difficult',
+          drivingConditions: 'challenging' as const,
           warnings: [...factors.warnings, 'Arctic conditions possible', 'Winter tires mandatory']
-        };
+        } as typeof factors;
       }
     }
 
     if (countries.some(c => ['Spain', 'Portugal', 'Italy', 'Greece'].includes(c))) {
       if (season === 'summer') {
-        factors = {
+        return {
           ...factors,
           temperature: { min: 20, max: 40 },
           warnings: [...factors.warnings, 'Extreme heat in inland areas', 'Air conditioning essential']
-        };
+        } as typeof factors;
       }
     }
 
@@ -790,6 +791,8 @@ export class TripPlanningService {
   }
 
   static isPointOfInterest(waypoint: Waypoint): boolean {
+    if (!waypoint || !waypoint.name) return false;
+
     // Simple heuristic - in real implementation, would check against POI database
     const poiKeywords = ['castle', 'museum', 'cathedral', 'palace', 'historic', 'scenic'];
     return poiKeywords.some(keyword =>

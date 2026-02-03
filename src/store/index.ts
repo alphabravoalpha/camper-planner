@@ -3,7 +3,10 @@
 
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
-import { TripData, VehicleProfile, Waypoint } from '../types';
+import { type TripData, type VehicleProfile, type Waypoint } from '../types';
+
+// Re-export types for services that import from store
+export type { TripData, VehicleProfile, Waypoint } from '../types';
 
 // Map State Interface
 interface MapState {

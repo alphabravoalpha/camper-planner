@@ -1,7 +1,7 @@
 // Feedback Collection System
 // Phase 6.4: Comprehensive user feedback for post-launch improvements
 
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback } from 'react';
 import { cn } from '../../utils/cn';
 import { aria, useAnnounce } from '../../utils/accessibility';
 import { useAnalytics } from '../../utils/analytics';

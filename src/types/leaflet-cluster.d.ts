@@ -2,6 +2,11 @@
 // Phase 4.2: Type declarations for marker clustering functionality
 
 declare module 'leaflet' {
+  interface MarkerCluster extends L.Marker {
+    getChildCount(): number;
+    getAllChildMarkers(): L.Marker[];
+  }
+
   namespace MarkerClusterGroup {
     interface MarkerClusterGroupOptions {
       chunkedLoading?: boolean;
@@ -12,7 +17,7 @@ declare module 'leaflet' {
       showCoverageOnHover?: boolean;
       zoomToBoundsOnClick?: boolean;
       removeOutsideVisibleBounds?: boolean;
-      iconCreateFunction?: (cluster: any) => L.DivIcon;
+      iconCreateFunction?: (cluster: MarkerCluster) => L.DivIcon;
     }
   }
 

@@ -92,7 +92,7 @@ const TIPS = {
 
 const UserGuidance: React.FC<UserGuidanceProps> = ({ className }) => {
   const { waypoints } = useRouteStore();
-  const { profile } = useVehicleStore();
+  const { profile: _profile } = useVehicleStore();
   const { addNotification } = useUIStore();
 
   const [currentStep, setCurrentStep] = useState<string | null>(null);
@@ -124,6 +124,10 @@ const UserGuidance: React.FC<UserGuidanceProps> = ({ className }) => {
       setCurrentStep('first-waypoint');
     } else if (waypoints.length >= 2 && currentStep === 'first-waypoint') {
       setCurrentStep('route-ready');
+      // Auto-dismiss after showing route-ready for 3 seconds
+      setTimeout(() => {
+        dismissStep('route-ready');
+      }, 3000);
     }
   }, [waypoints.length, currentStep, dismissedSteps, isFirstVisit]);
 
@@ -185,7 +189,7 @@ const UserGuidance: React.FC<UserGuidanceProps> = ({ className }) => {
         ))}
       </div>
 
-      {process.env.NODE_ENV === 'development' && (
+      {import.meta.env.DEV && (
         <div className="mt-4 pt-4 border-t border-gray-200">
           <button
             onClick={resetGuidance}
@@ -202,7 +206,7 @@ const UserGuidance: React.FC<UserGuidanceProps> = ({ className }) => {
     <div className={cn('relative', className)}>
       {/* Active Guidance Step */}
       {activeStep && !dismissedSteps.has(activeStep.id) && (
-        <div className="fixed bottom-4 left-4 z-40 max-w-sm">
+        <div className="fixed bottom-20 left-1/2 transform -translate-x-1/2 z-40 max-w-sm">
           <div className="bg-blue-600 text-white rounded-lg shadow-lg p-4 border border-blue-500 animate-fade-in">
             <div className="flex items-start justify-between mb-2">
               <div className="flex items-center">
@@ -274,23 +278,6 @@ const UserGuidance: React.FC<UserGuidanceProps> = ({ className }) => {
         </div>
       )}
 
-      {/* Empty State Guidance */}
-      {waypoints.length === 0 && !currentStep && (
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
-          <div className="bg-white bg-opacity-95 rounded-lg shadow-lg p-6 max-w-md text-center border border-gray-200">
-            <div className="text-4xl mb-4">🗺️</div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">
-              Start Planning Your Trip
-            </h3>
-            <p className="text-gray-600 mb-4">
-              Click anywhere on the map to add your first waypoint and begin creating your route.
-            </p>
-            <div className="text-sm text-gray-500">
-              💡 Tip: Your first point becomes the starting location
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

@@ -1,7 +1,7 @@
 // Accessibility Utilities and Enhancements
 // Phase 6.3: Comprehensive accessibility improvements for WCAG compliance
 
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 // Screen reader announcements
 export class ScreenReaderAnnouncer {
@@ -165,7 +165,9 @@ export const useFocusTrap = (isActive: boolean) => {
 
     const handleKeyDown = keyboardNavigation.trapFocus(containerRef);
 
-    document.addEventListener('keydown', handleKeyDown);
+    if (handleKeyDown) {
+      document.addEventListener('keydown', handleKeyDown);
+    }
 
     // Focus first focusable element
     const focusableElements = containerRef.current.querySelectorAll(
@@ -177,7 +179,9 @@ export const useFocusTrap = (isActive: boolean) => {
     }
 
     return () => {
-      document.removeEventListener('keydown', handleKeyDown);
+      if (handleKeyDown) {
+        document.removeEventListener('keydown', handleKeyDown);
+      }
     };
   }, [isActive]);
 

@@ -40,23 +40,33 @@ Object.defineProperty(window, 'scrollTo', {
   writable: true,
 });
 
-// Mock localStorage
-const localStorageMock = {
-  getItem: vi.fn(),
-  setItem: vi.fn(),
-  removeItem: vi.fn(),
-  clear: vi.fn(),
-};
-global.localStorage = localStorageMock;
+// Mock localStorage with actual storage functionality
+const createStorageMock = () => {
+  let store: Record<string, string> = {};
 
-// Mock sessionStorage
-const sessionStorageMock = {
-  getItem: vi.fn(),
-  setItem: vi.fn(),
-  removeItem: vi.fn(),
-  clear: vi.fn(),
+  return {
+    getItem: (key: string) => store[key] || null,
+    setItem: (key: string, value: string) => {
+      store[key] = value.toString();
+    },
+    removeItem: (key: string) => {
+      delete store[key];
+    },
+    clear: () => {
+      store = {};
+    },
+    get length() {
+      return Object.keys(store).length;
+    },
+    key: (index: number) => {
+      const keys = Object.keys(store);
+      return keys[index] || null;
+    },
+  };
 };
-global.sessionStorage = sessionStorageMock;
+
+global.localStorage = createStorageMock() as Storage;
+global.sessionStorage = createStorageMock() as Storage;
 
 // Clean up after each test
 afterEach(() => {

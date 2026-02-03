@@ -211,6 +211,56 @@
   z-index: 2000;
 }
 
+/* Campsite marker animations */
+@keyframes campsite-pulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+  50% {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5);
+  }
+}
+
+@keyframes campsite-glow {
+  0%, 100% {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+  50% {
+    box-shadow: 0 4px 20px rgba(59, 130, 246, 0.6);
+  }
+}
+
+.campsite-marker-icon {
+  transition: transform 0.2s ease, z-index 0s;
+}
+
+.campsite-marker-icon:hover {
+  z-index: 1000 !important;
+}
+
+.campsite-marker-icon:hover .campsite-marker-wrapper > div:first-child {
+  transform: scale(1.1);
+}
+
+/* Show tooltip on hover */
+.campsite-marker-icon:hover .campsite-tooltip {
+  opacity: 1 !important;
+}
+
+.campsite-marker-icon.selected {
+  z-index: 1001 !important;
+}
+
+.campsite-marker-icon.highlighted {
+  z-index: 1000 !important;
+}
+
+.campsite-marker-icon.in-route {
+  z-index: 999 !important;
+}
+
 /* Route line animations */
 .route-segment {
   transition: stroke-width 0.2s ease, opacity 0.2s ease;
@@ -276,6 +326,43 @@
       transform: scale(1);
     }
   }
+}
+
+/* Slide down animation for banners */
+@keyframes slideDown {
+  from {
+    transform: translate(-50%, -20px);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, 0);
+    opacity: 1;
+  }
+}
+
+.animate-slideDown {
+  animation: slideDown 0.4s ease-out;
+}
+
+/* Shimmer animation for skeleton loaders */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    #f3f4f6 0%,
+    #e5e7eb 50%,
+    #f3f4f6 100%
+  );
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite linear;
 }
 
 /* Accessibility - Reduced motion support */

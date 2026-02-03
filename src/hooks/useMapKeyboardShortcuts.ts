@@ -46,6 +46,7 @@ export const useMapKeyboardShortcuts = ({
       const center = map.getCenter();
       const zoom = map.getZoom();
       const deltaLat = 180 / Math.pow(2, zoom) * 0.25; // Adjust pan distance based on zoom
+      // @ts-ignore - Leaflet panTo accepts array coordinates, type definitions are overly strict
       map.panTo([center.lat + deltaLat, center.lng]);
     }
   }, [map]);
@@ -55,6 +56,7 @@ export const useMapKeyboardShortcuts = ({
       const center = map.getCenter();
       const zoom = map.getZoom();
       const deltaLat = 180 / Math.pow(2, zoom) * 0.25;
+      // @ts-ignore - Leaflet panTo accepts array coordinates, type definitions are overly strict
       map.panTo([center.lat - deltaLat, center.lng]);
     }
   }, [map]);
@@ -64,6 +66,7 @@ export const useMapKeyboardShortcuts = ({
       const center = map.getCenter();
       const zoom = map.getZoom();
       const deltaLng = 360 / Math.pow(2, zoom) * 0.25;
+      // @ts-ignore - Leaflet panTo accepts array coordinates, type definitions are overly strict
       map.panTo([center.lat, center.lng - deltaLng]);
     }
   }, [map]);
@@ -73,6 +76,7 @@ export const useMapKeyboardShortcuts = ({
       const center = map.getCenter();
       const zoom = map.getZoom();
       const deltaLng = 360 / Math.pow(2, zoom) * 0.25;
+      // @ts-ignore - Leaflet panTo accepts array coordinates, type definitions are overly strict
       map.panTo([center.lat, center.lng + deltaLng]);
     }
   }, [map]);

@@ -1,4 +1,3 @@
-/// <reference types="vitest" />
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'node:path'
@@ -40,22 +39,59 @@ export default defineConfig({
         chunkFileNames: 'assets/[name]-[hash].js',
         entryFileNames: 'assets/[name]-[hash].js',
         assetFileNames: 'assets/[name]-[hash].[ext]',
-        manualChunks: {
-          'react-vendor': ['react', 'react-dom'],
-          'router-vendor': ['react-router-dom'],
-          'map-vendor': ['leaflet', 'react-leaflet'],
-          'state-vendor': ['zustand'],
-          'i18n-vendor': ['react-i18next', 'i18next'],
+        manualChunks: (id) => {
+          // Vendor chunks
+          if (id.includes('node_modules')) {
+            if (id.includes('react') || id.includes('react-dom')) {
+              return 'react-vendor';
+            }
+            if (id.includes('react-router')) {
+              return 'router-vendor';
+            }
+            if (id.includes('leaflet')) {
+              return 'map-vendor';
+            }
+            if (id.includes('zustand')) {
+              return 'state-vendor';
+            }
+            if (id.includes('i18n')) {
+              return 'i18n-vendor';
+            }
+            // Other large vendors
+            return 'vendor';
+          }
+          // Feature-based chunks
+          if (id.includes('/components/campsite/')) {
+            return 'campsite';
+          }
+          if (id.includes('/components/routing/')) {
+            return 'routing';
+          }
+          if (id.includes('/components/planning/')) {
+            return 'planning';
+          }
         },
-      }
+      },
+      treeshake: {
+        // Aggressive tree shaking for smaller bundles
+        moduleSideEffects: false,
+        propertyReadSideEffects: false,
+        tryCatchDeoptimization: false,
+      },
     },
 
     // Build performance
-    target: 'esnext',
+    target: 'es2020', // Better browser compatibility than esnext
     minify: 'esbuild',
 
+    // Chunk size warnings
+    chunkSizeWarningLimit: 1000, // Warn if chunks exceed 1MB
+
     // GitHub Pages compatibility
-    assetsInlineLimit: 0, // Don't inline assets as base64
+    assetsInlineLimit: 4096, // Inline assets smaller than 4KB
+
+    // CSS code splitting
+    cssCodeSplit: true,
   },
 
   // Development server configuration
@@ -64,6 +100,65 @@ export default defineConfig({
     open: true,
     host: true, // Allow external connections for mobile testing
     cors: true,
+
+    // API Proxy configuration for development CORS handling
+    proxy: {
+      '/api/ors': {
+        target: 'https://api.openrouteservice.org',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/ors/, ''),
+        secure: true,
+        configure: (proxy, _options) => {
+          proxy.on('error', (err, _req, _res) => {
+            console.log('OpenRouteService proxy error', err);
+          });
+          proxy.on('proxyReq', (_proxyReq, req, _res) => {
+            console.log('OpenRouteService proxy request:', req.method, req.url);
+          });
+        },
+      },
+      '/api/osrm': {
+        target: 'https://router.project-osrm.org',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/osrm/, ''),
+        secure: true,
+        configure: (proxy, _options) => {
+          proxy.on('error', (err, _req, _res) => {
+            console.log('OSRM proxy error', err);
+          });
+        },
+      },
+      '/api/overpass': {
+        target: 'https://overpass-api.de/api/interpreter',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/overpass/, ''),
+        secure: true,
+        configure: (proxy, _options) => {
+          proxy.on('error', (err, _req, _res) => {
+            console.log('Overpass proxy error', err);
+          });
+          proxy.on('proxyReq', (_proxyReq, req, _res) => {
+            console.log('Overpass proxy request:', req.method, req.url);
+          });
+        },
+      },
+      '/api/geocode': {
+        target: 'https://nominatim.openstreetmap.org',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/geocode/, '/search'),
+        secure: true,
+        configure: (proxy, _options) => {
+          proxy.on('error', (err, _req, _res) => {
+            console.log('Nominatim proxy error', err);
+          });
+          proxy.on('proxyReq', (proxyReq, req, _res) => {
+            console.log('Nominatim proxy request:', req.method, req.url);
+            // Add required User-Agent header for Nominatim
+            proxyReq.setHeader('User-Agent', 'EuropeanCamperPlanner/1.0 (https://github.com/user/camper-planner)');
+          });
+        },
+      },
+    },
 
     // Hot module replacement
     hmr: {
@@ -102,4 +197,28 @@ export default defineConfig({
       'i18next'
     ],
   },
+
+  // Test configuration (use vitest.config.ts instead)
+  // test: {
+  //   globals: true,
+  //   environment: 'jsdom',
+  //   setupFiles: './src/test/setup.ts',
+  //   css: true,
+  //   exclude: [
+  //     'node_modules/**',
+  //     'dist/**',
+  //     'tests/e2e/**',
+  //     '**/*.spec.ts',
+  //   ],
+  //   coverage: {
+  //     provider: 'v8',
+  //     reporter: ['text', 'json', 'html'],
+  //     exclude: [
+  //       'node_modules/',
+  //       'src/test/',
+  //       '**/*.test.{ts,tsx}',
+  //       '**/*.spec.{ts,tsx}',
+  //     ],
+  //   },
+  // },
 })
