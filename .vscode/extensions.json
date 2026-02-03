@@ -1,0 +1,43 @@
+{
+  "recommendations": [
+    // Essential React development
+    "bradlc.vscode-tailwindcss",
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+    "ms-vscode.vscode-typescript-next",
+
+    // React snippets and productivity
+    "dsznajder.es7-react-js-snippets",
+    "formulahendry.auto-rename-tag",
+    "formulahendry.auto-close-tag",
+    "christian-kohler.path-intellisense",
+    "bradlc.vscode-tailwindcss",
+
+    // Git and version control
+    "eamodio.gitlens",
+    "github.vscode-github-actions",
+
+    // Code quality and formatting
+    "streetsidesoftware.code-spell-checker",
+    "usernamehw.errorlens",
+    "ms-vscode.vscode-json",
+
+    // Testing
+    "vitest.explorer",
+
+    // Productivity
+    "gruntfuggly.todo-tree",
+    "ms-vscode.vscode-typescript-next",
+    "bradlc.vscode-tailwindcss",
+    "christian-kohler.npm-intellisense",
+
+    // Theme and icons (optional)
+    "pkief.material-icon-theme",
+    "github.github-vscode-theme"
+  ],
+  "unwantedRecommendations": [
+    "ms-vscode.vscode-typescript",
+    "hookyqr.beautify",
+    "ms-vscode.vscode-css"
+  ]
+}
