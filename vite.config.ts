@@ -39,44 +39,15 @@ export default defineConfig({
         chunkFileNames: 'assets/[name]-[hash].js',
         entryFileNames: 'assets/[name]-[hash].js',
         assetFileNames: 'assets/[name]-[hash].[ext]',
-        manualChunks: (id) => {
-          // Vendor chunks
-          if (id.includes('node_modules')) {
-            if (id.includes('react') || id.includes('react-dom')) {
-              return 'react-vendor';
-            }
-            if (id.includes('react-router')) {
-              return 'router-vendor';
-            }
-            if (id.includes('leaflet')) {
-              return 'map-vendor';
-            }
-            if (id.includes('zustand')) {
-              return 'state-vendor';
-            }
-            if (id.includes('i18n')) {
-              return 'i18n-vendor';
-            }
-            // Other large vendors
-            return 'vendor';
-          }
-          // Feature-based chunks
-          if (id.includes('/components/campsite/')) {
-            return 'campsite';
-          }
-          if (id.includes('/components/routing/')) {
-            return 'routing';
-          }
-          if (id.includes('/components/planning/')) {
-            return 'planning';
-          }
+        // Simplified chunking to avoid circular dependency issues
+        manualChunks: {
+          // Keep React together to avoid circular deps
+          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          // Leaflet and React-Leaflet together
+          'map-vendor': ['leaflet', 'react-leaflet'],
+          // State management
+          'state-vendor': ['zustand'],
         },
-      },
-      treeshake: {
-        // Aggressive tree shaking for smaller bundles
-        moduleSideEffects: false,
-        propertyReadSideEffects: false,
-        tryCatchDeoptimization: false,
       },
     },
 
