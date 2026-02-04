@@ -255,7 +255,6 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
 
   // Handle result selection
   const handleResultSelect = useCallback((result: SearchResult) => {
-    console.log('handleResultSelect called:', { result, hasMap: !!map });
     saveToHistory(query);
     setShowResults(false);
 

@@ -646,12 +646,6 @@ export class CampsiteService extends DataService {
     // Build Overpass QL query
     const query = this.buildOverpassQuery(bounds, types);
 
-    console.log('CampsiteService: Overpass query', {
-      bounds,
-      types,
-      query
-    });
-
     const context: RequestContext = {
       method: 'POST',
       endpoint: '',
@@ -757,9 +751,6 @@ export class CampsiteService extends DataService {
   private buildOverpassQuery(bounds: BoundingBox, types: CampsiteType[]): string {
     const { south, west, north, east } = bounds;
 
-    // Debug: Log raw bounds
-    console.log('buildOverpassQuery: Raw bounds', { south, west, north, east });
-
     // Validate coordinates
     if (!this.isValidCoordinate(south, 'latitude') ||
         !this.isValidCoordinate(north, 'latitude') ||
@@ -779,8 +770,6 @@ export class CampsiteService extends DataService {
 
     // Round coordinates to 6 decimal places to avoid precision issues
     const bbox = `${south.toFixed(6)},${west.toFixed(6)},${north.toFixed(6)},${east.toFixed(6)}`;
-    console.log('buildOverpassQuery: Final bbox', bbox);
-
     const statements: string[] = [];
 
     if (types.includes('campsite')) {
@@ -853,7 +842,6 @@ export class CampsiteService extends DataService {
         tags.lifecycle_status === 'abandoned' ||
         tags.lifecycle_status === 'disused' ||
         tags.lifecycle_status === 'demolished') {
-      console.log('Filtering out closed/abandoned campsite:', tags.name || element.id);
       return null;
     }
 
