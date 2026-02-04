@@ -344,11 +344,6 @@ export class CampsiteService extends DataService {
    */
   async geocodeLocationMultiple(query: string, limit: number = 5): Promise<GeocodeResult[]> {
     try {
-      // Detect if query looks like a postcode (UK, EU formats)
-      const isPostcode = /^[A-Z]{1,2}\d{1,2}[A-Z]?\s*\d[A-Z]{2}$/i.test(query.trim()) || // UK postcode
-                         /^\d{4,5}[\s-]?\w*$/i.test(query.trim()) || // EU postcodes (DE, FR, IT, ES, etc.)
-                         /^\d{4}\s?[A-Z]{2}$/i.test(query.trim()); // NL postcode
-
       // Use direct fetch for geocoding to bypass DataService complexity
       const params = new URLSearchParams({
         q: query,
@@ -360,11 +355,6 @@ export class CampsiteService extends DataService {
         // European country codes for better results
         countrycodes: 'gb,ie,fr,de,es,pt,it,nl,be,at,ch,dk,no,se,fi,pl,cz,hr,si,gr,hu,sk,ro,bg,ee,lv,lt,lu,mt,cy',
       });
-
-      // For postcodes, also add the postalcode parameter for better matching
-      if (isPostcode) {
-        params.set('postalcode', query.trim());
-      }
 
       // Use proxy in development, direct Nominatim URL in production
       const isDevelopment = import.meta.env.DEV;
