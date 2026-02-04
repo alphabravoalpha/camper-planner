@@ -362,6 +362,10 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
         break;
       case 'Enter':
         e.preventDefault();
+        // Don't select while search is still in progress - wait for results
+        if (isSearching) {
+          return;
+        }
         // If no item selected with arrow keys, select the first result
         if (selectedIndex >= 0 && selectedIndex < results.length) {
           handleResultSelect(results[selectedIndex]);
@@ -376,7 +380,7 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
         inputRef.current?.blur();
         break;
     }
-  }, [showResults, results, selectedIndex, handleResultSelect]);
+  }, [showResults, results, selectedIndex, handleResultSelect, isSearching]);
 
   // Clear search
   const clearSearch = useCallback(() => {
