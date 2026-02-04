@@ -340,9 +340,15 @@ export class CampsiteService extends DataService {
   /**
    * Geocode location query to coordinates using Nominatim
    * Returns multiple results to allow user disambiguation
+   * Supports: city names, addresses, postcodes, landmarks
    */
   async geocodeLocationMultiple(query: string, limit: number = 5): Promise<GeocodeResult[]> {
     try {
+      // Detect if query looks like a postcode (UK, EU formats)
+      const isPostcode = /^[A-Z]{1,2}\d{1,2}[A-Z]?\s*\d[A-Z]{2}$/i.test(query.trim()) || // UK postcode
+                         /^\d{4,5}[\s-]?\w*$/i.test(query.trim()) || // EU postcodes (DE, FR, IT, ES, etc.)
+                         /^\d{4}\s?[A-Z]{2}$/i.test(query.trim()); // NL postcode
+
       // Use direct fetch for geocoding to bypass DataService complexity
       const params = new URLSearchParams({
         q: query,
@@ -350,8 +356,15 @@ export class CampsiteService extends DataService {
         limit: String(limit),
         addressdetails: '1',
         extratags: '1',
-        namedetails: '1'
+        namedetails: '1',
+        // European country codes for better results
+        countrycodes: 'gb,ie,fr,de,es,pt,it,nl,be,at,ch,dk,no,se,fi,pl,cz,hr,si,gr,hu,sk,ro,bg,ee,lv,lt,lu,mt,cy',
       });
+
+      // For postcodes, also add the postalcode parameter for better matching
+      if (isPostcode) {
+        params.set('postalcode', query.trim());
+      }
 
       // Use proxy in development, direct Nominatim URL in production
       const isDevelopment = import.meta.env.DEV;
@@ -381,15 +394,44 @@ export class CampsiteService extends DataService {
           type?: string;
           class?: string;
           importance?: string;
-        }) => ({
-          display_name: result.display_name,
-          lat: parseFloat(result.lat),
-          lng: parseFloat(result.lon),
-          boundingbox: result.boundingbox,
-          type: result.type || result.class || 'place',
-          importance: parseFloat(result.importance || '0.5'),
-          name: result.display_name.split(',')[0].trim() // Short name for display
-        }));
+          address?: {
+            house_number?: string;
+            road?: string;
+            postcode?: string;
+            city?: string;
+            town?: string;
+            village?: string;
+            county?: string;
+            state?: string;
+            country?: string;
+          };
+        }) => {
+          // Build a better short name for addresses
+          let shortName = result.display_name.split(',')[0].trim();
+
+          // For addresses with house numbers, show street address
+          if (result.address) {
+            const addr = result.address;
+            if (addr.house_number && addr.road) {
+              shortName = `${addr.house_number} ${addr.road}`;
+            } else if (addr.road) {
+              shortName = addr.road;
+            } else if (addr.postcode) {
+              const place = addr.city || addr.town || addr.village || '';
+              shortName = place ? `${addr.postcode}, ${place}` : addr.postcode;
+            }
+          }
+
+          return {
+            display_name: result.display_name,
+            lat: parseFloat(result.lat),
+            lng: parseFloat(result.lon),
+            boundingbox: result.boundingbox,
+            type: result.type || result.class || 'place',
+            importance: parseFloat(result.importance || '0.5'),
+            name: shortName
+          };
+        });
       }
 
       return [];
