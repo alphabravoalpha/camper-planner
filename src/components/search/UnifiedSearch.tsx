@@ -254,13 +254,17 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
 
   // Handle result selection
   const handleResultSelect = useCallback((result: SearchResult) => {
+    console.log('handleResultSelect called:', { result, hasMap: !!map });
     saveToHistory(query);
     setShowResults(false);
 
     if (result.type === 'location') {
       // Navigate to location
       if (map) {
-        map.setView([result.lat, result.lng], 10);
+        console.log('Setting map view to:', [result.lat, result.lng]);
+        map.setView([result.lat, result.lng], 10, { animate: true });
+      } else {
+        console.warn('Map reference is null, cannot navigate');
       }
       onLocationSelect?.({ lat: result.lat, lng: result.lng, name: result.name });
       addNotification({
@@ -270,7 +274,7 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
     } else if (result.campsite) {
       // Select campsite
       if (map) {
-        map.setView([result.lat, result.lng], Math.max(map.getZoom(), 14));
+        map.setView([result.lat, result.lng], Math.max(map.getZoom(), 14), { animate: true });
       }
       onCampsiteSelect?.(result.campsite);
     }
@@ -507,7 +511,12 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
                     </div>
                     <div className="flex items-center space-x-2 ml-2 flex-shrink-0">
                       <button
-                        onClick={() => handleResultSelect(result)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          e.preventDefault();
+                          handleResultSelect(result);
+                        }}
+                        onMouseDown={(e) => e.stopPropagation()}
                         className="px-2 py-1 text-xs text-blue-600 hover:bg-blue-50 rounded font-medium transition-colors"
                       >
                         Go
