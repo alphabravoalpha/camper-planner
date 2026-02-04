@@ -5,7 +5,7 @@
 import React, { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import L, { latLng } from 'leaflet';
 import { campsiteService } from '../../services/CampsiteService';
-import { useRouteStore, useVehicleStore, useUIStore } from '../../store';
+import { useRouteStore, useVehicleStore, useUIStore, useMapStore } from '../../store';
 import { FeatureFlags } from '../../config';
 import { cn } from '../../utils/cn';
 import { type Campsite, type CampsiteRequest, type CampsiteType } from '../../services/CampsiteService';
@@ -42,6 +42,7 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
   const { addWaypoint, waypoints } = useRouteStore();
   const { profile } = useVehicleStore();
   const { addNotification } = useUIStore();
+  const { setCenter, setZoom } = useMapStore();
 
   const [query, setQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
@@ -259,12 +260,11 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
     setShowResults(false);
 
     if (result.type === 'location') {
-      // Navigate to location
+      // Navigate to location - update store so MapController stays in sync
+      setCenter([result.lat, result.lng]);
+      setZoom(10);
       if (map) {
-        console.log('Setting map view to:', [result.lat, result.lng]);
         map.setView([result.lat, result.lng], 10, { animate: true });
-      } else {
-        console.warn('Map reference is null, cannot navigate');
       }
       onLocationSelect?.({ lat: result.lat, lng: result.lng, name: result.name });
       addNotification({
@@ -272,13 +272,16 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
         message: `Navigated to ${result.name}`
       });
     } else if (result.campsite) {
-      // Select campsite
+      // Select campsite - update store so MapController stays in sync
+      const campsiteZoom = map ? Math.max(map.getZoom(), 14) : 14;
+      setCenter([result.lat, result.lng]);
+      setZoom(campsiteZoom);
       if (map) {
-        map.setView([result.lat, result.lng], Math.max(map.getZoom(), 14), { animate: true });
+        map.setView([result.lat, result.lng], campsiteZoom, { animate: true });
       }
       onCampsiteSelect?.(result.campsite);
     }
-  }, [map, query, saveToHistory, onLocationSelect, onCampsiteSelect, addNotification]);
+  }, [map, query, saveToHistory, onLocationSelect, onCampsiteSelect, addNotification, setCenter, setZoom]);
 
   // Add location to route as waypoint
   const handleAddLocationToRoute = useCallback((result: SearchResult, e: React.MouseEvent) => {
@@ -314,11 +317,13 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
     });
 
     // Navigate to the location as well
+    setCenter([result.lat, result.lng]);
+    setZoom(10);
     if (map) {
       map.setView([result.lat, result.lng], 10);
     }
     setShowResults(false);
-  }, [addWaypoint, addNotification, waypoints, map]);
+  }, [addWaypoint, addNotification, waypoints, map, setCenter, setZoom]);
 
   // Add campsite to route
   const handleAddToRoute = useCallback((result: SearchResult, e: React.MouseEvent) => {
