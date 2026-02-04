@@ -786,18 +786,23 @@ export class CampsiteService extends DataService {
     if (types.includes('campsite')) {
       statements.push(`node["tourism"="camp_site"](${bbox});`);
       statements.push(`way["tourism"="camp_site"](${bbox});`);
+      statements.push(`relation["tourism"="camp_site"](${bbox});`);
     }
 
     if (types.includes('caravan_site')) {
       statements.push(`node["tourism"="caravan_site"](${bbox});`);
       statements.push(`way["tourism"="caravan_site"](${bbox});`);
+      statements.push(`relation["tourism"="caravan_site"](${bbox});`);
     }
 
     if (types.includes('aire')) {
       statements.push(`node["amenity"="parking"]["motorhome"="yes"](${bbox});`);
+      statements.push(`way["amenity"="parking"]["motorhome"="yes"](${bbox});`);
       statements.push(`node["amenity"="parking"]["caravan"="yes"](${bbox});`);
+      statements.push(`way["amenity"="parking"]["caravan"="yes"](${bbox});`);
       statements.push(`node["tourism"="wilderness_hut"](${bbox});`);
       statements.push(`node["highway"="services"]["motorhome"="yes"](${bbox});`);
+      statements.push(`way["highway"="services"]["motorhome"="yes"](${bbox});`);
     }
 
     // Limit to 1000 results to prevent timeouts
@@ -830,7 +835,11 @@ export class CampsiteService extends DataService {
    * Parse OSM element into Campsite object
    */
   private parseOSMElement(element: any): Campsite | null {
-    if (!element.lat || !element.lon || !element.tags) {
+    // Handle both node elements (lat/lon directly) and way/relation elements (center.lat/center.lon)
+    const lat = element.lat ?? element.center?.lat;
+    const lon = element.lon ?? element.center?.lon;
+
+    if (!lat || !lon || !element.tags) {
       return null;
     }
 
@@ -854,8 +863,8 @@ export class CampsiteService extends DataService {
       id: element.id,
       type,
       name: tags.name || tags['name:en'] || `${type} ${element.id}`,
-      lat: element.lat,
-      lng: element.lon,
+      lat,
+      lng: lon,
 
       amenities: {
         toilets: this.parseBoolean(tags.amenity === 'toilets' || tags.toilets),
