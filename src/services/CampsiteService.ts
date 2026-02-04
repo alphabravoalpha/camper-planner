@@ -353,7 +353,13 @@ export class CampsiteService extends DataService {
         namedetails: '1'
       });
 
-      const response = await fetch(`/api/geocode?${params.toString()}`, {
+      // Use proxy in development, direct Nominatim URL in production
+      const isDevelopment = import.meta.env.DEV;
+      const geocodeUrl = isDevelopment
+        ? `/api/geocode?${params.toString()}`
+        : `https://nominatim.openstreetmap.org/search?${params.toString()}`;
+
+      const response = await fetch(geocodeUrl, {
         method: 'GET',
         headers: {
           'User-Agent': 'EuropeanCamperPlanner/1.0 (https://github.com/user/camper-planner)',
