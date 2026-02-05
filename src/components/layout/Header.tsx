@@ -4,9 +4,10 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Route } from 'lucide-react';
 import { FeatureFlags } from '../../config';
 import { cn } from '../../utils/cn';
-import { useUIStore } from '../../store';
+import { useUIStore, useTripWizardStore } from '../../store';
 import { LanguageSelector } from '../ui';
 
 const Header: React.FC = () => {
@@ -14,6 +15,7 @@ const Header: React.FC = () => {
   const { t } = useTranslation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { toggleSidebar } = useUIStore();
+  const { openWizard } = useTripWizardStore();
 
   const navigationItems = [
     { path: '/', label: t('nav.planner'), key: 'planner' },
@@ -98,6 +100,17 @@ const Header: React.FC = () => {
 
             {/* Right side actions */}
             <div className="flex items-center space-x-2 lg:space-x-4">
+              {/* Plan a Trip button — only show on planner page */}
+              {location.pathname === '/' && (
+                <button
+                  onClick={() => { openWizard(); setIsMobileMenuOpen(false); }}
+                  className="hidden sm:flex items-center gap-1.5 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium transition-colors"
+                >
+                  <Route className="w-4 h-4" />
+                  Plan a Trip
+                </button>
+              )}
+
               {/* Language Selector */}
               {FeatureFlags.MULTI_LANGUAGE_FRAMEWORK && (
                 <LanguageSelector
@@ -148,6 +161,15 @@ const Header: React.FC = () => {
                     {item.label}
                   </Link>
                 ))}
+                {location.pathname === '/' && (
+                  <button
+                    onClick={() => { openWizard(); setIsMobileMenuOpen(false); }}
+                    className="w-full flex items-center gap-2 px-3 py-2 rounded-md text-base font-medium text-blue-700 bg-blue-50 hover:bg-blue-100 transition-colors"
+                  >
+                    <Route className="w-4 h-4" />
+                    Plan a Trip
+                  </button>
+                )}
               </div>
             </div>
           )}

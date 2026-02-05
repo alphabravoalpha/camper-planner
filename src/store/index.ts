@@ -4,6 +4,8 @@
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 import { type TripData, type VehicleProfile, type Waypoint } from '../types';
+import { type TripItinerary, type TripWizardInput, type CampsiteOption, type DrivingStyle } from '../services/TripWizardService';
+import { type ChannelCrossing } from '../data/channelCrossings';
 
 // Re-export types for services that import from store
 export type { TripData, VehicleProfile, Waypoint } from '../types';
@@ -124,6 +126,12 @@ export const useVehicleStore = create<VehicleState>()(
 // Helper function to update waypoint types based on position
 const updateWaypointTypes = (waypoints: Waypoint[]): Waypoint[] => {
   return waypoints.map((waypoint, index) => {
+    // Preserve special types (campsite, accommodation) for intermediate waypoints
+    if (index > 0 && index < waypoints.length - 1 &&
+        (waypoint.type === 'campsite' || waypoint.type === 'accommodation')) {
+      return waypoint;
+    }
+
     let type: 'start' | 'waypoint' | 'end';
 
     if (waypoints.length === 1) {
@@ -445,5 +453,110 @@ export const useUIStore = create<UIState>()(
       toggleSidebar: () => set((state) => ({ sidebarOpen: !state.sidebarOpen })),
     }),
     { name: 'ui-store' }
+  )
+);
+
+// Trip Wizard State Interface
+interface TripWizardState {
+  // Wizard UI state
+  wizardOpen: boolean;
+  wizardStep: number;
+
+  // Wizard inputs (built up across steps)
+  start: { name: string; lat: number; lng: number } | null;
+  end: { name: string; lat: number; lng: number } | null;
+  startDate: Date | null;
+  endDate: Date | null;
+  drivingStyle: DrivingStyle;
+  crossing: ChannelCrossing | null;
+  restDayFrequency: number;
+
+  // Generated itinerary
+  itinerary: TripItinerary | null;
+  isGenerating: boolean;
+  generationError: string | null;
+
+  // Actions
+  openWizard: () => void;
+  closeWizard: () => void;
+  setStep: (step: number) => void;
+  nextStep: () => void;
+  prevStep: () => void;
+  setStart: (location: { name: string; lat: number; lng: number } | null) => void;
+  setEnd: (location: { name: string; lat: number; lng: number } | null) => void;
+  setStartDate: (date: Date | null) => void;
+  setEndDate: (date: Date | null) => void;
+  setDrivingStyle: (style: DrivingStyle) => void;
+  setCrossing: (crossing: ChannelCrossing | null) => void;
+  setRestDayFrequency: (freq: number) => void;
+  setItinerary: (itinerary: TripItinerary | null) => void;
+  setIsGenerating: (generating: boolean) => void;
+  setGenerationError: (error: string | null) => void;
+  selectCampsite: (dayNumber: number, campsite: CampsiteOption) => void;
+  resetWizard: () => void;
+}
+
+// Create Trip Wizard Store
+export const useTripWizardStore = create<TripWizardState>()(
+  devtools(
+    (set) => ({
+      wizardOpen: false,
+      wizardStep: 0,
+      start: null,
+      end: null,
+      startDate: null,
+      endDate: null,
+      drivingStyle: 'moderate' as DrivingStyle,
+      crossing: null,
+      restDayFrequency: 0,
+      itinerary: null,
+      isGenerating: false,
+      generationError: null,
+
+      openWizard: () => set({ wizardOpen: true, wizardStep: 0 }),
+      closeWizard: () => set({ wizardOpen: false }),
+      setStep: (wizardStep) => set({ wizardStep }),
+      nextStep: () => set((state) => ({ wizardStep: state.wizardStep + 1 })),
+      prevStep: () => set((state) => ({ wizardStep: Math.max(0, state.wizardStep - 1) })),
+      setStart: (start) => set({ start }),
+      setEnd: (end) => set({ end }),
+      setStartDate: (startDate) => set({ startDate }),
+      setEndDate: (endDate) => set({ endDate }),
+      setDrivingStyle: (drivingStyle) => set({ drivingStyle }),
+      setCrossing: (crossing) => set({ crossing }),
+      setRestDayFrequency: (restDayFrequency) => set({ restDayFrequency }),
+      setItinerary: (itinerary) => set({ itinerary }),
+      setIsGenerating: (isGenerating) => set({ isGenerating }),
+      setGenerationError: (generationError) => set({ generationError }),
+
+      selectCampsite: (dayNumber, campsite) =>
+        set((state) => {
+          if (!state.itinerary) return state;
+          const updatedDays = state.itinerary.days.map(day =>
+            day.dayNumber === dayNumber
+              ? { ...day, selectedOvernight: campsite }
+              : day
+          );
+          return {
+            itinerary: { ...state.itinerary, days: updatedDays },
+          };
+        }),
+
+      resetWizard: () =>
+        set({
+          wizardStep: 0,
+          start: null,
+          end: null,
+          startDate: null,
+          endDate: null,
+          drivingStyle: 'moderate' as DrivingStyle,
+          crossing: null,
+          restDayFrequency: 0,
+          itinerary: null,
+          isGenerating: false,
+          generationError: null,
+        }),
+    }),
+    { name: 'trip-wizard-store' }
   )
 );
