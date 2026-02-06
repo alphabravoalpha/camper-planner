@@ -56,7 +56,7 @@ npm run deploy           # Deploy to GitHub Pages
 Build V1 as if V2 already exists, just disabled. Components should be enhanceable, not replaceable.
 
 ### 2. Configuration-Driven Development
-Features are enabled/disabled via feature flags. V2 components exist but are dormant in V1.
+Features are enabled/disabled via feature flags. V2 features are consolidated in `v2-features/` directory.
 
 ### 3. Privacy-First Design
 - Local storage primary (browser as database)
@@ -102,8 +102,8 @@ Features are enabled/disabled via feature flags. V2 components exist but are dor
 │   ├── UserGuidance.tsx
 │   └── ... (10 more)
 ├── layout/              # ✅ App layout (8 components)
-├── forms/               # ✅ Form components
-├── community/           # V2 - Dormant features
+├── search/              # ✅ Unified search
+├── wizard/              # ✅ Trip planning wizard
 ├── onboarding/          # ✅ User onboarding
 ├── analytics/           # ✅ Usage analytics
 └── feedback/            # ✅ User feedback system
@@ -123,7 +123,10 @@ All external APIs are abstracted through service classes:
 - **RouteExportService** - Multi-format route export (29KB)
 - **MultiFormatExportService** - JSON/KML/other formats
 - **BookingService** - Affiliate link integration framework
+- **TripWizardService** - Trip planning wizard with itinerary generation
 - **DataService** - Base service with caching and rate limiting
+
+**V2 features** are consolidated in `v2-features/` at project root (see `v2-features/README.md`).
 
 ## Development Phases
 
@@ -350,7 +353,19 @@ Core feature differentiator - routes must respect:
 
 **Approach:** Build → Manual Test → Fix → Ship → Iterate
 
-## Recent Updates (October 8, 2025)
+## Recent Updates (February 6, 2026)
+
+### Codebase Housekeeping
+- Removed 5 ad-hoc JS test scripts and ~1,700 lines of dead code from `src/`
+- Removed 4 empty macOS-duplicate directories and empty stubs
+- Configured Vite `esbuild.pure` to strip `console.log`/`console.debug` from production builds
+- Removed ~20 debug `console.log` statements from source files
+- Removed unused `ui/ErrorBoundary.tsx` (duplicate of `layout/ErrorBoundary.tsx`)
+- Replaced 3 `any` types in central store with proper `RouteResponse` and `WaypointActionData` types
+- Consolidated 11 V2-disabled files from scattered locations into `v2-features/` directory
+- Moved `templates.bak/` to `templates/` at project root
+
+## Previous Updates (October 8, 2025)
 
 ### Phase 6 Week 1-2 Completed
 **Error Handling Improvements:**
