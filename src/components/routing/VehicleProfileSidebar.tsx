@@ -1,20 +1,53 @@
 // Vehicle Profile Sidebar Component
 // Phase 3.1: Sidebar implementation for vehicle configuration
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useVehicleStore } from '../../store';
 import { FeatureFlags } from '../../config';
 import { cn } from '../../utils/cn';
 import VehicleProfilePanel from './VehicleProfilePanel';
 import Tooltip from '../ui/Tooltip';
+import { VEHICLE_DATABASE, MOTORHOME_PRESETS } from '../../data/vehicleDatabase';
 
 interface VehicleProfileSidebarProps {
   className?: string;
 }
 
 const VehicleProfileSidebar: React.FC<VehicleProfileSidebarProps> = ({ className }) => {
-  const { profile } = useVehicleStore();
+  const { profile, setProfile } = useVehicleStore();
   const [isOpen, setIsOpen] = useState(false);
+
+  // Backfill name for profiles saved before the name field existed
+  useEffect(() => {
+    if (profile && !profile.name) {
+      for (const make of VEHICLE_DATABASE) {
+        for (const model of make.models) {
+          for (const variant of model.variants) {
+            if (
+              variant.height === profile.height &&
+              variant.width === profile.width &&
+              variant.length === profile.length &&
+              variant.weight === profile.weight
+            ) {
+              setProfile({ ...profile, name: `${make.name} ${model.name} ${variant.name}` });
+              return;
+            }
+          }
+        }
+      }
+      for (const preset of MOTORHOME_PRESETS) {
+        if (
+          preset.height === profile.height &&
+          preset.width === profile.width &&
+          preset.length === profile.length &&
+          preset.weight === profile.weight
+        ) {
+          setProfile({ ...profile, name: preset.name });
+          return;
+        }
+      }
+    }
+  }, [profile, setProfile]);
 
   // Feature flag check
   if (!FeatureFlags.VEHICLE_PROFILES) {
