@@ -10,6 +10,3 @@ export type { ContextMenuItem } from './ContextMenu';
 
 // Loading components (Phase 6.3)
 export { default as LoadingSpinner, LoadingSkeleton, LoadingOverlay, InlineLoading } from './LoadingSpinner';
-
-// Error handling components (Phase 6.3)
-export { ErrorBoundary } from './ErrorBoundary';
