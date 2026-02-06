@@ -295,17 +295,6 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
 
   // Filter campsites based on filter state or fallback to props
   const filteredCampsites = useMemo(() => {
-    const uniqueTypes = [...new Set(campsites.map(c => c.type))];
-    console.log('SimpleCampsiteLayer: Filtering campsites', {
-      campsitesCount: campsites.length,
-      uniqueTypes,
-      visibleTypes,
-      filterState: !!filterState,
-      vehicleCompatibleOnly,
-      hasProfile: !!profile,
-      typeMatches: uniqueTypes.map(t => ({ type: t, visible: visibleTypes.includes(t) }))
-    });
-
     if (filterState && false) { // TEMPORARILY DISABLE advanced filtering until it's fixed
       // Use advanced filtering
       const routeGeometry = calculatedRoute?.routes?.[0]?.geometry;
@@ -318,12 +307,6 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
         mapCenter
       ) : campsites;
 
-      console.log('SimpleCampsiteLayer: Advanced filtering result', {
-        inputCount: campsites.length,
-        outputCount: advancedFiltered.length,
-        filteredOut: campsites.length - advancedFiltered.length
-      });
-
       return advancedFiltered;
     } else {
       // First, compute vehicleCompatible for all campsites based on current vehicle profile
@@ -332,17 +315,9 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
         vehicleCompatible: isVehicleCompatible(campsite)
       }));
 
-      console.log('SimpleCampsiteLayer: Before filtering', {
-        count: filtered.length,
-        compatibleCount: filtered.filter(c => c.vehicleCompatible).length,
-        incompatibleCount: filtered.filter(c => !c.vehicleCompatible).length
-      });
-
       // Filter by vehicle compatibility if the option is enabled
       if (vehicleCompatibleOnly) {
-        const beforeCount = filtered.length;
         filtered = filtered.filter(campsite => campsite.vehicleCompatible);
-        console.log('SimpleCampsiteLayer: After vehicle filter', { before: beforeCount, after: filtered.length, removed: beforeCount - filtered.length });
       }
 
       // Filter by search query
@@ -357,13 +332,10 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
             amenity.toLowerCase().includes(query)
           )
         );
-        console.log('SimpleCampsiteLayer: After search filter', { before: beforeCount, after: filtered.length, removed: beforeCount - filtered.length, query });
       }
 
       // Filter by visible types
-      const beforeCount = filtered.length;
       filtered = filtered.filter(campsite => visibleTypes.includes(campsite.type));
-      console.log('SimpleCampsiteLayer: After type filter', { before: beforeCount, after: filtered.length, removed: beforeCount - filtered.length });
 
       return filtered;
     }
@@ -371,42 +343,19 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
 
   // Cluster campsites based on zoom level
   const clusteredCampsites = useMemo(() => {
-    console.log('SimpleCampsiteLayer: Clustering campsites', {
-      filteredCount: filteredCampsites.length,
-      zoom,
-      isVisible,
-      willCluster: zoom < 15
-    });
-
     if (!isVisible || zoom >= 15) return filteredCampsites; // No clustering at high zoom
     const result = clusterCampsites(filteredCampsites, zoom, isMobile);
-
-    console.log('SimpleCampsiteLayer: Clustering result', {
-      inputCount: filteredCampsites.length,
-      outputCount: result.length
-    });
 
     return result;
   }, [filteredCampsites, zoom, isVisible, isMobile]);
 
   // Load campsites for current map bounds
   const loadCampsites = useCallback(async () => {
-    console.log('SimpleCampsiteLayer: loadCampsites called', {
-      hasMap: !!map,
-      featureEnabled: FeatureFlags.CAMPSITE_DISPLAY,
-      isVisible,
-      visibleTypes,
-      maxResults
-    });
-
     if (!map || !FeatureFlags.CAMPSITE_DISPLAY || !isVisible) return;
 
     // Only load campsites at reasonable zoom levels (7+ for performance and API limits)
     const currentZoom = map.getZoom();
-    if (currentZoom < 7) {
-      console.log('SimpleCampsiteLayer: Zoom level too low for campsite loading', { currentZoom, minRequired: 7 });
-      return;
-    }
+    if (currentZoom < 7) return;
 
     setIsLoading(true);
     setError(null);
@@ -444,12 +393,6 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
       };
 
       const response = await campsiteService.searchCampsites(request);
-
-      console.log('SimpleCampsiteLayer: Search response', {
-        status: response.status,
-        campsiteCount: response.campsites?.length || 0,
-        bounds: request.bounds
-      });
 
       if (response.status === 'success') {
         setCampsites(response.campsites);
@@ -567,7 +510,6 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
 
           // If movement is less than 10% of the current view, skip loading
           if (latDiff < latRange * boundsExpansion && lngDiff < lngRange * boundsExpansion) {
-            console.log('SimpleCampsiteLayer: Skipping load - minor map movement');
             return;
           }
         }
@@ -601,14 +543,6 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
 
   // Don't render if not visible
   if (!isVisible || !FeatureFlags.CAMPSITE_DISPLAY) return null;
-
-  // Debug logging
-  console.log('SimpleCampsiteLayer: Rendering markers', {
-    totalCampsites: clusteredCampsites.length,
-    isLoading,
-    isVisible,
-    zoom
-  });
 
   return (
     <>

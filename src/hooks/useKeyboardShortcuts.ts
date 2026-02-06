@@ -58,31 +58,21 @@ export const useKeyboardShortcuts = () => {
         },
         'delete': () => {
           // Delete all waypoints with confirmation would be handled by UI
-          if (waypoints.length > 0) {
-            // This would trigger a confirmation dialog in the UI
-            console.log('Delete shortcut pressed - UI should handle confirmation');
-          }
         },
         'backspace': () => {
           // Same as delete
-          if (waypoints.length > 0) {
-            console.log('Backspace shortcut pressed - UI should handle confirmation');
-          }
         },
         'escape': () => {
           // Clear selection or close modals - handled by individual components
-          console.log('Escape pressed');
         },
         'ctrl+a': () => {
           // Select all waypoints - could be used for batch operations in future
           event.preventDefault();
-          console.log('Select all waypoints');
         },
         'ctrl+shift+c': () => {
           // Clear all waypoints
           if (waypoints.length > 0) {
             event.preventDefault();
-            console.log('Clear all shortcut pressed - UI should handle confirmation');
           }
         }
       };

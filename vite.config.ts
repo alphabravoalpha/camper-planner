@@ -146,6 +146,13 @@ export default defineConfig({
   // Environment variable prefix
   envPrefix: 'VITE_',
 
+  // Strip console.log and console.debug from production builds
+  // Preserves console.warn and console.error for legitimate error visibility
+  esbuild: {
+    drop: ['debugger'],
+    pure: ['console.log', 'console.debug'],
+  },
+
   // CSS configuration
   css: {
     devSourcemap: true,

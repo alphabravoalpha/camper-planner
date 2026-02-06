@@ -41,7 +41,6 @@ class MapStorage {
       if (data.mapState && data.mapState.timestamp) {
         const age = Date.now() - data.mapState.timestamp;
         if (age > MAX_AGE_MS) {
-          console.log('Map state expired, clearing stored state');
           this.clearMapState();
           return null;
         }

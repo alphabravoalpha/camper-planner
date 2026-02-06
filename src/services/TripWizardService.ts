@@ -289,7 +289,7 @@ export class TripWizardService {
     }
 
     if (input.crossing?.overnightCrossing) {
-      warnings.push(`The ${input.crossing.name} is an overnight crossing — you\'ll sleep on the ferry.`);
+      warnings.push(`The ${input.crossing.name} is an overnight crossing — you'll sleep on the ferry.`);
     }
 
     return {

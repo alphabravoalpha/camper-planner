@@ -20,8 +20,6 @@ export class DataMigration {
       return data;
     }
 
-    console.log(`Migrating data from ${fromVersion} to ${toVersion}`);
-
     // V1.0 to V2.0 migration (future implementation)
     if (fromVersion === '1.0' && toVersion === '2.0') {
       return this.migrateV1toV2(data);
