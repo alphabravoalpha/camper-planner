@@ -8,7 +8,7 @@ import tseslint from 'typescript-eslint'
 import prettier from 'eslint-config-prettier'
 
 export default tseslint.config(
-  { ignores: ['dist', 'node_modules', '*.cjs', 'tests/**/*', 'src/templates.bak/**/*'] },
+  { ignores: ['dist', 'node_modules', '*.cjs', 'tests/**/*', 'templates/**/*'] },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ['**/*.{ts,tsx}'],
