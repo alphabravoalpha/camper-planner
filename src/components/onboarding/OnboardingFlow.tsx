@@ -513,7 +513,7 @@ const SummaryStep: React.FC<SummaryStepProps> = ({ vehicleData, fuelData }) => {
   };
 
   // Calculate estimated fuel cost
-  const distanceKm = calculatedRoute?.distance ? calculatedRoute.distance / 1000 : 0;
+  const distanceKm = calculatedRoute?.routes?.[0]?.summary?.distance ? calculatedRoute.routes[0].summary.distance / 1000 : 0;
   const fuelNeeded = (distanceKm / 100) * fuelData.consumption;
   const fuelPrice = fuelData.fuelType === 'diesel' ? 1.65 : 1.75; // Approximate EU prices
   const estimatedCost = fuelNeeded * fuelPrice;

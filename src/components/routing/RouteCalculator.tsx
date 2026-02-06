@@ -269,15 +269,15 @@ const RouteCalculator: React.FC<RouteCalculatorProps> = ({
                   <button
                     onClick={() => {
                       // Switch to alternative route
-                      const altRouteResponse = {
+                      const altRouteResponse: RouteResponse = {
                         id: `alt_${Date.now()}`,
-                        status: 'success' as const,
+                        status: 'success',
                         routes: [altRoute],
                         metadata: {
-                          service: 'openrouteservice',
+                          service: 'openrouteservice' as const,
                           profile: profile ? 'driving-hgv' : 'driving-car',
                           timestamp: Date.now(),
-                          query: {},
+                          query: {} as RouteRequest,
                           attribution: 'openrouteservice.org | Alternative route'
                         }
                       };

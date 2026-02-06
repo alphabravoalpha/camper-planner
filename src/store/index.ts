@@ -6,6 +6,7 @@ import { devtools, persist } from 'zustand/middleware';
 import { type TripData, type VehicleProfile, type Waypoint } from '../types';
 import { type TripItinerary, type TripWizardInput, type CampsiteOption, type DrivingStyle } from '../services/TripWizardService';
 import { type ChannelCrossing } from '../data/channelCrossings';
+import { type RouteResponse } from '../services/RoutingService';
 
 // Re-export types for services that import from store
 export type { TripData, VehicleProfile, Waypoint } from '../types';
@@ -27,18 +28,27 @@ interface VehicleState {
   clearProfile: () => void;
 }
 
+// Undo/Redo Action Data Types
+type WaypointActionData =
+  | Waypoint                                                                     // add (simple)
+  | { waypoint: Waypoint; afterId: string }                                      // add (insert after)
+  | { id: string; waypoint: Waypoint | undefined }                               // remove
+  | { id: string; updates: Partial<Waypoint>; previousWaypoint: Waypoint | undefined } // update
+  | Waypoint[]                                                                   // reorder
+  | null;                                                                        // clear
+
 // Undo/Redo Action Interface
 interface WaypointAction {
   type: 'add' | 'remove' | 'update' | 'reorder' | 'clear';
   timestamp: number;
-  data: any;
+  data: WaypointActionData;
   previousState: Waypoint[];
 }
 
 // Route State Interface
 interface RouteState {
   waypoints: Waypoint[];
-  calculatedRoute: any | null;
+  calculatedRoute: RouteResponse | null;
   isOptimized: boolean;
   totalDistance: number;
   estimatedTime: number;
@@ -54,7 +64,7 @@ interface RouteState {
   updateWaypoint: (id: string, updates: Partial<Waypoint>) => void;
   reorderWaypoints: (waypoints: Waypoint[]) => void;
   insertWaypoint: (waypoint: Waypoint, afterId: string) => void;
-  setCalculatedRoute: (route: any) => void;
+  setCalculatedRoute: (route: RouteResponse | null) => void;
   clearRoute: () => void;
 
   // Undo/Redo
@@ -321,28 +331,34 @@ export const useRouteStore = create<RouteState>()(
             let newWaypoints = state.waypoints;
 
             switch (action.type) {
-              case 'add':
-                if (action.data.afterId) {
-                  const afterIndex = state.waypoints.findIndex(wp => wp.id === action.data.afterId);
+              case 'add': {
+                const addData = action.data as Waypoint | { waypoint: Waypoint; afterId: string };
+                if ('afterId' in addData) {
+                  const afterIndex = state.waypoints.findIndex(wp => wp.id === addData.afterId);
                   newWaypoints = [
                     ...state.waypoints.slice(0, afterIndex + 1),
-                    action.data.waypoint,
+                    addData.waypoint,
                     ...state.waypoints.slice(afterIndex + 1)
                   ];
                 } else {
-                  newWaypoints = [...state.waypoints, action.data];
+                  newWaypoints = [...state.waypoints, addData as Waypoint];
                 }
                 break;
-              case 'remove':
-                newWaypoints = state.waypoints.filter(wp => wp.id !== action.data.id);
+              }
+              case 'remove': {
+                const removeData = action.data as { id: string; waypoint: Waypoint | undefined };
+                newWaypoints = state.waypoints.filter(wp => wp.id !== removeData.id);
                 break;
-              case 'update':
+              }
+              case 'update': {
+                const updateData = action.data as { id: string; updates: Partial<Waypoint>; previousWaypoint: Waypoint | undefined };
                 newWaypoints = state.waypoints.map(wp =>
-                  wp.id === action.data.id ? { ...wp, ...action.data.updates } : wp
+                  wp.id === updateData.id ? { ...wp, ...updateData.updates } : wp
                 );
                 break;
+              }
               case 'reorder':
-                newWaypoints = action.data;
+                newWaypoints = action.data as Waypoint[];
                 break;
               case 'clear':
                 newWaypoints = [];
