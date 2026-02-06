@@ -206,7 +206,12 @@ const VehicleProfilePanel: React.FC<VehicleProfilePanelProps> = ({
 
     const variant = availableVariants.find(v => v.id === variantId);
     if (variant) {
+      // Find make and model names for the profile name
+      const make = VEHICLE_DATABASE.find(m => m.id === selectedMakeId);
+      const model = make?.models.find(m => m.id === selectedModelId);
+
       const newProfile: VehicleProfile = {
+        name: `${make?.name} ${model?.name} ${variant.name}`,
         height: variant.height,
         width: variant.width,
         weight: variant.weight,
@@ -215,10 +220,6 @@ const VehicleProfilePanel: React.FC<VehicleProfilePanelProps> = ({
       setFormData(newProfile);
       setIsDirty(true);
       setErrors({});
-
-      // Find make and model names for notification
-      const make = VEHICLE_DATABASE.find(m => m.id === selectedMakeId);
-      const model = make?.models.find(m => m.id === selectedModelId);
 
       addNotification({
         type: 'info',
@@ -234,6 +235,7 @@ const VehicleProfilePanel: React.FC<VehicleProfilePanelProps> = ({
     const preset = MOTORHOME_PRESETS.find(m => m.id === motorhomeId);
     if (preset) {
       const newProfile: VehicleProfile = {
+        name: preset.name,
         height: preset.height,
         width: preset.width,
         weight: preset.weight,

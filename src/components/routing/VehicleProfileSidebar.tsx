@@ -26,7 +26,7 @@ const VehicleProfileSidebar: React.FC<VehicleProfileSidebarProps> = ({ className
     if (!profile) return null;
 
     return {
-      type: getVehicleType(profile),
+      type: profile.name || getVehicleType(profile),
       dimensions: `${profile.height}×${profile.width}×${profile.length}m`,
       weight: `${profile.weight}t`
     };
