@@ -137,12 +137,27 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
           return lat >= 34 && lat <= 72 && lng >= -25 && lng <= 45;
         };
 
-        // Sort locations: European locations first, then by importance
+        // Sort locations: exact name matches first, then European, then by importance
+        const queryLower = searchQuery.toLowerCase().trim();
         const sortedLocations = [...geocodedLocations].sort((a, b) => {
+          // Prioritize exact name matches (e.g. "Elba" matches "Elba" over "Elbe")
+          const aName = (a.name || '').toLowerCase();
+          const bName = (b.name || '').toLowerCase();
+
+          const aExact = aName === queryLower ? 1 : 0;
+          const bExact = bName === queryLower ? 1 : 0;
+          if (aExact !== bExact) return bExact - aExact;
+
+          const aStarts = aName.startsWith(queryLower) ? 1 : 0;
+          const bStarts = bName.startsWith(queryLower) ? 1 : 0;
+          if (aStarts !== bStarts) return bStarts - aStarts;
+
+          // Then European locations first
           const aInEurope = isInEurope(a.lat, a.lng);
           const bInEurope = isInEurope(b.lat, b.lng);
           if (aInEurope && !bInEurope) return -1;
           if (!aInEurope && bInEurope) return 1;
+
           return (b.importance || 0) - (a.importance || 0);
         });
 

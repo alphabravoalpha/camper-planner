@@ -433,6 +433,23 @@ export class CampsiteService extends DataService {
             name: shortName
           };
         });
+
+        // Sort results: exact name matches first, then by importance
+        const queryLower = query.toLowerCase().trim();
+        return data.sort((a: GeocodeResult, b: GeocodeResult) => {
+          const aName = (a.name || '').toLowerCase();
+          const bName = (b.name || '').toLowerCase();
+
+          const aExact = aName === queryLower ? 1 : 0;
+          const bExact = bName === queryLower ? 1 : 0;
+          if (aExact !== bExact) return bExact - aExact;
+
+          const aStarts = aName.startsWith(queryLower) ? 1 : 0;
+          const bStarts = bName.startsWith(queryLower) ? 1 : 0;
+          if (aStarts !== bStarts) return bStarts - aStarts;
+
+          return (b.importance || 0) - (a.importance || 0);
+        });
       }
 
       return [];
