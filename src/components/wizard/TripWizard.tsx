@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { useTripWizardStore, useVehicleStore, useRouteStore } from '../../store';
 import { TripWizardService, DRIVING_STYLE_LIMITS, type DrivingStyle, type CampsiteOption } from '../../services/TripWizardService';
+import { campsiteService } from '../../services/CampsiteService';
 import { CHANNEL_CROSSINGS, type ChannelCrossing, needsChannelCrossing } from '../../data/channelCrossings';
 import { type Waypoint } from '../../types';
 
@@ -248,6 +249,7 @@ const StepStartEnd: React.FC = () => {
   const [endResults, setEndResults] = useState<any[]>([]);
   const [searchingStart, setSearchingStart] = useState(false);
   const [searchingEnd, setSearchingEnd] = useState(false);
+  const [searchError, setSearchError] = useState<string | null>(null);
 
   const startDebounceRef = useRef<ReturnType<typeof setTimeout>>();
   const endDebounceRef = useRef<ReturnType<typeof setTimeout>>();
@@ -255,12 +257,18 @@ const StepStartEnd: React.FC = () => {
   const searchLocation = useCallback(async (query: string): Promise<any[]> => {
     if (query.length < 2) return [];
     try {
-      const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=5&countrycodes=gb,ie,fr,de,es,pt,it,nl,be,at,ch,dk,no,se,fi,pl,cz,hr,si,gr,hu,sk,ro,bg,ee,lv,lt,lu,mt,cy&accept-language=en`;
-      const response = await fetch(url, {
-        headers: { 'User-Agent': 'EuropeanCamperPlanner/1.0' },
-      });
-      return response.ok ? response.json() : [];
+      setSearchError(null);
+      const results = await campsiteService.geocodeLocationMultiple(query, 5);
+      if (results.length === 0) return [];
+      // Map to format expected by result rendering
+      return results.map((r, i) => ({
+        place_id: i,
+        display_name: r.display_name,
+        lat: String(r.lat),
+        lon: String(r.lng),
+      }));
     } catch {
+      setSearchError('Search temporarily unavailable. Please try again.');
       return [];
     }
   }, []);
@@ -274,7 +282,7 @@ const StepStartEnd: React.FC = () => {
         const results = await searchLocation(query);
         setStartResults(results);
         setSearchingStart(false);
-      }, 300);
+      }, 500);
     } else {
       setStartResults([]);
     }
@@ -289,7 +297,7 @@ const StepStartEnd: React.FC = () => {
         const results = await searchLocation(query);
         setEndResults(results);
         setSearchingEnd(false);
-      }, 300);
+      }, 500);
     } else {
       setEndResults([]);
     }
@@ -425,6 +433,14 @@ const StepStartEnd: React.FC = () => {
             </button>
           )}
         </div>
+
+        {/* Search error feedback */}
+        {searchError && (
+          <div className="flex items-center gap-2 px-3 py-2 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-700">
+            <AlertTriangle className="w-4 h-4 flex-shrink-0" />
+            <span>{searchError}</span>
+          </div>
+        )}
       </div>
 
       {/* Summary */}

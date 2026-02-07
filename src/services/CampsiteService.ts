@@ -312,6 +312,9 @@ export class CampsiteService extends DataService {
   // Request deduplication protection only
   private activeRequests = new Map<string, Promise<CampsiteResponse>>();
 
+  // Nominatim rate limiting (1 request per second policy)
+  private lastNominatimRequest = 0;
+
   constructor() {
     // Overpass API configuration
     const config: DataServiceConfig = {
@@ -344,6 +347,14 @@ export class CampsiteService extends DataService {
    */
   async geocodeLocationMultiple(query: string, limit: number = 5): Promise<GeocodeResult[]> {
     try {
+      // Enforce Nominatim's 1 request/second policy
+      const now = Date.now();
+      const timeSinceLastRequest = now - this.lastNominatimRequest;
+      if (timeSinceLastRequest < 1100) {
+        await new Promise(resolve => setTimeout(resolve, 1100 - timeSinceLastRequest));
+      }
+      this.lastNominatimRequest = Date.now();
+
       // Use direct fetch for geocoding to bypass DataService complexity
       const params = new URLSearchParams({
         q: query,
