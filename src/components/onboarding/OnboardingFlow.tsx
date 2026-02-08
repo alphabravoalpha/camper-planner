@@ -1,7 +1,7 @@
 // Onboarding Flow Component
 // Comprehensive onboarding that actually sets up the user for trip planning
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { cn } from '../../utils/cn';
 import { aria, useAnnounce, useFocusTrap } from '../../utils/accessibility';
 import { useRouteStore, useVehicleStore } from '../../store';
@@ -12,6 +12,7 @@ import {
   MOTORHOME_PRESETS,
   getModelsForMake,
   getVariantsForModel,
+  findVariant,
 } from '../../data/vehicleDatabase';
 
 interface OnboardingStep {
@@ -23,7 +24,6 @@ interface OnboardingStep {
   canGoBack?: boolean;
   validation?: () => boolean;
   onComplete?: () => void;
-  isBottomPanel?: boolean; // For interactive step
 }
 
 interface OnboardingFlowProps {
@@ -307,6 +307,7 @@ const VehicleSetupStep: React.FC<VehicleSetupStepProps> = ({
 // =============================================================================
 interface FuelSetupStepProps {
   vehicleLength: number;
+  databaseFuelConsumption?: number;
   fuelData: {
     fuelType: string;
     consumption: number;
@@ -316,9 +317,12 @@ interface FuelSetupStepProps {
 
 const FuelSetupStep: React.FC<FuelSetupStepProps> = ({
   vehicleLength,
+  databaseFuelConsumption,
   fuelData,
   setFuelData,
 }) => {
+  const [userEditedConsumption, setUserEditedConsumption] = useState(false);
+
   // Estimate default consumption based on vehicle length
   const getDefaultConsumption = (length: number): number => {
     if (length < 5) return 9;      // Compact campervan
@@ -335,15 +339,18 @@ const FuelSetupStep: React.FC<FuelSetupStepProps> = ({
     { id: 'electricity', name: 'Electric', icon: '⚡' },
   ];
 
-  // Initialize with defaults based on vehicle length
+  // Initialize with defaults — prefer database value over length-based estimate
   useEffect(() => {
-    if (fuelData.consumption === 0) {
-      setFuelData({
-        ...fuelData,
-        consumption: getDefaultConsumption(vehicleLength),
-      });
+    if (!userEditedConsumption) {
+      const bestEstimate = databaseFuelConsumption ?? getDefaultConsumption(vehicleLength);
+      if (fuelData.consumption === 0 || fuelData.consumption !== bestEstimate) {
+        setFuelData({
+          ...fuelData,
+          consumption: bestEstimate,
+        });
+      }
     }
-  }, [vehicleLength]);
+  }, [vehicleLength, databaseFuelConsumption]);
 
   return (
     <div className="space-y-5">
@@ -388,11 +395,19 @@ const FuelSetupStep: React.FC<FuelSetupStepProps> = ({
             min="3"
             max="30"
             value={fuelData.consumption}
-            onChange={(e) => setFuelData({ ...fuelData, consumption: parseFloat(e.target.value) || 0 })}
+            onChange={(e) => {
+              setUserEditedConsumption(true);
+              setFuelData({ ...fuelData, consumption: parseFloat(e.target.value) || 0 });
+            }}
             className="flex-1 px-4 py-3 border border-neutral-300 rounded-md text-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
           />
           <span className="text-neutral-600 text-sm whitespace-nowrap">L/100km</span>
         </div>
+        {databaseFuelConsumption && !userEditedConsumption && (
+          <p className="text-xs text-primary-600 mt-1.5">
+            Auto-filled from vehicle database. Edit above to override.
+          </p>
+        )}
       </div>
 
       {/* Typical Values Reference */}
@@ -428,11 +443,19 @@ const InteractiveTutorialStep: React.FC<InteractiveTutorialStepProps> = ({
   }, [waypoints.length, onWaypointsAdded]);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
       <div className="text-center">
-        <h2 className="text-lg font-bold text-neutral-900">🗺️ Let's Plan Your First Route</h2>
-        <p className="text-neutral-600 text-sm mt-1">
-          Right-click on the map above to add locations
+        <h2 className="text-xl font-bold text-neutral-900 mb-1">Try Adding Waypoints</h2>
+        <p className="text-neutral-600 text-sm">
+          Practice adding locations to plan your first route.
+        </p>
+      </div>
+
+      {/* Visual hint */}
+      <div className="bg-neutral-100 rounded-xl p-4 text-center">
+        <div className="text-3xl mb-2">🗺️ 🖱️</div>
+        <p className="text-sm text-neutral-600">
+          Right-click (or long-press on mobile) on the map behind this dialog to add waypoints.
         </p>
       </div>
 
@@ -442,7 +465,10 @@ const InteractiveTutorialStep: React.FC<InteractiveTutorialStepProps> = ({
           'flex items-center gap-2 text-sm',
           waypoints.length >= 1 ? 'text-green-600' : 'text-neutral-400'
         )}>
-          <span className="w-6 h-6 rounded-full border-2 flex items-center justify-center text-xs font-bold">
+          <span className={cn(
+            'w-6 h-6 rounded-full border-2 flex items-center justify-center text-xs font-bold',
+            waypoints.length >= 1 ? 'border-green-500 bg-green-50' : 'border-neutral-300'
+          )}>
             {waypoints.length >= 1 ? '✓' : '1'}
           </span>
           <span>Add start point</span>
@@ -451,7 +477,10 @@ const InteractiveTutorialStep: React.FC<InteractiveTutorialStepProps> = ({
           'flex items-center gap-2 text-sm',
           waypoints.length >= 2 ? 'text-green-600' : 'text-neutral-400'
         )}>
-          <span className="w-6 h-6 rounded-full border-2 flex items-center justify-center text-xs font-bold">
+          <span className={cn(
+            'w-6 h-6 rounded-full border-2 flex items-center justify-center text-xs font-bold',
+            waypoints.length >= 2 ? 'border-green-500 bg-green-50' : 'border-neutral-300'
+          )}>
             {waypoints.length >= 2 ? '✓' : '2'}
           </span>
           <span>Add destination</span>
@@ -661,6 +690,15 @@ const OnboardingFlow: React.FC<OnboardingFlowProps> = ({
   });
   const [waypointsAdded, setWaypointsAdded] = useState(false);
 
+  // Look up fuel consumption from vehicle database
+  const databaseFuelConsumption = useMemo(() => {
+    if (vehicleData.makeId && vehicleData.modelId && vehicleData.variantId) {
+      const variant = findVariant(vehicleData.makeId, vehicleData.modelId, vehicleData.variantId);
+      return variant?.fuelConsumption;
+    }
+    return undefined;
+  }, [vehicleData.makeId, vehicleData.modelId, vehicleData.variantId]);
+
   // Store hooks
   const { setProfile } = useVehicleStore();
   const { setFuelConsumptionSettings } = useCostStore();
@@ -724,6 +762,7 @@ const OnboardingFlow: React.FC<OnboardingFlowProps> = ({
       content: (
         <FuelSetupStep
           vehicleLength={vehicleData.length}
+          databaseFuelConsumption={databaseFuelConsumption}
           fuelData={fuelData}
           setFuelData={setFuelData}
         />
@@ -740,7 +779,6 @@ const OnboardingFlow: React.FC<OnboardingFlowProps> = ({
       canSkip: true,
       canGoBack: true,
       validation: () => waypointsAdded || waypoints.length >= 2,
-      isBottomPanel: true, // This step uses bottom panel layout
     },
     {
       id: 'summary',
@@ -753,7 +791,6 @@ const OnboardingFlow: React.FC<OnboardingFlowProps> = ({
   ];
 
   const currentStepData = steps[currentStep];
-  const isInteractiveStep = currentStepData.isBottomPanel;
 
   const handleNext = useCallback(() => {
     if (currentStepData.validation && !currentStepData.validation()) {
@@ -795,64 +832,7 @@ const OnboardingFlow: React.FC<OnboardingFlowProps> = ({
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [handleSkip]);
 
-  // For interactive step, render as bottom panel
-  if (isInteractiveStep) {
-    return (
-      <div className="fixed bottom-0 left-0 right-0 bg-white shadow-2xl rounded-t-2xl z-50 border-t border-neutral-200">
-        <div className="max-w-2xl mx-auto p-4">
-          {/* Drag handle indicator */}
-          <div className="w-12 h-1 bg-neutral-300 rounded-full mx-auto mb-3" />
-
-          {/* Progress */}
-          <ProgressIndicator
-            currentStep={currentStep}
-            totalSteps={steps.length}
-            steps={steps}
-          />
-
-          {/* Content */}
-          {currentStepData.content}
-
-          {/* Actions */}
-          <div className="flex justify-between items-center mt-4 pt-3 border-t border-neutral-200">
-            <div className="flex space-x-3">
-              {currentStepData.canGoBack && currentStep > 0 && (
-                <button
-                  onClick={handleBack}
-                  className="px-4 py-2 border border-neutral-300 rounded-md text-neutral-700 hover:bg-neutral-50 transition-colors text-sm"
-                >
-                  Back
-                </button>
-              )}
-              {currentStepData.canSkip && (
-                <button
-                  onClick={handleNext}
-                  className="text-sm text-neutral-500 hover:text-neutral-700 transition-colors"
-                >
-                  Skip this step
-                </button>
-              )}
-            </div>
-
-            <button
-              onClick={handleNext}
-              disabled={currentStepData.validation && !currentStepData.validation()}
-              className={cn(
-                'px-6 py-2 rounded-md font-medium transition-colors text-sm',
-                currentStepData.validation && !currentStepData.validation()
-                  ? 'bg-neutral-300 text-neutral-500 cursor-not-allowed'
-                  : 'bg-primary-600 text-white hover:bg-primary-700 active:scale-[0.97]'
-              )}
-            >
-              Continue
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Standard modal layout for other steps
+  // Modal layout for all steps
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div

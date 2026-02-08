@@ -1,9 +1,10 @@
 // Route Calculator Component
 // Phase 3.2: Route calculation with OpenRouteService integration
 
-import React, { useCallback, useEffect, useState } from 'react';
-import { useRouteStore, useVehicleStore, useUIStore } from '../../store';
+import React, { useCallback, useEffect, useState, useMemo } from 'react';
+import { useRouteStore, useVehicleStore, useUIStore, useTripWizardStore } from '../../store';
 import { routingService } from '../../services/RoutingService';
+import { needsChannelCrossing } from '../../data/channelCrossings';
 import { FeatureFlags } from '../../config';
 import { cn } from '../../utils/cn';
 import { type RouteRequest, type RouteResponse, RoutingError, type RouteRestrictions } from '../../services/RoutingService';
@@ -32,6 +33,28 @@ const RouteCalculator: React.FC<RouteCalculatorProps> = ({
   const [restrictions, setRestrictions] = useState<RouteRestrictions | null>(null);
   const [alternativeRoutes, setAlternativeRoutes] = useState<any[]>([]);
   const [showAlternatives, setShowAlternatives] = useState(false);
+
+  // Trip Wizard integration for long routes and channel crossings
+  const { openWizard, setStart, setEnd } = useTripWizardStore();
+
+  const crossingNeeded = useMemo(() => {
+    if (waypoints.length >= 2) {
+      const first = waypoints[0];
+      const last = waypoints[waypoints.length - 1];
+      return needsChannelCrossing(first.lat, first.lng, last.lat, last.lng);
+    }
+    return false;
+  }, [waypoints]);
+
+  const handleOpenWizardWithRoute = useCallback(() => {
+    if (waypoints.length >= 2) {
+      const first = waypoints[0];
+      const last = waypoints[waypoints.length - 1];
+      setStart({ name: first.name || 'Start', lat: first.lat, lng: first.lng });
+      setEnd({ name: last.name || 'Destination', lat: last.lat, lng: last.lng });
+      openWizard();
+    }
+  }, [waypoints, openWizard, setStart, setEnd]);
 
   // Auto-calculate route when waypoints change (if enabled and valid)
   useEffect(() => {
@@ -300,6 +323,56 @@ const RouteCalculator: React.FC<RouteCalculatorProps> = ({
               ))}
             </div>
           )}
+        </div>
+      )}
+
+      {/* Long Route Suggestion - prompt to use Trip Planner */}
+      {routeStats && routeStats.duration > 240 && !crossingNeeded && (
+        <div className="mb-3 p-3 bg-accent-50 border border-accent-200 rounded-xl">
+          <div className="flex items-start space-x-2">
+            <svg className="w-5 h-5 text-accent-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            <div>
+              <p className="text-sm font-medium text-accent-900">
+                {Math.floor(routeStats.duration / 60)}+ hour drive
+              </p>
+              <p className="text-xs text-accent-700 mt-0.5">
+                Use the Trip Planner to split this into daily legs with overnight campsite stops along the way.
+              </p>
+              <button
+                onClick={handleOpenWizardWithRoute}
+                className="mt-2 text-xs font-semibold text-accent-700 hover:text-accent-900 underline underline-offset-2"
+              >
+                Open Trip Planner →
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Channel Crossing Required - prompt to use Trip Planner */}
+      {routeStats && crossingNeeded && (
+        <div className="mb-3 p-3 bg-blue-50 border border-blue-200 rounded-xl">
+          <div className="flex items-start space-x-2">
+            <svg className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
+            </svg>
+            <div>
+              <p className="text-sm font-medium text-blue-900">
+                Channel crossing required
+              </p>
+              <p className="text-xs text-blue-700 mt-0.5">
+                Your route crosses between the UK and mainland Europe. Use the Trip Planner to choose a ferry or tunnel option with times and costs.
+              </p>
+              <button
+                onClick={handleOpenWizardWithRoute}
+                className="mt-2 text-xs font-semibold text-blue-700 hover:text-blue-900 underline underline-offset-2"
+              >
+                Choose a crossing →
+              </button>
+            </div>
+          </div>
         </div>
       )}
 

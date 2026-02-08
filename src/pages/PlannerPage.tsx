@@ -5,11 +5,13 @@ import React from 'react';
 import MapContainer from '../components/map/MapContainer';
 import TripWizard from '../components/wizard/TripWizard';
 import { useTripWizardStore, useRouteStore } from '../store';
+import { useOnboarding } from '../hooks/useOnboarding';
 import { Route as RouteIcon } from 'lucide-react';
 
 const PlannerPage: React.FC = () => {
   const { openWizard, wizardOpen } = useTripWizardStore();
   const { waypoints } = useRouteStore();
+  const { showOnboarding } = useOnboarding();
   const hasWaypoints = waypoints.length > 0;
 
   return (
@@ -19,7 +21,7 @@ const PlannerPage: React.FC = () => {
         <MapContainer />
 
         {/* "Plan a Trip" floating button — always visible, prominent when no waypoints */}
-        {!wizardOpen && (
+        {!wizardOpen && !showOnboarding && (
           <button
             onClick={openWizard}
             className={`absolute z-[1000] flex items-center gap-2 shadow-lg transition-all font-semibold ${

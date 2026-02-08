@@ -456,9 +456,9 @@ const MapContainer: React.FC = () => {
         </div>
       )}
 
-      {/* Campsite Controls Panel - positioned in top-left area, below tool buttons */}
+      {/* Campsite Controls Panel - positioned to the right of the left toolbar */}
       {FeatureFlags.CAMPSITE_DISPLAY && showCampsiteControls && !showCampsiteFilter && (
-        <div className="absolute top-4 left-16 z-20 w-72 hidden md:block">
+        <div className="absolute top-4 left-[60px] z-20 w-72 hidden md:block">
           <ComponentErrorBoundary componentName="CampsiteControls">
             <CampsiteControls
               visibleTypes={campsiteFilterState.visibleTypes}
@@ -477,7 +477,7 @@ const MapContainer: React.FC = () => {
 
       {/* Advanced Campsite Filter Panel */}
       {FeatureFlags.CAMPSITE_DISPLAY && showCampsiteFilter && (
-        <div className="absolute top-4 left-16 z-20 w-80 hidden md:block">
+        <div className="absolute top-4 left-[60px] z-20 w-80 hidden md:block">
           <ComponentErrorBoundary componentName="CampsiteFilter">
             <CampsiteFilter
               filterState={campsiteFilterState}
