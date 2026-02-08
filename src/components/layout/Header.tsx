@@ -45,7 +45,7 @@ const Header: React.FC = () => {
     <>
       <header className="bg-white/80 backdrop-blur-md shadow-soft sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
+          <div className="flex items-center h-16 gap-6">
             {/* Logo and Title */}
             <div className="flex items-center space-x-4">
               {/* Sidebar toggle for planner page */}
@@ -86,7 +86,7 @@ const Header: React.FC = () => {
                 </div>
               </Link>
 
-              {/* Vehicle Badge — compact pill in header */}
+              {/* Vehicle Badge — compact pill right next to logo */}
               {location.pathname === '/' && (
                 <button
                   onClick={openVehicleSidebar}
@@ -129,7 +129,7 @@ const Header: React.FC = () => {
             </nav>
 
             {/* Right side actions */}
-            <div className="flex items-center space-x-2 lg:space-x-4">
+            <div className="flex items-center space-x-2 lg:space-x-4 ml-auto">
               {/* Plan a Trip button — only show on planner page */}
               {location.pathname === '/' && (
                 <button
