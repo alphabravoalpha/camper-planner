@@ -106,7 +106,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className: _className }) => {
       {sidebarOpen && (
         <div className="fixed inset-0 z-40 lg:hidden">
           <div
-            className="fixed inset-0 bg-black bg-opacity-25"
+            className="fixed inset-0 bg-black/25 backdrop-blur-sm"
             onClick={toggleSidebar}
           />
           <div className="relative flex-1 flex flex-col max-w-xs w-full bg-white pt-16">
@@ -128,7 +128,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className: _className }) => {
       )}
 
       {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex lg:flex-col lg:w-80 lg:fixed lg:inset-y-0 lg:pt-16 bg-white border-r border-gray-200 z-30">
+      <aside className="hidden lg:flex lg:flex-col lg:w-80 lg:fixed lg:inset-y-0 lg:pt-16 bg-white shadow-soft z-30">
         <SidebarContent sections={sidebarSections} />
       </aside>
     </>
@@ -154,12 +154,12 @@ const SidebarContent: React.FC<SidebarContentProps> = ({ sections }) => {
             <div key={section.key} className="space-y-3">
               <div className="flex items-center space-x-2">
                 <div className={cn(
-                  'p-1 rounded',
-                  FeatureFlags[section.featureFlag] ? 'text-blue-600' : 'text-gray-400'
+                  'p-1.5 rounded-lg',
+                  FeatureFlags[section.featureFlag] ? 'text-primary-600 bg-primary-50' : 'text-neutral-400'
                 )}>
                   {section.icon}
                 </div>
-                <h3 className="text-sm font-medium text-gray-900">
+                <h3 className="text-sm font-semibold text-neutral-900">
                   {section.title}
                 </h3>
               </div>
@@ -174,15 +174,15 @@ const SidebarContent: React.FC<SidebarContentProps> = ({ sections }) => {
                 ) : section.key === 'planning' ? (
                   <PlanningTools />
                 ) : (
-                  <div className="bg-green-50 border border-green-200 rounded-lg p-3">
-                    <p className="text-sm text-green-800">
+                  <div className="bg-primary-50 rounded-xl p-3">
+                    <p className="text-sm text-primary-700">
                       Feature controls will appear here
                     </p>
                   </div>
                 )
               ) : (
-                <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
-                  <p className="text-xs text-gray-500">
+                <div className="bg-neutral-50 rounded-xl p-3">
+                  <p className="text-xs text-neutral-500">
                     {section.description}
                   </p>
                 </div>
@@ -190,20 +190,6 @@ const SidebarContent: React.FC<SidebarContentProps> = ({ sections }) => {
             </div>
           ))}
 
-          {/* Phase Information */}
-          <div className="mt-8 pt-6 border-t border-gray-200">
-            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-              <h4 className="text-sm font-medium text-green-900 mb-2">
-                Current Phase: 4 - Campsite Integration ✅
-              </h4>
-              <p className="text-xs text-green-700">
-                Campsite Integration - Display and filter campsites along routes
-              </p>
-              <div className="mt-2 text-xs text-green-600">
-                Next: Phase 5 - Planning Tools
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>

@@ -138,7 +138,7 @@ const VehicleRestrictionGuidance: React.FC<VehicleRestrictionGuidanceProps> = ({
       {/* Current Vehicle Dimensions */}
       {profile && (
         <div className="mb-4 p-3 bg-white rounded border">
-          <h4 className="font-medium text-gray-900 mb-2">Current Vehicle Dimensions</h4>
+          <h4 className="font-medium text-neutral-900 mb-2">Current Vehicle Dimensions</h4>
           <div className="grid grid-cols-2 gap-3 text-sm">
             <div className={cn(
               'flex justify-between',
@@ -206,11 +206,11 @@ const VehicleRestrictionGuidance: React.FC<VehicleRestrictionGuidanceProps> = ({
 
       {/* Suggested Corrections */}
       {suggestions.length > 0 && (
-        <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded">
-          <h4 className="font-medium text-blue-900 mb-2">💡 Suggested Dimension Adjustments</h4>
+        <div className="mt-4 p-3 bg-primary-50 border border-primary-200 rounded">
+          <h4 className="font-medium text-primary-900 mb-2">💡 Suggested Dimension Adjustments</h4>
           <ul className="space-y-1">
             {suggestions.map((suggestion, index) => (
-              <li key={index} className="text-sm text-blue-700 flex items-start">
+              <li key={index} className="text-sm text-primary-700 flex items-start">
                 <span className="mr-2">•</span>
                 <span>{suggestion}</span>
               </li>
@@ -220,9 +220,9 @@ const VehicleRestrictionGuidance: React.FC<VehicleRestrictionGuidanceProps> = ({
       )}
 
       {/* EU Road Limits Reference */}
-      <div className="mt-4 p-3 bg-gray-50 border border-gray-200 rounded">
-        <h4 className="font-medium text-gray-900 mb-2">📋 EU Standard Road Limits</h4>
-        <div className="grid grid-cols-2 gap-3 text-sm text-gray-700">
+      <div className="mt-4 p-3 bg-neutral-50 border border-neutral-200 rounded">
+        <h4 className="font-medium text-neutral-900 mb-2">📋 EU Standard Road Limits</h4>
+        <div className="grid grid-cols-2 gap-3 text-sm text-neutral-700">
           <div className="flex justify-between">
             <span>Max Height:</span>
             <span>{euLimits.height}m</span>

@@ -115,8 +115,8 @@ const MobileMapControls: React.FC<MobileMapControlsProps> = ({
             className={cn(
               "flex flex-col items-center justify-center h-16 w-16 rounded-lg transition-colors",
               waypoints.length > 0
-                ? "bg-blue-50 hover:bg-blue-100 text-blue-600 active:bg-blue-200"
-                : "bg-gray-50 text-gray-300 cursor-not-allowed"
+                ? "bg-primary-50 hover:bg-primary-100 text-primary-600 active:bg-primary-200"
+                : "bg-neutral-50 text-neutral-300 cursor-not-allowed"
             )}
           >
             <svg className="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -128,7 +128,7 @@ const MobileMapControls: React.FC<MobileMapControlsProps> = ({
           {/* Reset View */}
           <button
             onClick={handleResetView}
-            className="flex flex-col items-center justify-center h-16 w-16 rounded-lg bg-gray-50 hover:bg-gray-100 text-gray-600 active:bg-gray-200 transition-colors"
+            className="flex flex-col items-center justify-center h-16 w-16 rounded-lg bg-neutral-50 hover:bg-neutral-100 text-neutral-600 active:bg-neutral-200 transition-colors"
           >
             <svg className="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a9 9 0 019 9 9 9 0 019-9M12 12V9" />
@@ -153,7 +153,7 @@ const MobileMapControls: React.FC<MobileMapControlsProps> = ({
             className={cn(
               "flex flex-col items-center justify-center h-16 w-16 rounded-lg transition-colors",
               isFullscreen
-                ? "bg-blue-100 text-blue-700 active:bg-blue-200"
+                ? "bg-primary-100 text-primary-700 active:bg-primary-200"
                 : "bg-green-50 hover:bg-green-100 text-green-600 active:bg-green-200"
             )}
           >
@@ -182,7 +182,7 @@ const MobileMapControls: React.FC<MobileMapControlsProps> = ({
         <div className="flex">
           <button
             onClick={handleZoomIn}
-            className="w-12 h-12 flex items-center justify-center hover:bg-gray-50 active:bg-gray-100 border-r border-gray-200 transition-colors"
+            className="w-12 h-12 flex items-center justify-center hover:bg-neutral-50 active:bg-neutral-100 border-r border-neutral-200 transition-colors"
             aria-label="Zoom in"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -191,7 +191,7 @@ const MobileMapControls: React.FC<MobileMapControlsProps> = ({
           </button>
           <button
             onClick={handleZoomOut}
-            className="w-12 h-12 flex items-center justify-center hover:bg-gray-50 active:bg-gray-100 transition-colors"
+            className="w-12 h-12 flex items-center justify-center hover:bg-neutral-50 active:bg-neutral-100 transition-colors"
             aria-label="Zoom out"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -205,10 +205,10 @@ const MobileMapControls: React.FC<MobileMapControlsProps> = ({
       <button
         onClick={() => setIsExpanded(!isExpanded)}
         className={cn(
-          "w-12 h-12 bg-blue-600 text-white rounded-lg shadow-lg flex items-center justify-center transition-all",
+          "w-12 h-12 bg-primary-600 text-white rounded-lg shadow-lg flex items-center justify-center transition-all",
           isExpanded
-            ? "bg-gray-600 rotate-45"
-            : "hover:bg-blue-700 active:bg-blue-800"
+            ? "bg-neutral-600 rotate-45"
+            : "hover:bg-primary-700 active:bg-primary-800"
         )}
         aria-label={isExpanded ? "Close more options" : "Open more options"}
       >
@@ -219,7 +219,7 @@ const MobileMapControls: React.FC<MobileMapControlsProps> = ({
 
       {/* Touch Instructions (appears briefly) */}
       {waypoints.length === 0 && (
-        <div className="bg-blue-600 text-white rounded-lg shadow-lg p-3 max-w-48">
+        <div className="bg-primary-600 text-white rounded-lg shadow-lg p-3 max-w-48">
           <p className="text-xs text-center">
             Tap map to add waypoints
           </p>

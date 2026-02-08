@@ -232,19 +232,19 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
   if (!FeatureFlags.CAMPSITE_DISPLAY) return null;
 
   return (
-    <div className={cn('bg-white rounded-lg shadow-sm border border-gray-200', className)}>
+    <div className={cn('bg-white rounded-2xl shadow-soft', className)}>
       {/* Header */}
-      <div className="flex items-center justify-between p-3 border-b border-gray-200">
+      <div className="flex items-center justify-between p-3 border-b border-neutral-100">
         <div className="flex items-center space-x-2">
           <div className="text-lg">🔍</div>
-          <h3 className="text-sm font-medium text-gray-900">Campsite Filters</h3>
+          <h3 className="text-sm font-semibold text-neutral-900">Campsite Filters</h3>
           {activeFilterCount > 0 && (
-            <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium">
+            <span className="bg-primary-100 text-primary-800 px-2 py-1 rounded-full text-xs font-medium">
               {activeFilterCount} active
             </span>
           )}
           {campsiteCount > 0 && (
-            <span className="text-xs text-gray-500">
+            <span className="text-xs text-neutral-500">
               ({campsiteCount} results)
             </span>
           )}
@@ -263,13 +263,13 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
 
           {/* Loading indicator */}
           {isLoading && (
-            <div className="animate-spin rounded-full h-4 w-4 border-2 border-blue-600 border-t-transparent"></div>
+            <div className="animate-spin rounded-full h-4 w-4 border-2 border-primary-600 border-t-transparent"></div>
           )}
 
           {/* Expand/collapse */}
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="p-1.5 rounded text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors"
+            className="p-1.5 rounded text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100 transition-colors"
           >
             <svg
               className={cn('w-4 h-4 transform transition-transform', isExpanded && 'rotate-180')}
@@ -297,7 +297,7 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
                     'flex items-center justify-center w-8 h-8 rounded-full border-2 transition-all',
                     filterState.visibleTypes.includes(type)
                       ? 'border-green-500 bg-green-50 text-green-700'
-                      : 'border-gray-300 bg-gray-50 text-gray-400 hover:border-gray-400'
+                      : 'border-neutral-300 bg-neutral-50 text-neutral-400 hover:border-neutral-400'
                   )}
                   title={label}
                 >
@@ -312,8 +312,8 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
                   className={cn(
                     'px-2 py-1 text-xs font-medium rounded transition-colors',
                     filterState.routeOnlyMode
-                      ? 'bg-blue-100 text-blue-800'
-                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      ? 'bg-primary-100 text-primary-800'
+                      : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'
                   )}
                 >
                   📍 Route only
@@ -321,7 +321,7 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
               )}
             </div>
 
-            <div className="text-xs text-gray-500">
+            <div className="text-xs text-neutral-500">
               Max: {filterState.maxResults}
             </div>
           </div>
@@ -330,9 +330,9 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
 
       {/* Expanded view */}
       {isExpanded && (
-        <div className="border-b border-gray-200">
+        <div className="border-b border-neutral-200">
           {/* Tab navigation */}
-          <div className="flex border-b border-gray-200 bg-gray-50">
+          <div className="flex border-b border-neutral-200 bg-neutral-50">
             {[
               { id: 'types', label: 'Types', icon: '🏕️' },
               { id: 'amenities', label: 'Amenities', icon: '⚡' },
@@ -345,8 +345,8 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
                 className={cn(
                   'flex-1 flex items-center justify-center space-x-1 py-3 px-2 text-sm font-medium transition-colors',
                   activeTab === tab.id
-                    ? 'text-blue-600 border-b-2 border-blue-600 bg-white'
-                    : 'text-gray-500 hover:text-gray-700'
+                    ? 'text-primary-600 border-b-2 border-primary-600 bg-white'
+                    : 'text-neutral-500 hover:text-neutral-700'
                 )}
               >
                 <span className="text-sm">{tab.icon}</span>
@@ -361,13 +361,13 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
             {activeTab === 'types' && (
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <h4 className="text-sm font-medium text-gray-900">Campsite Types</h4>
+                  <h4 className="text-sm font-medium text-neutral-900">Campsite Types</h4>
                   <button
                     onClick={() => {
                       const allSelected = filterState.visibleTypes.length === CAMPSITE_TYPES.length;
                       updateFilter('visibleTypes', allSelected ? [] : CAMPSITE_TYPES.map(t => t.type));
                     }}
-                    className="text-xs text-blue-600 hover:text-blue-800 font-medium"
+                    className="text-xs text-primary-600 hover:text-primary-800 font-medium"
                   >
                     {filterState.visibleTypes.length === CAMPSITE_TYPES.length ? 'None' : 'All'}
                   </button>
@@ -379,14 +379,14 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
                       type="checkbox"
                       checked={filterState.visibleTypes.includes(type)}
                       onChange={() => toggleType(type)}
-                      className="mt-1 h-4 w-4 text-green-600 rounded border-gray-300 focus:ring-green-500"
+                      className="mt-1 h-4 w-4 text-green-600 rounded border-neutral-300 focus:ring-green-500"
                     />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center space-x-2">
                         <span className="text-sm">{icon}</span>
-                        <span className="text-sm font-medium text-gray-900">{label}</span>
+                        <span className="text-sm font-medium text-neutral-900">{label}</span>
                       </div>
-                      <p className="text-xs text-gray-500 mt-0.5">{description}</p>
+                      <p className="text-xs text-neutral-500 mt-0.5">{description}</p>
                     </div>
                   </label>
                 ))}
@@ -397,7 +397,7 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
             {activeTab === 'amenities' && (
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <h4 className="text-sm font-medium text-gray-900">Required Amenities</h4>
+                  <h4 className="text-sm font-medium text-neutral-900">Required Amenities</h4>
                   <button
                     onClick={() => {
                       const allSelected = Object.values(filterState.amenities).every(Boolean);
@@ -407,7 +407,7 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
                       }), {} as CampsiteFilterState['amenities']);
                       updateFilter('amenities', newAmenities);
                     }}
-                    className="text-xs text-blue-600 hover:text-blue-800 font-medium"
+                    className="text-xs text-primary-600 hover:text-primary-800 font-medium"
                   >
                     {Object.values(filterState.amenities).every(Boolean) ? 'None' : 'All'}
                   </button>
@@ -420,15 +420,15 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
                         type="checkbox"
                         checked={filterState.amenities[key]}
                         onChange={() => toggleAmenity(key)}
-                        className="h-4 w-4 text-green-600 rounded border-gray-300 focus:ring-green-500"
+                        className="h-4 w-4 text-green-600 rounded border-neutral-300 focus:ring-green-500"
                       />
                       <span className="text-sm">{icon}</span>
-                      <span className="text-sm text-gray-900">{label}</span>
+                      <span className="text-sm text-neutral-900">{label}</span>
                     </label>
                   ))}
                 </div>
 
-                <div className="mt-3 p-2 bg-blue-50 border border-blue-200 rounded text-xs text-blue-800">
+                <div className="mt-3 p-2 bg-primary-50 rounded-lg text-xs text-primary-800">
                   💡 Only campsites with ALL selected amenities will be shown
                 </div>
               </div>
@@ -443,11 +443,11 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
                     type="checkbox"
                     checked={filterState.vehicleCompatibleOnly}
                     onChange={(e) => updateFilter('vehicleCompatibleOnly', e.target.checked)}
-                    className="mt-1 h-4 w-4 text-green-600 rounded border-gray-300 focus:ring-green-500"
+                    className="mt-1 h-4 w-4 text-green-600 rounded border-neutral-300 focus:ring-green-500"
                   />
                   <div className="flex-1">
-                    <div className="text-sm font-medium text-gray-900">Vehicle Compatible Only</div>
-                    <p className="text-xs text-gray-500 mt-0.5">
+                    <div className="text-sm font-medium text-neutral-900">Vehicle Compatible Only</div>
+                    <p className="text-xs text-neutral-500 mt-0.5">
                       Show only campsites that can accommodate your vehicle dimensions
                     </p>
                   </div>
@@ -461,11 +461,11 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
                         type="checkbox"
                         checked={filterState.routeOnlyMode}
                         onChange={(e) => updateFilter('routeOnlyMode', e.target.checked)}
-                        className="mt-1 h-4 w-4 text-green-600 rounded border-gray-300 focus:ring-green-500"
+                        className="mt-1 h-4 w-4 text-green-600 rounded border-neutral-300 focus:ring-green-500"
                       />
                       <div className="flex-1">
-                        <div className="text-sm font-medium text-gray-900">Show Along Route Only</div>
-                        <p className="text-xs text-gray-500 mt-0.5">
+                        <div className="text-sm font-medium text-neutral-900">Show Along Route Only</div>
+                        <p className="text-xs text-neutral-500 mt-0.5">
                           Filter campsites within distance of your planned route
                         </p>
                       </div>
@@ -473,7 +473,7 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
 
                     {filterState.routeOnlyMode && (
                       <div className="ml-7">
-                        <label className="block text-xs font-medium text-gray-700 mb-1">
+                        <label className="block text-xs font-medium text-neutral-700 mb-1">
                           Max Distance from Route: {filterState.maxDistanceFromRoute}km
                         </label>
                         <div className="flex items-center space-x-2">
@@ -484,12 +484,12 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
                             step={5}
                             value={filterState.maxDistanceFromRoute}
                             onChange={(e) => updateFilter('maxDistanceFromRoute', parseInt(e.target.value))}
-                            className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                            className="flex-1 h-2 bg-neutral-200 rounded-lg appearance-none cursor-pointer"
                           />
                           <select
                             value={filterState.maxDistanceFromRoute}
                             onChange={(e) => updateFilter('maxDistanceFromRoute', parseInt(e.target.value))}
-                            className="text-xs border border-gray-300 rounded px-2 py-1 bg-white"
+                            className="text-xs border border-neutral-300 rounded px-2 py-1 bg-white"
                           >
                             {DISTANCE_OPTIONS.map(distance => (
                               <option key={distance} value={distance}>{distance}km</option>
@@ -508,9 +508,9 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
                       type="checkbox"
                       checked={filterState.openNow}
                       onChange={(e) => updateFilter('openNow', e.target.checked)}
-                      className="h-4 w-4 text-green-600 rounded border-gray-300 focus:ring-green-500"
+                      className="h-4 w-4 text-green-600 rounded border-neutral-300 focus:ring-green-500"
                     />
-                    <span className="text-sm text-gray-900">Open Now</span>
+                    <span className="text-sm text-neutral-900">Open Now</span>
                   </label>
 
                   <label className="flex items-center space-x-3 cursor-pointer">
@@ -518,9 +518,9 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
                       type="checkbox"
                       checked={filterState.freeOnly}
                       onChange={(e) => updateFilter('freeOnly', e.target.checked)}
-                      className="h-4 w-4 text-green-600 rounded border-gray-300 focus:ring-green-500"
+                      className="h-4 w-4 text-green-600 rounded border-neutral-300 focus:ring-green-500"
                     />
-                    <span className="text-sm text-gray-900">Free Only</span>
+                    <span className="text-sm text-neutral-900">Free Only</span>
                   </label>
 
                   <label className="flex items-center space-x-3 cursor-pointer">
@@ -528,22 +528,22 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
                       type="checkbox"
                       checked={filterState.acceptsReservations}
                       onChange={(e) => updateFilter('acceptsReservations', e.target.checked)}
-                      className="h-4 w-4 text-green-600 rounded border-gray-300 focus:ring-green-500"
+                      className="h-4 w-4 text-green-600 rounded border-neutral-300 focus:ring-green-500"
                     />
-                    <span className="text-sm text-gray-900">Accepts Reservations</span>
+                    <span className="text-sm text-neutral-900">Accepts Reservations</span>
                   </label>
                 </div>
 
                 {/* Max results and sorting */}
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">
+                    <label className="block text-xs font-medium text-neutral-700 mb-1">
                       Max Results
                     </label>
                     <select
                       value={filterState.maxResults}
                       onChange={(e) => updateFilter('maxResults', parseInt(e.target.value))}
-                      className="w-full text-sm border border-gray-300 rounded px-2 py-1 bg-white"
+                      className="w-full text-sm border border-neutral-300 rounded px-2 py-1 bg-white"
                     >
                       {MAX_RESULTS_OPTIONS.map(option => (
                         <option key={option} value={option}>{option}</option>
@@ -552,13 +552,13 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
                   </div>
 
                   <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">
+                    <label className="block text-xs font-medium text-neutral-700 mb-1">
                       Sort By
                     </label>
                     <select
                       value={filterState.sortBy}
                       onChange={(e) => updateFilter('sortBy', e.target.value as CampsiteFilterState['sortBy'])}
-                      className="w-full text-sm border border-gray-300 rounded px-2 py-1 bg-white"
+                      className="w-full text-sm border border-neutral-300 rounded px-2 py-1 bg-white"
                     >
                       {SORT_OPTIONS.map(option => (
                         <option key={option.value} value={option.value}>{option.label}</option>
@@ -568,8 +568,8 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
                 </div>
 
                 {/* Map Legend */}
-                <div className="p-3 bg-gray-50 border border-gray-200 rounded mt-4">
-                  <div className="text-xs font-medium text-gray-700 mb-2">Map Legend</div>
+                <div className="p-3 bg-neutral-50 border border-neutral-200 rounded mt-4">
+                  <div className="text-xs font-medium text-neutral-700 mb-2">Map Legend</div>
                   <div className="space-y-2">
                     {/* Campsite type legend */}
                     <div className="flex items-center space-x-2">
@@ -578,7 +578,7 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
                           <path d="M10 0C4.5 0 0 4.5 0 10c0 7.5 10 18 10 18s10-10.5 10-18C20 4.5 15.5 0 10 0z" fill="#22c55e" stroke="#16a34a" strokeWidth="1.5"/>
                         </svg>
                       </div>
-                      <span className="text-xs text-gray-700">Campsite (tent/caravan)</span>
+                      <span className="text-xs text-neutral-700">Campsite (tent/caravan)</span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <div className="w-5 h-6 flex-shrink-0">
@@ -586,7 +586,7 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
                           <path d="M10 0C4.5 0 0 4.5 0 10c0 7.5 10 18 10 18s10-10.5 10-18C20 4.5 15.5 0 10 0z" fill="#3b82f6" stroke="#2563eb" strokeWidth="1.5"/>
                         </svg>
                       </div>
-                      <span className="text-xs text-gray-700">Caravan/Motorhome site</span>
+                      <span className="text-xs text-neutral-700">Caravan/Motorhome site</span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <div className="w-5 h-6 flex-shrink-0">
@@ -594,24 +594,24 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
                           <path d="M10 0C4.5 0 0 4.5 0 10c0 7.5 10 18 10 18s10-10.5 10-18C20 4.5 15.5 0 10 0z" fill="#8b5cf6" stroke="#7c3aed" strokeWidth="1.5"/>
                         </svg>
                       </div>
-                      <span className="text-xs text-gray-700">Aire de Service</span>
+                      <span className="text-xs text-neutral-700">Aire de Service</span>
                     </div>
 
                     {/* Status indicators */}
-                    <div className="pt-2 mt-2 border-t border-gray-200">
+                    <div className="pt-2 mt-2 border-t border-neutral-200">
                       <div className="flex items-center space-x-2">
                         <div className="w-5 h-6 flex-shrink-0">
                           <svg viewBox="0 0 20 28" className="w-full h-full">
                             <path d="M10 0C4.5 0 0 4.5 0 10c0 7.5 10 18 10 18s10-10.5 10-18C20 4.5 15.5 0 10 0z" fill="#ef4444" stroke="#dc2626" strokeWidth="1.5"/>
                           </svg>
                         </div>
-                        <span className="text-xs text-gray-700">May not fit your vehicle</span>
+                        <span className="text-xs text-neutral-700">May not fit your vehicle</span>
                       </div>
                       <div className="flex items-center space-x-2 mt-1">
                         <div className="w-5 h-5 flex-shrink-0 flex items-center justify-center">
                           <div className="w-4 h-4 rounded-full bg-green-500 text-white text-[8px] font-bold flex items-center justify-center border-2 border-white shadow">3</div>
                         </div>
-                        <span className="text-xs text-gray-700">Clustered markers (zoom in)</span>
+                        <span className="text-xs text-neutral-700">Clustered markers (zoom in)</span>
                       </div>
                     </div>
                   </div>
@@ -623,7 +623,7 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
             {activeTab === 'search' && (
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-neutral-700 mb-2">
                     Search by Name
                   </label>
                   <input
@@ -634,12 +634,12 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
                       onSearchChange?.(e.target.value);
                     }}
                     placeholder="Search campsite names..."
-                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    className="w-full px-3 py-2 text-sm border border-neutral-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-neutral-700 mb-2">
                     Search by Location
                   </label>
                   <input
@@ -647,13 +647,13 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
                     value={filterState.searchLocation}
                     onChange={(e) => updateFilter('searchLocation', e.target.value)}
                     placeholder="City, region, or address..."
-                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    className="w-full px-3 py-2 text-sm border border-neutral-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
                   />
                 </div>
 
-                <div className="p-3 bg-gray-50 border border-gray-200 rounded text-xs">
-                  <div className="font-medium text-gray-900 mb-1">Search Tips:</div>
-                  <ul className="space-y-0.5 text-gray-700">
+                <div className="p-3 bg-neutral-50 border border-neutral-200 rounded text-xs">
+                  <div className="font-medium text-neutral-900 mb-1">Search Tips:</div>
+                  <ul className="space-y-0.5 text-neutral-700">
                     <li>• Use partial names for broader results</li>
                     <li>• Search by city or region names</li>
                     <li>• Combine with other filters for precise results</li>

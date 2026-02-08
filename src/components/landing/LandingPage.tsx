@@ -22,7 +22,7 @@ const HeroSection: React.FC<{ onGetStarted: () => void }> = ({ onGetStarted }) =
   };
 
   return (
-    <section className={cn('relative bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 text-white overflow-hidden', animations.fadeIn)}>
+    <section className={cn('relative bg-gradient-to-br from-primary-600 via-primary-700 to-primary-800 text-white overflow-hidden', animations.fadeIn)}>
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-10">
         <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
@@ -39,7 +39,7 @@ const HeroSection: React.FC<{ onGetStarted: () => void }> = ({ onGetStarted }) =
                 Plan Your Perfect
                 <span className="block text-yellow-300">European Adventure</span>
               </h1>
-              <p className="text-xl text-blue-100 mt-6 leading-relaxed">
+              <p className="text-xl text-primary-100 mt-6 leading-relaxed">
                 The ultimate trip planning tool for camper van enthusiasts. Create amazing routes,
                 find the best campsites, and share your adventures across Europe.
               </p>
@@ -55,7 +55,7 @@ const HeroSection: React.FC<{ onGetStarted: () => void }> = ({ onGetStarted }) =
               ].map((benefit, index) => (
                 <div
                   key={index}
-                  className={cn('flex items-center space-x-3 text-blue-100', animations.staggeredFadeIn(index).className)}
+                  className={cn('flex items-center space-x-3 text-primary-100', animations.staggeredFadeIn(index).className)}
                   style={animations.staggeredFadeIn(index).style}
                 >
                   <span className="text-2xl">{benefit.icon}</span>
@@ -69,7 +69,7 @@ const HeroSection: React.FC<{ onGetStarted: () => void }> = ({ onGetStarted }) =
               <button
                 onClick={handleGetStarted}
                 className={cn(
-                  'bg-yellow-400 text-blue-900 px-8 py-4 rounded-lg font-bold text-lg',
+                  'bg-yellow-400 text-primary-900 px-8 py-4 rounded-lg font-bold text-lg',
                   'hover:bg-yellow-300 transform hover:scale-105 transition-all duration-200',
                   'shadow-lg hover:shadow-xl',
                   animations.buttonHover
@@ -83,8 +83,8 @@ const HeroSection: React.FC<{ onGetStarted: () => void }> = ({ onGetStarted }) =
                   document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
                 }}
                 className={cn(
-                  'border-2 border-blue-300 text-blue-100 px-8 py-4 rounded-lg font-semibold text-lg',
-                  'hover:bg-blue-700 hover:border-blue-200 transition-all duration-200',
+                  'border-2 border-primary-300 text-primary-100 px-8 py-4 rounded-lg font-semibold text-lg',
+                  'hover:bg-primary-700 hover:border-primary-200 transition-all duration-200',
                   animations.buttonHover
                 )}
               >
@@ -93,7 +93,7 @@ const HeroSection: React.FC<{ onGetStarted: () => void }> = ({ onGetStarted }) =
             </div>
 
             {/* Trust Indicators */}
-            <div className="flex items-center space-x-6 text-blue-200 text-sm">
+            <div className="flex items-center space-x-6 text-primary-200 text-sm">
               <div className="flex items-center space-x-2">
                 <span>✅</span>
                 <span>Free to Use</span>
@@ -112,7 +112,7 @@ const HeroSection: React.FC<{ onGetStarted: () => void }> = ({ onGetStarted }) =
           {/* Hero Image/Animation */}
           <div className={cn('relative', animations.slideInRight)}>
             <div className="relative bg-white rounded-2xl shadow-2xl p-8 transform rotate-3 hover:rotate-0 transition-transform duration-500">
-              <div className="bg-gray-100 rounded-lg aspect-video flex items-center justify-center text-gray-500">
+              <div className="bg-neutral-100 rounded-lg aspect-video flex items-center justify-center text-neutral-500">
                 <div className="text-center">
                   <div className="text-6xl mb-4">🗺️</div>
                   <div className="font-medium">Interactive Map Preview</div>
@@ -124,7 +124,7 @@ const HeroSection: React.FC<{ onGetStarted: () => void }> = ({ onGetStarted }) =
               <div className="absolute -top-4 -right-4 bg-green-500 text-white px-3 py-1 rounded-full text-sm font-medium animate-bounce">
                 🏕️ 1000+ Campsites
               </div>
-              <div className="absolute -bottom-4 -left-4 bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-medium animate-pulse">
+              <div className="absolute -bottom-4 -left-4 bg-primary-500 text-white px-3 py-1 rounded-full text-sm font-medium animate-pulse">
                 🚐 Vehicle Profiles
               </div>
             </div>
@@ -179,13 +179,13 @@ const FeaturesSection: React.FC = () => {
   ];
 
   return (
-    <section id="features" className="py-20 bg-gray-50">
+    <section id="features" className="py-20 bg-neutral-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className={cn('text-center mb-16', animations.fadeIn)}>
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">
+          <h2 className="text-4xl font-bold text-neutral-900 mb-4">
             Everything You Need for Epic Adventures
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-xl text-neutral-600 max-w-3xl mx-auto">
             From route planning to campsite discovery, we've built the most comprehensive
             tool for European camper van travel.
           </p>
@@ -203,11 +203,11 @@ const FeaturesSection: React.FC = () => {
               style={animations.staggeredFadeIn(index).style}
             >
               <div className="text-4xl mb-4">{feature.icon}</div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">{feature.title}</h3>
-              <p className="text-gray-600 mb-4">{feature.description}</p>
+              <h3 className="text-xl font-bold text-neutral-900 mb-3">{feature.title}</h3>
+              <p className="text-neutral-600 mb-4">{feature.description}</p>
               <ul className="space-y-2">
                 {feature.benefits.map((benefit, i) => (
-                  <li key={i} className="flex items-center text-sm text-gray-700">
+                  <li key={i} className="flex items-center text-sm text-neutral-700">
                     <span className="text-green-500 mr-2">✓</span>
                     {benefit}
                   </li>
@@ -265,18 +265,18 @@ const SocialProofSection: React.FC = () => {
               style={animations.staggeredFadeIn(index).style}
             >
               <div className="text-3xl mb-2">{stat.icon}</div>
-              <div className="text-3xl font-bold text-blue-600 mb-1">{stat.number}</div>
-              <div className="text-gray-600">{stat.label}</div>
+              <div className="text-3xl font-bold text-primary-600 mb-1">{stat.number}</div>
+              <div className="text-neutral-600">{stat.label}</div>
             </div>
           ))}
         </div>
 
         {/* Testimonials */}
         <div className={cn('text-center mb-12', animations.fadeIn)}>
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl font-bold text-neutral-900 mb-4">
             Loved by Travelers Across Europe
           </h2>
-          <p className="text-xl text-gray-600">
+          <p className="text-xl text-neutral-600">
             See what our community says about their experiences
           </p>
         </div>
@@ -286,7 +286,7 @@ const SocialProofSection: React.FC = () => {
             <div
               key={index}
               className={cn(
-                'bg-gray-50 rounded-xl p-6 border border-gray-200',
+                'bg-neutral-50 rounded-xl p-6 border border-neutral-200',
                 animations.staggeredFadeIn(index).className
               )}
               style={animations.staggeredFadeIn(index).style}
@@ -296,10 +296,10 @@ const SocialProofSection: React.FC = () => {
                   <span key={i} className="text-yellow-400 text-xl">⭐</span>
                 ))}
               </div>
-              <p className="text-gray-700 mb-4 italic">"{testimonial.text}"</p>
+              <p className="text-neutral-700 mb-4 italic">"{testimonial.text}"</p>
               <div className="text-sm">
-                <div className="font-semibold text-gray-900">{testimonial.name}</div>
-                <div className="text-gray-600">{testimonial.location}</div>
+                <div className="font-semibold text-neutral-900">{testimonial.name}</div>
+                <div className="text-neutral-600">{testimonial.location}</div>
               </div>
             </div>
           ))}
@@ -320,13 +320,13 @@ const CTASection: React.FC<{ onGetStarted: () => void }> = ({ onGetStarted }) =>
   };
 
   return (
-    <section className="py-20 bg-gradient-to-r from-blue-600 to-blue-800 text-white">
+    <section className="py-20 bg-gradient-to-r from-primary-600 to-primary-800 text-white">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <div className={cn('space-y-8', animations.fadeIn)}>
           <h2 className="text-4xl font-bold">
             Ready to Start Your European Adventure?
           </h2>
-          <p className="text-xl text-blue-100">
+          <p className="text-xl text-primary-100">
             Join thousands of travelers who trust us to plan their perfect camper van journeys.
             Start planning your next adventure today – completely free!
           </p>
@@ -335,7 +335,7 @@ const CTASection: React.FC<{ onGetStarted: () => void }> = ({ onGetStarted }) =>
             <button
               onClick={handleGetStarted}
               className={cn(
-                'bg-yellow-400 text-blue-900 px-8 py-4 rounded-lg font-bold text-lg',
+                'bg-yellow-400 text-primary-900 px-8 py-4 rounded-lg font-bold text-lg',
                 'hover:bg-yellow-300 transform hover:scale-105 transition-all duration-200',
                 'shadow-lg hover:shadow-xl',
                 animations.buttonHover
@@ -345,7 +345,7 @@ const CTASection: React.FC<{ onGetStarted: () => void }> = ({ onGetStarted }) =>
             </button>
           </div>
 
-          <div className="flex justify-center items-center space-x-8 text-blue-200 text-sm">
+          <div className="flex justify-center items-center space-x-8 text-primary-200 text-sm">
             <div className="flex items-center space-x-2">
               <span>✅</span>
               <span>No Registration Required</span>

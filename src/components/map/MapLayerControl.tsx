@@ -152,7 +152,7 @@ const MapLayerControl: React.FC<MapLayerControlProps> = ({
         <div className="absolute top-4 left-4 z-30 bg-white rounded-lg shadow-md">
           <button
             onClick={onToggleCollapse}
-            className="w-10 h-10 flex items-center justify-center hover:bg-gray-50 transition-colors rounded-lg"
+            className="w-10 h-10 flex items-center justify-center hover:bg-neutral-50 transition-colors rounded-lg"
             title={`Current: ${currentLayer?.name || 'Unknown'}`}
             aria-label="Open layer control"
           >
@@ -184,12 +184,12 @@ const MapLayerControl: React.FC<MapLayerControlProps> = ({
       {/* Expanded Control */}
       <div className="absolute top-4 left-4 z-30 bg-white rounded-lg shadow-md overflow-hidden min-w-64">
       {/* Header */}
-      <div className="flex items-center justify-between p-3 border-b border-gray-200">
-        <h3 className="font-medium text-gray-900 text-sm">Map Layers</h3>
+      <div className="flex items-center justify-between p-3 border-b border-neutral-200">
+        <h3 className="font-medium text-neutral-900 text-sm">Map Layers</h3>
         {onToggleCollapse && (
           <button
             onClick={onToggleCollapse}
-            className="text-gray-400 hover:text-gray-600 p-1 rounded transition-colors"
+            className="text-neutral-400 hover:text-neutral-600 p-1 rounded transition-colors"
             aria-label="Collapse layer control"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -213,15 +213,15 @@ const MapLayerControl: React.FC<MapLayerControlProps> = ({
               className={cn(
                 'w-full flex items-center space-x-3 p-2 rounded-lg text-left transition-all',
                 isActive
-                  ? 'bg-blue-50 text-blue-900 border border-blue-200'
-                  : 'hover:bg-gray-50 text-gray-700',
+                  ? 'bg-primary-50 text-primary-900 border border-primary-200'
+                  : 'hover:bg-neutral-50 text-neutral-700',
                 isLoadingThis && 'opacity-50 cursor-wait'
               )}
             >
               <div className="flex-shrink-0">
                 {isLoadingThis ? (
                   <div className="w-6 h-6 flex items-center justify-center">
-                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-blue-600 border-t-transparent"></div>
+                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-primary-600 border-t-transparent"></div>
                   </div>
                 ) : (
                   <span className="text-lg">{layer.icon}</span>
@@ -232,12 +232,12 @@ const MapLayerControl: React.FC<MapLayerControlProps> = ({
                 <div className="flex items-center space-x-2">
                   <span className="font-medium text-sm">{layer.name}</span>
                   {isActive && (
-                    <svg className="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className="w-4 h-4 text-primary-600" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                     </svg>
                   )}
                 </div>
-                <p className="text-xs text-gray-500 truncate">{layer.description}</p>
+                <p className="text-xs text-neutral-500 truncate">{layer.description}</p>
               </div>
             </button>
           );
@@ -246,13 +246,13 @@ const MapLayerControl: React.FC<MapLayerControlProps> = ({
 
       {/* Current Layer Info */}
       {currentLayer && (
-        <div className="p-3 border-t border-gray-200 bg-gray-50">
-          <div className="text-xs text-gray-600">
+        <div className="p-3 border-t border-neutral-200 bg-neutral-50">
+          <div className="text-xs text-neutral-600">
             <div className="flex items-center justify-between mb-1">
               <span className="font-medium">Current Layer</span>
-              <span className="text-blue-600">{currentLayer.name}</span>
+              <span className="text-primary-600">{currentLayer.name}</span>
             </div>
-            <div className="text-gray-500">
+            <div className="text-neutral-500">
               Max Zoom: {currentLayer.maxZoom}x • Category: {currentLayer.category}
             </div>
           </div>

@@ -40,7 +40,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
           <div
             key={i}
             className={cn(
-              'bg-blue-600 rounded-full animate-pulse',
+              'bg-primary-600 rounded-full animate-pulse',
               sizeClasses[size]
             )}
             style={{
@@ -50,7 +50,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
           />
         ))}
         {text && (
-          <span className={cn('ml-3 text-gray-600', textSizeClasses[size])}>
+          <span className={cn('ml-3 text-neutral-600', textSizeClasses[size])}>
             {text}
           </span>
         )}
@@ -63,12 +63,12 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
       <div className={cn('flex items-center justify-center', className)}>
         <div
           className={cn(
-            'bg-blue-600 rounded-full animate-ping',
+            'bg-primary-600 rounded-full animate-ping',
             sizeClasses[size]
           )}
         />
         {text && (
-          <span className={cn('ml-3 text-gray-600', textSizeClasses[size])}>
+          <span className={cn('ml-3 text-neutral-600', textSizeClasses[size])}>
             {text}
           </span>
         )}
@@ -80,7 +80,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
     <div className={cn('flex items-center justify-center', className)}>
       <div
         className={cn(
-          'animate-spin rounded-full border-2 border-gray-300 border-t-blue-600',
+          'animate-spin rounded-full border-2 border-neutral-300 border-t-primary-600',
           sizeClasses[size]
         )}
         role="status"
@@ -89,7 +89,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
         <span className="sr-only">Loading...</span>
       </div>
       {text && (
-        <span className={cn('ml-3 text-gray-600', textSizeClasses[size])}>
+        <span className={cn('ml-3 text-neutral-600', textSizeClasses[size])}>
           {text}
         </span>
       )}

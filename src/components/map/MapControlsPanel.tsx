@@ -83,11 +83,11 @@ const MapControlsPanel: React.FC<MapControlsPanelProps> = ({
   return (
     <div className="absolute top-4 right-3 z-40 flex flex-col space-y-2 hidden sm:flex">
       {/* Main Controls */}
-      <div className="bg-white rounded-lg shadow-md overflow-hidden">
+      <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-medium overflow-hidden">
         {/* Zoom Controls */}
         <button
           onClick={handleZoomIn}
-          className="block w-10 h-10 flex items-center justify-center hover:bg-gray-50 border-b border-gray-200 transition-colors"
+          className="block w-10 h-10 flex items-center justify-center hover:bg-neutral-50 border-b border-neutral-200 transition-colors"
           title="Zoom in (+)"
           aria-label="Zoom in"
         >
@@ -97,7 +97,7 @@ const MapControlsPanel: React.FC<MapControlsPanelProps> = ({
         </button>
         <button
           onClick={handleZoomOut}
-          className="block w-10 h-10 flex items-center justify-center hover:bg-gray-50 transition-colors"
+          className="block w-10 h-10 flex items-center justify-center hover:bg-neutral-50 transition-colors"
           title="Zoom out (-)"
           aria-label="Zoom out"
         >
@@ -108,16 +108,16 @@ const MapControlsPanel: React.FC<MapControlsPanelProps> = ({
       </div>
 
       {/* Advanced Controls */}
-      <div className="bg-white rounded-lg shadow-md overflow-hidden">
+      <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-medium overflow-hidden">
         {/* Zoom to Fit */}
         <button
           onClick={handleZoomToFit}
           disabled={waypoints.length === 0}
           className={cn(
-            "block w-10 h-10 flex items-center justify-center border-b border-gray-200 transition-colors",
+            "block w-10 h-10 flex items-center justify-center border-b border-neutral-200 transition-colors",
             waypoints.length > 0
-              ? "hover:bg-gray-50 text-gray-700"
-              : "text-gray-300 cursor-not-allowed"
+              ? "hover:bg-neutral-50 text-neutral-700"
+              : "text-neutral-300 cursor-not-allowed"
           )}
           title={`Zoom to fit waypoints (Ctrl+F)${waypoints.length === 0 ? ' - Add waypoints first' : ''}`}
           aria-label="Zoom to fit all waypoints"
@@ -130,7 +130,7 @@ const MapControlsPanel: React.FC<MapControlsPanelProps> = ({
         {/* Reset View */}
         <button
           onClick={onResetView}
-          className="block w-10 h-10 flex items-center justify-center hover:bg-gray-50 border-b border-gray-200 transition-colors"
+          className="block w-10 h-10 flex items-center justify-center hover:bg-neutral-50 border-b border-neutral-200 transition-colors"
           title="Reset to Europe view (Ctrl+R)"
           aria-label="Reset to Europe view"
         >
@@ -143,8 +143,8 @@ const MapControlsPanel: React.FC<MapControlsPanelProps> = ({
         <button
           onClick={onToggleLayerControl}
           className={cn(
-            "block w-10 h-10 flex items-center justify-center hover:bg-gray-50 border-b border-gray-200 transition-colors",
-            !layerControlCollapsed && "bg-blue-50 text-blue-600"
+            "block w-10 h-10 flex items-center justify-center hover:bg-neutral-50 border-b border-neutral-200 transition-colors",
+            !layerControlCollapsed && "bg-primary-50 text-primary-600"
           )}
           title="Toggle layer control (Ctrl+L)"
           aria-label="Toggle map layer control"
@@ -158,8 +158,8 @@ const MapControlsPanel: React.FC<MapControlsPanelProps> = ({
         <button
           onClick={onToggleFullscreen}
           className={cn(
-            "block w-10 h-10 flex items-center justify-center hover:bg-gray-50 transition-colors",
-            isFullscreen && "bg-blue-50 text-blue-600"
+            "block w-10 h-10 flex items-center justify-center hover:bg-neutral-50 transition-colors",
+            isFullscreen && "bg-primary-50 text-primary-600"
           )}
           title={`${isFullscreen ? 'Exit' : 'Enter'} fullscreen (Alt+F)`}
           aria-label={`${isFullscreen ? 'Exit' : 'Enter'} fullscreen mode`}
@@ -180,8 +180,8 @@ const MapControlsPanel: React.FC<MapControlsPanelProps> = ({
       <button
         onClick={() => setShowShortcuts(!showShortcuts)}
         className={cn(
-          "bg-white rounded-lg shadow-md p-2 hover:bg-gray-50 transition-colors",
-          showShortcuts && "bg-blue-50 text-blue-600"
+          "bg-white/90 backdrop-blur-sm rounded-xl shadow-medium p-2 hover:bg-neutral-50 transition-all duration-200",
+          showShortcuts && "bg-primary-50 text-primary-600"
         )}
         title="Show keyboard shortcuts"
         aria-label="Toggle keyboard shortcuts help"
@@ -194,19 +194,19 @@ const MapControlsPanel: React.FC<MapControlsPanelProps> = ({
       {/* Keyboard Shortcuts Panel */}
       {showShortcuts && (
         <div className="bg-white rounded-lg shadow-lg p-4 min-w-64 max-w-sm">
-          <h3 className="font-semibold text-gray-900 mb-3 text-sm">Keyboard Shortcuts</h3>
+          <h3 className="font-semibold text-neutral-900 mb-3 text-sm">Keyboard Shortcuts</h3>
           <div className="space-y-2">
             {shortcuts.map((shortcut, index) => (
               <div key={index} className="flex items-center justify-between text-xs">
-                <span className="text-gray-600">{shortcut.description}</span>
-                <kbd className="px-2 py-1 bg-gray-100 rounded text-gray-900 font-mono">
+                <span className="text-neutral-600">{shortcut.description}</span>
+                <kbd className="px-2 py-1 bg-neutral-100 rounded text-neutral-900 font-mono">
                   {shortcut.key}
                 </kbd>
               </div>
             ))}
           </div>
-          <div className="mt-3 pt-3 border-t border-gray-200">
-            <p className="text-xs text-gray-500">
+          <div className="mt-3 pt-3 border-t border-neutral-200">
+            <p className="text-xs text-neutral-500">
               Shortcuts work when not typing in input fields
             </p>
           </div>

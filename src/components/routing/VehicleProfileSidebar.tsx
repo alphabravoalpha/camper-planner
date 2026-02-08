@@ -87,7 +87,7 @@ const VehicleProfileSidebar: React.FC<VehicleProfileSidebarProps> = ({ className
   return (
     <>
       {/* Toggle Button */}
-      <div className={cn('fixed top-4 left-4 z-40', className)}>
+      <div className={cn('fixed top-[72px] left-4 z-30', className)}>
         <Tooltip
           content={profile ? 'Edit vehicle profile' : 'Set up your vehicle profile'}
           position="right"
@@ -96,9 +96,9 @@ const VehicleProfileSidebar: React.FC<VehicleProfileSidebarProps> = ({ className
           <button
             onClick={() => setIsOpen(true)}
             className={cn(
-              'bg-white rounded-lg shadow-md border border-gray-200 p-3 transition-all duration-200',
-              'hover:shadow-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500',
-              profile ? 'text-green-700 border-green-200 bg-green-50' : 'text-blue-700 border-blue-200 bg-blue-50'
+              'bg-white rounded-xl shadow-soft p-3 transition-all duration-200',
+              'hover:shadow-medium hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary-500',
+              profile ? 'text-green-700 ring-1 ring-green-200 bg-green-50' : 'text-primary-700 ring-1 ring-primary-200 bg-primary-50'
             )}
             aria-label="Vehicle profile"
           >
@@ -108,7 +108,7 @@ const VehicleProfileSidebar: React.FC<VehicleProfileSidebarProps> = ({ className
                 {profile ? (
                   <>
                     <div className="text-xs font-medium">{summary?.type}</div>
-                    <div className="text-xs text-gray-600">{summary?.dimensions}</div>
+                    <div className="text-xs text-neutral-600">{summary?.dimensions}</div>
                   </>
                 ) : (
                   <div className="text-xs font-medium">Setup Vehicle</div>
@@ -132,11 +132,11 @@ const VehicleProfileSidebar: React.FC<VehicleProfileSidebarProps> = ({ className
           <div className="absolute left-0 top-0 h-full w-full max-w-md bg-white shadow-xl transform transition-transform">
             <div className="h-full flex flex-col">
               {/* Header */}
-              <div className="flex items-center justify-between p-4 border-b border-gray-200">
-                <h2 className="text-lg font-semibold text-gray-900">Vehicle Configuration</h2>
+              <div className="flex items-center justify-between p-4 border-b border-neutral-200">
+                <h2 className="text-lg font-semibold text-neutral-900">Vehicle Configuration</h2>
                 <button
                   onClick={() => setIsOpen(false)}
-                  className="text-gray-400 hover:text-gray-600 p-1 rounded transition-colors"
+                  className="text-neutral-400 hover:text-neutral-600 p-1 rounded transition-colors"
                 >
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

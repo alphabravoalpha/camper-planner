@@ -463,12 +463,12 @@ const CampsiteSearchInner: React.FC<CampsiteSearchProps> = ({
     <div className={cn('relative', className)}>
       {/* Search mode indicator */}
       {!map && (
-        <div className="mb-2 p-2 bg-blue-50 border border-blue-200 rounded-lg">
+        <div className="mb-2 p-2 bg-primary-50 border border-primary-200 rounded-lg">
           <div className="flex items-center space-x-2">
-            <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 h-4 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <span className="text-xs text-blue-700">
+            <span className="text-xs text-primary-700">
               Searching across Europe - results may not be location-specific
             </span>
           </div>
@@ -506,7 +506,7 @@ const CampsiteSearchInner: React.FC<CampsiteSearchProps> = ({
       {/* Search input */}
       <div className="relative">
         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-          <svg className="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="h-4 w-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
         </div>
@@ -519,14 +519,14 @@ const CampsiteSearchInner: React.FC<CampsiteSearchProps> = ({
           onFocus={() => setShowResults(query.trim().length >= 2)}
           onBlur={() => setTimeout(() => setShowResults(false), 200)}
           placeholder={placeholder}
-          className="w-full pl-10 pr-10 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+          className="w-full pl-10 pr-10 py-2 text-sm border border-neutral-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
         />
         {query && (
           <button
             onClick={clearSearch}
-            className="absolute inset-y-0 right-0 pr-3 flex items-center hover:text-gray-600"
+            className="absolute inset-y-0 right-0 pr-3 flex items-center hover:text-neutral-600"
           >
-            <svg className="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="h-4 w-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
@@ -542,13 +542,13 @@ const CampsiteSearchInner: React.FC<CampsiteSearchProps> = ({
       {showResults && (searchResults.length > 0 || searchHistory.length > 0 || (isLocationQuery && query.trim().length >= 3)) && (
         <div
           ref={dropdownRef}
-          className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-80 overflow-y-auto"
+          className="absolute top-full left-0 right-0 mt-1 bg-white border border-neutral-200 rounded-lg shadow-lg z-50 max-h-80 overflow-y-auto"
           onMouseDown={(e) => e.preventDefault()} // Prevent blur when clicking in dropdown
         >
           {/* Search results */}
           {searchResults.length > 0 && (
             <div>
-              <div className="px-3 py-2 text-xs font-medium text-gray-500 border-b border-gray-100">
+              <div className="px-3 py-2 text-xs font-medium text-neutral-500 border-b border-neutral-100">
                 Search Results ({searchResults.length})
               </div>
               {searchResults.map((campsite, index) => (
@@ -558,20 +558,20 @@ const CampsiteSearchInner: React.FC<CampsiteSearchProps> = ({
                   onMouseEnter={() => onCampsiteHover?.(campsite.id.toString())}
                   onMouseLeave={() => onCampsiteHover?.(null)}
                   className={cn(
-                    'w-full px-3 py-2 text-left hover:bg-gray-50 focus:bg-gray-50 border-b border-gray-50 last:border-b-0 transition-colors',
+                    'w-full px-3 py-2 text-left hover:bg-neutral-50 focus:bg-neutral-50 border-b border-neutral-50 last:border-b-0 transition-colors',
                     index === selectedIndex && 'bg-green-50'
                   )}
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1 min-w-0">
-                      <div className="text-sm font-medium text-gray-900 truncate">
+                      <div className="text-sm font-medium text-neutral-900 truncate">
                         {campsite.name || `${campsite.type.replace('_', ' ')} #${campsite.id}`}
                       </div>
-                      <div className="text-xs text-gray-500 truncate">
+                      <div className="text-xs text-neutral-500 truncate">
                         {campsite.address || `${campsite.type.replace('_', ' ')}`}
                       </div>
                       {campsite.distance !== undefined && (
-                        <div className="text-xs text-gray-400">
+                        <div className="text-xs text-neutral-400">
                           {campsite.distance < 1
                             ? `${Math.round(campsite.distance * 1000)}m away`
                             : `${campsite.distance.toFixed(1)}km away`
@@ -598,14 +598,14 @@ const CampsiteSearchInner: React.FC<CampsiteSearchProps> = ({
           {/* No results message for location searches */}
           {isLocationQuery && searchResults.length === 0 && !isSearching && query.trim().length >= 3 && (
             <div className="px-3 py-4 text-center">
-              <div className="text-sm text-gray-500 mb-2">
-                <svg className="w-8 h-8 mx-auto mb-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="text-sm text-neutral-500 mb-2">
+                <svg className="w-8 h-8 mx-auto mb-2 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
                 No campsites found near "{query}"
               </div>
-              <div className="text-xs text-gray-400">
+              <div className="text-xs text-neutral-400">
                 {map?.getCenter() && map.getCenter().lat !== 54.5260 ? (
                   <span>Campsite data may be temporarily unavailable. The map has been zoomed to your searched location.</span>
                 ) : (
@@ -618,20 +618,20 @@ const CampsiteSearchInner: React.FC<CampsiteSearchProps> = ({
           {/* Search history */}
           {query.trim().length < 2 && searchHistory.length > 0 && (
             <div>
-              <div className="px-3 py-2 text-xs font-medium text-gray-500 border-b border-gray-100">
+              <div className="px-3 py-2 text-xs font-medium text-neutral-500 border-b border-neutral-100">
                 Recent Searches
               </div>
               {searchHistory.slice(0, 5).map((historyItem, _index) => (
                 <button
                   key={historyItem}
                   onClick={() => setQuery(historyItem)}
-                  className="w-full px-3 py-2 text-left hover:bg-gray-50 focus:bg-gray-50 border-b border-gray-50 last:border-b-0"
+                  className="w-full px-3 py-2 text-left hover:bg-neutral-50 focus:bg-neutral-50 border-b border-neutral-50 last:border-b-0"
                 >
                   <div className="flex items-center">
-                    <svg className="h-3 w-3 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="h-3 w-3 text-neutral-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    <span className="text-sm text-gray-700">{historyItem}</span>
+                    <span className="text-sm text-neutral-700">{historyItem}</span>
                   </div>
                 </button>
               ))}

@@ -552,8 +552,8 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
           className="fixed top-24 right-4 z-50 bg-white shadow-lg rounded-lg px-4 py-2 flex items-center space-x-2 animate-fade-in"
           style={{ pointerEvents: 'none' }}
         >
-          <div className="animate-spin h-4 w-4 border-2 border-blue-500 border-t-transparent rounded-full"></div>
-          <span className="text-sm text-gray-700">Loading campsites...</span>
+          <div className="animate-spin h-4 w-4 border-2 border-primary-500 border-t-transparent rounded-full"></div>
+          <span className="text-sm text-neutral-700">Loading campsites...</span>
         </div>
       )}
 
@@ -653,20 +653,20 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
             <Popup>
               {isCluster ? (
                 <div className="p-3">
-                  <h3 className="font-medium text-gray-900 text-sm mb-2">
+                  <h3 className="font-medium text-neutral-900 text-sm mb-2">
                     {(campsite as ClusteredCampsite).clusterCount} Campsites
                   </h3>
-                  <p className="text-xs text-gray-600 mb-2">
+                  <p className="text-xs text-neutral-600 mb-2">
                     Click to zoom in and see individual campsites
                   </p>
                   <div className="space-y-1">
                     {(campsite as ClusteredCampsite).clusterCampsites?.slice(0, 3).map((c: Campsite, idx: number) => (
-                      <div key={idx} className="text-xs text-gray-700">
+                      <div key={idx} className="text-xs text-neutral-700">
                         • {c.name || c.type.replace('_', ' ')}
                       </div>
                     ))}
                     {(campsite as ClusteredCampsite).clusterCampsites && (campsite as ClusteredCampsite).clusterCampsites!.length > 3 && (
-                      <div className="text-xs text-gray-500">
+                      <div className="text-xs text-neutral-500">
                         and {(campsite as ClusteredCampsite).clusterCampsites!.length - 3} more...
                       </div>
                     )}
@@ -676,7 +676,7 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
                 <div className="campsite-popup-content p-3 min-w-0">
                   {/* Enhanced popup content same as before */}
                   <div className="flex items-start justify-between mb-2">
-                    <h3 className="font-medium text-gray-900 text-sm leading-tight pr-2">
+                    <h3 className="font-medium text-neutral-900 text-sm leading-tight pr-2">
                       {campsite.name || `${campsite.type.replace('_', ' ')} #${campsite.id}`}
                     </h3>
                     <span className={`px-2 py-1 rounded text-xs font-medium whitespace-nowrap ${
@@ -689,34 +689,34 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
                   </div>
 
                   <div className="mb-2">
-                    <div className="text-xs text-gray-600 capitalize mb-1">
+                    <div className="text-xs text-neutral-600 capitalize mb-1">
                       {campsite.type.replace('_', ' ')}
                     </div>
 
                     {campsite.address && (
-                      <div className="text-xs text-gray-700 mb-1">📍 {campsite.address}</div>
+                      <div className="text-xs text-neutral-700 mb-1">📍 {campsite.address}</div>
                     )}
                     {campsite.phone && (
-                      <div className="text-xs text-gray-700 mb-1">📞 {campsite.phone}</div>
+                      <div className="text-xs text-neutral-700 mb-1">📞 {campsite.phone}</div>
                     )}
                     {campsite.website && (
-                      <div className="text-xs text-gray-700 mb-1">
+                      <div className="text-xs text-neutral-700 mb-1">
                         🌐 <a href={campsite.website} target="_blank" rel="noopener noreferrer"
-                           className="text-blue-600 hover:text-blue-800 underline">Website</a>
+                           className="text-primary-600 hover:text-primary-800 underline">Website</a>
                       </div>
                     )}
                     {campsite.opening_hours && (
-                      <div className="text-xs text-gray-700 mb-1">🕒 {campsite.opening_hours}</div>
+                      <div className="text-xs text-neutral-700 mb-1">🕒 {campsite.opening_hours}</div>
                     )}
                   </div>
 
                   {/* Amenities */}
                   {campsite.amenities && Object.keys(campsite.amenities).length > 0 && (
                     <div className="mb-2">
-                      <div className="text-xs font-medium text-gray-900 mb-1">Amenities:</div>
+                      <div className="text-xs font-medium text-neutral-900 mb-1">Amenities:</div>
                       <div className="flex flex-wrap gap-1">
                         {Object.entries(campsite.amenities).filter(([_, available]) => available).map(([amenity]) => (
-                          <span key={amenity} className="px-1.5 py-0.5 bg-blue-100 text-blue-800 text-xs rounded">
+                          <span key={amenity} className="px-1.5 py-0.5 bg-primary-100 text-primary-800 text-xs rounded">
                             {amenity.replace(/_/g, ' ')}
                           </span>
                         ))}
@@ -735,7 +735,7 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
                   )}
 
                   {/* Add to Route button */}
-                  <div className="mt-3 pt-2 border-t border-gray-200">
+                  <div className="mt-3 pt-2 border-t border-neutral-200">
                     {isCampsiteInRoute(campsite) ? (
                       <div className="flex items-center justify-center py-2 px-3 bg-green-50 text-green-700 rounded-md text-xs font-medium">
                         <svg className="w-4 h-4 mr-1.5" fill="currentColor" viewBox="0 0 20 20">
@@ -746,7 +746,7 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
                     ) : (
                       <button
                         onClick={(e) => handleAddToRoute(campsite, e)}
-                        className="w-full flex items-center justify-center py-2 px-3 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-sm font-medium transition-colors"
+                        className="w-full flex items-center justify-center py-2 px-3 bg-primary-600 hover:bg-primary-700 text-white rounded-md text-sm font-medium transition-colors"
                       >
                         <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -756,7 +756,7 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
                     )}
                   </div>
 
-                  <div className="mt-2 text-xs text-gray-500">
+                  <div className="mt-2 text-xs text-neutral-500">
                     Data from {campsite.source} • ID: {campsite.osmId || campsite.id}
                   </div>
                 </div>

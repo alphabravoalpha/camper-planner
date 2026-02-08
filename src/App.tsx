@@ -34,7 +34,7 @@ const RootLayout: React.FC = () => {
 
   return (
     <ErrorBoundary>
-      <div className="h-screen flex flex-col bg-gray-50">
+      <div className="h-screen flex flex-col bg-neutral-50">
         {/* Onboarding Flow - Show for first-time users */}
         {showOnboarding && location.pathname === '/' && (
           <OnboardingFlow
@@ -51,7 +51,7 @@ const RootLayout: React.FC = () => {
           <div className="absolute top-20 left-1/2 transform -translate-x-1/2 z-50">
             <div className="bg-white shadow-lg rounded-lg p-3 flex items-center space-x-2">
               <LoadingSpinner size="sm" />
-              <span className="text-sm text-gray-600">Loading...</span>
+              <span className="text-sm text-neutral-600">Loading...</span>
             </div>
           </div>
         )}

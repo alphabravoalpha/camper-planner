@@ -28,7 +28,7 @@ const WaypointListItem: React.FC<WaypointListItemProps> = ({
       case 'end':
         return 'text-red-600 bg-red-50 border-red-200';
       default:
-        return 'text-blue-600 bg-blue-50 border-blue-200';
+        return 'text-primary-600 bg-primary-50 border-primary-200';
     }
   };
 
@@ -47,7 +47,7 @@ const WaypointListItem: React.FC<WaypointListItemProps> = ({
     <div
       className={cn(
         'p-3 border rounded-lg cursor-pointer transition-all',
-        isSelected ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'
+        isSelected ? 'border-primary-500 bg-primary-50' : 'border-neutral-200 hover:border-neutral-300'
       )}
       onClick={() => onSelect(waypoint.id)}
     >
@@ -62,10 +62,10 @@ const WaypointListItem: React.FC<WaypointListItemProps> = ({
             {getTypeIcon(waypoint.type)}
           </div>
           <div className="flex-1">
-            <div className="font-medium text-gray-900 text-sm">
+            <div className="font-medium text-neutral-900 text-sm">
               {waypoint.name}
             </div>
-            <div className="text-xs text-gray-500 font-mono">
+            <div className="text-xs text-neutral-500 font-mono">
               {waypoint.lat.toFixed(4)}, {waypoint.lng.toFixed(4)}
             </div>
           </div>
@@ -93,15 +93,15 @@ const WaypointSidebar: React.FC = () => {
 
   if (waypoints.length === 0) {
     return (
-      <div className="p-4 text-center text-gray-500">
+      <div className="p-4 text-center text-neutral-500">
         <div className="mb-2">
-          <svg className="w-12 h-12 mx-auto text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-12 h-12 mx-auto text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
           </svg>
         </div>
         <p className="text-sm">No waypoints added yet</p>
-        <p className="text-xs text-gray-400 mt-1">Click on the map to add waypoints</p>
+        <p className="text-xs text-neutral-400 mt-1">Click on the map to add waypoints</p>
       </div>
     );
   }
@@ -109,7 +109,7 @@ const WaypointSidebar: React.FC = () => {
   return (
     <div className="p-4">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-semibold text-gray-900">
+        <h3 className="font-semibold text-neutral-900">
           Waypoints ({waypoints.length})
         </h3>
         <button
@@ -134,8 +134,8 @@ const WaypointSidebar: React.FC = () => {
       </div>
 
       {waypoints.length >= 2 && (
-        <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-          <div className="flex items-center text-blue-800 text-sm">
+        <div className="mt-4 p-3 bg-primary-50 rounded-lg">
+          <div className="flex items-center text-primary-800 text-sm">
             <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>

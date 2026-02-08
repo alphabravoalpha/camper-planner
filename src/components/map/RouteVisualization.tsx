@@ -16,7 +16,7 @@ const createDirectionArrowIcon = (rotation: number): DivIcon => {
     html: `
       <div class="relative w-6 h-6 flex items-center justify-center">
         <div
-          class="w-4 h-4 bg-blue-500 text-white flex items-center justify-center rounded-full shadow-md transform transition-transform"
+          class="w-4 h-4 bg-primary-500 text-white flex items-center justify-center rounded-full shadow-md transform transition-transform"
           style="transform: rotate(${rotation}deg)"
         >
           <svg class="w-2 h-2" fill="currentColor" viewBox="0 0 12 12">
@@ -71,9 +71,9 @@ const createRouteInfoIcon = (distance: number, duration: number, isHighlighted =
   return L.divIcon({
     html: `
       <div class="route-info-label ${isHighlighted ? 'highlighted' : ''}">
-        <div class="bg-white border-2 border-blue-500 rounded-lg px-2 py-1 shadow-lg text-xs font-medium text-gray-800">
-          <div class="text-blue-600 font-semibold">${distanceText}</div>
-          <div class="text-gray-600">${durationText}</div>
+        <div class="bg-white border-2 border-primary-500 rounded-lg px-2 py-1 shadow-lg text-xs font-medium text-neutral-800">
+          <div class="text-primary-600 font-semibold">${distanceText}</div>
+          <div class="text-neutral-600">${durationText}</div>
         </div>
       </div>
     `,
@@ -140,7 +140,7 @@ const WaypointNumber: React.FC<WaypointNumberProps> = ({ waypoint, index, total 
   const getWaypointStyle = () => {
     if (waypoint.type === 'start') return 'bg-green-500 border-green-600';
     if (waypoint.type === 'end') return 'bg-red-500 border-red-600';
-    return 'bg-blue-500 border-blue-600';
+    return 'bg-primary-500 border-primary-600';
   };
 
   const handleSaveEdit = useCallback(() => {
@@ -223,9 +223,9 @@ const WaypointNumber: React.FC<WaypointNumberProps> = ({ waypoint, index, total 
         <!-- Route progress indicator -->
         ${total > 1 ? `
           <div class="absolute -bottom-3 left-1/2 transform -translate-x-1/2">
-            <div class="w-2 h-4 bg-gray-300 rounded-full border border-gray-400">
+            <div class="w-2 h-4 bg-neutral-300 rounded-full border border-neutral-400">
               <div
-                class="w-full bg-gradient-to-t from-green-500 to-blue-500 rounded-full transition-all duration-500"
+                class="w-full bg-gradient-to-t from-green-500 to-primary-500 rounded-full transition-all duration-500"
                 style="height: ${((index + 1) / total) * 100}%"
               ></div>
             </div>
@@ -234,7 +234,7 @@ const WaypointNumber: React.FC<WaypointNumberProps> = ({ waypoint, index, total 
 
         <!-- Waypoint name label -->
         <div class="absolute top-12 left-1/2 transform -translate-x-1/2 whitespace-nowrap">
-          <div class="bg-white bg-opacity-90 text-gray-800 text-xs font-medium px-2 py-1 rounded shadow-md border">
+          <div class="bg-white bg-opacity-90 text-neutral-800 text-xs font-medium px-2 py-1 rounded shadow-md border">
             ${waypoint.name || `Stop ${index + 1}`}
           </div>
         </div>
@@ -271,7 +271,7 @@ const WaypointNumber: React.FC<WaypointNumberProps> = ({ waypoint, index, total 
                   e.preventDefault();
                   setIsEditing(true);
                 }}
-                className="bg-blue-600 text-white hover:bg-blue-700 px-2 py-1 rounded text-xs font-medium transition-colors"
+                className="bg-primary-600 text-white hover:bg-primary-700 px-2 py-1 rounded text-xs font-medium transition-colors"
                 title="Edit waypoint"
               >
                 Edit
@@ -283,7 +283,7 @@ const WaypointNumber: React.FC<WaypointNumberProps> = ({ waypoint, index, total 
             /* Edit Mode */
             <div className="space-y-3">
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">
+                <label className="block text-xs font-medium text-neutral-700 mb-1">
                   Name
                 </label>
                 <input
@@ -292,14 +292,14 @@ const WaypointNumber: React.FC<WaypointNumberProps> = ({ waypoint, index, total 
                   onChange={(e) => setEditedName(e.target.value)}
                   onClick={(e) => e.stopPropagation()}
                   onFocus={(e) => e.stopPropagation()}
-                  className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-2 py-1 text-sm border border-neutral-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
                   placeholder="Enter waypoint name"
                   autoFocus
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">
+                <label className="block text-xs font-medium text-neutral-700 mb-1">
                   Notes
                 </label>
                 <textarea
@@ -307,13 +307,13 @@ const WaypointNumber: React.FC<WaypointNumberProps> = ({ waypoint, index, total 
                   onChange={(e) => setEditedNotes(e.target.value)}
                   onClick={(e) => e.stopPropagation()}
                   onFocus={(e) => e.stopPropagation()}
-                  className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                  className="w-full px-2 py-1 text-sm border border-neutral-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-500 resize-none"
                   rows={3}
                   placeholder="Add notes about this waypoint..."
                 />
               </div>
 
-              <div className="flex space-x-2 pt-2 border-t border-gray-200">
+              <div className="flex space-x-2 pt-2 border-t border-neutral-200">
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
@@ -330,7 +330,7 @@ const WaypointNumber: React.FC<WaypointNumberProps> = ({ waypoint, index, total 
                     e.preventDefault();
                     handleCancelEdit();
                   }}
-                  className="flex-1 px-3 py-1 text-xs bg-gray-600 text-white rounded hover:bg-gray-700 transition-colors"
+                  className="flex-1 px-3 py-1 text-xs bg-neutral-600 text-white rounded hover:bg-neutral-700 transition-colors"
                 >
                   Cancel
                 </button>
@@ -367,20 +367,20 @@ const WaypointNumber: React.FC<WaypointNumberProps> = ({ waypoint, index, total 
               )}
 
               {waypoint.notes && (
-                <div className="mt-2 p-2 bg-gray-50 rounded text-xs">
-                  <div className="font-medium text-gray-700 mb-1">Notes:</div>
-                  <div className="text-gray-600">{waypoint.notes}</div>
+                <div className="mt-2 p-2 bg-neutral-50 rounded text-xs">
+                  <div className="font-medium text-neutral-700 mb-1">Notes:</div>
+                  <div className="text-neutral-600">{waypoint.notes}</div>
                 </div>
               )}
 
-              <div className="flex space-x-2 pt-2 border-t border-gray-200">
+              <div className="flex space-x-2 pt-2 border-t border-neutral-200">
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
                     e.preventDefault();
                     setIsEditing(true);
                   }}
-                  className="flex-1 px-3 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+                  className="flex-1 px-3 py-1 text-xs bg-primary-600 text-white rounded hover:bg-primary-700 transition-colors"
                 >
                   Edit
                 </button>
@@ -506,15 +506,15 @@ const CalculatedRouteDisplay: React.FC<{ route: RouteResponse }> = ({ route }) =
                     </div>
                     {segment.steps && segment.steps.length > 0 && (
                       <div className="mt-2">
-                        <div className="text-gray-600 font-medium">Instructions:</div>
+                        <div className="text-neutral-600 font-medium">Instructions:</div>
                         <div className="max-h-24 overflow-y-auto">
                           {segment.steps.slice(0, 3).map((step, stepIndex) => (
-                            <div key={stepIndex} className="text-xs text-gray-700 mt-1">
+                            <div key={stepIndex} className="text-xs text-neutral-700 mt-1">
                               • {step.instruction}
                             </div>
                           ))}
                           {segment.steps.length > 3 && (
-                            <div className="text-xs text-gray-500 mt-1">
+                            <div className="text-xs text-neutral-500 mt-1">
                               ... and {segment.steps.length - 3} more steps
                             </div>
                           )}
@@ -563,7 +563,7 @@ const CalculatedRouteDisplay: React.FC<{ route: RouteResponse }> = ({ route }) =
                         {restriction.severity}
                       </span>
                     </div>
-                    <div className="mt-2 text-gray-600">
+                    <div className="mt-2 text-neutral-600">
                       {restriction.severity === 'error'
                         ? 'Vehicle cannot pass this section'
                         : 'Caution: Check vehicle dimensions'

@@ -34,7 +34,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({
           <aside
             className={cn(
               'hidden lg:flex lg:flex-col lg:w-80 lg:fixed lg:inset-y-0 lg:pt-16',
-              'bg-white border-r border-gray-200',
+              'bg-white border-r border-neutral-200',
               'z-30'
             )}
           >

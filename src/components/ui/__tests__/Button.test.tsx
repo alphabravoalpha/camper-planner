@@ -13,25 +13,25 @@ describe('Button', () => {
   it('applies primary variant by default', () => {
     render(<Button>Primary</Button>);
     const button = screen.getByRole('button');
-    expect(button).toHaveClass('bg-blue-600');
+    expect(button).toHaveClass('bg-primary-600');
   });
 
   it('applies secondary variant correctly', () => {
     render(<Button variant="secondary">Secondary</Button>);
     const button = screen.getByRole('button');
-    expect(button).toHaveClass('bg-gray-100');
+    expect(button).toHaveClass('bg-neutral-100');
   });
 
   it('applies medium size by default', () => {
     render(<Button>Medium</Button>);
     const button = screen.getByRole('button');
-    expect(button).toHaveClass('h-10');
+    expect(button).toHaveClass('h-11');
   });
 
   it('applies large size correctly', () => {
     render(<Button size="lg">Large</Button>);
     const button = screen.getByRole('button');
-    expect(button).toHaveClass('h-12');
+    expect(button).toHaveClass('h-13');
   });
 
   it('shows loading state correctly', () => {

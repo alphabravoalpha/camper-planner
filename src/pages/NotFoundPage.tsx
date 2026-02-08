@@ -10,13 +10,13 @@ const NotFoundPage: React.FC = () => {
   const { } = useTranslation();
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-neutral-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10 text-center">
           {/* 404 Illustration */}
-          <div className="mx-auto w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-6">
+          <div className="mx-auto w-24 h-24 bg-neutral-100 rounded-full flex items-center justify-center mb-6">
             <svg
-              className="w-12 h-12 text-gray-400"
+              className="w-12 h-12 text-neutral-400"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -31,11 +31,11 @@ const NotFoundPage: React.FC = () => {
           </div>
 
           {/* Error Message */}
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">404</h1>
-          <h2 className="text-xl font-semibold text-gray-700 mb-4">
+          <h1 className="text-4xl font-bold text-neutral-900 mb-2">404</h1>
+          <h2 className="text-xl font-semibold text-neutral-700 mb-4">
             Page Not Found
           </h2>
-          <p className="text-gray-500 mb-8">
+          <p className="text-neutral-500 mb-8">
             The page you're looking for doesn't exist or has been moved.
           </p>
 
@@ -62,14 +62,14 @@ const NotFoundPage: React.FC = () => {
           </div>
 
           {/* Additional Help */}
-          <div className="mt-8 text-sm text-gray-500">
+          <div className="mt-8 text-sm text-neutral-500">
             <p>
               Having trouble? Check our{' '}
-              <Link to="/help" className="text-blue-600 hover:text-blue-500 underline">
+              <Link to="/help" className="text-primary-600 hover:text-primary-500 underline">
                 help documentation
               </Link>{' '}
               or go back to the{' '}
-              <Link to="/" className="text-blue-600 hover:text-blue-500 underline">
+              <Link to="/" className="text-primary-600 hover:text-primary-500 underline">
                 trip planner
               </Link>
               .

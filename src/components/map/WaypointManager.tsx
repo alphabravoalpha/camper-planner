@@ -16,7 +16,7 @@ import { useKeyboardShortcuts } from '../../hooks/useKeyboardShortcuts';
 const createWaypointIcon = (type: 'start' | 'waypoint' | 'end', index: number, isSelected = false, isDragging = false, isMobile = false): DivIcon => {
   const iconColors = {
     start: 'bg-green-500 border-green-600 text-white shadow-green-200',
-    waypoint: 'bg-blue-500 border-blue-600 text-white shadow-blue-200',
+    waypoint: 'bg-primary-500 border-primary-600 text-white shadow-primary-200',
     end: 'bg-red-500 border-red-600 text-white shadow-red-200'
   };
 
@@ -304,7 +304,7 @@ const WaypointMarker: React.FC<WaypointMarkerProps> = ({
                   className={cn(
                     'px-2 py-1 rounded text-xs font-semibold',
                     waypoint.type === 'start' && 'bg-green-100 text-green-800',
-                    waypoint.type === 'waypoint' && 'bg-blue-100 text-blue-800',
+                    waypoint.type === 'waypoint' && 'bg-primary-100 text-primary-800',
                     waypoint.type === 'end' && 'bg-red-100 text-red-800'
                   )}
                 >
@@ -312,7 +312,7 @@ const WaypointMarker: React.FC<WaypointMarkerProps> = ({
                    waypoint.type === 'end' ? 'END' :
                    `WAYPOINT ${index + 1}`}
                 </span>
-                <span className="text-xs text-gray-500">
+                <span className="text-xs text-neutral-500">
                   Drag to move
                 </span>
               </div>
@@ -322,7 +322,7 @@ const WaypointMarker: React.FC<WaypointMarkerProps> = ({
                   e.preventDefault();
                   setIsEditing(!isEditing);
                 }}
-                className="bg-blue-600 text-white hover:bg-blue-700 px-3 py-2 rounded text-sm font-bold transition-colors flex items-center space-x-2 border-2 border-blue-800 shadow-lg"
+                className="bg-primary-600 text-white hover:bg-primary-700 px-3 py-2 rounded text-sm font-bold transition-colors flex items-center space-x-2 border-2 border-primary-800 shadow-lg"
                 title="Edit waypoint"
                 aria-label="Edit waypoint"
                 style={{ minWidth: '80px', zIndex: 1000 }}
@@ -338,7 +338,7 @@ const WaypointMarker: React.FC<WaypointMarkerProps> = ({
               /* Edit Mode */
               <>
                 <div className="mb-3">
-                  <label className="block text-xs font-medium text-gray-700 mb-1">
+                  <label className="block text-xs font-medium text-neutral-700 mb-1">
                     Name
                   </label>
                   <input
@@ -347,14 +347,14 @@ const WaypointMarker: React.FC<WaypointMarkerProps> = ({
                     onChange={(e) => setEditedName(e.target.value)}
                     onClick={(e) => e.stopPropagation()}
                     onFocus={(e) => e.stopPropagation()}
-                    className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-2 py-1 text-sm border border-neutral-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
                     placeholder="Enter waypoint name"
                     autoFocus
                   />
                 </div>
 
                 <div className="mb-3">
-                  <label className="block text-xs font-medium text-gray-700 mb-1">
+                  <label className="block text-xs font-medium text-neutral-700 mb-1">
                     Notes
                   </label>
                   <textarea
@@ -362,13 +362,13 @@ const WaypointMarker: React.FC<WaypointMarkerProps> = ({
                     onChange={(e) => setEditedNotes(e.target.value)}
                     onClick={(e) => e.stopPropagation()}
                     onFocus={(e) => e.stopPropagation()}
-                    className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                    className="w-full px-2 py-1 text-sm border border-neutral-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-500 resize-none"
                     rows={3}
                     placeholder="Add notes about this waypoint..."
                   />
                 </div>
 
-                <div className="flex space-x-2 pt-2 border-t border-gray-200">
+                <div className="flex space-x-2 pt-2 border-t border-neutral-200">
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
@@ -385,7 +385,7 @@ const WaypointMarker: React.FC<WaypointMarkerProps> = ({
                       e.preventDefault();
                       handleCancelEdit();
                     }}
-                    className="flex-1 px-3 py-1 text-xs bg-gray-600 text-white rounded hover:bg-gray-700 transition-colors"
+                    className="flex-1 px-3 py-1 text-xs bg-neutral-600 text-white rounded hover:bg-neutral-700 transition-colors"
                   >
                     Cancel
                   </button>
@@ -395,34 +395,34 @@ const WaypointMarker: React.FC<WaypointMarkerProps> = ({
               /* View Mode */
               <>
                 <div className="mb-3">
-                  <div className="text-sm font-medium text-gray-900 mb-1">
+                  <div className="text-sm font-medium text-neutral-900 mb-1">
                     {waypoint.name}
                   </div>
                   {waypoint.notes && (
-                    <div className="text-xs text-gray-600 bg-gray-50 rounded p-2">
+                    <div className="text-xs text-neutral-600 bg-neutral-50 rounded p-2">
                       {waypoint.notes}
                     </div>
                   )}
                 </div>
 
                 <div className="mb-3">
-                  <label className="block text-xs font-medium text-gray-700 mb-1">
+                  <label className="block text-xs font-medium text-neutral-700 mb-1">
                     Coordinates
                   </label>
-                  <div className="text-xs text-gray-600 font-mono">
+                  <div className="text-xs text-neutral-600 font-mono">
                     <div>Lat: {waypoint.lat.toFixed(6)}</div>
                     <div>Lng: {waypoint.lng.toFixed(6)}</div>
                   </div>
                 </div>
 
-                <div className="flex space-x-2 pt-2 border-t border-gray-200">
+                <div className="flex space-x-2 pt-2 border-t border-neutral-200">
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
                       e.preventDefault();
                       setIsEditing(true);
                     }}
-                    className="flex-1 px-3 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+                    className="flex-1 px-3 py-1 text-xs bg-primary-600 text-white rounded hover:bg-primary-700 transition-colors"
                   >
                     Edit
                   </button>
@@ -442,7 +442,7 @@ const WaypointMarker: React.FC<WaypointMarkerProps> = ({
                       e.preventDefault();
                       setSelectedWaypoint(null);
                     }}
-                    className="px-3 py-1 text-xs bg-gray-600 text-white rounded hover:bg-gray-700 transition-colors"
+                    className="px-3 py-1 text-xs bg-neutral-600 text-white rounded hover:bg-neutral-700 transition-colors"
                   >
                     Close
                   </button>
@@ -664,7 +664,7 @@ const WaypointManager: React.FC = () => {
       {/* Map Context Menu with fixed positioning */}
       {mapContextMenu.isOpen && (
         <div
-          className="fixed z-[10000] bg-white rounded-lg shadow-lg border border-gray-200 py-1 min-w-[160px]"
+          className="fixed z-[10000] bg-white rounded-lg shadow-lg border border-neutral-200 py-1 min-w-[160px]"
           style={{
             left: mapContextMenu.position.x,
             top: mapContextMenu.position.y,
@@ -676,7 +676,7 @@ const WaypointManager: React.FC = () => {
               handleAddWaypoint(mapContextMenu.coordinates.lat, mapContextMenu.coordinates.lng);
               setMapContextMenu(prev => ({ ...prev, isOpen: false }));
             }}
-            className="w-full px-3 py-2 text-left text-sm hover:bg-gray-100 flex items-center space-x-2"
+            className="w-full px-3 py-2 text-left text-sm hover:bg-neutral-100 flex items-center space-x-2"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />

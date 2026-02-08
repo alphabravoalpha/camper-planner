@@ -152,7 +152,7 @@ const CampsiteMarkers: React.FC<CampsiteMarkersProps> = ({
             <div className="p-3">
               {/* Header */}
               <div className="flex items-start justify-between mb-2">
-                <h3 className="font-medium text-gray-900 text-sm leading-tight">
+                <h3 className="font-medium text-neutral-900 text-sm leading-tight">
                   {campsite.name || `${campsite.type} #${campsite.id}`}
                 </h3>
                 <span className={`px-2 py-1 rounded text-xs font-medium ${
@@ -170,13 +170,13 @@ const CampsiteMarkers: React.FC<CampsiteMarkersProps> = ({
                   {campsite.type === 'campsite' ? '⛺' :
                    campsite.type === 'caravan_site' ? '🚐' : '🅿️'}
                 </span>
-                <span className="text-xs text-gray-600 capitalize">
+                <span className="text-xs text-neutral-600 capitalize">
                   {campsite.type.replace('_', ' ')}
                 </span>
               </div>
 
               {/* Basic info */}
-              <div className="space-y-1 text-xs text-gray-700">
+              <div className="space-y-1 text-xs text-neutral-700">
                 {campsite.address && (
                   <div>📍 {campsite.address}</div>
                 )}
@@ -191,7 +191,7 @@ const CampsiteMarkers: React.FC<CampsiteMarkersProps> = ({
                       href={campsite.website}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-blue-600 hover:text-blue-800 underline"
+                      className="text-primary-600 hover:text-primary-800 underline"
                     >
                       Website
                     </a>
@@ -206,11 +206,11 @@ const CampsiteMarkers: React.FC<CampsiteMarkersProps> = ({
               {/* Amenities */}
               {campsite.amenities && Object.keys(campsite.amenities).length > 0 && (
                 <div className="mt-3">
-                  <div className="text-xs font-medium text-gray-900 mb-1">Amenities:</div>
+                  <div className="text-xs font-medium text-neutral-900 mb-1">Amenities:</div>
                   <div className="flex flex-wrap gap-1">
                     {Object.entries(campsite.amenities).map(([key, value]) =>
                       value === true ? (
-                        <span key={key} className="px-1.5 py-0.5 bg-blue-100 text-blue-800 text-xs rounded">
+                        <span key={key} className="px-1.5 py-0.5 bg-primary-100 text-primary-800 text-xs rounded">
                           {key.replace(/_/g, ' ')}
                         </span>
                       ) : null
@@ -244,7 +244,7 @@ const CampsiteMarkers: React.FC<CampsiteMarkersProps> = ({
               )}
 
               {/* Data source */}
-              <div className="mt-3 pt-2 border-t border-gray-200 text-xs text-gray-500">
+              <div className="mt-3 pt-2 border-t border-neutral-200 text-xs text-neutral-500">
                 Data from {campsite.source} • ID: {campsite.osmId || campsite.id}
               </div>
             </div>
@@ -255,8 +255,8 @@ const CampsiteMarkers: React.FC<CampsiteMarkersProps> = ({
       {/* Loading indicator */}
       {isLoading && (
         <div className="fixed top-4 right-4 bg-white shadow-lg rounded-lg p-3 z-[1000]">
-          <div className="flex items-center space-x-2 text-sm text-gray-700">
-            <div className="animate-spin rounded-full h-4 w-4 border-2 border-blue-600 border-t-transparent"></div>
+          <div className="flex items-center space-x-2 text-sm text-neutral-700">
+            <div className="animate-spin rounded-full h-4 w-4 border-2 border-primary-600 border-t-transparent"></div>
             <span>Loading campsites...</span>
           </div>
         </div>

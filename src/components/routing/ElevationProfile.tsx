@@ -94,12 +94,12 @@ const ElevationProfile: React.FC<ElevationProfileProps> = ({ route, className })
 
   if (!elevationData || !stats) {
     return (
-      <div className={cn('bg-white rounded-lg border border-gray-200 p-6', className)}>
-        <div className="text-center text-gray-500">
-          <svg className="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div className={cn('bg-white rounded-lg border border-neutral-200 p-6', className)}>
+        <div className="text-center text-neutral-500">
+          <svg className="w-12 h-12 mx-auto mb-3 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
           </svg>
-          <h3 className="text-lg font-medium text-gray-900 mb-1">No Elevation Data</h3>
+          <h3 className="text-lg font-medium text-neutral-900 mb-1">No Elevation Data</h3>
           <p>Elevation profile not available for this route</p>
           <p className="text-sm mt-1">Enable elevation in route options to see the profile</p>
         </div>
@@ -132,10 +132,10 @@ const ElevationProfile: React.FC<ElevationProfileProps> = ({ route, className })
   const areaData = pathData + ` L ${xScale(elevationData[elevationData.length - 1].distance)} ${CHART_HEIGHT} L 0 ${CHART_HEIGHT} Z`;
 
   return (
-    <div className={cn('bg-white rounded-lg border border-gray-200', className)}>
-      <div className="p-4 border-b border-gray-200">
-        <h3 className="text-lg font-semibold text-gray-900">Elevation Profile</h3>
-        <p className="text-sm text-gray-600 mt-1">{stats.totalDistance} km route</p>
+    <div className={cn('bg-white rounded-lg border border-neutral-200', className)}>
+      <div className="p-4 border-b border-neutral-200">
+        <h3 className="text-lg font-semibold text-neutral-900">Elevation Profile</h3>
+        <p className="text-sm text-neutral-600 mt-1">{stats.totalDistance} km route</p>
       </div>
 
       <div className="p-4">
@@ -160,7 +160,7 @@ const ElevationProfile: React.FC<ElevationProfileProps> = ({ route, className })
         </div>
 
         {/* Elevation Chart */}
-        <div className="bg-gray-50 rounded-lg p-4 overflow-x-auto">
+        <div className="bg-neutral-50 rounded-lg p-4 overflow-x-auto">
           <svg
             width={SVG_WIDTH}
             height={SVG_HEIGHT}

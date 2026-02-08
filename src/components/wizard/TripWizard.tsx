@@ -152,21 +152,21 @@ const TripWizard: React.FC = () => {
   if (!wizard.wizardOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[9999] bg-black/50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden">
+    <div className="fixed inset-0 z-[9999] bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
+      <div className="bg-white rounded-3xl shadow-2xl ring-1 ring-black/5 w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
-          <h2 className="text-xl font-bold text-gray-900">Plan Your Trip</h2>
+        <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-100">
+          <h2 className="text-xl font-bold text-neutral-900">Plan Your Trip</h2>
           <button
             onClick={() => { wizard.closeWizard(); wizard.resetWizard(); }}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            className="p-2 hover:bg-neutral-100 rounded-xl transition-all duration-200"
           >
-            <X className="w-5 h-5 text-gray-500" />
+            <X className="w-5 h-5 text-neutral-500" />
           </button>
         </div>
 
         {/* Progress Bar */}
-        <div className="px-6 py-3 border-b border-gray-100">
+        <div className="px-6 py-3 border-b border-neutral-100">
           <div className="flex items-center gap-2">
             {visibleSteps.map((step, index) => {
               const Icon = step.icon;
@@ -176,16 +176,16 @@ const TripWizard: React.FC = () => {
               return (
                 <React.Fragment key={step.id}>
                   {index > 0 && (
-                    <div className={`flex-1 h-0.5 ${isCompleted ? 'bg-blue-500' : 'bg-gray-200'}`} />
+                    <div className={`flex-1 h-0.5 ${isCompleted ? 'bg-primary-500' : 'bg-neutral-200'}`} />
                   )}
                   <button
                     onClick={() => index < wizard.wizardStep && wizard.setStep(index)}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${
                       isActive
-                        ? 'bg-blue-100 text-blue-700'
+                        ? 'bg-primary-100 text-primary-700 ring-2 ring-primary-200'
                         : isCompleted
-                        ? 'bg-blue-50 text-blue-600 hover:bg-blue-100 cursor-pointer'
-                        : 'text-gray-400'
+                        ? 'bg-primary-50 text-primary-600 hover:bg-primary-100 cursor-pointer'
+                        : 'text-neutral-400'
                     }`}
                     disabled={index > wizard.wizardStep}
                   >
@@ -213,11 +213,11 @@ const TripWizard: React.FC = () => {
 
         {/* Footer */}
         {currentStepId !== 'itinerary' && (
-          <div className="flex items-center justify-between px-6 py-4 border-t border-gray-200">
+          <div className="flex items-center justify-between px-6 py-4 border-t border-neutral-100">
             <button
               onClick={() => wizard.prevStep()}
               disabled={isFirstStep}
-              className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-800 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+              className="flex items-center gap-2 px-4 py-2 text-neutral-600 hover:text-neutral-800 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
             >
               <ChevronLeft className="w-4 h-4" />
               Back
@@ -225,7 +225,7 @@ const TripWizard: React.FC = () => {
             <button
               onClick={handleNext}
               disabled={!canProceed}
-              className="flex items-center gap-2 px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+              className="flex items-center gap-2 px-6 py-2.5 bg-accent-500 text-white rounded-xl hover:bg-accent-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-semibold shadow-sm hover:shadow-medium active:scale-[0.97]"
             >
               {visibleSteps[wizard.wizardStep + 1]?.id === 'itinerary' ? 'Generate Itinerary' : 'Next'}
               <ChevronRight className="w-4 h-4" />
@@ -314,14 +314,14 @@ const StepStartEnd: React.FC = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-1">Where are you going?</h3>
-        <p className="text-sm text-gray-500">Enter your start and end locations for the trip.</p>
+        <h3 className="text-lg font-semibold text-neutral-900 mb-1">Where are you going?</h3>
+        <p className="text-sm text-neutral-500">Enter your start and end locations for the trip.</p>
       </div>
 
       <div className="space-y-4">
         {/* Start Location */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-neutral-700 mb-1">
             <MapPin className="w-4 h-4 inline mr-1 text-green-600" />
             Starting from
           </label>
@@ -331,17 +331,17 @@ const StepStartEnd: React.FC = () => {
               value={startQuery}
               onChange={(e) => handleStartSearch(e.target.value)}
               placeholder="e.g. Edinburgh, Scotland"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base"
+              className="w-full px-4 py-3 border-2 border-neutral-200 rounded-xl focus:ring-2 focus:ring-primary-200 focus:border-primary-500 text-base"
             />
             {searchingStart && (
-              <Loader2 className="absolute right-3 top-3.5 w-5 h-5 text-gray-400 animate-spin" />
+              <Loader2 className="absolute right-3 top-3.5 w-5 h-5 text-neutral-400 animate-spin" />
             )}
             {start && (
               <Check className="absolute right-3 top-3.5 w-5 h-5 text-green-500" />
             )}
           </div>
           {startResults.length > 0 && !start && (
-            <div className="mt-1 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
+            <div className="mt-1 bg-white rounded-xl shadow-medium ring-1 ring-black/5 overflow-hidden">
               {startResults.map((result: any) => (
                 <button
                   key={result.place_id}
@@ -354,7 +354,7 @@ const StepStartEnd: React.FC = () => {
                     setStartQuery(result.display_name.split(',').slice(0, 2).join(',').trim());
                     setStartResults([]);
                   }}
-                  className="w-full text-left px-4 py-2.5 hover:bg-blue-50 border-b border-gray-100 last:border-b-0 text-sm"
+                  className="w-full text-left px-4 py-2.5 hover:bg-primary-50 border-b border-neutral-100 last:border-b-0 text-sm"
                 >
                   {result.display_name}
                 </button>
@@ -364,7 +364,7 @@ const StepStartEnd: React.FC = () => {
           {start && (
             <button
               onClick={() => { setStart(null); setStartQuery(''); }}
-              className="text-xs text-blue-600 hover:text-blue-700 mt-1"
+              className="text-xs text-primary-600 hover:text-primary-700 mt-1"
             >
               Change
             </button>
@@ -375,16 +375,16 @@ const StepStartEnd: React.FC = () => {
         <div className="flex justify-center">
           <button
             onClick={handleSwap}
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+            className="p-2 hover:bg-neutral-100 rounded-full transition-colors"
             title="Swap start and end"
           >
-            <ArrowLeftRight className="w-5 h-5 text-gray-400" />
+            <ArrowLeftRight className="w-5 h-5 text-neutral-400" />
           </button>
         </div>
 
         {/* End Location */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-neutral-700 mb-1">
             <MapPin className="w-4 h-4 inline mr-1 text-red-500" />
             Going to
           </label>
@@ -394,17 +394,17 @@ const StepStartEnd: React.FC = () => {
               value={endQuery}
               onChange={(e) => handleEndSearch(e.target.value)}
               placeholder="e.g. Elba, Italy"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base"
+              className="w-full px-4 py-3 border-2 border-neutral-200 rounded-xl focus:ring-2 focus:ring-primary-200 focus:border-primary-500 text-base"
             />
             {searchingEnd && (
-              <Loader2 className="absolute right-3 top-3.5 w-5 h-5 text-gray-400 animate-spin" />
+              <Loader2 className="absolute right-3 top-3.5 w-5 h-5 text-neutral-400 animate-spin" />
             )}
             {end && (
               <Check className="absolute right-3 top-3.5 w-5 h-5 text-green-500" />
             )}
           </div>
           {endResults.length > 0 && !end && (
-            <div className="mt-1 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
+            <div className="mt-1 bg-white rounded-xl shadow-medium ring-1 ring-black/5 overflow-hidden">
               {endResults.map((result: any) => (
                 <button
                   key={result.place_id}
@@ -417,7 +417,7 @@ const StepStartEnd: React.FC = () => {
                     setEndQuery(result.display_name.split(',').slice(0, 2).join(',').trim());
                     setEndResults([]);
                   }}
-                  className="w-full text-left px-4 py-2.5 hover:bg-blue-50 border-b border-gray-100 last:border-b-0 text-sm"
+                  className="w-full text-left px-4 py-2.5 hover:bg-primary-50 border-b border-neutral-100 last:border-b-0 text-sm"
                 >
                   {result.display_name}
                 </button>
@@ -427,7 +427,7 @@ const StepStartEnd: React.FC = () => {
           {end && (
             <button
               onClick={() => { setEnd(null); setEndQuery(''); }}
-              className="text-xs text-blue-600 hover:text-blue-700 mt-1"
+              className="text-xs text-primary-600 hover:text-primary-700 mt-1"
             >
               Change
             </button>
@@ -445,10 +445,10 @@ const StepStartEnd: React.FC = () => {
 
       {/* Summary */}
       {start && end && (
-        <div className="bg-blue-50 rounded-lg p-4 text-sm text-blue-800">
+        <div className="bg-primary-50 rounded-xl p-4 text-sm text-primary-800">
           <strong>{start.name}</strong> → <strong>{end.name}</strong>
           <br />
-          <span className="text-blue-600">
+          <span className="text-primary-600">
             Approx. {Math.round(
               6371 * 2 * Math.atan2(
                 Math.sqrt(
@@ -490,29 +490,29 @@ const StepDates: React.FC = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-1">When are you going?</h3>
-        <p className="text-sm text-gray-500">Set your departure date. End date is optional.</p>
+        <h3 className="text-lg font-semibold text-neutral-900 mb-1">When are you going?</h3>
+        <p className="text-sm text-neutral-500">Set your departure date. End date is optional.</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Departure Date</label>
+          <label className="block text-sm font-semibold text-neutral-700 mb-1">Departure Date</label>
           <input
             type="date"
             value={startDate ? startDate.toISOString().split('T')[0] : ''}
             onChange={(e) => setStartDate(e.target.value ? new Date(e.target.value + 'T00:00:00') : null)}
             min={new Date().toISOString().split('T')[0]}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base"
+            className="w-full px-4 py-3 border-2 border-neutral-200 rounded-xl focus:ring-2 focus:ring-primary-200 focus:border-primary-500 text-base"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Return Date <span className="text-gray-400">(optional)</span></label>
+          <label className="block text-sm font-semibold text-neutral-700 mb-1">Return Date <span className="text-neutral-400">(optional)</span></label>
           <input
             type="date"
             value={endDate ? endDate.toISOString().split('T')[0] : ''}
             onChange={(e) => setEndDate(e.target.value ? new Date(e.target.value + 'T00:00:00') : null)}
             min={startDate ? startDate.toISOString().split('T')[0] : new Date().toISOString().split('T')[0]}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base"
+            className="w-full px-4 py-3 border-2 border-neutral-200 rounded-xl focus:ring-2 focus:ring-primary-200 focus:border-primary-500 text-base"
           />
         </div>
       </div>
@@ -547,8 +547,8 @@ const StepDrivingStyle: React.FC = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-1">How do you like to drive?</h3>
-        <p className="text-sm text-gray-500">Choose your daily driving preference. This determines how the trip is broken into daily stages.</p>
+        <h3 className="text-lg font-semibold text-neutral-900 mb-1">How do you like to drive?</h3>
+        <p className="text-sm text-neutral-500">Choose your daily driving preference. This determines how the trip is broken into daily stages.</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -560,16 +560,16 @@ const StepDrivingStyle: React.FC = () => {
             <button
               key={style.id}
               onClick={() => setDrivingStyle(style.id)}
-              className={`text-left p-4 rounded-xl border-2 transition-all ${
+              className={`text-left p-4 rounded-xl border-2 transition-all duration-200 ${
                 isSelected
-                  ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-200'
-                  : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                  ? 'border-primary-500 bg-primary-50 ring-2 ring-primary-200'
+                  : 'border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50'
               }`}
             >
               <div className="text-2xl mb-2">{style.emoji}</div>
-              <h4 className="font-semibold text-gray-900">{style.title}</h4>
-              <p className="text-xs text-gray-500 mt-1">{limits.shortDescription}</p>
-              <p className="text-xs text-gray-400 mt-2 leading-relaxed">{limits.description}</p>
+              <h4 className="font-semibold text-neutral-900">{style.title}</h4>
+              <p className="text-xs text-neutral-500 mt-1">{limits.shortDescription}</p>
+              <p className="text-xs text-neutral-400 mt-2 leading-relaxed">{limits.description}</p>
             </button>
           );
         })}
@@ -577,7 +577,7 @@ const StepDrivingStyle: React.FC = () => {
 
       {/* Rest days */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">Rest Days</label>
+        <label className="block text-sm font-semibold text-neutral-700 mb-2">Rest Days</label>
         <div className="flex gap-2">
           {[
             { value: 0, label: 'No rest days' },
@@ -587,10 +587,10 @@ const StepDrivingStyle: React.FC = () => {
             <button
               key={option.value}
               onClick={() => setRestDayFrequency(option.value)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
                 restDayFrequency === option.value
-                  ? 'bg-blue-100 text-blue-700 border-2 border-blue-300'
-                  : 'bg-gray-100 text-gray-600 border-2 border-transparent hover:bg-gray-200'
+                  ? 'bg-primary-100 text-primary-700 border-2 border-primary-300'
+                  : 'bg-neutral-100 text-neutral-600 border-2 border-transparent hover:bg-neutral-200'
               }`}
             >
               {option.label}
@@ -600,7 +600,7 @@ const StepDrivingStyle: React.FC = () => {
       </div>
 
       {profile && (
-        <div className="bg-gray-50 rounded-lg p-3 text-sm text-gray-600">
+        <div className="bg-neutral-50 rounded-xl p-3 text-sm text-neutral-600">
           <Car className="w-4 h-4 inline mr-1" />
           Your vehicle: <strong>{profile.name || profile.type || 'Custom'}</strong>
           {profile.type === 'motorhome' && drivingStyle === 'intensive' && (
@@ -643,14 +643,14 @@ const StepCrossing: React.FC = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-1">Getting to Europe</h3>
-        <p className="text-sm text-gray-500">Choose how you want to cross the Channel. We'll route via the terminals.</p>
+        <h3 className="text-lg font-semibold text-neutral-900 mb-1">Getting to Europe</h3>
+        <p className="text-sm text-neutral-500">Choose how you want to cross the Channel. We'll route via the terminals.</p>
       </div>
 
       {Object.entries(crossingsByRegion).map(([region, crossings]) => (
         <div key={region}>
-          <h4 className="font-semibold text-gray-800 mb-1">{regionLabels[region].title}</h4>
-          <p className="text-xs text-gray-500 mb-2">{regionLabels[region].desc}</p>
+          <h4 className="font-semibold text-neutral-800 mb-1">{regionLabels[region].title}</h4>
+          <p className="text-xs text-neutral-500 mb-2">{regionLabels[region].desc}</p>
           <div className="space-y-2">
             {crossings.map(c => {
               const isSelected = crossing?.id === c.id;
@@ -660,30 +660,30 @@ const StepCrossing: React.FC = () => {
                 <button
                   key={c.id}
                   onClick={() => setCrossing(isSelected ? null : c)}
-                  className={`w-full text-left p-3 rounded-lg border-2 transition-all ${
+                  className={`w-full text-left p-3 rounded-xl border-2 transition-all duration-200 ${
                     isSelected
-                      ? 'border-blue-500 bg-blue-50'
-                      : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                      ? 'border-primary-500 bg-primary-50'
+                      : 'border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50'
                   }`}
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       {c.type === 'tunnel' ? (
-                        <Car className="w-4 h-4 text-gray-500" />
+                        <Car className="w-4 h-4 text-neutral-500" />
                       ) : (
-                        <Ship className="w-4 h-4 text-blue-500" />
+                        <Ship className="w-4 h-4 text-primary-500" />
                       )}
-                      <span className="font-medium text-gray-900">{c.name}</span>
+                      <span className="font-medium text-neutral-900">{c.name}</span>
                       {isRecommended && (
                         <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">
                           Recommended
                         </span>
                       )}
                     </div>
-                    {isSelected && <Check className="w-5 h-5 text-blue-500" />}
+                    {isSelected && <Check className="w-5 h-5 text-primary-500" />}
                   </div>
 
-                  <div className="flex items-center gap-4 mt-1.5 text-xs text-gray-500">
+                  <div className="flex items-center gap-4 mt-1.5 text-xs text-neutral-500">
                     <span className="flex items-center gap-1">
                       <Clock className="w-3.5 h-3.5" />
                       {c.duration < 60 ? `${c.duration} min` : `${Math.floor(c.duration / 60)}h ${c.duration % 60 > 0 ? `${c.duration % 60}m` : ''}`}
@@ -696,7 +696,7 @@ const StepCrossing: React.FC = () => {
                   </div>
 
                   {isSelected && c.notes && (
-                    <p className="text-xs text-gray-500 mt-2">{c.notes}</p>
+                    <p className="text-xs text-neutral-500 mt-2">{c.notes}</p>
                   )}
 
                   {isSelected && (
@@ -708,7 +708,7 @@ const StepCrossing: React.FC = () => {
                           target="_blank"
                           rel="noopener noreferrer"
                           onClick={(e) => e.stopPropagation()}
-                          className="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-700 bg-blue-50 px-2 py-1 rounded"
+                          className="inline-flex items-center gap-1 text-xs text-primary-600 hover:text-primary-700 bg-primary-50 px-2 py-1 rounded-lg"
                         >
                           Book with {c.operators[i] || c.operators[0]}
                           <ExternalLink className="w-3 h-3" />
@@ -740,9 +740,9 @@ const StepItinerary: React.FC<StepItineraryProps> = ({ onCreateTrip }) => {
   if (isGenerating) {
     return (
       <div className="flex flex-col items-center justify-center py-16">
-        <Loader2 className="w-10 h-10 text-blue-500 animate-spin mb-4" />
-        <h3 className="text-lg font-semibold text-gray-900">Generating your trip plan...</h3>
-        <p className="text-sm text-gray-500 mt-1">Calculating route, finding campsites, and building your itinerary.</p>
+        <Loader2 className="w-10 h-10 text-primary-500 animate-spin mb-4" />
+        <h3 className="text-lg font-semibold text-neutral-900">Generating your trip plan...</h3>
+        <p className="text-sm text-neutral-500 mt-1">Calculating route, finding campsites, and building your itinerary.</p>
       </div>
     );
   }
@@ -751,11 +751,11 @@ const StepItinerary: React.FC<StepItineraryProps> = ({ onCreateTrip }) => {
     return (
       <div className="flex flex-col items-center justify-center py-16">
         <AlertTriangle className="w-10 h-10 text-red-500 mb-4" />
-        <h3 className="text-lg font-semibold text-gray-900">Failed to generate itinerary</h3>
+        <h3 className="text-lg font-semibold text-neutral-900">Failed to generate itinerary</h3>
         <p className="text-sm text-red-600 mt-1">{generationError}</p>
         <button
           onClick={() => useTripWizardStore.getState().prevStep()}
-          className="mt-4 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200"
+          className="mt-4 px-4 py-2 bg-neutral-100 text-neutral-700 rounded-lg hover:bg-neutral-200"
         >
           Go back and try again
         </button>
@@ -769,8 +769,8 @@ const StepItinerary: React.FC<StepItineraryProps> = ({ onCreateTrip }) => {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-semibold text-gray-900">Your Trip Itinerary</h3>
-          <p className="text-sm text-gray-500">
+          <h3 className="text-lg font-bold text-neutral-900">Your Trip Itinerary</h3>
+          <p className="text-sm text-neutral-500">
             {itinerary.totalDays} days · {itinerary.totalDistance} km · {itinerary.totalDrivingTime} hours driving
           </p>
         </div>
@@ -796,10 +796,10 @@ const StepItinerary: React.FC<StepItineraryProps> = ({ onCreateTrip }) => {
       </div>
 
       {/* Create Trip Button */}
-      <div className="sticky bottom-0 bg-white pt-4 pb-2 border-t border-gray-200 -mx-6 px-6">
+      <div className="sticky bottom-0 bg-white pt-4 pb-2 border-t border-neutral-100 -mx-6 px-6">
         <button
           onClick={onCreateTrip}
-          className="w-full py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 font-semibold text-base transition-colors"
+          className="w-full py-3 bg-accent-500 text-white rounded-xl hover:bg-accent-600 font-semibold text-base transition-all duration-200 shadow-sm hover:shadow-medium active:scale-[0.98]"
         >
           ✓ Looks Good — Create This Trip
         </button>
@@ -824,10 +824,10 @@ const DayCard: React.FC<{ day: any }> = ({ day }) => {
     : '';
 
   return (
-    <div className={`border rounded-xl overflow-hidden ${
-      day.type === 'crossing' ? 'border-blue-300 bg-blue-50/50' :
-      isRest ? 'border-green-300 bg-green-50/50' :
-      'border-gray-200'
+    <div className={`rounded-xl overflow-hidden shadow-soft ${
+      day.type === 'crossing' ? 'ring-1 ring-blue-200 bg-blue-50/50' :
+      isRest ? 'ring-1 ring-green-200 bg-green-50/50' :
+      'ring-1 ring-neutral-200/50'
     }`}>
       {/* Day Header */}
       <button
@@ -839,13 +839,13 @@ const DayCard: React.FC<{ day: any }> = ({ day }) => {
             <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
               day.type === 'crossing' ? 'bg-blue-200 text-blue-800' :
               isRest ? 'bg-green-200 text-green-800' :
-              'bg-gray-200 text-gray-800'
+              'bg-neutral-200 text-neutral-800'
             }`}>
               {day.dayNumber}
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-medium text-gray-900">
+                <span className="font-medium text-neutral-900">
                   {isRest ? `Rest Day — ${day.start.name}` : `${day.start.name} → ${day.end.name}`}
                 </span>
                 {day.type === 'crossing' && (
@@ -855,18 +855,18 @@ const DayCard: React.FC<{ day: any }> = ({ day }) => {
                   </span>
                 )}
               </div>
-              <div className="text-xs text-gray-500 mt-0.5">
+              <div className="text-xs text-neutral-500 mt-0.5">
                 {dateStr}
                 {isDriving && ` · ${day.distance} km · ${day.drivingTime} hrs driving`}
               </div>
             </div>
           </div>
-          <ChevronRight className={`w-5 h-5 text-gray-400 transition-transform ${expanded ? 'rotate-90' : ''}`} />
+          <ChevronRight className={`w-5 h-5 text-neutral-400 transition-transform ${expanded ? 'rotate-90' : ''}`} />
         </div>
 
         {/* Selected campsite preview */}
         {day.selectedOvernight && !expanded && (
-          <div className="flex items-center gap-2 mt-2 ml-11 text-xs text-gray-500">
+          <div className="flex items-center gap-2 mt-2 ml-11 text-xs text-neutral-500">
             <Tent className="w-3.5 h-3.5 text-green-600" />
             <span>Staying at <strong>{day.selectedOvernight.campsite.name}</strong></span>
             <span className="text-green-600">({day.selectedOvernight.suitabilityScore}/100)</span>
@@ -879,7 +879,7 @@ const DayCard: React.FC<{ day: any }> = ({ day }) => {
         <div className="px-4 pb-4 space-y-3">
           {/* Day Notes */}
           {day.notes.length > 0 && (
-            <div className="text-xs text-gray-500 space-y-0.5 ml-11">
+            <div className="text-xs text-neutral-500 space-y-0.5 ml-11">
               {day.notes.map((note: string, i: number) => (
                 <p key={i}>💡 {note}</p>
               ))}
@@ -905,7 +905,7 @@ const DayCard: React.FC<{ day: any }> = ({ day }) => {
                     href={url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-700 bg-white px-2 py-1 rounded border border-blue-200"
+                    className="inline-flex items-center gap-1 text-xs text-primary-600 hover:text-primary-700 bg-white px-2 py-1 rounded border border-blue-200"
                   >
                     Book {day.crossing.operators[i] || 'Now'}
                     <ExternalLink className="w-3 h-3" />
@@ -918,7 +918,7 @@ const DayCard: React.FC<{ day: any }> = ({ day }) => {
           {/* Campsite Options */}
           {day.overnightOptions.length > 0 && (
             <div className="ml-11">
-              <p className="text-xs font-medium text-gray-700 mb-2">
+              <p className="text-xs font-medium text-neutral-700 mb-2">
                 <Tent className="w-3.5 h-3.5 inline mr-1" />
                 Overnight Options ({day.overnightOptions.length})
               </p>
@@ -929,18 +929,18 @@ const DayCard: React.FC<{ day: any }> = ({ day }) => {
                     <button
                       key={option.campsite.id}
                       onClick={() => selectCampsite(day.dayNumber, option)}
-                      className={`w-full text-left p-3 rounded-lg border transition-all ${
+                      className={`w-full text-left p-3 rounded-xl border-2 transition-all duration-200 ${
                         isSelected
-                          ? 'border-green-500 bg-green-50'
-                          : 'border-gray-200 hover:border-gray-300'
+                          ? 'border-green-500 bg-green-50 shadow-sm'
+                          : 'border-neutral-200 hover:border-neutral-300 hover:shadow-sm'
                       }`}
                     >
                       <div className="flex items-center justify-between">
                         <div>
-                          <span className="font-medium text-sm text-gray-900">
+                          <span className="font-medium text-sm text-neutral-900">
                             {i === 0 && '⭐ '}{option.campsite.name}
                           </span>
-                          <span className="text-xs text-gray-500 ml-2">
+                          <span className="text-xs text-neutral-500 ml-2">
                             {option.distanceFromRoute} km from route
                           </span>
                         </div>
@@ -948,7 +948,7 @@ const DayCard: React.FC<{ day: any }> = ({ day }) => {
                           <span className={`text-xs font-bold ${
                             option.suitabilityScore >= 80 ? 'text-green-600' :
                             option.suitabilityScore >= 60 ? 'text-yellow-600' :
-                            'text-gray-500'
+                            'text-neutral-500'
                           }`}>
                             {option.suitabilityScore}/100
                           </span>
@@ -957,7 +957,7 @@ const DayCard: React.FC<{ day: any }> = ({ day }) => {
                       </div>
                       <div className="flex flex-wrap gap-1.5 mt-1.5">
                         {option.amenitySummary.slice(0, 5).map(amenity => (
-                          <span key={amenity} className="text-xs bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded">
+                          <span key={amenity} className="text-xs bg-neutral-100 text-neutral-600 px-1.5 py-0.5 rounded">
                             {amenity}
                           </span>
                         ))}

@@ -85,23 +85,23 @@ const RouteOptimization: React.FC<RouteOptimizationProps> = ({ className }) => {
       {/* Optimization Controls */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <h3 className="text-sm font-medium text-gray-900">
+          <h3 className="text-sm font-medium text-neutral-900">
 Route Optimization
           </h3>
-          <div className="text-xs text-gray-500">
+          <div className="text-xs text-neutral-500">
             {waypoints.length} waypoints
           </div>
         </div>
 
         {/* Optimization Criteria */}
         <div className="space-y-2">
-          <label className="text-xs font-medium text-gray-700">
+          <label className="text-xs font-medium text-neutral-700">
 Optimization Goal
           </label>
           <select
             value={criteria.objective}
             onChange={(e) => updateCriteria({ objective: e.target.value as 'shortest' | 'fastest' | 'balanced' })}
-            className="w-full text-xs border border-gray-300 rounded px-2 py-1"
+            className="w-full text-xs border border-neutral-300 rounded px-2 py-1"
           >
             <option value="balanced">Balanced</option>
             <option value="shortest">Shortest Distance</option>
@@ -111,7 +111,7 @@ Optimization Goal
 
         {/* Time Constraints */}
         <div className="space-y-2">
-          <label className="text-xs font-medium text-gray-700">
+          <label className="text-xs font-medium text-neutral-700">
 Max Driving Time per Day
           </label>
           <div className="flex items-center space-x-2">
@@ -129,7 +129,7 @@ Max Driving Time per Day
               })}
               className="flex-1"
             />
-            <span className="text-xs text-gray-600 w-8">
+            <span className="text-xs text-neutral-600 w-8">
               {criteria.timeConstraints?.maxDrivingTime || 8}h
             </span>
           </div>
@@ -142,8 +142,8 @@ Max Driving Time per Day
           className={cn(
             'w-full px-3 py-2 text-sm font-medium rounded transition-colors',
             canOptimize
-              ? 'bg-blue-600 text-white hover:bg-blue-700'
-              : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+              ? 'bg-primary-600 text-white hover:bg-primary-700'
+              : 'bg-neutral-100 text-neutral-400 cursor-not-allowed'
           )}
         >
           {status === 'optimizing' ? (
@@ -217,21 +217,21 @@ Optimization Results
 
           {/* Route Comparison */}
           <div className="grid grid-cols-2 gap-2 text-xs">
-            <div className="p-2 bg-gray-50 rounded border">
-              <div className="font-medium text-gray-900 mb-1">Original</div>
-              <div className="text-gray-600">
+            <div className="p-2 bg-neutral-50 rounded border">
+              <div className="font-medium text-neutral-900 mb-1">Original</div>
+              <div className="text-neutral-600">
                 {result.originalRoute.totalDistance.toFixed(0)} km
               </div>
-              <div className="text-gray-600">
+              <div className="text-neutral-600">
                 {Math.round(result.originalRoute.totalTime)} min
               </div>
             </div>
-            <div className="p-2 bg-blue-50 rounded border border-blue-200">
-              <div className="font-medium text-blue-900 mb-1">Optimized</div>
-              <div className="text-blue-700">
+            <div className="p-2 bg-primary-50 rounded border border-primary-200">
+              <div className="font-medium text-primary-900 mb-1">Optimized</div>
+              <div className="text-primary-700">
                 {result.optimizedRoute.totalDistance.toFixed(0)} km
               </div>
-              <div className="text-blue-700">
+              <div className="text-primary-700">
                 {Math.round(result.optimizedRoute.totalTime)} min
               </div>
             </div>
@@ -247,7 +247,7 @@ Apply Optimization
             </button>
             <button
               onClick={handleRejectOptimization}
-              className="flex-1 px-3 py-2 bg-gray-300 text-gray-700 text-xs font-medium rounded hover:bg-gray-400 transition-colors"
+              className="flex-1 px-3 py-2 bg-neutral-300 text-neutral-700 text-xs font-medium rounded hover:bg-neutral-400 transition-colors"
             >
 Cancel
             </button>
@@ -257,8 +257,8 @@ Cancel
 
       {/* Help Text */}
       {waypoints.length < 3 && (
-        <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
-          <div className="text-xs text-blue-700">
+        <div className="p-3 bg-primary-50 border border-primary-200 rounded-lg">
+          <div className="text-xs text-primary-700">
 Add at least 3 waypoints to optimize your route automatically using our intelligent routing algorithm.
           </div>
         </div>

@@ -190,12 +190,12 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
   if (!FeatureFlags.ROUTE_OPTIMIZATION || !isVisible) return null;
 
   return (
-    <div className={cn('bg-white rounded-lg shadow-lg border border-gray-200', className)}>
+    <div className={cn('bg-white rounded-lg shadow-lg border border-neutral-200', className)}>
       {/* Header */}
-      <div className="p-4 border-b border-gray-200">
+      <div className="p-4 border-b border-neutral-200">
         <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold text-gray-900 flex items-center">
-            <svg className="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <h3 className="text-lg font-semibold text-neutral-900 flex items-center">
+            <svg className="w-5 h-5 mr-2 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 01.553-.894L9 2l6 3 6-3v15l-6 3-6-3z" />
             </svg>
             Route Optimizer
@@ -204,7 +204,7 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
           <div className="flex items-center space-x-2">
             <button
               onClick={() => setShowAdvancedSettings(!showAdvancedSettings)}
-              className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded"
+              className="p-2 text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100 rounded"
               title="Advanced Settings"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -229,7 +229,7 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
       <div className="p-4">
         {/* Optimization Objective */}
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-neutral-700 mb-2">
             Optimization Goal
           </label>
           <div className="grid grid-cols-3 gap-2">
@@ -244,13 +244,13 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
                 className={cn(
                   'p-3 rounded-lg border text-center transition-colors text-sm',
                   settings.objective === option.value
-                    ? 'border-blue-500 bg-blue-50 text-blue-700'
-                    : 'border-gray-200 hover:border-gray-300 text-gray-700'
+                    ? 'border-primary-500 bg-primary-50 text-primary-700'
+                    : 'border-neutral-200 hover:border-neutral-300 text-neutral-700'
                 )}
               >
                 <div className="text-lg mb-1">{option.icon}</div>
                 <div className="font-medium">{option.label}</div>
-                <div className="text-xs text-gray-500">{option.desc}</div>
+                <div className="text-xs text-neutral-500">{option.desc}</div>
               </button>
             ))}
           </div>
@@ -264,8 +264,8 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
             className={cn(
               'flex-1 flex items-center justify-center space-x-2 px-4 py-3 rounded-lg font-medium transition-colors',
               canOptimize
-                ? 'bg-blue-600 text-white hover:bg-blue-700'
-                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                ? 'bg-primary-600 text-white hover:bg-primary-700'
+                : 'bg-neutral-300 text-neutral-500 cursor-not-allowed'
             )}
           >
             {isOptimizing ? (
@@ -291,7 +291,7 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
               'px-4 py-3 rounded-lg font-medium transition-colors',
               insertionMode
                 ? 'bg-green-600 text-white hover:bg-green-700'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200'
             )}
             title="Smart waypoint insertion"
           >
@@ -308,7 +308,7 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
               type="checkbox"
               checked={settings.autoOptimizeOnChange}
               onChange={e => setSettings(prev => ({ ...prev, autoOptimizeOnChange: e.target.checked }))}
-              className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              className="rounded border-neutral-300 text-primary-600 focus:ring-primary-500"
             />
             <span>Auto-optimize when route changes</span>
           </label>
@@ -316,8 +316,8 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
 
         {/* Advanced Settings */}
         {showAdvancedSettings && (
-          <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
-            <h4 className="font-medium text-gray-900">Advanced Settings</h4>
+          <div className="space-y-4 p-4 bg-neutral-50 rounded-lg">
+            <h4 className="font-medium text-neutral-900">Advanced Settings</h4>
 
             {/* Time Constraints */}
             <div>
@@ -326,7 +326,7 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
                   type="checkbox"
                   checked={settings.enableTimeConstraints}
                   onChange={e => setSettings(prev => ({ ...prev, enableTimeConstraints: e.target.checked }))}
-                  className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  className="rounded border-neutral-300 text-primary-600 focus:ring-primary-500"
                 />
                 <span>Enable time constraints</span>
               </label>
@@ -334,25 +334,25 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
               {settings.enableTimeConstraints && (
                 <div className="grid grid-cols-2 gap-3 ml-6">
                   <div>
-                    <label className="block text-xs text-gray-600 mb-1">Max driving time (hours)</label>
+                    <label className="block text-xs text-neutral-600 mb-1">Max driving time (hours)</label>
                     <input
                       type="number"
                       min="4"
                       max="12"
                       value={settings.maxDrivingTime}
                       onChange={e => setSettings(prev => ({ ...prev, maxDrivingTime: parseInt(e.target.value) }))}
-                      className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
+                      className="w-full px-2 py-1 border border-neutral-300 rounded text-sm"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs text-gray-600 mb-1">Preferred start time</label>
+                    <label className="block text-xs text-neutral-600 mb-1">Preferred start time</label>
                     <input
                       type="number"
                       min="6"
                       max="12"
                       value={settings.preferredStartTime}
                       onChange={e => setSettings(prev => ({ ...prev, preferredStartTime: parseInt(e.target.value) }))}
-                      className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
+                      className="w-full px-2 py-1 border border-neutral-300 rounded text-sm"
                     />
                   </div>
                 </div>
@@ -366,7 +366,7 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
                   type="checkbox"
                   checked={settings.enableCampsitePreferences}
                   onChange={e => setSettings(prev => ({ ...prev, enableCampsitePreferences: e.target.checked }))}
-                  className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  className="rounded border-neutral-300 text-primary-600 focus:ring-primary-500"
                 />
                 <span>Enable campsite preferences</span>
               </label>
@@ -374,7 +374,7 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
               {settings.enableCampsitePreferences && (
                 <div className="ml-6">
                   <div className="mb-2">
-                    <label className="block text-xs text-gray-600 mb-1">
+                    <label className="block text-xs text-neutral-600 mb-1">
                       Max distance between stops: {settings.maxDistanceBetweenStops}km
                     </label>
                     <input
@@ -392,7 +392,7 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
                       type="checkbox"
                       checked={settings.requireCampsiteOvernight}
                       onChange={e => setSettings(prev => ({ ...prev, requireCampsiteOvernight: e.target.checked }))}
-                      className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                      className="rounded border-neutral-300 text-primary-600 focus:ring-primary-500"
                     />
                     <span>Require campsite for overnight stops</span>
                   </label>
@@ -405,9 +405,9 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
 
       {/* Waypoint Management */}
       {waypoints.length > 0 && (
-        <div className="border-t border-gray-200">
+        <div className="border-t border-neutral-200">
           <div className="p-4">
-            <h4 className="font-medium text-gray-900 mb-3 flex items-center">
+            <h4 className="font-medium text-neutral-900 mb-3 flex items-center">
               <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -419,17 +419,17 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
               {waypoints.map((waypoint, index) => (
                 <div
                   key={waypoint.id}
-                  className="flex items-center space-x-3 p-2 bg-gray-50 rounded-lg"
+                  className="flex items-center space-x-3 p-2 bg-neutral-50 rounded-lg"
                 >
-                  <div className="flex items-center justify-center w-6 h-6 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
+                  <div className="flex items-center justify-center w-6 h-6 bg-primary-100 text-primary-800 rounded-full text-xs font-medium">
                     {index + 1}
                   </div>
 
                   <div className="flex-1 min-w-0">
-                    <div className="text-sm font-medium text-gray-900 truncate">
+                    <div className="text-sm font-medium text-neutral-900 truncate">
                       {waypoint.name}
                     </div>
-                    <div className="text-xs text-gray-500">
+                    <div className="text-xs text-neutral-500">
                       {waypoint.type === 'campsite' ? '🏕️ Campsite' : '📍 Waypoint'}
                     </div>
                   </div>
@@ -440,7 +440,7 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
                       'p-1 rounded text-xs',
                       lockedWaypoints.has(waypoint.id)
                         ? 'text-red-600 hover:bg-red-50'
-                        : 'text-gray-400 hover:bg-gray-100'
+                        : 'text-neutral-400 hover:bg-neutral-100'
                     )}
                     title={lockedWaypoints.has(waypoint.id) ? 'Unlock waypoint' : 'Lock waypoint order'}
                   >
@@ -457,7 +457,7 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
             </div>
 
             {lockedWaypoints.size > 0 && (
-              <div className="mt-2 text-xs text-gray-600 flex items-center">
+              <div className="mt-2 text-xs text-neutral-600 flex items-center">
                 <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
@@ -470,7 +470,7 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
 
       {/* Optimization Result */}
       {optimizationResult && (
-        <div className="border-t border-gray-200 bg-green-50">
+        <div className="border-t border-neutral-200 bg-green-50">
           <div className="p-4">
             <h4 className="font-medium text-green-900 mb-3 flex items-center">
               <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -481,21 +481,21 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
 
             <div className="grid grid-cols-2 gap-4 mb-4">
               <div className="bg-white p-3 rounded border">
-                <div className="text-xs text-gray-600 mb-1">Distance Saved</div>
+                <div className="text-xs text-neutral-600 mb-1">Distance Saved</div>
                 <div className="text-lg font-semibold text-green-600">
                   {optimizationResult.improvements.distanceSaved.toFixed(1)}km
                 </div>
-                <div className="text-xs text-gray-500">
+                <div className="text-xs text-neutral-500">
                   {optimizationResult.improvements.percentageImprovement.toFixed(1)}% improvement
                 </div>
               </div>
 
               <div className="bg-white p-3 rounded border">
-                <div className="text-xs text-gray-600 mb-1">Time Saved</div>
+                <div className="text-xs text-neutral-600 mb-1">Time Saved</div>
                 <div className="text-lg font-semibold text-green-600">
                   {Math.round(optimizationResult.improvements.timeSaved)} min
                 </div>
-                <div className="text-xs text-gray-500">
+                <div className="text-xs text-neutral-500">
                   {optimizationResult.optimizationMetadata.algorithm}
                 </div>
               </div>
@@ -510,7 +510,7 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
               </button>
               <button
                 onClick={() => setOptimizationResult(null)}
-                className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm"
+                className="px-4 py-2 border border-neutral-300 text-neutral-700 rounded-lg hover:bg-neutral-50 transition-colors text-sm"
               >
                 Dismiss
               </button>
@@ -521,9 +521,9 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
 
       {/* Insertion Mode Help */}
       {insertionMode && (
-        <div className="border-t border-gray-200 bg-blue-50">
+        <div className="border-t border-neutral-200 bg-primary-50">
           <div className="p-4">
-            <div className="flex items-center space-x-2 text-blue-800 text-sm">
+            <div className="flex items-center space-x-2 text-primary-800 text-sm">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
@@ -535,7 +535,7 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
 
       {/* Insertion Result */}
       {insertionResult && newWaypointPosition && (
-        <div className="border-t border-gray-200 bg-yellow-50">
+        <div className="border-t border-neutral-200 bg-yellow-50">
           <div className="p-4">
             <h4 className="font-medium text-yellow-900 mb-2">Waypoint Insertion Analysis</h4>
             <div className="text-sm text-yellow-800 mb-3">
@@ -564,7 +564,7 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
                   setInsertionResult(null);
                   setNewWaypointPosition(null);
                 }}
-                className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm"
+                className="px-4 py-2 border border-neutral-300 text-neutral-700 rounded-lg hover:bg-neutral-50 transition-colors text-sm"
               >
                 Cancel
               </button>

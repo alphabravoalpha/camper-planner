@@ -1,118 +1,174 @@
 // About Page
-// Project information and vision
+// Professional landing page with mission, features, and value proposition
 
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
+import {
+  Shield, Route, Tent, Download, Globe, Truck,
+  MapPin, Fuel, ChevronRight
+} from 'lucide-react';
+
+const FEATURES = [
+  {
+    icon: Route,
+    title: 'Camper-Safe Routing',
+    description: 'Routes that respect your vehicle height, weight, width and length limits.',
+  },
+  {
+    icon: Tent,
+    title: 'Campsite Database',
+    description: 'Thousands of campsites, aires, and caravan sites across Europe.',
+  },
+  {
+    icon: Truck,
+    title: 'Vehicle Profiles',
+    description: 'Configure your exact vehicle dimensions for safe route planning.',
+  },
+  {
+    icon: Download,
+    title: 'GPX Export',
+    description: 'Export routes to your GPS device in GPX, KML, or JSON formats.',
+  },
+  {
+    icon: Shield,
+    title: 'Privacy First',
+    description: 'No accounts required. Your data stays on your device, always.',
+  },
+  {
+    icon: Globe,
+    title: 'All of Europe',
+    description: 'Covering 40+ countries from Portugal to Norway, Iceland to Greece.',
+  },
+];
+
+const COUNTRIES = [
+  'France', 'Spain', 'Italy', 'Germany', 'Portugal', 'Norway',
+  'Sweden', 'Croatia', 'Greece', 'Netherlands', 'Switzerland', 'Austria',
+];
 
 const AboutPage: React.FC = () => {
-  const { } = useTranslation();
-
   return (
-    <div className="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-      <div className="bg-white shadow rounded-lg p-6">
-        <h1 className="text-3xl font-bold text-gray-900 mb-6">
-          About European Camper Trip Planner
-        </h1>
-
-        <div className="space-y-6 text-gray-700">
-          <section>
-            <h2 className="text-xl font-semibold text-gray-900 mb-3">
-              Our Mission
-            </h2>
-            <p className="leading-relaxed">
-              We're building the first comprehensive, free camper trip planning platform
-              specifically designed for European travel. While North America has tools like
-              RV LIFE Trip Wizard, Europe's 15+ million camper travelers have been left
-              without a dedicated solution.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="text-xl font-semibold text-gray-900 mb-3">
-              Why Free?
-            </h2>
-            <p className="leading-relaxed">
-              Current trip planning requires $65-150+/year in subscriptions plus hours
-              of manual research across multiple fragmented tools. We believe comprehensive
-              trip planning should be accessible to everyone, regardless of budget.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="text-xl font-semibold text-gray-900 mb-3">
-              Key Features
-            </h2>
-            <ul className="list-disc list-inside space-y-2">
-              <li>Camper-safe routing respecting vehicle dimensions and weight limits</li>
-              <li>Comprehensive European campsite database (aires, campsites, parking)</li>
-              <li>Route optimization for fuel efficiency</li>
-              <li>GPX export for GPS devices</li>
-              <li>No user accounts required - your data stays private</li>
-              <li>Multi-language support for all European travelers</li>
-            </ul>
-          </section>
-
-          <section>
-            <h2 className="text-xl font-semibold text-gray-900 mb-3">
-              Development Progress
-            </h2>
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <div className="space-y-2 text-sm">
-                <div className="flex items-center">
-                  <div className="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
-                  <span>Phase 1: Foundation & Core Infrastructure ✓</span>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-3 h-3 bg-yellow-500 rounded-full mr-3"></div>
-                  <span>Phase 2: Interactive Mapping (Next)</span>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-3 h-3 bg-gray-300 rounded-full mr-3"></div>
-                  <span>Phase 3: Vehicle Profiles & Routing</span>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-3 h-3 bg-gray-300 rounded-full mr-3"></div>
-                  <span>Phase 4: Campsite Integration</span>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-3 h-3 bg-gray-300 rounded-full mr-3"></div>
-                  <span>Phase 5: Planning Tools</span>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-3 h-3 bg-gray-300 rounded-full mr-3"></div>
-                  <span>Phase 6: Export & Polish</span>
-                </div>
-              </div>
+    <div className="min-h-screen bg-neutral-50 animate-fade-in">
+      {/* Hero Section */}
+      <div className="bg-gradient-to-br from-primary-600 to-primary-800 text-white">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
+          <div className="text-center">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/15 rounded-full text-sm font-medium mb-6 backdrop-blur-sm">
+              <MapPin className="w-4 h-4" />
+              Free trip planning for Europe
             </div>
-          </section>
-
-          <section>
-            <h2 className="text-xl font-semibold text-gray-900 mb-3">
-              Technology
-            </h2>
-            <p className="leading-relaxed mb-3">
-              Built with modern web technologies for zero-cost scalability:
+            <h1 className="text-4xl sm:text-5xl font-bold mb-4 tracking-tight">
+              European Camper<br />Trip Planner
+            </h1>
+            <p className="text-lg sm:text-xl text-primary-100 max-w-2xl mx-auto leading-relaxed">
+              The first comprehensive, free camper trip planning platform
+              designed specifically for European travel.
             </p>
-            <ul className="list-disc list-inside space-y-1 text-sm">
-              <li>React 18 + TypeScript for robust frontend development</li>
-              <li>Leaflet.js for lightweight, fast mapping</li>
-              <li>OpenStreetMap for free, comprehensive map data</li>
-              <li>OpenRouteService for vehicle-safe routing</li>
-              <li>Local storage for privacy-first data management</li>
-              <li>Static site deployment for free hosting</li>
-            </ul>
-          </section>
+            <div className="mt-8">
+              <Link
+                to="/"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-accent-500 text-white rounded-xl font-semibold hover:bg-accent-600 transition-all duration-200 shadow-lg hover:shadow-xl active:scale-[0.97]"
+              >
+                Start Planning
+                <ChevronRight className="w-5 h-5" />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
 
-          <section>
-            <h2 className="text-xl font-semibold text-gray-900 mb-3">
-              Open Source
-            </h2>
-            <p className="leading-relaxed">
-              This project is open source and built in the open. We believe in
-              transparency and community-driven development. The code is available
-              on GitHub for anyone to review, contribute to, or learn from.
-            </p>
-          </section>
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Mission Card */}
+        <div className="bg-white rounded-2xl shadow-soft p-8 mb-12 -mt-8 relative z-10">
+          <h2 className="text-2xl font-bold text-neutral-900 mb-3">Our Mission</h2>
+          <p className="text-neutral-600 leading-relaxed text-lg">
+            While North America has tools like RV LIFE Trip Wizard, Europe's 15+ million
+            camper travellers have been left without a dedicated solution. We believe
+            comprehensive trip planning should be accessible to everyone, regardless of budget.
+          </p>
+        </div>
+
+        {/* Features Grid */}
+        <div className="mb-12">
+          <h2 className="text-2xl font-bold text-neutral-900 mb-6 text-center">
+            Everything you need to plan your trip
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {FEATURES.map((feature) => {
+              const Icon = feature.icon;
+              return (
+                <div
+                  key={feature.title}
+                  className="bg-white rounded-2xl shadow-soft p-6 hover:shadow-medium hover:-translate-y-1 transition-all duration-200"
+                >
+                  <div className="w-11 h-11 bg-primary-50 rounded-xl flex items-center justify-center mb-4">
+                    <Icon className="w-5 h-5 text-primary-600" />
+                  </div>
+                  <h3 className="text-base font-semibold text-neutral-900 mb-1.5">
+                    {feature.title}
+                  </h3>
+                  <p className="text-sm text-neutral-500 leading-relaxed">
+                    {feature.description}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Why Free Card */}
+        <div className="bg-gradient-to-br from-accent-50 to-accent-100 rounded-2xl p-8 mb-12">
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 bg-accent-500 rounded-xl flex items-center justify-center flex-shrink-0">
+              <Fuel className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h2 className="text-xl font-bold text-accent-900 mb-2">
+                Why is it free?
+              </h2>
+              <p className="text-accent-800 leading-relaxed">
+                Current trip planning requires £65-150+/year in subscriptions plus hours
+                of manual research across multiple fragmented tools. We built this using
+                free open-source tools and static hosting — so there are no running costs
+                to pass on to you.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Countries Grid */}
+        <div className="mb-12">
+          <h2 className="text-2xl font-bold text-neutral-900 mb-6 text-center">
+            Explore 40+ European countries
+          </h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+            {COUNTRIES.map((country) => (
+              <div
+                key={country}
+                className="bg-white rounded-xl shadow-soft px-4 py-3 text-center text-sm font-medium text-neutral-700 hover:shadow-medium hover:-translate-y-0.5 transition-all duration-200"
+              >
+                {country}
+              </div>
+            ))}
+          </div>
+          <p className="text-center text-sm text-neutral-400 mt-3">
+            ...and many more including UK, Ireland, Denmark, Finland, Poland, Czech Republic, Hungary, Romania, and beyond.
+          </p>
+        </div>
+
+        {/* CTA */}
+        <div className="text-center bg-white rounded-2xl shadow-soft p-8">
+          <h2 className="text-2xl font-bold text-neutral-900 mb-3">Ready to hit the road?</h2>
+          <p className="text-neutral-500 mb-6">
+            Start planning your next European camper adventure — no sign-up required.
+          </p>
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-primary-600 text-white rounded-xl font-semibold hover:bg-primary-700 transition-all duration-200 shadow-sm hover:shadow-medium active:scale-[0.97]"
+          >
+            Open the Planner
+            <ChevronRight className="w-5 h-5" />
+          </Link>
         </div>
       </div>
     </div>

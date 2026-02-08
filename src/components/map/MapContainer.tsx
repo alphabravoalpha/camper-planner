@@ -226,12 +226,12 @@ const MapContainer: React.FC = () => {
 
   if (!FeatureFlags.BASIC_MAP_DISPLAY) {
     return (
-      <div className="h-full flex items-center justify-center bg-gray-100">
+      <div className="h-full flex items-center justify-center bg-neutral-100">
         <div className="text-center">
-          <h3 className="text-lg font-medium text-gray-500 mb-2">
+          <h3 className="text-lg font-medium text-neutral-500 mb-2">
             Map Display Disabled
           </h3>
-          <p className="text-sm text-gray-400">
+          <p className="text-sm text-neutral-400">
             Enable BASIC_MAP_DISPLAY feature flag
           </p>
         </div>
@@ -340,10 +340,10 @@ const MapContainer: React.FC = () => {
     )}>
       {/* Loading overlay */}
       {!isMapReady && (
-        <div className="absolute inset-0 bg-gray-100 flex items-center justify-center z-20">
+        <div className="absolute inset-0 bg-neutral-100 flex items-center justify-center z-20">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-2 border-blue-600 border-t-transparent mx-auto mb-3"></div>
-            <p className="text-sm text-gray-600">Loading European map...</p>
+            <div className="animate-spin rounded-full h-8 w-8 border-2 border-primary-600 border-t-transparent mx-auto mb-3"></div>
+            <p className="text-sm text-neutral-600">Loading European map...</p>
           </div>
         </div>
       )}
@@ -425,17 +425,17 @@ const MapContainer: React.FC = () => {
       {/* Waypoint hint for new users - shown when no waypoints exist */}
       {waypoints.length === 0 && isMapReady && (
         <div className="absolute bottom-24 left-1/2 transform -translate-x-1/2 z-20 pointer-events-none hidden sm:block animate-fade-in">
-          <div className="bg-white/95 backdrop-blur-sm px-5 py-3 rounded-xl shadow-lg border border-gray-200">
+          <div className="bg-white/95 backdrop-blur-sm px-5 py-3 rounded-xl shadow-lg border border-neutral-200">
             <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
-                <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center flex-shrink-0">
+                <svg className="w-4 h-4 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-900">Start your trip</p>
-                <p className="text-xs text-gray-500">Right-click on the map to add waypoints, or search for a location above</p>
+                <p className="text-sm font-medium text-neutral-900">Start your trip</p>
+                <p className="text-xs text-neutral-500">Right-click on the map to add waypoints, or search for a location above</p>
               </div>
             </div>
           </div>
@@ -527,8 +527,8 @@ const MapContainer: React.FC = () => {
             onClick={undo}
             disabled={!canUndo()}
             className={cn(
-              "block w-10 h-10 flex items-center justify-center border-b border-gray-200 transition-colors",
-              canUndo() ? "hover:bg-gray-50 text-gray-700" : "text-gray-300 cursor-not-allowed"
+              "block w-10 h-10 flex items-center justify-center border-b border-neutral-200 transition-colors",
+              canUndo() ? "hover:bg-neutral-50 text-neutral-700" : "text-neutral-300 cursor-not-allowed"
             )}
             title="Undo (Ctrl+Z)"
             aria-label="Undo last action"
@@ -542,7 +542,7 @@ const MapContainer: React.FC = () => {
             disabled={!canRedo()}
             className={cn(
               "block w-10 h-10 flex items-center justify-center transition-colors",
-              canRedo() ? "hover:bg-gray-50 text-gray-700" : "text-gray-300 cursor-not-allowed"
+              canRedo() ? "hover:bg-neutral-50 text-neutral-700" : "text-neutral-300 cursor-not-allowed"
             )}
             title="Redo (Ctrl+Y)"
             aria-label="Redo last action"
@@ -558,8 +558,8 @@ const MapContainer: React.FC = () => {
           <button
             onClick={() => setShowTripManager(!showTripManager)}
             className={cn(
-              "block w-10 h-10 flex items-center justify-center border-b border-gray-200 transition-colors",
-              showTripManager ? "bg-indigo-50 text-indigo-600" : "hover:bg-gray-50 text-gray-700"
+              "block w-10 h-10 flex items-center justify-center border-b border-neutral-200 transition-colors",
+              showTripManager ? "bg-indigo-50 text-indigo-600" : "hover:bg-neutral-50 text-neutral-700"
             )}
             title="Trip manager"
             aria-label="Toggle trip manager"
@@ -573,8 +573,8 @@ const MapContainer: React.FC = () => {
               <button
                 onClick={() => setShowPlanningTools(!showPlanningTools)}
                 className={cn(
-                  "block w-10 h-10 flex items-center justify-center border-b border-gray-200 transition-colors",
-                  showPlanningTools ? "bg-violet-50 text-violet-600" : "hover:bg-gray-50 text-gray-700"
+                  "block w-10 h-10 flex items-center justify-center border-b border-neutral-200 transition-colors",
+                  showPlanningTools ? "bg-violet-50 text-violet-600" : "hover:bg-neutral-50 text-neutral-700"
                 )}
                 title="Trip planning tools"
                 aria-label="Toggle planning tools"
@@ -587,7 +587,7 @@ const MapContainer: React.FC = () => {
                 onClick={() => setShowCostCalculator(!showCostCalculator)}
                 className={cn(
                   "block w-10 h-10 flex items-center justify-center transition-colors",
-                  showCostCalculator ? "bg-emerald-50 text-emerald-600" : "hover:bg-gray-50 text-gray-700"
+                  showCostCalculator ? "bg-emerald-50 text-emerald-600" : "hover:bg-neutral-50 text-neutral-700"
                 )}
                 title="Trip cost calculator"
                 aria-label="Toggle cost calculator"
@@ -607,8 +607,8 @@ const MapContainer: React.FC = () => {
               onClick={() => setShowRouteInfo(!showRouteInfo)}
               className={cn(
                 "block w-10 h-10 flex items-center justify-center transition-colors",
-                showRouteInfo ? "bg-blue-50 text-blue-600" : "hover:bg-gray-50 text-gray-700",
-                FeatureFlags.ROUTE_OPTIMIZATION && waypoints.length >= 3 && "border-b border-gray-200"
+                showRouteInfo ? "bg-primary-50 text-primary-600" : "hover:bg-neutral-50 text-neutral-700",
+                FeatureFlags.ROUTE_OPTIMIZATION && waypoints.length >= 3 && "border-b border-neutral-200"
               )}
               title="Route information"
               aria-label="Toggle route information"
@@ -622,7 +622,7 @@ const MapContainer: React.FC = () => {
                 onClick={() => setShowRouteOptimizer(!showRouteOptimizer)}
                 className={cn(
                   "block w-10 h-10 flex items-center justify-center transition-colors",
-                  showRouteOptimizer ? "bg-orange-50 text-orange-600" : "hover:bg-gray-50 text-gray-700"
+                  showRouteOptimizer ? "bg-orange-50 text-orange-600" : "hover:bg-neutral-50 text-neutral-700"
                 )}
                 title="Optimize route order"
                 aria-label="Toggle route optimizer"
@@ -652,7 +652,7 @@ const MapContainer: React.FC = () => {
               "w-10 h-10 flex items-center justify-center rounded-lg shadow-md transition-colors",
               (showCampsiteControls || showCampsiteFilter)
                 ? "bg-green-600 text-white hover:bg-green-700"
-                : "bg-white text-gray-700 hover:bg-gray-50"
+                : "bg-white text-neutral-700 hover:bg-neutral-50"
             )}
             title={showCampsiteFilter ? "Hide filters" : showCampsiteControls ? "Advanced filters" : "Show campsites"}
             aria-label="Toggle campsite controls"
@@ -681,12 +681,12 @@ const MapContainer: React.FC = () => {
 
       {/* Map info overlay - responsive design */}
       <div className="absolute bottom-4 left-4 z-30 hidden sm:block">
-        <div className="bg-white bg-opacity-95 rounded-lg shadow-md px-3 py-2 text-xs text-gray-600 animate-fade-in">
+        <div className="bg-white bg-opacity-95 rounded-lg shadow-md px-3 py-2 text-xs text-neutral-600 animate-fade-in">
           <div className="sm:block hidden">
             Zoom: {zoom} | Center: {center[0].toFixed(4)}, {center[1].toFixed(4)}
           </div>
           <div className="flex items-center justify-between mt-1">
-            <span className="text-blue-600 font-medium">
+            <span className="text-primary-600 font-medium">
               Waypoints: {waypoints.length}
             </span>
             {waypoints.length === 0 ? (
@@ -703,19 +703,14 @@ const MapContainer: React.FC = () => {
               </span>
             )}
           </div>
-          {isValidForRouting() && (
-            <div className="mt-1 text-xs text-green-600 font-medium">
-              Ready for Phase 3: Routing
-            </div>
-          )}
         </div>
       </div>
 
       {/* Mobile-optimized info bar */}
       <div className="absolute bottom-0 left-0 right-0 z-30 sm:hidden">
-        <div className="bg-white bg-opacity-95 border-t border-gray-200 px-4 py-2 text-sm">
+        <div className="bg-white bg-opacity-95 border-t border-neutral-200 px-4 py-2 text-sm">
           <div className="flex items-center justify-between">
-            <span className="text-gray-600">
+            <span className="text-neutral-600">
               {waypoints.length} waypoint{waypoints.length !== 1 ? 's' : ''}
             </span>
             {waypoints.length === 0 ? (
@@ -737,23 +732,23 @@ const MapContainer: React.FC = () => {
 
       {/* Route Information Panel */}
       {showRouteInfo && FeatureFlags.BASIC_ROUTING && calculatedRoute && !showCampsiteDetails && !showCampsiteRecommendations && (
-        <div className="fixed inset-y-0 right-0 z-40 w-full sm:w-96 bg-white border-l border-gray-200 shadow-xl transform transition-transform sm:translate-x-0">
+        <div className="fixed inset-y-0 right-0 z-40 w-full sm:w-96 bg-white border-l border-neutral-200 shadow-xl transform transition-transform sm:translate-x-0">
           {/* Panel Header */}
-          <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gray-50">
+          <div className="flex items-center justify-between p-4 border-b border-neutral-200 bg-neutral-50">
             <div className="flex items-center space-x-3">
-              <h2 className="text-lg font-semibold text-gray-900">Route Details</h2>
+              <h2 className="text-lg font-semibold text-neutral-900">Route Details</h2>
               {calculatedRoute.alternativeRoutes && calculatedRoute.alternativeRoutes.length > 0 && (
-                <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
+                <span className="bg-primary-100 text-primary-800 text-xs px-2 py-1 rounded-full">
                   +{calculatedRoute.alternativeRoutes.length} alternatives
                 </span>
               )}
             </div>
             <button
               onClick={() => setShowRouteInfo(false)}
-              className="p-1 hover:bg-gray-200 rounded transition-colors"
+              className="p-1 hover:bg-neutral-200 rounded transition-colors"
               aria-label="Close route information"
             >
-              <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
@@ -761,14 +756,14 @@ const MapContainer: React.FC = () => {
 
           {/* Tab Navigation */}
           {calculatedRoute.alternativeRoutes && calculatedRoute.alternativeRoutes.length > 0 && (
-            <div className="flex border-b border-gray-200 bg-gray-50">
+            <div className="flex border-b border-neutral-200 bg-neutral-50">
               <button
                 onClick={() => setRouteInfoTab('info')}
                 className={cn(
                   'flex-1 py-3 px-4 text-sm font-medium transition-colors',
                   routeInfoTab === 'info'
-                    ? 'text-blue-600 border-b-2 border-blue-600 bg-white'
-                    : 'text-gray-500 hover:text-gray-700'
+                    ? 'text-primary-600 border-b-2 border-primary-600 bg-white'
+                    : 'text-neutral-500 hover:text-neutral-700'
                 )}
               >
                 Route Info
@@ -778,8 +773,8 @@ const MapContainer: React.FC = () => {
                 className={cn(
                   'flex-1 py-3 px-4 text-sm font-medium transition-colors',
                   routeInfoTab === 'comparison'
-                    ? 'text-blue-600 border-b-2 border-blue-600 bg-white'
-                    : 'text-gray-500 hover:text-gray-700'
+                    ? 'text-primary-600 border-b-2 border-primary-600 bg-white'
+                    : 'text-neutral-500 hover:text-neutral-700'
                 )}
               >
                 Compare Routes
@@ -801,7 +796,7 @@ const MapContainer: React.FC = () => {
 
       {/* Campsite Details Panel */}
       {showCampsiteDetails && selectedCampsite && FeatureFlags.CAMPSITE_DISPLAY && (
-        <div className="fixed inset-y-0 right-0 z-40 w-full sm:w-96 bg-white border-l border-gray-200 shadow-xl transform transition-transform sm:translate-x-0">
+        <div className="fixed inset-y-0 right-0 z-40 w-full sm:w-96 bg-white border-l border-neutral-200 shadow-xl transform transition-transform sm:translate-x-0">
           <CampsiteDetails
             campsite={selectedCampsite}
             onClose={handleCampsiteDetailsClose}
@@ -812,16 +807,16 @@ const MapContainer: React.FC = () => {
 
       {/* Campsite Recommendations Panel - V2 DISABLED */}
       {/* {showCampsiteRecommendations && FeatureFlags.CAMPSITE_DISPLAY && (
-        <div className="fixed inset-y-0 right-0 z-40 w-full sm:w-96 bg-white border-l border-gray-200 shadow-xl transform transition-transform sm:translate-x-0">
+        <div className="fixed inset-y-0 right-0 z-40 w-full sm:w-96 bg-white border-l border-neutral-200 shadow-xl transform transition-transform sm:translate-x-0">
           <div className="h-full flex flex-col">
-            <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-purple-50">
-              <h2 className="text-lg font-semibold text-gray-900">Campsite Recommendations</h2>
+            <div className="flex items-center justify-between p-4 border-b border-neutral-200 bg-purple-50">
+              <h2 className="text-lg font-semibold text-neutral-900">Campsite Recommendations</h2>
               <button
                 onClick={() => setShowCampsiteRecommendations(false)}
                 className="p-1 hover:bg-purple-200 rounded transition-colors"
                 aria-label="Close recommendations"
               >
-                <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
@@ -835,17 +830,17 @@ const MapContainer: React.FC = () => {
 
       {/* Route Optimizer Panel */}
       {showRouteOptimizer && FeatureFlags.ROUTE_OPTIMIZATION && (
-        <div className="fixed inset-y-0 right-0 z-40 w-full sm:w-96 bg-white border-l border-gray-200 shadow-xl transform transition-transform sm:translate-x-0">
+        <div className="fixed inset-y-0 right-0 z-40 w-full sm:w-96 bg-white border-l border-neutral-200 shadow-xl transform transition-transform sm:translate-x-0">
           <div className="h-full flex flex-col">
             {/* Panel Header */}
-            <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-orange-50">
-              <h2 className="text-lg font-semibold text-gray-900">Route Optimizer</h2>
+            <div className="flex items-center justify-between p-4 border-b border-neutral-200 bg-orange-50">
+              <h2 className="text-lg font-semibold text-neutral-900">Route Optimizer</h2>
               <button
                 onClick={() => setShowRouteOptimizer(false)}
                 className="p-1 hover:bg-orange-200 rounded transition-colors"
                 aria-label="Close optimizer"
               >
-                <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
@@ -871,17 +866,17 @@ const MapContainer: React.FC = () => {
 
       {/* Cost Calculator Panel */}
       {showCostCalculator && (
-        <div className="fixed inset-y-0 right-0 z-40 w-full sm:w-96 bg-white border-l border-gray-200 shadow-xl transform transition-transform sm:translate-x-0">
+        <div className="fixed inset-y-0 right-0 z-40 w-full sm:w-96 bg-white border-l border-neutral-200 shadow-xl transform transition-transform sm:translate-x-0">
           <div className="h-full flex flex-col">
             {/* Panel Header */}
-            <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-emerald-50">
-              <h2 className="text-lg font-semibold text-gray-900">Trip Cost Calculator</h2>
+            <div className="flex items-center justify-between p-4 border-b border-neutral-200 bg-emerald-50">
+              <h2 className="text-lg font-semibold text-neutral-900">Trip Cost Calculator</h2>
               <button
                 onClick={() => setShowCostCalculator(false)}
                 className="p-1 hover:bg-emerald-200 rounded transition-colors"
                 aria-label="Close cost calculator"
               >
-                <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
@@ -903,17 +898,17 @@ const MapContainer: React.FC = () => {
 
       {/* Trip Manager Panel */}
       {showTripManager && (
-        <div className="fixed inset-y-0 right-0 z-40 w-full sm:w-96 bg-white border-l border-gray-200 shadow-xl transform transition-transform sm:translate-x-0">
+        <div className="fixed inset-y-0 right-0 z-40 w-full sm:w-96 bg-white border-l border-neutral-200 shadow-xl transform transition-transform sm:translate-x-0">
           <div className="h-full flex flex-col">
             {/* Panel Header */}
-            <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-indigo-50">
-              <h2 className="text-lg font-semibold text-gray-900">Trip Manager</h2>
+            <div className="flex items-center justify-between p-4 border-b border-neutral-200 bg-indigo-50">
+              <h2 className="text-lg font-semibold text-neutral-900">Trip Manager</h2>
               <button
                 onClick={() => setShowTripManager(false)}
                 className="p-1 hover:bg-indigo-200 rounded transition-colors"
                 aria-label="Close trip manager"
               >
-                <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
@@ -938,17 +933,17 @@ const MapContainer: React.FC = () => {
 
       {/* Planning Tools Panel */}
       {showPlanningTools && (
-        <div className="fixed inset-y-0 right-0 z-40 w-full sm:w-96 bg-white border-l border-gray-200 shadow-xl transform transition-transform sm:translate-x-0">
+        <div className="fixed inset-y-0 right-0 z-40 w-full sm:w-96 bg-white border-l border-neutral-200 shadow-xl transform transition-transform sm:translate-x-0">
           <div className="h-full flex flex-col">
             {/* Panel Header */}
-            <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-violet-50">
-              <h2 className="text-lg font-semibold text-gray-900">Planning Tools</h2>
+            <div className="flex items-center justify-between p-4 border-b border-neutral-200 bg-violet-50">
+              <h2 className="text-lg font-semibold text-neutral-900">Planning Tools</h2>
               <button
                 onClick={() => setShowPlanningTools(false)}
                 className="p-1 hover:bg-violet-200 rounded transition-colors"
                 aria-label="Close planning tools"
               >
-                <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>

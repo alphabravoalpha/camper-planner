@@ -163,18 +163,18 @@ const RouteCalculator: React.FC<RouteCalculatorProps> = ({
   if (!FeatureFlags.BASIC_ROUTING) return null;
 
   return (
-    <div className={cn('bg-white rounded-lg shadow-sm border border-gray-200 p-4', className)}>
+    <div className={cn('bg-white rounded-2xl shadow-soft p-4', className)}>
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-sm font-medium text-gray-900">Route Calculation</h3>
+        <h3 className="text-sm font-medium text-neutral-900">Route Calculation</h3>
 
         {/* Route status indicator */}
         <div className="flex items-center space-x-2">
           {isCalculating && (
-            <div className="animate-spin rounded-full h-4 w-4 border-2 border-blue-600 border-t-transparent"></div>
+            <div className="animate-spin rounded-full h-4 w-4 border-2 border-primary-600 border-t-transparent"></div>
           )}
 
           {routeStats && (
-            <span className="text-xs text-gray-500">
+            <span className="text-xs text-neutral-500">
               {routeStats.distance}km • {Math.floor(routeStats.duration / 60)}h{routeStats.duration % 60}m
             </span>
           )}
@@ -244,7 +244,7 @@ const RouteCalculator: React.FC<RouteCalculatorProps> = ({
         <div className="mb-3">
           <button
             onClick={() => setShowAlternatives(!showAlternatives)}
-            className="w-full flex items-center justify-between p-2 bg-blue-50 border border-blue-200 rounded text-xs text-blue-800 hover:bg-blue-100 transition-colors"
+            className="w-full flex items-center justify-between p-2 bg-primary-50 border border-primary-200 rounded text-xs text-primary-800 hover:bg-primary-100 transition-colors"
           >
             <span className="font-medium">
               {alternativeRoutes.length} Alternative Route{alternativeRoutes.length > 1 ? 's' : ''} Available
@@ -257,12 +257,12 @@ const RouteCalculator: React.FC<RouteCalculatorProps> = ({
           {showAlternatives && (
             <div className="mt-2 space-y-2">
               {alternativeRoutes.map((altRoute, index) => (
-                <div key={index} className="p-2 bg-gray-50 border border-gray-200 rounded text-xs">
+                <div key={index} className="p-2 bg-neutral-50 border border-neutral-200 rounded text-xs">
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-700">
+                    <span className="text-neutral-700">
                       Alternative {index + 1}: <strong>{Math.round(altRoute.summary.distance / 1000 * 10) / 10} km</strong>
                     </span>
-                    <span className="text-gray-600">
+                    <span className="text-neutral-600">
                       {Math.floor(altRoute.summary.duration / 60)}h {Math.round(altRoute.summary.duration / 60) % 60}m
                     </span>
                   </div>
@@ -292,7 +292,7 @@ const RouteCalculator: React.FC<RouteCalculatorProps> = ({
                         message: `Switched to alternative route ${index + 1}`
                       });
                     }}
-                    className="mt-1 text-blue-600 hover:text-blue-800 font-medium underline"
+                    className="mt-1 text-primary-600 hover:text-primary-800 font-medium underline"
                   >
                     Use this route
                   </button>
@@ -341,8 +341,8 @@ const RouteCalculator: React.FC<RouteCalculatorProps> = ({
           className={cn(
             'flex items-center space-x-2 px-3 py-2 rounded text-sm font-medium transition-colors',
             isValidForRouting() && !isCalculating
-              ? 'bg-blue-600 text-white hover:bg-blue-700'
-              : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+              ? 'bg-primary-600 text-white hover:bg-primary-700'
+              : 'bg-neutral-100 text-neutral-400 cursor-not-allowed'
           )}
         >
           {isCalculating ? (
@@ -361,7 +361,7 @@ const RouteCalculator: React.FC<RouteCalculatorProps> = ({
         </button>
 
         {/* Auto-calculate toggle */}
-        <label className="flex items-center space-x-2 text-xs text-gray-600">
+        <label className="flex items-center space-x-2 text-xs text-neutral-600">
           <input
             type="checkbox"
             checked={autoCalculate}
@@ -369,7 +369,7 @@ const RouteCalculator: React.FC<RouteCalculatorProps> = ({
               // This would need to be lifted up to parent component or stored in state
               // For now, it's controlled by the parent prop
             }}
-            className="h-3 w-3 text-blue-600 rounded border-gray-300"
+            className="h-3 w-3 text-primary-600 rounded border-neutral-300"
             disabled
           />
           <span>Auto-calculate</span>
@@ -378,15 +378,15 @@ const RouteCalculator: React.FC<RouteCalculatorProps> = ({
 
       {/* Service status */}
       {lastCalculationTime && (
-        <div className="mt-2 text-xs text-gray-500">
+        <div className="mt-2 text-xs text-neutral-500">
           Last updated: {new Date(lastCalculationTime).toLocaleTimeString()}
         </div>
       )}
 
       {/* Route Export Info */}
       {routeStats && (
-        <div className="mt-3 p-2 bg-gray-50 border border-gray-200 rounded text-xs">
-          <div className="flex items-center justify-between text-gray-600">
+        <div className="mt-3 p-2 bg-neutral-50 border border-neutral-200 rounded text-xs">
+          <div className="flex items-center justify-between text-neutral-600">
             <span>Route ready for export</span>
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -397,7 +397,7 @@ const RouteCalculator: React.FC<RouteCalculatorProps> = ({
 
       {/* Help text */}
       {!isValidForRouting() && waypoints.length < 2 && (
-        <div className="mt-3 p-2 bg-blue-50 border border-blue-200 rounded text-xs text-blue-800">
+        <div className="mt-3 p-2 bg-primary-50 border border-primary-200 rounded text-xs text-primary-800">
           Add at least 2 waypoints to enable route calculation
         </div>
       )}

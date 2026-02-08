@@ -113,7 +113,7 @@ const PlannerPageDebug: React.FC = () => {
       </div>
 
       {/* Debug Footer */}
-      <div className="bg-gray-100 p-4 text-sm text-gray-600">
+      <div className="bg-neutral-100 p-4 text-sm text-neutral-600">
         <p><strong>Status:</strong> Step 4 - MapContainer + WaypointManager + SimpleCampsiteLayer (External controls disabled)</p>
         <p><strong>Expected:</strong> Full-width map without Leaflet context errors</p>
         <p><strong>Fixed:</strong> Removed external VehicleProfileSidebar and RouteCalculator to prevent context errors</p>

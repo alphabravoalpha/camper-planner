@@ -423,9 +423,9 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
     <div className={cn('relative', className)}>
       {/* Search input */}
       <div className="relative">
-        <div className="flex items-center bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden">
+        <div className="flex items-center bg-white rounded-2xl shadow-float border-0 ring-1 ring-black/5 overflow-hidden">
           <div className="pl-4 pr-2 py-3">
-            <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="h-5 w-5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
           </div>
@@ -438,12 +438,12 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
             onFocus={() => setShowResults(query.trim().length >= 2 || searchHistory.length > 0)}
             onBlur={() => setTimeout(() => setShowResults(false), 200)}
             placeholder="Search for a location or campsite..."
-            className="flex-1 py-3 pr-4 text-sm bg-transparent border-0 focus:ring-0 focus:outline-none placeholder-gray-500"
+            className="flex-1 py-3 pr-4 text-sm bg-transparent border-0 focus:ring-0 focus:outline-none placeholder-neutral-400"
           />
           {query && (
             <button
               onClick={clearSearch}
-              className="px-3 py-2 text-gray-400 hover:text-gray-600 transition-colors"
+              className="px-3 py-2 text-neutral-400 hover:text-neutral-600 transition-colors"
             >
               <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -452,7 +452,7 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
           )}
           {isSearching && (
             <div className="px-3">
-              <div className="animate-spin h-5 w-5 border-2 border-blue-500 border-t-transparent rounded-full"></div>
+              <div className="animate-spin h-5 w-5 border-2 border-primary-500 border-t-transparent rounded-full"></div>
             </div>
           )}
         </div>
@@ -462,7 +462,7 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
       {showResults && (results.length > 0 || searchHistory.length > 0 || searchError) && (
         <div
           ref={dropdownRef}
-          className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-xl border border-gray-200 z-50 max-h-96 overflow-y-auto"
+          className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-float border-0 ring-1 ring-black/5 z-50 max-h-96 overflow-y-auto"
           onMouseDown={(e) => e.preventDefault()}
         >
           {/* Search error message */}
@@ -489,8 +489,8 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
           {/* Location results */}
           {locationResults.length > 0 && (
             <div>
-              <div className="px-4 py-2 text-xs font-semibold text-gray-500 bg-gray-50 border-b border-gray-100 flex items-center">
-                <svg className="w-4 h-4 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="px-4 py-2 text-xs font-semibold text-neutral-500 bg-neutral-50/80 flex items-center">
+                <svg className="w-4 h-4 mr-2 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                 </svg>
                 LOCATIONS
@@ -505,8 +505,8 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
                   <div
                     key={result.id}
                     className={cn(
-                      'w-full px-4 py-3 flex items-center justify-between hover:bg-gray-50 transition-colors border-b border-gray-50',
-                      selectedIndex === index && 'bg-blue-50'
+                      'w-full px-4 py-3 flex items-center justify-between hover:bg-neutral-50 transition-all duration-150',
+                      selectedIndex === index && 'bg-primary-50'
                     )}
                   >
                     <div
@@ -516,14 +516,14 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
                       tabIndex={0}
                       onKeyDown={(e) => e.key === 'Enter' && handleResultSelect(result)}
                     >
-                      <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
-                        <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <div className="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center flex-shrink-0">
+                        <svg className="w-4 h-4 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                         </svg>
                       </div>
                       <div className="flex-1 min-w-0">
-                        <div className="text-sm font-medium text-gray-900">{result.name}</div>
-                        <div className="text-xs text-gray-500 truncate" title={result.description}>
+                        <div className="text-sm font-medium text-neutral-900">{result.name}</div>
+                        <div className="text-xs text-neutral-500 truncate" title={result.description}>
                           {result.description || 'Go to this location'}
                         </div>
                       </div>
@@ -536,7 +536,7 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
                           handleResultSelect(result);
                         }}
                         onMouseDown={(e) => e.stopPropagation()}
-                        className="px-2 py-1 text-xs text-blue-600 hover:bg-blue-50 rounded font-medium transition-colors"
+                        className="px-2 py-1 text-xs text-primary-600 hover:bg-primary-50 rounded font-medium transition-colors"
                       >
                         Go
                       </button>
@@ -547,7 +547,7 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
                       ) : (
                         <button
                           onClick={(e) => handleAddLocationToRoute(result, e)}
-                          className="px-2 py-1 text-xs bg-blue-100 text-blue-700 rounded font-medium hover:bg-blue-200 transition-colors"
+                          className="px-2 py-1 text-xs bg-primary-100 text-primary-700 rounded font-medium hover:bg-primary-200 transition-colors"
                         >
                           + Add
                         </button>
@@ -562,7 +562,7 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
           {/* Campsite results */}
           {campsiteResults.length > 0 && (
             <div>
-              <div className="px-4 py-2 text-xs font-semibold text-gray-500 bg-gray-50 border-b border-gray-100 flex items-center">
+              <div className="px-4 py-2 text-xs font-semibold text-neutral-500 bg-neutral-50/80 flex items-center">
                 <svg className="w-4 h-4 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                 </svg>
@@ -578,7 +578,7 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
                     onMouseEnter={() => onCampsiteHover?.(result.id)}
                     onMouseLeave={() => onCampsiteHover?.(null)}
                     className={cn(
-                      'w-full px-4 py-3 flex items-center justify-between hover:bg-gray-50 transition-colors border-b border-gray-50',
+                      'w-full px-4 py-3 flex items-center justify-between hover:bg-neutral-50 transition-all duration-150',
                       selectedIndex === resultIndex && 'bg-green-50'
                     )}
                   >
@@ -601,8 +601,8 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
                         </svg>
                       </div>
                       <div className="flex-1 min-w-0">
-                        <div className="text-sm font-medium text-gray-900 truncate">{result.name}</div>
-                        <div className="text-xs text-gray-500 flex items-center space-x-2">
+                        <div className="text-sm font-medium text-neutral-900 truncate">{result.name}</div>
+                        <div className="text-xs text-neutral-500 flex items-center space-x-2">
                           <span className="truncate">{result.description}</span>
                           {result.distance !== undefined && (
                             <span className="flex-shrink-0">
@@ -625,7 +625,7 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
                       ) : (
                         <button
                           onClick={(e) => handleAddToRoute(result, e)}
-                          className="px-2 py-1 text-xs bg-blue-100 text-blue-700 rounded font-medium hover:bg-blue-200 transition-colors"
+                          className="px-2 py-1 text-xs bg-primary-100 text-primary-700 rounded font-medium hover:bg-primary-200 transition-colors"
                         >
                           + Add
                         </button>
@@ -640,19 +640,19 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
           {/* No results */}
           {results.length === 0 && query.trim().length >= 2 && !isSearching && (
             <div className="px-4 py-6 text-center">
-              <svg className="w-12 h-12 mx-auto text-gray-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-12 h-12 mx-auto text-neutral-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              <p className="text-sm text-gray-500">No results found for "{query}"</p>
-              <p className="text-xs text-gray-400 mt-1">Try a different search term</p>
+              <p className="text-sm text-neutral-500">No results found for "{query}"</p>
+              <p className="text-xs text-neutral-400 mt-1">Try a different search term</p>
             </div>
           )}
 
           {/* Search history */}
           {query.trim().length < 2 && searchHistory.length > 0 && (
             <div>
-              <div className="px-4 py-2 text-xs font-semibold text-gray-500 bg-gray-50 border-b border-gray-100 flex items-center">
-                <svg className="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="px-4 py-2 text-xs font-semibold text-neutral-500 bg-neutral-50/80 flex items-center">
+                <svg className="w-4 h-4 mr-2 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 RECENT SEARCHES
@@ -661,12 +661,12 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
                 <button
                   key={historyItem}
                   onClick={() => setQuery(historyItem)}
-                  className="w-full px-4 py-3 text-left flex items-center space-x-3 hover:bg-gray-50 transition-colors border-b border-gray-50"
+                  className="w-full px-4 py-3 text-left flex items-center space-x-3 hover:bg-neutral-50 transition-colors"
                 >
-                  <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  <span className="text-sm text-gray-700">{historyItem}</span>
+                  <span className="text-sm text-neutral-700">{historyItem}</span>
                 </button>
               ))}
             </div>

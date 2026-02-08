@@ -28,9 +28,9 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
   };
 
   const variantClasses = {
-    primary: 'border-gray-300 border-t-blue-600',
-    white: 'border-gray-400 border-t-white',
-    gray: 'border-gray-200 border-t-gray-600'
+    primary: 'border-neutral-300 border-t-primary-600',
+    white: 'border-neutral-400 border-t-white',
+    gray: 'border-neutral-200 border-t-neutral-600'
   };
 
   const textSizeClasses = {
@@ -61,8 +61,8 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
           )} />
           {label && (
             <div className="text-center">
-              <p className="text-lg font-medium text-gray-900">{label}</p>
-              <p className="text-sm text-gray-600">Please wait...</p>
+              <p className="text-lg font-medium text-neutral-900">{label}</p>
+              <p className="text-sm text-neutral-600">Please wait...</p>
             </div>
           )}
         </div>
@@ -74,7 +74,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
     return (
       <div className="flex items-center space-x-3">
         {spinner}
-        <span className={cn('text-gray-600', textSizeClasses[size])}>
+        <span className={cn('text-neutral-600', textSizeClasses[size])}>
           {label}
         </span>
       </div>
@@ -91,18 +91,18 @@ export const LoadingSkeleton: React.FC<{
   variant?: 'text' | 'card' | 'avatar' | 'button';
 }> = ({ className, lines = 3, variant = 'text' }) => {
   const __skeletonLine = (
-    <div className="animate-pulse bg-gray-200 rounded h-4 w-full" />
+    <div className="animate-pulse bg-neutral-200 rounded h-4 w-full" />
   );
 
   if (variant === 'card') {
     return (
-      <div className={cn('animate-pulse space-y-4 p-6 bg-white border border-gray-200 rounded-lg', className)}>
-        <div className="h-4 bg-gray-200 rounded w-3/4" />
+      <div className={cn('animate-pulse space-y-4 p-6 bg-white border border-neutral-200 rounded-lg', className)}>
+        <div className="h-4 bg-neutral-200 rounded w-3/4" />
         <div className="space-y-2">
-          <div className="h-4 bg-gray-200 rounded" />
-          <div className="h-4 bg-gray-200 rounded w-5/6" />
+          <div className="h-4 bg-neutral-200 rounded" />
+          <div className="h-4 bg-neutral-200 rounded w-5/6" />
         </div>
-        <div className="h-8 bg-gray-200 rounded w-24" />
+        <div className="h-8 bg-neutral-200 rounded w-24" />
       </div>
     );
   }
@@ -110,10 +110,10 @@ export const LoadingSkeleton: React.FC<{
   if (variant === 'avatar') {
     return (
       <div className="animate-pulse flex items-center space-x-4">
-        <div className="rounded-full bg-gray-200 h-12 w-12" />
+        <div className="rounded-full bg-neutral-200 h-12 w-12" />
         <div className="flex-1 space-y-2">
-          <div className="h-4 bg-gray-200 rounded w-3/4" />
-          <div className="h-4 bg-gray-200 rounded w-1/2" />
+          <div className="h-4 bg-neutral-200 rounded w-3/4" />
+          <div className="h-4 bg-neutral-200 rounded w-1/2" />
         </div>
       </div>
     );
@@ -121,14 +121,14 @@ export const LoadingSkeleton: React.FC<{
 
   if (variant === 'button') {
     return (
-      <div className={cn('animate-pulse bg-gray-200 rounded h-10 w-24', className)} />
+      <div className={cn('animate-pulse bg-neutral-200 rounded h-10 w-24', className)} />
     );
   }
 
   return (
     <div className={cn('animate-pulse space-y-2', className)}>
       {Array.from({ length: lines }, (_, index) => (
-        <div key={index} className="h-4 bg-gray-200 rounded w-full" />
+        <div key={index} className="h-4 bg-neutral-200 rounded w-full" />
       ))}
     </div>
   );

@@ -20,7 +20,7 @@ export const Skeleton: React.FC<SkeletonProps> = ({
   animation = 'pulse'
 }) => {
   const baseClass = cn(
-    'bg-gray-200',
+    'bg-neutral-200',
     animation === 'pulse' && 'animate-pulse',
     animation === 'wave' && 'animate-shimmer',
     variant === 'text' && 'h-4 rounded',
@@ -39,7 +39,7 @@ export const Skeleton: React.FC<SkeletonProps> = ({
 
 // Campsite Card Skeleton
 export const CampsiteCardSkeleton: React.FC = () => (
-  <div className="border border-gray-200 rounded-lg p-4 space-y-3">
+  <div className="rounded-2xl shadow-soft p-4 space-y-3 bg-white">
     <div className="flex items-start space-x-3">
       <Skeleton variant="circular" width={40} height={40} />
       <div className="flex-1 space-y-2">
@@ -87,7 +87,7 @@ export const RouteInfoSkeleton: React.FC = () => (
 export const WaypointListSkeleton: React.FC<{ count?: number }> = ({ count = 3 }) => (
   <div className="space-y-2">
     {Array.from({ length: count }).map((_, i) => (
-      <div key={i} className="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg">
+      <div key={i} className="flex items-center space-x-3 p-3 rounded-2xl shadow-soft bg-white">
         <Skeleton variant="circular" width={36} height={36} />
         <div className="flex-1 space-y-2">
           <Skeleton variant="text" width="70%" height={14} />
@@ -101,12 +101,12 @@ export const WaypointListSkeleton: React.FC<{ count?: number }> = ({ count = 3 }
 
 // Map Loading Skeleton
 export const MapLoadingSkeleton: React.FC = () => (
-  <div className="absolute inset-0 bg-gray-100 flex items-center justify-center">
+  <div className="absolute inset-0 bg-neutral-100 flex items-center justify-center">
     <div className="text-center space-y-4">
       <div className="relative w-24 h-24 mx-auto">
         <Skeleton variant="circular" width={96} height={96} animation="wave" />
         <div className="absolute inset-0 flex items-center justify-center">
-          <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-12 h-12 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 01.553-.894L9 2l6 3 6-3v15l-6 3-6-3z" />
           </svg>
         </div>

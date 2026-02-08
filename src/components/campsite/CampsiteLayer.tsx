@@ -306,7 +306,7 @@ function createCampsitePopup(campsite: Campsite, _vehicleProfile?: any): string 
   const amenitiesHtml = campsite.amenities ? Object.entries(campsite.amenities)
     .filter(([_, available]) => available)
     .map(([amenity]) => `
-      <span class="inline-flex items-center px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-800 mr-1 mb-1">
+      <span class="inline-flex items-center px-2 py-1 rounded-full text-xs bg-primary-100 text-primary-800 mr-1 mb-1">
         ${amenityIcons[amenity] || '•'} ${amenity.replace(/_/g, ' ')}
       </span>
     `).join('') : '';
@@ -328,7 +328,7 @@ function createCampsitePopup(campsite: Campsite, _vehicleProfile?: any): string 
     <div class="campsite-popup-content p-3 min-w-0">
       <!-- Header -->
       <div class="flex items-start justify-between mb-2">
-        <h3 class="font-medium text-gray-900 text-sm leading-tight pr-2">
+        <h3 class="font-medium text-neutral-900 text-sm leading-tight pr-2">
           ${campsite.name || `${campsite.type.replace('_', ' ')} #${campsite.id}`}
         </h3>
         <span class="px-2 py-1 rounded text-xs font-medium whitespace-nowrap ${
@@ -342,24 +342,24 @@ function createCampsitePopup(campsite: Campsite, _vehicleProfile?: any): string 
 
       <!-- Type and basic info -->
       <div class="mb-2">
-        <div class="text-xs text-gray-600 capitalize mb-1">
+        <div class="text-xs text-neutral-600 capitalize mb-1">
           ${campsite.type.replace('_', ' ')}
         </div>
 
-        ${campsite.address ? `<div class="text-xs text-gray-700 mb-1">📍 ${campsite.address}</div>` : ''}
-        ${campsite.phone ? `<div class="text-xs text-gray-700 mb-1">📞 ${campsite.phone}</div>` : ''}
+        ${campsite.address ? `<div class="text-xs text-neutral-700 mb-1">📍 ${campsite.address}</div>` : ''}
+        ${campsite.phone ? `<div class="text-xs text-neutral-700 mb-1">📞 ${campsite.phone}</div>` : ''}
         ${campsite.website ? `
-          <div class="text-xs text-gray-700 mb-1">
+          <div class="text-xs text-neutral-700 mb-1">
             🌐 <a href="${campsite.website}" target="_blank" rel="noopener noreferrer"
-               class="text-blue-600 hover:text-blue-800 underline">Website</a>
+               class="text-primary-600 hover:text-primary-800 underline">Website</a>
           </div>` : ''}
-        ${campsite.opening_hours ? `<div class="text-xs text-gray-700 mb-1">🕒 ${campsite.opening_hours}</div>` : ''}
+        ${campsite.opening_hours ? `<div class="text-xs text-neutral-700 mb-1">🕒 ${campsite.opening_hours}</div>` : ''}
       </div>
 
       <!-- Amenities -->
       ${amenitiesHtml ? `
         <div class="mb-2">
-          <div class="text-xs font-medium text-gray-900 mb-1">Amenities:</div>
+          <div class="text-xs font-medium text-neutral-900 mb-1">Amenities:</div>
           <div class="flex flex-wrap">
             ${amenitiesHtml}
           </div>
@@ -370,7 +370,7 @@ function createCampsitePopup(campsite: Campsite, _vehicleProfile?: any): string 
       ${restrictionsHtml}
 
       <!-- Data source -->
-      <div class="mt-2 pt-2 border-t border-gray-200 text-xs text-gray-500">
+      <div class="mt-2 pt-2 border-t border-neutral-200 text-xs text-neutral-500">
         Data from ${campsite.source} • ID: ${campsite.osmId || campsite.id}
       </div>
     </div>

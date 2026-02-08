@@ -80,9 +80,9 @@ const CampsiteControls: React.FC<CampsiteControlsProps> = ({
   if (!FeatureFlags.CAMPSITE_DISPLAY) return null;
 
   return (
-    <div className={cn('bg-white rounded-lg shadow-sm border border-gray-200', className)}>
+    <div className={cn('bg-white rounded-lg shadow-sm border border-neutral-200', className)}>
       {/* Header */}
-      <div className="flex items-center justify-between p-3 border-b border-gray-200">
+      <div className="flex items-center justify-between p-3 border-b border-neutral-200">
         <div className="flex items-center space-x-2">
           <button
             onClick={() => onVisibilityChange?.(!isVisible)}
@@ -90,7 +90,7 @@ const CampsiteControls: React.FC<CampsiteControlsProps> = ({
               'flex items-center space-x-2 px-2 py-1 rounded text-sm font-medium transition-colors',
               isVisible
                 ? 'bg-green-100 text-green-800 hover:bg-green-200'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'
             )}
           >
             <div className="text-base">🏕️</div>
@@ -101,7 +101,7 @@ const CampsiteControls: React.FC<CampsiteControlsProps> = ({
               </span>
             )}
           </button>
-          <span className="text-xs text-gray-500">
+          <span className="text-xs text-neutral-500">
             ({visibleTypes.length}/{CAMPSITE_TYPES.length} types)
           </span>
         </div>
@@ -113,7 +113,7 @@ const CampsiteControls: React.FC<CampsiteControlsProps> = ({
               onClick={onRefresh}
               disabled={isLoading}
               className={cn(
-                'p-1.5 rounded text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors',
+                'p-1.5 rounded text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100 transition-colors',
                 isLoading && 'cursor-not-allowed opacity-50'
               )}
               title="Refresh campsite data"
@@ -137,7 +137,7 @@ const CampsiteControls: React.FC<CampsiteControlsProps> = ({
           {/* Expand/collapse button */}
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="p-1.5 rounded text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors"
+            className="p-1.5 rounded text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100 transition-colors"
           >
             <svg
               className={cn('w-4 h-4 transform transition-transform', isExpanded && 'rotate-180')}
@@ -166,7 +166,7 @@ const CampsiteControls: React.FC<CampsiteControlsProps> = ({
                     'flex items-center justify-center w-8 h-8 rounded-full border-2 transition-all',
                     visibleTypes.includes(type)
                       ? 'border-green-500 bg-green-50 text-green-700'
-                      : 'border-gray-300 bg-gray-50 text-gray-400 hover:border-gray-400'
+                      : 'border-neutral-300 bg-neutral-50 text-neutral-400 hover:border-neutral-400'
                   )}
                   title={CAMPSITE_TYPES.find(ct => ct.type === type)?.label}
                 >
@@ -175,7 +175,7 @@ const CampsiteControls: React.FC<CampsiteControlsProps> = ({
               ))}
             </div>
 
-            <div className="text-xs text-gray-500">
+            <div className="text-xs text-neutral-500">
               Max: {maxResults} • {vehicleCompatibleOnly ? 'Compatible only' : 'All sites'}
             </div>
           </div>
@@ -188,10 +188,10 @@ const CampsiteControls: React.FC<CampsiteControlsProps> = ({
           {/* Campsite type filters */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="text-xs font-medium text-gray-700">Campsite Types</label>
+              <label className="text-xs font-medium text-neutral-700">Campsite Types</label>
               <button
                 onClick={toggleAll}
-                className="text-xs text-blue-600 hover:text-blue-800 font-medium"
+                className="text-xs text-primary-600 hover:text-primary-800 font-medium"
               >
                 {visibleTypes.length === CAMPSITE_TYPES.length ? 'None' : 'All'}
               </button>
@@ -204,14 +204,14 @@ const CampsiteControls: React.FC<CampsiteControlsProps> = ({
                     type="checkbox"
                     checked={visibleTypes.includes(type)}
                     onChange={() => handleTypeToggle(type)}
-                    className="mt-1 h-4 w-4 text-green-600 rounded border-gray-300 focus:ring-green-500"
+                    className="mt-1 h-4 w-4 text-green-600 rounded border-neutral-300 focus:ring-green-500"
                   />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center space-x-2">
                       <span className="text-sm">{icon}</span>
-                      <span className="text-sm font-medium text-gray-900">{label}</span>
+                      <span className="text-sm font-medium text-neutral-900">{label}</span>
                     </div>
-                    <p className="text-xs text-gray-500 mt-0.5">{description}</p>
+                    <p className="text-xs text-neutral-500 mt-0.5">{description}</p>
                   </div>
                 </label>
               ))}
@@ -225,11 +225,11 @@ const CampsiteControls: React.FC<CampsiteControlsProps> = ({
                 type="checkbox"
                 checked={vehicleCompatibleOnly}
                 onChange={(e) => onVehicleCompatibleChange(e.target.checked)}
-                className="mt-1 h-4 w-4 text-green-600 rounded border-gray-300 focus:ring-green-500"
+                className="mt-1 h-4 w-4 text-green-600 rounded border-neutral-300 focus:ring-green-500"
               />
               <div className="flex-1">
-                <div className="text-sm font-medium text-gray-900">Vehicle Compatible Only</div>
-                <p className="text-xs text-gray-500 mt-0.5">
+                <div className="text-sm font-medium text-neutral-900">Vehicle Compatible Only</div>
+                <p className="text-xs text-neutral-500 mt-0.5">
                   Show only campsites that can accommodate your vehicle dimensions
                 </p>
               </div>
@@ -238,7 +238,7 @@ const CampsiteControls: React.FC<CampsiteControlsProps> = ({
 
           {/* Max results */}
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-2">
+            <label className="block text-xs font-medium text-neutral-700 mb-2">
               Maximum Results: {maxResults}
             </label>
             <div className="flex items-center space-x-2">
@@ -249,27 +249,27 @@ const CampsiteControls: React.FC<CampsiteControlsProps> = ({
                 step={25}
                 value={maxResults}
                 onChange={(e) => onMaxResultsChange(parseInt(e.target.value))}
-                className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+                className="flex-1 h-2 bg-neutral-200 rounded-lg appearance-none cursor-pointer slider"
               />
               <select
                 value={maxResults}
                 onChange={(e) => onMaxResultsChange(parseInt(e.target.value))}
-                className="text-xs border border-gray-300 rounded px-2 py-1 bg-white"
+                className="text-xs border border-neutral-300 rounded px-2 py-1 bg-white"
               >
                 {MAX_RESULTS_OPTIONS.map(option => (
                   <option key={option} value={option}>{option}</option>
                 ))}
               </select>
             </div>
-            <div className="flex justify-between text-xs text-gray-500 mt-1">
+            <div className="flex justify-between text-xs text-neutral-500 mt-1">
               <span>25</span>
               <span>500</span>
             </div>
           </div>
 
           {/* Map Legend */}
-          <div className="p-3 bg-gray-50 border border-gray-200 rounded">
-            <div className="text-xs font-medium text-gray-700 mb-2">Map Legend</div>
+          <div className="p-3 bg-neutral-50 border border-neutral-200 rounded">
+            <div className="text-xs font-medium text-neutral-700 mb-2">Map Legend</div>
             <div className="space-y-2">
               {/* Campsite type legend */}
               <div className="flex items-center space-x-2">
@@ -278,7 +278,7 @@ const CampsiteControls: React.FC<CampsiteControlsProps> = ({
                     <path d="M10 0C4.5 0 0 4.5 0 10c0 7.5 10 18 10 18s10-10.5 10-18C20 4.5 15.5 0 10 0z" fill="#22c55e" stroke="#16a34a" strokeWidth="1.5"/>
                   </svg>
                 </div>
-                <span className="text-xs text-gray-700">Campsite (tent/caravan)</span>
+                <span className="text-xs text-neutral-700">Campsite (tent/caravan)</span>
               </div>
               <div className="flex items-center space-x-2">
                 <div className="w-5 h-6 flex-shrink-0">
@@ -286,7 +286,7 @@ const CampsiteControls: React.FC<CampsiteControlsProps> = ({
                     <path d="M10 0C4.5 0 0 4.5 0 10c0 7.5 10 18 10 18s10-10.5 10-18C20 4.5 15.5 0 10 0z" fill="#3b82f6" stroke="#2563eb" strokeWidth="1.5"/>
                   </svg>
                 </div>
-                <span className="text-xs text-gray-700">Caravan/Motorhome site</span>
+                <span className="text-xs text-neutral-700">Caravan/Motorhome site</span>
               </div>
               <div className="flex items-center space-x-2">
                 <div className="w-5 h-6 flex-shrink-0">
@@ -294,24 +294,24 @@ const CampsiteControls: React.FC<CampsiteControlsProps> = ({
                     <path d="M10 0C4.5 0 0 4.5 0 10c0 7.5 10 18 10 18s10-10.5 10-18C20 4.5 15.5 0 10 0z" fill="#8b5cf6" stroke="#7c3aed" strokeWidth="1.5"/>
                   </svg>
                 </div>
-                <span className="text-xs text-gray-700">Aire de Service</span>
+                <span className="text-xs text-neutral-700">Aire de Service</span>
               </div>
 
               {/* Status indicators */}
-              <div className="pt-2 mt-2 border-t border-gray-200">
+              <div className="pt-2 mt-2 border-t border-neutral-200">
                 <div className="flex items-center space-x-2">
                   <div className="w-5 h-6 flex-shrink-0">
                     <svg viewBox="0 0 20 28" className="w-full h-full">
                       <path d="M10 0C4.5 0 0 4.5 0 10c0 7.5 10 18 10 18s10-10.5 10-18C20 4.5 15.5 0 10 0z" fill="#ef4444" stroke="#dc2626" strokeWidth="1.5"/>
                     </svg>
                   </div>
-                  <span className="text-xs text-gray-700">May not fit your vehicle</span>
+                  <span className="text-xs text-neutral-700">May not fit your vehicle</span>
                 </div>
                 <div className="flex items-center space-x-2 mt-1">
                   <div className="w-5 h-5 flex-shrink-0 flex items-center justify-center">
                     <div className="w-4 h-4 rounded-full bg-green-500 text-white text-[8px] font-bold flex items-center justify-center border-2 border-white shadow">3</div>
                   </div>
-                  <span className="text-xs text-gray-700">Clustered markers (zoom in)</span>
+                  <span className="text-xs text-neutral-700">Clustered markers (zoom in)</span>
                 </div>
               </div>
             </div>

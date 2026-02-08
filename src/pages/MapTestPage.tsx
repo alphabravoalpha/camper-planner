@@ -39,7 +39,7 @@ const MapTestPage: React.FC = () => {
 
   return (
     <div className="h-screen flex flex-col">
-      <div className="bg-blue-600 text-white p-4">
+      <div className="bg-primary-600 text-white p-4">
         <h1 className="text-xl font-bold">Leaflet Context Test Page</h1>
         <p className="text-sm">Testing basic MapContainer and useMap hook</p>
       </div>
@@ -64,7 +64,7 @@ const MapTestPage: React.FC = () => {
         </LeafletMapContainer>
       </div>
 
-      <div className="bg-gray-100 p-4 text-sm text-gray-600">
+      <div className="bg-neutral-100 p-4 text-sm text-neutral-600">
         <p>Check browser console for map instance logs. If you see logs, Leaflet context is working.</p>
         <p>If you see "useLeafletContext() can only be used in a descendant of MapContainer" error, context is broken.</p>
       </div>

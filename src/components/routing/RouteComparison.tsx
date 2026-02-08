@@ -92,10 +92,10 @@ const RouteComparison: React.FC<RouteComparisonProps> = ({ className }) => {
   const baseRoute = routeOptions[0].route; // Use main route as baseline
 
   return (
-    <div className={cn('bg-white rounded-lg border border-gray-200', className)}>
-      <div className="p-4 border-b border-gray-200">
-        <h3 className="text-lg font-semibold text-gray-900">Route Comparison</h3>
-        <p className="text-sm text-gray-600 mt-1">{routeOptions.length} route options available</p>
+    <div className={cn('bg-white rounded-lg border border-neutral-200', className)}>
+      <div className="p-4 border-b border-neutral-200">
+        <h3 className="text-lg font-semibold text-neutral-900">Route Comparison</h3>
+        <p className="text-sm text-neutral-600 mt-1">{routeOptions.length} route options available</p>
       </div>
 
       <div className="p-4">
@@ -115,8 +115,8 @@ const RouteComparison: React.FC<RouteComparisonProps> = ({ className }) => {
                 className={cn(
                   'relative p-4 rounded-lg border cursor-pointer transition-all',
                   isSelected
-                    ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-200'
-                    : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                    ? 'border-primary-500 bg-primary-50 ring-2 ring-primary-200'
+                    : 'border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50'
                 )}
                 onClick={() => switchToRoute(option.id)}
               >
@@ -126,21 +126,21 @@ const RouteComparison: React.FC<RouteComparisonProps> = ({ className }) => {
                     <div className={cn(
                       'w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium',
                       isSelected
-                        ? 'bg-blue-500 text-white'
-                        : 'bg-gray-100 text-gray-700'
+                        ? 'bg-primary-500 text-white'
+                        : 'bg-neutral-100 text-neutral-700'
                     )}>
                       {index === 0 ? '1' : String.fromCharCode(65 + index)} {/* 1, A, B, C... */}
                     </div>
                     <div>
-                      <h4 className="font-medium text-gray-900">{option.label}</h4>
+                      <h4 className="font-medium text-neutral-900">{option.label}</h4>
                       {option.isAlternative && (
-                        <div className="text-xs text-gray-500">Alternative route option</div>
+                        <div className="text-xs text-neutral-500">Alternative route option</div>
                       )}
                     </div>
                   </div>
 
                   {isSelected && (
-                    <div className="flex items-center space-x-1 text-blue-600">
+                    <div className="flex items-center space-x-1 text-primary-600">
                       <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                       </svg>
@@ -152,7 +152,7 @@ const RouteComparison: React.FC<RouteComparisonProps> = ({ className }) => {
                 {/* Route Metrics */}
                 <div className="grid grid-cols-3 gap-4 text-sm">
                   <div>
-                    <div className="text-gray-500">Distance</div>
+                    <div className="text-neutral-500">Distance</div>
                     <div className="font-medium">{distanceKm} km</div>
                     {comparison && (
                       <div className={cn(
@@ -165,7 +165,7 @@ const RouteComparison: React.FC<RouteComparisonProps> = ({ className }) => {
                   </div>
 
                   <div>
-                    <div className="text-gray-500">Time</div>
+                    <div className="text-neutral-500">Time</div>
                     <div className="font-medium">{hours}h {minutes}m</div>
                     {comparison && (
                       <div className={cn(
@@ -178,20 +178,20 @@ const RouteComparison: React.FC<RouteComparisonProps> = ({ className }) => {
                   </div>
 
                   <div>
-                    <div className="text-gray-500">Type</div>
+                    <div className="text-neutral-500">Type</div>
                     <div className="font-medium">
                       {index === 0 ? 'Fastest' : comparison ?
                         (comparison.distanceDiff < 0 ? 'Shorter' : 'Scenic') : 'Alternative'}
                     </div>
                     {profile && (
-                      <div className="text-xs text-gray-500">Vehicle safe</div>
+                      <div className="text-xs text-neutral-500">Vehicle safe</div>
                     )}
                   </div>
                 </div>
 
                 {/* Route Characteristics */}
                 {comparison && (
-                  <div className="mt-3 flex items-center space-x-4 text-xs text-gray-600">
+                  <div className="mt-3 flex items-center space-x-4 text-xs text-neutral-600">
                     {Math.abs(comparison.distancePercent) > 10 && (
                       <div className="flex items-center space-x-1">
                         <span className={cn(
@@ -207,7 +207,7 @@ const RouteComparison: React.FC<RouteComparisonProps> = ({ className }) => {
                       <div className="flex items-center space-x-1">
                         <span className={cn(
                           "w-2 h-2 rounded-full",
-                          comparison.timePercent > 0 ? 'bg-orange-400' : 'bg-blue-400'
+                          comparison.timePercent > 0 ? 'bg-orange-400' : 'bg-primary-400'
                         )} />
                         <span>
                           {comparison.timePercent > 0 ? 'Slower' : 'Faster'}
@@ -222,9 +222,9 @@ const RouteComparison: React.FC<RouteComparisonProps> = ({ className }) => {
         </div>
 
         {/* Comparison Summary */}
-        <div className="mt-4 p-3 bg-gray-50 rounded-lg">
-          <h4 className="font-medium text-gray-900 mb-2">Route Selection Guide</h4>
-          <div className="text-sm text-gray-600 space-y-1">
+        <div className="mt-4 p-3 bg-neutral-50 rounded-lg">
+          <h4 className="font-medium text-neutral-900 mb-2">Route Selection Guide</h4>
+          <div className="text-sm text-neutral-600 space-y-1">
             <div>• <strong>Main Route:</strong> Fastest route optimized for your vehicle</div>
             <div>• <strong>Alternatives:</strong> Different paths that may avoid restrictions or offer scenic routes</div>
             {profile && (

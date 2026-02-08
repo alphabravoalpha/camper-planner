@@ -483,7 +483,7 @@ const TripManager: React.FC<TripManagerProps> = ({
       case 'easy': return 'text-green-600 bg-green-100';
       case 'moderate': return 'text-yellow-600 bg-yellow-100';
       case 'challenging': return 'text-red-600 bg-red-100';
-      default: return 'text-gray-600 bg-gray-100';
+      default: return 'text-neutral-600 bg-neutral-100';
     }
   };
 
@@ -492,17 +492,17 @@ const TripManager: React.FC<TripManagerProps> = ({
   return (
     <div className={`bg-white rounded-lg shadow-lg border ${className}`}>
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b bg-gradient-to-r from-blue-50 to-purple-50">
+      <div className="flex items-center justify-between p-4 border-b bg-gradient-to-r from-primary-50 to-primary-100">
         <div className="flex items-center gap-3">
-          <Navigation className="w-6 h-6 text-blue-600" />
-          <h2 className="text-xl font-semibold text-gray-800">Trip Manager</h2>
+          <Navigation className="w-6 h-6 text-primary-600" />
+          <h2 className="text-xl font-semibold text-neutral-800">Trip Manager</h2>
         </div>
         <div className="flex items-center gap-2">
           {/* Quick actions */}
           <button
             onClick={handleSaveCurrentTrip}
             disabled={waypoints.length < 2}
-            className="flex items-center gap-2 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="flex items-center gap-2 px-3 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             <Save className="w-4 h-4" />
             Save Current
@@ -511,16 +511,16 @@ const TripManager: React.FC<TripManagerProps> = ({
           {onClose && (
             <button
               onClick={onClose}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              className="p-2 hover:bg-neutral-100 rounded-lg transition-colors"
             >
-              <X className="w-4 h-4 text-gray-600" />
+              <X className="w-4 h-4 text-neutral-600" />
             </button>
           )}
         </div>
       </div>
 
       {/* Navigation Tabs */}
-      <div className="flex border-b bg-gray-50">
+      <div className="flex border-b bg-neutral-50">
         {[
           { id: 'my_trips', label: 'My Trips', icon: <Save className="w-4 h-4" /> },
           { id: 'templates', label: 'Templates', icon: <Star className="w-4 h-4" /> },
@@ -531,8 +531,8 @@ const TripManager: React.FC<TripManagerProps> = ({
             onClick={() => setViewMode(tab.id as ViewMode)}
             className={`flex items-center gap-2 px-4 py-3 text-sm font-medium transition-colors ${
               viewMode === tab.id
-                ? 'text-blue-600 border-b-2 border-blue-600 bg-white'
-                : 'text-gray-500 hover:text-gray-700'
+                ? 'text-primary-600 border-b-2 border-primary-600 bg-white'
+                : 'text-neutral-500 hover:text-neutral-700'
             }`}
           >
             {tab.icon}
@@ -558,11 +558,11 @@ const TripManager: React.FC<TripManagerProps> = ({
       )}
 
       {/* Filters and Search */}
-      <div className="p-4 border-b bg-gray-50">
+      <div className="p-4 border-b bg-neutral-50">
         <div className="flex flex-col md:flex-row gap-3">
           {/* Search */}
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-neutral-400" />
             <input
               type="text"
               placeholder="Search trips, tags, or countries..."
@@ -609,13 +609,13 @@ const TripManager: React.FC<TripManagerProps> = ({
         {viewMode === 'my_trips' && (
           <div>
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-medium text-gray-800">
+              <h3 className="text-lg font-medium text-neutral-800">
                 My Trips ({filteredTrips.length})
               </h3>
               <div className="flex gap-2">
                 <button
                   onClick={() => setShowImportModal(true)}
-                  className="flex items-center gap-2 px-3 py-2 border rounded-lg hover:bg-gray-50 text-sm"
+                  className="flex items-center gap-2 px-3 py-2 border rounded-lg hover:bg-neutral-50 text-sm"
                 >
                   <Upload className="w-4 h-4" />
                   Import
@@ -633,8 +633,8 @@ const TripManager: React.FC<TripManagerProps> = ({
             </div>
 
             {filteredTrips.length === 0 ? (
-              <div className="text-center py-8 text-gray-500">
-                <Navigation className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+              <div className="text-center py-8 text-neutral-500">
+                <Navigation className="w-12 h-12 mx-auto mb-3 text-neutral-300" />
                 <p>No trips found. Start by saving your current route or using a template.</p>
               </div>
             ) : (
@@ -657,13 +657,13 @@ const TripManager: React.FC<TripManagerProps> = ({
                         />
                         <div className="flex items-center gap-2">
                           {getCategoryIcon(trip.category)}
-                          <h4 className="font-semibold text-gray-800">{trip.name}</h4>
+                          <h4 className="font-semibold text-neutral-800">{trip.name}</h4>
                         </div>
                       </div>
                       <div className="flex gap-1">
                         <button
                           onClick={() => handleLoadTrip(trip.id)}
-                          className="p-1 hover:bg-blue-100 rounded text-blue-600"
+                          className="p-1 hover:bg-primary-100 rounded text-primary-600"
                           title="Load trip"
                         >
                           <ExternalLink className="w-4 h-4" />
@@ -692,7 +692,7 @@ const TripManager: React.FC<TripManagerProps> = ({
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4 text-sm text-gray-600 mb-3">
+                    <div className="grid grid-cols-2 gap-4 text-sm text-neutral-600 mb-3">
                       <div className="flex items-center gap-1">
                         <Calendar className="w-4 h-4" />
                         {trip.duration} days
@@ -716,20 +716,20 @@ const TripManager: React.FC<TripManagerProps> = ({
                         {trip.tags.slice(0, 3).map(tag => (
                           <span
                             key={tag}
-                            className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs"
+                            className="px-2 py-1 bg-primary-100 text-primary-700 rounded-full text-xs"
                           >
                             {tag}
                           </span>
                         ))}
                         {trip.tags.length > 3 && (
-                          <span className="px-2 py-1 bg-gray-100 text-gray-600 rounded-full text-xs">
+                          <span className="px-2 py-1 bg-neutral-100 text-neutral-600 rounded-full text-xs">
                             +{trip.tags.length - 3} more
                           </span>
                         )}
                       </div>
                     )}
 
-                    <div className="text-xs text-gray-500">
+                    <div className="text-xs text-neutral-500">
                       Last modified: {trip.lastModified.toLocaleDateString()}
                     </div>
                   </div>
@@ -743,7 +743,7 @@ const TripManager: React.FC<TripManagerProps> = ({
         {viewMode === 'templates' && (
           <div>
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-medium text-gray-800">
+              <h3 className="text-lg font-medium text-neutral-800">
                 Trip Templates ({filteredTemplates.length})
               </h3>
             </div>
@@ -754,7 +754,7 @@ const TripManager: React.FC<TripManagerProps> = ({
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center gap-2">
                       {getCategoryIcon(template.metadata.category)}
-                      <h4 className="font-semibold text-gray-800">{template.metadata.name}</h4>
+                      <h4 className="font-semibold text-neutral-800">{template.metadata.name}</h4>
                     </div>
                     <div className="flex items-center gap-2">
                       <span className={`px-2 py-1 rounded-full text-xs ${getDifficultyColor(template.metadata.difficulty)}`}>
@@ -762,16 +762,16 @@ const TripManager: React.FC<TripManagerProps> = ({
                       </span>
                       <button
                         onClick={() => handleUseTemplate(template)}
-                        className="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700"
+                        className="px-3 py-1 bg-primary-600 text-white rounded text-sm hover:bg-primary-700"
                       >
                         Use Template
                       </button>
                     </div>
                   </div>
 
-                  <p className="text-sm text-gray-600 mb-3">{template.metadata.description}</p>
+                  <p className="text-sm text-neutral-600 mb-3">{template.metadata.description}</p>
 
-                  <div className="grid grid-cols-2 gap-4 text-sm text-gray-600 mb-3">
+                  <div className="grid grid-cols-2 gap-4 text-sm text-neutral-600 mb-3">
                     <div className="flex items-center gap-1">
                       <Calendar className="w-4 h-4" />
                       {template.metadata.duration} days
@@ -807,10 +807,10 @@ const TripManager: React.FC<TripManagerProps> = ({
                       <strong>Highlights:</strong>
                       <ul className="mt-1 space-y-1">
                         {template.templateInfo.highlights.slice(0, 2).map((highlight: string, index: number) => (
-                          <li key={index} className="text-gray-600">• {highlight}</li>
+                          <li key={index} className="text-neutral-600">• {highlight}</li>
                         ))}
                         {template.templateInfo.highlights.length > 2 && (
-                          <li className="text-gray-500">• +{template.templateInfo.highlights.length - 2} more highlights</li>
+                          <li className="text-neutral-500">• +{template.templateInfo.highlights.length - 2} more highlights</li>
                         )}
                       </ul>
                     </div>
@@ -825,14 +825,14 @@ const TripManager: React.FC<TripManagerProps> = ({
         {viewMode === 'recent' && (
           <div>
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-medium text-gray-800">
+              <h3 className="text-lg font-medium text-neutral-800">
                 Recent Trips ({recentTrips.length})
               </h3>
             </div>
 
             {recentTrips.length === 0 ? (
-              <div className="text-center py-8 text-gray-500">
-                <Clock className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+              <div className="text-center py-8 text-neutral-500">
+                <Clock className="w-12 h-12 mx-auto mb-3 text-neutral-300" />
                 <p>No recent trips. Start planning your next adventure!</p>
               </div>
             ) : (
@@ -840,21 +840,21 @@ const TripManager: React.FC<TripManagerProps> = ({
                 {recentTrips.map(trip => (
                   <div
                     key={trip.id}
-                    className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50 cursor-pointer"
+                    className="flex items-center justify-between p-3 border rounded-lg hover:bg-neutral-50 cursor-pointer"
                     onClick={() => handleLoadTrip(trip.id)}
                   >
                     <div className="flex items-center gap-3">
                       {getCategoryIcon(trip.category)}
                       <div>
-                        <h4 className="font-medium text-gray-800">{trip.name}</h4>
-                        <div className="flex items-center gap-4 text-sm text-gray-600">
+                        <h4 className="font-medium text-neutral-800">{trip.name}</h4>
+                        <div className="flex items-center gap-4 text-sm text-neutral-600">
                           <span>{trip.duration} days</span>
                           <span>{formatCurrency(trip.estimatedCost)}</span>
                           <span>{trip.waypointCount} stops</span>
                         </div>
                       </div>
                     </div>
-                    <div className="text-sm text-gray-500">
+                    <div className="text-sm text-neutral-500">
                       {trip.lastOpened.toLocaleDateString()}
                     </div>
                   </div>
@@ -868,12 +868,12 @@ const TripManager: React.FC<TripManagerProps> = ({
         {viewMode === 'comparison' && comparison && (
           <div>
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-medium text-gray-800">
+              <h3 className="text-lg font-medium text-neutral-800">
                 Trip Comparison
               </h3>
               <button
                 onClick={() => setViewMode('my_trips')}
-                className="text-blue-600 hover:text-blue-700"
+                className="text-primary-600 hover:text-primary-700"
               >
                 Back to My Trips
               </button>
@@ -882,7 +882,7 @@ const TripManager: React.FC<TripManagerProps> = ({
             <div className="space-y-6">
               {/* Cost Comparison */}
               <div>
-                <h4 className="font-medium text-gray-800 mb-3">Cost Comparison</h4>
+                <h4 className="font-medium text-neutral-800 mb-3">Cost Comparison</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {comparison.trips.map(trip => {
                     const costs = comparison.comparison.costs[trip.metadata.id];
@@ -891,7 +891,7 @@ const TripManager: React.FC<TripManagerProps> = ({
                     return (
                       <div
                         key={trip.metadata.id}
-                        className={`p-4 rounded-lg border ${isChecapest ? 'border-green-500 bg-green-50' : 'border-gray-200'}`}
+                        className={`p-4 rounded-lg border ${isChecapest ? 'border-green-500 bg-green-50' : 'border-neutral-200'}`}
                       >
                         <div className="flex items-center gap-2 mb-2">
                           {getCategoryIcon(trip.metadata.category)}
@@ -908,15 +908,15 @@ const TripManager: React.FC<TripManagerProps> = ({
                               <span>Total:</span>
                               <span className="font-medium">{formatCurrency(costs.total)}</span>
                             </div>
-                            <div className="flex justify-between text-gray-600">
+                            <div className="flex justify-between text-neutral-600">
                               <span>Fuel:</span>
                               <span>{formatCurrency(costs.fuel)}</span>
                             </div>
-                            <div className="flex justify-between text-gray-600">
+                            <div className="flex justify-between text-neutral-600">
                               <span>Accommodation:</span>
                               <span>{formatCurrency(costs.accommodation)}</span>
                             </div>
-                            <div className="flex justify-between text-gray-600">
+                            <div className="flex justify-between text-neutral-600">
                               <span>Tolls:</span>
                               <span>{formatCurrency(costs.tolls)}</span>
                             </div>
@@ -930,16 +930,16 @@ const TripManager: React.FC<TripManagerProps> = ({
 
               {/* Route Comparison */}
               <div>
-                <h4 className="font-medium text-gray-800 mb-3">Route Comparison</h4>
+                <h4 className="font-medium text-neutral-800 mb-3">Route Comparison</h4>
                 <div className="overflow-x-auto">
-                  <table className="w-full border-collapse border border-gray-200 rounded-lg">
+                  <table className="w-full border-collapse border border-neutral-200 rounded-lg">
                     <thead>
-                      <tr className="bg-gray-50">
-                        <th className="border border-gray-200 px-4 py-2 text-left">Trip</th>
-                        <th className="border border-gray-200 px-4 py-2 text-left">Distance</th>
-                        <th className="border border-gray-200 px-4 py-2 text-left">Duration</th>
-                        <th className="border border-gray-200 px-4 py-2 text-left">Waypoints</th>
-                        <th className="border border-gray-200 px-4 py-2 text-left">Countries</th>
+                      <tr className="bg-neutral-50">
+                        <th className="border border-neutral-200 px-4 py-2 text-left">Trip</th>
+                        <th className="border border-neutral-200 px-4 py-2 text-left">Distance</th>
+                        <th className="border border-neutral-200 px-4 py-2 text-left">Duration</th>
+                        <th className="border border-neutral-200 px-4 py-2 text-left">Waypoints</th>
+                        <th className="border border-neutral-200 px-4 py-2 text-left">Countries</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -949,27 +949,27 @@ const TripManager: React.FC<TripManagerProps> = ({
                         const isFastest = comparison.comparison.analysis.fastest === trip.metadata.id;
 
                         return (
-                          <tr key={trip.metadata.id} className="hover:bg-gray-50">
-                            <td className="border border-gray-200 px-4 py-2">
+                          <tr key={trip.metadata.id} className="hover:bg-neutral-50">
+                            <td className="border border-neutral-200 px-4 py-2">
                               <div className="flex items-center gap-2">
                                 {getCategoryIcon(trip.metadata.category)}
                                 {trip.metadata.name}
                               </div>
                             </td>
-                            <td className="border border-gray-200 px-4 py-2">
+                            <td className="border border-neutral-200 px-4 py-2">
                               <span className={isShortest ? 'font-semibold text-green-600' : ''}>
                                 {route.distance.toFixed(0)}km
                               </span>
                               {isShortest && <span className="ml-1 text-xs text-green-600">(shortest)</span>}
                             </td>
-                            <td className="border border-gray-200 px-4 py-2">
-                              <span className={isFastest ? 'font-semibold text-blue-600' : ''}>
+                            <td className="border border-neutral-200 px-4 py-2">
+                              <span className={isFastest ? 'font-semibold text-primary-600' : ''}>
                                 {route.duration.toFixed(1)}h
                               </span>
-                              {isFastest && <span className="ml-1 text-xs text-blue-600">(fastest)</span>}
+                              {isFastest && <span className="ml-1 text-xs text-primary-600">(fastest)</span>}
                             </td>
-                            <td className="border border-gray-200 px-4 py-2">{route.waypointCount}</td>
-                            <td className="border border-gray-200 px-4 py-2">
+                            <td className="border border-neutral-200 px-4 py-2">{route.waypointCount}</td>
+                            <td className="border border-neutral-200 px-4 py-2">
                               {route.countries.join(', ')}
                             </td>
                           </tr>
@@ -983,19 +983,19 @@ const TripManager: React.FC<TripManagerProps> = ({
               {/* Recommendations */}
               {comparison.comparison.analysis.recommendations.length > 0 && (
                 <div>
-                  <h4 className="font-medium text-gray-800 mb-3">Recommendations</h4>
+                  <h4 className="font-medium text-neutral-800 mb-3">Recommendations</h4>
                   <div className="space-y-3">
                     {comparison.comparison.analysis.recommendations.map((rec, index) => {
                       const trip = comparison.trips.find(t => t.metadata.id === rec.tripId);
                       return (
-                        <div key={index} className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                        <div key={index} className="p-4 bg-primary-50 rounded-lg border border-primary-200">
                           <div className="flex items-center gap-2 mb-2">
                             {trip && getCategoryIcon(trip.metadata.category)}
-                            <span className="font-medium text-blue-800">
+                            <span className="font-medium text-primary-800">
                               {trip?.metadata.name}
                             </span>
                           </div>
-                          <div className="text-blue-700">
+                          <div className="text-primary-700">
                             <div className="font-medium">{rec.reason}</div>
                             <div className="text-sm">{rec.advantage}</div>
                           </div>
@@ -1013,7 +1013,7 @@ const TripManager: React.FC<TripManagerProps> = ({
       {/* Loading Overlay */}
       {isLoading && (
         <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center rounded-lg">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
         </div>
       )}
 
@@ -1026,7 +1026,7 @@ const TripManager: React.FC<TripManagerProps> = ({
             </div>
             <div className="p-4 space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-neutral-700 mb-1">
                   Trip Name *
                 </label>
                 <input
@@ -1039,7 +1039,7 @@ const TripManager: React.FC<TripManagerProps> = ({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-neutral-700 mb-1">
                   Description
                 </label>
                 <textarea
@@ -1052,7 +1052,7 @@ const TripManager: React.FC<TripManagerProps> = ({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-neutral-700 mb-1">
                   Category
                 </label>
                 <select
@@ -1069,7 +1069,7 @@ const TripManager: React.FC<TripManagerProps> = ({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-neutral-700 mb-1">
                   Tags (comma-separated)
                 </label>
                 <input
@@ -1092,7 +1092,7 @@ const TripManager: React.FC<TripManagerProps> = ({
                   onChange={(e) => setSaveData({ ...saveData, isPublic: e.target.checked })}
                   className="rounded"
                 />
-                <label htmlFor="isPublic" className="ml-2 text-sm text-gray-700">
+                <label htmlFor="isPublic" className="ml-2 text-sm text-neutral-700">
                   Make trip public (for future sharing features)
                 </label>
               </div>
@@ -1100,14 +1100,14 @@ const TripManager: React.FC<TripManagerProps> = ({
             <div className="p-4 border-t flex justify-end gap-2">
               <button
                 onClick={() => setShowSaveModal(false)}
-                className="px-4 py-2 border rounded-lg hover:bg-gray-50"
+                className="px-4 py-2 border rounded-lg hover:bg-neutral-50"
               >
                 Cancel
               </button>
               <button
                 onClick={confirmSaveTrip}
                 disabled={!saveData.name.trim()}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+                className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50"
               >
                 Save Trip
               </button>
@@ -1124,7 +1124,7 @@ const TripManager: React.FC<TripManagerProps> = ({
               <h3 className="text-lg font-semibold">Import Trip</h3>
             </div>
             <div className="p-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-neutral-700 mb-2">
                 Paste trip data (JSON format):
               </label>
               <textarea
@@ -1138,14 +1138,14 @@ const TripManager: React.FC<TripManagerProps> = ({
             <div className="p-4 border-t flex justify-end gap-2">
               <button
                 onClick={() => setShowImportModal(false)}
-                className="px-4 py-2 border rounded-lg hover:bg-gray-50"
+                className="px-4 py-2 border rounded-lg hover:bg-neutral-50"
               >
                 Cancel
               </button>
               <button
                 onClick={handleImportTrip}
                 disabled={!importData.trim()}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+                className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50"
               >
                 Import Trip
               </button>
@@ -1164,7 +1164,7 @@ const TripManager: React.FC<TripManagerProps> = ({
             <div className="p-4 space-y-4">
               {/* Format Selection */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-neutral-700 mb-2">
                   Export Format
                 </label>
                 <div className="grid grid-cols-2 gap-2">
@@ -1185,11 +1185,11 @@ const TripManager: React.FC<TripManagerProps> = ({
                       />
                       <div className={`p-2 border-2 rounded-lg cursor-pointer transition-all text-center ${
                         exportFormat === format.id
-                          ? "border-blue-500 bg-blue-50"
-                          : "border-gray-200 hover:border-gray-300"
+                          ? "border-primary-500 bg-primary-50"
+                          : "border-neutral-200 hover:border-neutral-300"
                       }`}>
                         <div className="font-medium text-sm">{format.label}</div>
-                        <div className="text-xs text-gray-500">{format.desc}</div>
+                        <div className="text-xs text-neutral-500">{format.desc}</div>
                       </div>
                     </label>
                   ))}
@@ -1198,7 +1198,7 @@ const TripManager: React.FC<TripManagerProps> = ({
 
               {/* Export Options */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-neutral-700 mb-2">
                   Include Data
                 </label>
                 <div className="space-y-2">
@@ -1217,9 +1217,9 @@ const TripManager: React.FC<TripManagerProps> = ({
                           ...prev,
                           [option.key]: e.target.checked
                         }))}
-                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                        className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-neutral-300 rounded"
                       />
-                      <span className="text-sm font-medium text-gray-900">{option.label}</span>
+                      <span className="text-sm font-medium text-neutral-900">{option.label}</span>
                     </label>
                   ))}
                 </div>
@@ -1227,7 +1227,7 @@ const TripManager: React.FC<TripManagerProps> = ({
 
               {/* Creator */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-neutral-700 mb-1">
                   Creator
                 </label>
                 <input
@@ -1245,14 +1245,14 @@ const TripManager: React.FC<TripManagerProps> = ({
                   setShowExportModal(false);
                   setExportingTripId(null);
                 }}
-                className="px-4 py-2 border rounded-lg hover:bg-gray-50"
+                className="px-4 py-2 border rounded-lg hover:bg-neutral-50"
               >
                 Cancel
               </button>
               <button
                 onClick={confirmExportTrip}
                 disabled={isLoading}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+                className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50"
               >
                 {isLoading ? 'Exporting...' : 'Export Trip'}
               </button>

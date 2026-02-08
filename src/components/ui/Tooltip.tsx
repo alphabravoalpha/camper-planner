@@ -47,8 +47,8 @@ const Tooltip: React.FC<TooltipProps> = ({
 
   // Variant styles
   const variantStyles = {
-    default: 'bg-gray-900 text-white border-gray-700',
-    info: 'bg-blue-600 text-white border-blue-500',
+    default: 'bg-neutral-900 text-white border-neutral-700',
+    info: 'bg-primary-600 text-white border-primary-500',
     warning: 'bg-yellow-600 text-white border-yellow-500',
     error: 'bg-red-600 text-white border-red-500',
     success: 'bg-green-600 text-white border-green-500'
@@ -216,10 +216,10 @@ const Tooltip: React.FC<TooltipProps> = ({
     if (!showArrow) return null;
 
     const arrowClasses = {
-      top: 'border-l-transparent border-r-transparent border-b-0 border-t-8 border-t-gray-900 bottom-0 left-1/2 transform -translate-x-1/2 translate-y-full',
-      bottom: 'border-l-transparent border-r-transparent border-t-0 border-b-8 border-b-gray-900 top-0 left-1/2 transform -translate-x-1/2 -translate-y-full',
-      left: 'border-t-transparent border-b-transparent border-r-0 border-l-8 border-l-gray-900 right-0 top-1/2 transform translate-x-full -translate-y-1/2',
-      right: 'border-t-transparent border-b-transparent border-l-0 border-r-8 border-r-gray-900 left-0 top-1/2 transform -translate-x-full -translate-y-1/2'
+      top: 'border-l-transparent border-r-transparent border-b-0 border-t-8 border-t-neutral-900 bottom-0 left-1/2 transform -translate-x-1/2 translate-y-full',
+      bottom: 'border-l-transparent border-r-transparent border-t-0 border-b-8 border-b-neutral-900 top-0 left-1/2 transform -translate-x-1/2 -translate-y-full',
+      left: 'border-t-transparent border-b-transparent border-r-0 border-l-8 border-l-neutral-900 right-0 top-1/2 transform translate-x-full -translate-y-1/2',
+      right: 'border-t-transparent border-b-transparent border-l-0 border-r-8 border-r-neutral-900 left-0 top-1/2 transform -translate-x-full -translate-y-1/2'
     };
 
     return (

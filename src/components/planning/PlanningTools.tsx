@@ -131,7 +131,7 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
   const getFeasibilityColor = (feasibility: DailyStage['feasibility']): string => {
     switch (feasibility) {
       case 'excellent': return 'text-green-600 bg-green-100';
-      case 'good': return 'text-blue-600 bg-blue-100';
+      case 'good': return 'text-primary-600 bg-primary-100';
       case 'challenging': return 'text-yellow-600 bg-yellow-100';
       case 'unrealistic': return 'text-red-600 bg-red-100';
     }
@@ -141,7 +141,7 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
     switch (priority) {
       case 'high': return 'text-red-600 bg-red-100';
       case 'medium': return 'text-yellow-600 bg-yellow-100';
-      case 'low': return 'text-blue-600 bg-blue-100';
+      case 'low': return 'text-primary-600 bg-primary-100';
     }
   };
 
@@ -181,22 +181,22 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
   return (
     <div className={`bg-white rounded-lg shadow-lg border ${className}`}>
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b bg-gradient-to-r from-purple-50 to-blue-50">
+      <div className="flex items-center justify-between p-4 border-b bg-gradient-to-r from-purple-50 to-primary-50">
         <div className="flex items-center gap-2">
           <Target className="w-5 h-5 text-purple-600" />
-          <h3 className="text-lg font-semibold text-gray-800">Trip Planning Tools</h3>
+          <h3 className="text-lg font-semibold text-neutral-800">Trip Planning Tools</h3>
         </div>
         <div className="flex items-center gap-2">
-          <Settings className="w-4 h-4 text-gray-400" />
+          <Settings className="w-4 h-4 text-neutral-400" />
         </div>
       </div>
 
       {/* Planning Controls */}
-      <div className="p-4 border-b bg-gray-50">
+      <div className="p-4 border-b bg-neutral-50">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           {/* Season Selection */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-neutral-700 mb-1">
               Travel Season
             </label>
             <select
@@ -213,7 +213,7 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
 
           {/* Start Date */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-neutral-700 mb-1">
               Start Date (Optional)
             </label>
             <input
@@ -226,11 +226,11 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
 
           {/* Vehicle Info */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-neutral-700 mb-1">
               Vehicle Type
             </label>
             <div className="flex items-center gap-2 px-3 py-2 bg-white border rounded-lg text-sm">
-              <Car className="w-4 h-4 text-gray-400" />
+              <Car className="w-4 h-4 text-neutral-400" />
               <span className="capitalize">
                 {profile?.type || 'Default'}
                 {profile?.length && ` (${profile.length}m)`}
@@ -241,7 +241,7 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
       </div>
 
       {/* Navigation Tabs */}
-      <div className="flex border-b bg-gray-50">
+      <div className="flex border-b bg-neutral-50">
         {[
           { id: 'overview', label: 'Overview', icon: <BarChart3 className="w-4 h-4" /> },
           { id: 'calendar', label: 'Daily Plan', icon: <Calendar className="w-4 h-4" /> },
@@ -254,7 +254,7 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
             className={`flex items-center gap-2 px-4 py-3 text-sm font-medium transition-colors ${
               viewMode === tab.id
                 ? 'text-purple-600 border-b-2 border-purple-600 bg-white'
-                : 'text-gray-500 hover:text-gray-700'
+                : 'text-neutral-500 hover:text-neutral-700'
             }`}
           >
             {tab.icon}
@@ -278,16 +278,16 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
         {isCalculating ? (
           <div className="flex items-center justify-center py-8">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
-            <span className="ml-2 text-gray-600">Calculating trip plan...</span>
+            <span className="ml-2 text-neutral-600">Calculating trip plan...</span>
           </div>
         ) : waypoints.length < 2 ? (
-          <div className="text-center py-8 text-gray-500">
-            <Navigation className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+          <div className="text-center py-8 text-neutral-500">
+            <Navigation className="w-12 h-12 mx-auto mb-3 text-neutral-300" />
             <p>Add at least 2 waypoints to your route to start planning.</p>
           </div>
         ) : !tripPlan ? (
-          <div className="text-center py-8 text-gray-500">
-            <Target className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+          <div className="text-center py-8 text-neutral-500">
+            <Target className="w-12 h-12 mx-auto mb-3 text-neutral-300" />
             <p>Unable to create trip plan. Please check your route.</p>
           </div>
         ) : (
@@ -297,13 +297,13 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
               <div className="space-y-4">
                 {/* Trip Summary Cards */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div className="bg-blue-50 rounded-lg p-4">
+                  <div className="bg-primary-50 rounded-lg p-4">
                     <div className="flex items-center gap-2 mb-2">
-                      <Calendar className="w-4 h-4 text-blue-600" />
-                      <span className="text-sm text-blue-600 font-medium">Duration</span>
+                      <Calendar className="w-4 h-4 text-primary-600" />
+                      <span className="text-sm text-primary-600 font-medium">Duration</span>
                     </div>
-                    <div className="text-2xl font-bold text-blue-800">{tripPlan.totalDays}</div>
-                    <div className="text-sm text-blue-600">days total</div>
+                    <div className="text-2xl font-bold text-primary-800">{tripPlan.totalDays}</div>
+                    <div className="text-sm text-primary-600">days total</div>
                   </div>
 
                   <div className="bg-green-50 rounded-lg p-4">
@@ -342,23 +342,23 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
 
                 {/* Driving Limits Display */}
                 {drivingLimits && (
-                  <div className="bg-gray-50 rounded-lg p-4">
-                    <h4 className="font-medium text-gray-800 mb-3">Daily Driving Limits (Based on Vehicle & Season)</h4>
+                  <div className="bg-neutral-50 rounded-lg p-4">
+                    <h4 className="font-medium text-neutral-800 mb-3">Daily Driving Limits (Based on Vehicle & Season)</h4>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                       <div>
-                        <span className="text-gray-600">Max Distance:</span>
+                        <span className="text-neutral-600">Max Distance:</span>
                         <div className="font-semibold">{drivingLimits.maxDailyDistance}km</div>
                       </div>
                       <div>
-                        <span className="text-gray-600">Max Time:</span>
+                        <span className="text-neutral-600">Max Time:</span>
                         <div className="font-semibold">{drivingLimits.maxDailyDrivingTime}h</div>
                       </div>
                       <div>
-                        <span className="text-gray-600">Break Every:</span>
+                        <span className="text-neutral-600">Break Every:</span>
                         <div className="font-semibold">{drivingLimits.recommendedBreakInterval}h</div>
                       </div>
                       <div>
-                        <span className="text-gray-600">Average Speed:</span>
+                        <span className="text-neutral-600">Average Speed:</span>
                         <div className="font-semibold">{drivingLimits.averageSpeed}km/h</div>
                       </div>
                     </div>
@@ -367,14 +367,14 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
 
                 {/* Seasonal Information */}
                 {seasonalFactors && (
-                  <div className="bg-gradient-to-r from-sky-50 to-blue-50 rounded-lg p-4">
+                  <div className="bg-gradient-to-r from-sky-50 to-primary-50 rounded-lg p-4">
                     <div className="flex items-center gap-2 mb-3">
-                      <Thermometer className="w-4 h-4 text-blue-600" />
-                      <h4 className="font-medium text-gray-800 capitalize">{season} Travel Conditions</h4>
+                      <Thermometer className="w-4 h-4 text-primary-600" />
+                      <h4 className="font-medium text-neutral-800 capitalize">{season} Travel Conditions</h4>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <div className="text-sm text-gray-600 mb-2">Expected Conditions:</div>
+                        <div className="text-sm text-neutral-600 mb-2">Expected Conditions:</div>
                         <div className="space-y-1 text-sm">
                           <div>Temperature: {seasonalFactors.temperature.min}°C - {seasonalFactors.temperature.max}°C</div>
                           <div>Tourist Density: <span className="capitalize">{seasonalFactors.touristDensity}</span></div>
@@ -382,7 +382,7 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
                         </div>
                       </div>
                       <div>
-                        <div className="text-sm text-gray-600 mb-2">Top Recommendations:</div>
+                        <div className="text-sm text-neutral-600 mb-2">Top Recommendations:</div>
                         <ul className="space-y-1 text-sm">
                           {seasonalFactors.recommendations.slice(0, 3).map((rec, index) => (
                             <li key={index} className="flex items-start gap-1">
@@ -417,8 +417,8 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
             {viewMode === 'calendar' && (
               <div className="space-y-3">
                 <div className="flex items-center justify-between mb-4">
-                  <h4 className="font-medium text-gray-800">Daily Itinerary</h4>
-                  <div className="text-sm text-gray-600">
+                  <h4 className="font-medium text-neutral-800">Daily Itinerary</h4>
+                  <div className="text-sm text-neutral-600">
                     {tripPlan.dailyStages.length} driving days + {tripPlan.restDays} rest days
                   </div>
                 </div>
@@ -426,7 +426,7 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
                 {tripPlan.dailyStages.map((stage) => (
                   <div key={stage.day} className="border rounded-lg overflow-hidden">
                     <div
-                      className="p-4 cursor-pointer hover:bg-gray-50"
+                      className="p-4 cursor-pointer hover:bg-neutral-50"
                       onClick={() => toggleStageExpansion(stage.day)}
                     >
                       <div className="flex items-center justify-between">
@@ -435,10 +435,10 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
                             {stage.day}
                           </div>
                           <div>
-                            <div className="font-medium text-gray-800">
+                            <div className="font-medium text-neutral-800">
                               {stage.startWaypoint.name} → {stage.endWaypoint.name}
                             </div>
-                            <div className="text-sm text-gray-600">
+                            <div className="text-sm text-neutral-600">
                               {stage.date && formatDate(stage.date)} • {Math.round(stage.distance)}km • {formatDuration(stage.drivingTime)}
                             </div>
                           </div>
@@ -448,31 +448,31 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
                             {stage.feasibility}
                           </span>
                           {expandedStages.has(stage.day) ? (
-                            <ChevronUp className="w-4 h-4 text-gray-400" />
+                            <ChevronUp className="w-4 h-4 text-neutral-400" />
                           ) : (
-                            <ChevronDown className="w-4 h-4 text-gray-400" />
+                            <ChevronDown className="w-4 h-4 text-neutral-400" />
                           )}
                         </div>
                       </div>
                     </div>
 
                     {expandedStages.has(stage.day) && (
-                      <div className="px-4 pb-4 border-t bg-gray-50">
+                      <div className="px-4 pb-4 border-t bg-neutral-50">
                         {/* Stage Details */}
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                           <div>
-                            <div className="text-sm text-gray-600 mb-1">Accommodation</div>
+                            <div className="text-sm text-neutral-600 mb-1">Accommodation</div>
                             <div className="flex items-center gap-1 text-sm">
-                              <Bed className="w-4 h-4 text-gray-400" />
+                              <Bed className="w-4 h-4 text-neutral-400" />
                               <span className="capitalize">{stage.accommodationType.replace('_', ' ')}</span>
                             </div>
                           </div>
                           <div>
-                            <div className="text-sm text-gray-600 mb-1">Average Speed</div>
+                            <div className="text-sm text-neutral-600 mb-1">Average Speed</div>
                             <div className="text-sm">{Math.round(stage.distance / stage.drivingTime)}km/h</div>
                           </div>
                           <div>
-                            <div className="text-sm text-gray-600 mb-1">Stops Planned</div>
+                            <div className="text-sm text-neutral-600 mb-1">Stops Planned</div>
                             <div className="text-sm">{stage.stops.length} stops</div>
                           </div>
                         </div>
@@ -480,14 +480,14 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
                         {/* Planned Stops */}
                         {stage.stops.length > 0 && (
                           <div className="mb-4">
-                            <div className="text-sm text-gray-600 mb-2">Planned Stops:</div>
+                            <div className="text-sm text-neutral-600 mb-2">Planned Stops:</div>
                             <div className="space-y-2">
                               {stage.stops.map((stop, stopIndex) => (
                                 <div key={stopIndex} className="flex items-center gap-2 text-sm">
                                   {getStopIcon(stop.type)}
                                   <span className="capitalize">{stop.type.replace('_', ' ')}</span>
-                                  <span className="text-gray-600">({formatDuration(stop.recommendedDuration)})</span>
-                                  <span className="text-gray-500">- {stop.reasoning}</span>
+                                  <span className="text-neutral-600">({formatDuration(stop.recommendedDuration)})</span>
+                                  <span className="text-neutral-500">- {stop.reasoning}</span>
                                 </div>
                               ))}
                             </div>
@@ -512,11 +512,11 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
                         {/* Stage Recommendations */}
                         {stage.recommendations.length > 0 && (
                           <div>
-                            <div className="text-sm text-blue-600 font-medium mb-1">Recommendations:</div>
+                            <div className="text-sm text-primary-600 font-medium mb-1">Recommendations:</div>
                             <ul className="space-y-1">
                               {stage.recommendations.map((rec, rIndex) => (
-                                <li key={rIndex} className="text-sm text-blue-700 flex items-start gap-1">
-                                  <Info className="w-3 h-3 text-blue-500 mt-0.5 flex-shrink-0" />
+                                <li key={rIndex} className="text-sm text-primary-700 flex items-start gap-1">
+                                  <Info className="w-3 h-3 text-primary-500 mt-0.5 flex-shrink-0" />
                                   {rec}
                                 </li>
                               ))}
@@ -533,13 +533,13 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
             {/* Recommendations Tab */}
             {viewMode === 'recommendations' && (
               <div className="space-y-4">
-                <h4 className="font-medium text-gray-800 mb-4">
+                <h4 className="font-medium text-neutral-800 mb-4">
                   Planning Recommendations ({recommendations.length})
                 </h4>
 
                 {recommendations.length === 0 ? (
-                  <div className="text-center py-8 text-gray-500">
-                    <CheckCircle className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                  <div className="text-center py-8 text-neutral-500">
+                    <CheckCircle className="w-12 h-12 mx-auto mb-3 text-neutral-300" />
                     <p>No specific recommendations - your trip plan looks great!</p>
                   </div>
                 ) : (
@@ -552,19 +552,19 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
                           </div>
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-2">
-                              <h5 className="font-medium text-gray-800">{rec.title}</h5>
+                              <h5 className="font-medium text-neutral-800">{rec.title}</h5>
                               <span className={`px-2 py-1 rounded-full text-xs font-medium ${getPriorityColor(rec.priority)}`}>
                                 {rec.priority} priority
                               </span>
                             </div>
-                            <p className="text-sm text-gray-600 mb-2">{rec.description}</p>
+                            <p className="text-sm text-neutral-600 mb-2">{rec.description}</p>
                             <div className="text-sm">
-                              <span className="font-medium text-gray-700">Action: </span>
-                              <span className="text-gray-600">{rec.action}</span>
+                              <span className="font-medium text-neutral-700">Action: </span>
+                              <span className="text-neutral-600">{rec.action}</span>
                             </div>
                             <div className="text-sm mt-1">
-                              <span className="font-medium text-gray-700">Impact: </span>
-                              <span className="text-gray-600">{rec.impact}</span>
+                              <span className="font-medium text-neutral-700">Impact: </span>
+                              <span className="text-neutral-600">{rec.impact}</span>
                             </div>
                           </div>
                         </div>
@@ -596,20 +596,20 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
             {/* Metrics Tab */}
             {viewMode === 'metrics' && metrics && (
               <div className="space-y-4">
-                <h4 className="font-medium text-gray-800 mb-4">Trip Analysis & Metrics</h4>
+                <h4 className="font-medium text-neutral-800 mb-4">Trip Analysis & Metrics</h4>
 
                 {/* Key Metrics Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="bg-blue-50 rounded-lg p-4">
+                  <div className="bg-primary-50 rounded-lg p-4">
                     <div className="flex items-center gap-2 mb-3">
-                      <Route className="w-4 h-4 text-blue-600" />
-                      <h5 className="font-medium text-blue-800">Driving Intensity</h5>
+                      <Route className="w-4 h-4 text-primary-600" />
+                      <h5 className="font-medium text-primary-800">Driving Intensity</h5>
                     </div>
-                    <div className="text-2xl font-bold text-blue-800 mb-1">
+                    <div className="text-2xl font-bold text-primary-800 mb-1">
                       {metrics.drivingIntensity}km
                     </div>
-                    <div className="text-sm text-blue-600">average per day</div>
-                    <div className="text-sm text-gray-600 mt-2">
+                    <div className="text-sm text-primary-600">average per day</div>
+                    <div className="text-sm text-neutral-600 mt-2">
                       Comfort Level: <span className="font-medium capitalize">{metrics.comfortLevel}</span>
                     </div>
                   </div>
@@ -623,7 +623,7 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
                       {metrics.varietyScore}
                     </div>
                     <div className="text-sm text-green-600">variety score</div>
-                    <div className="text-sm text-gray-600 mt-2">
+                    <div className="text-sm text-neutral-600 mt-2">
                       Rest Ratio: {(metrics.restRatio * 100).toFixed(0)}%
                     </div>
                   </div>
@@ -674,11 +674,11 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
                 </div>
 
                 {/* Detailed Analysis */}
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <h5 className="font-medium text-gray-800 mb-3">Detailed Analysis</h5>
+                <div className="bg-neutral-50 rounded-lg p-4">
+                  <h5 className="font-medium text-neutral-800 mb-3">Detailed Analysis</h5>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                     <div>
-                      <div className="text-gray-600 mb-2">Trip Characteristics:</div>
+                      <div className="text-neutral-600 mb-2">Trip Characteristics:</div>
                       <ul className="space-y-1">
                         <li>• Total driving days: {tripPlan.dailyStages.length}</li>
                         <li>• Recommended rest days: {tripPlan.restDays}</li>
@@ -687,7 +687,7 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
                       </ul>
                     </div>
                     <div>
-                      <div className="text-gray-600 mb-2">Planning Insights:</div>
+                      <div className="text-neutral-600 mb-2">Planning Insights:</div>
                       <ul className="space-y-1">
                         <li>• Comfort level: {metrics.comfortLevel}</li>
                         <li>• Difficulty: {metrics.difficultyScore}/100</li>

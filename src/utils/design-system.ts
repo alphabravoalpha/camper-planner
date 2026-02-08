@@ -1,33 +1,45 @@
 // Design System Utilities
-// Phase 6.3: Comprehensive design consistency and professional polish
+// European Camper Trip Planner - Outdoor/Camping theme
 
 import { cn } from './cn';
 
-// Color palette configuration
+// Color palette configuration - Forest Green + Warm Amber
 export const colors = {
   primary: {
-    50: '#eff6ff',
-    100: '#dbeafe',
-    200: '#bfdbfe',
-    300: '#93c5fd',
-    400: '#60a5fa',
-    500: '#3b82f6',
-    600: '#2563eb',
-    700: '#1d4ed8',
-    800: '#1e40af',
-    900: '#1e3a8a',
+    50: '#f0f7f4',
+    100: '#d9ede2',
+    200: '#b3dbc5',
+    300: '#80c4a0',
+    400: '#4fa97a',
+    500: '#2d8a5e',
+    600: '#236e4a',
+    700: '#1d5a3d',
+    800: '#174832',
+    900: '#0f3324',
+  },
+  accent: {
+    50: '#fef7ed',
+    100: '#fdecd3',
+    200: '#fbd5a5',
+    300: '#f8b96d',
+    400: '#f59a3e',
+    500: '#e8811d',
+    600: '#cc6714',
+    700: '#a94d12',
+    800: '#8a3d14',
+    900: '#723414',
   },
   success: {
-    50: '#f0fdf4',
-    100: '#dcfce7',
-    200: '#bbf7d0',
-    300: '#86efac',
-    400: '#4ade80',
-    500: '#22c55e',
-    600: '#16a34a',
-    700: '#15803d',
-    800: '#166534',
-    900: '#14532d',
+    50: '#f0f7f4',
+    100: '#d9ede2',
+    200: '#b3dbc5',
+    300: '#80c4a0',
+    400: '#4fa97a',
+    500: '#2d8a5e',
+    600: '#236e4a',
+    700: '#1d5a3d',
+    800: '#174832',
+    900: '#0f3324',
   },
   warning: {
     50: '#fffbeb',
@@ -54,16 +66,16 @@ export const colors = {
     900: '#7f1d1d',
   },
   gray: {
-    50: '#f9fafb',
-    100: '#f3f4f6',
-    200: '#e5e7eb',
-    300: '#d1d5db',
-    400: '#9ca3af',
-    500: '#6b7280',
-    600: '#4b5563',
-    700: '#374151',
-    800: '#1f2937',
-    900: '#111827',
+    50: '#faf9f7',
+    100: '#f4f2ef',
+    200: '#e8e5e0',
+    300: '#d5d0c9',
+    400: '#a9a29a',
+    500: '#7a7268',
+    600: '#5e5750',
+    700: '#44403b',
+    800: '#2c2924',
+    900: '#1a1815',
   }
 };
 
@@ -161,6 +173,10 @@ export const shadows = {
   lg: 'shadow-lg',
   xl: 'shadow-xl',
   '2xl': 'shadow-2xl',
+  soft: 'shadow-soft',
+  medium: 'shadow-medium',
+  hard: 'shadow-hard',
+  float: 'shadow-float',
   inner: 'shadow-inner',
   none: 'shadow-none',
 };
@@ -212,39 +228,41 @@ export const animations = {
 export const variants = {
   // Button variants
   button: {
-    primary: 'bg-blue-600 hover:bg-blue-700 focus:ring-blue-500 text-white',
-    secondary: 'bg-gray-100 hover:bg-gray-200 focus:ring-gray-500 text-gray-900',
+    primary: 'bg-primary-600 hover:bg-primary-700 focus:ring-primary-500 text-white',
+    secondary: 'bg-neutral-100 hover:bg-neutral-200 focus:ring-neutral-400 text-neutral-900',
+    accent: 'bg-accent-500 hover:bg-accent-600 focus:ring-accent-500 text-white',
     success: 'bg-green-600 hover:bg-green-700 focus:ring-green-500 text-white',
     warning: 'bg-yellow-600 hover:bg-yellow-700 focus:ring-yellow-500 text-white',
     danger: 'bg-red-600 hover:bg-red-700 focus:ring-red-500 text-white',
-    ghost: 'bg-transparent hover:bg-gray-100 focus:ring-gray-500 text-gray-900',
-    link: 'bg-transparent hover:bg-transparent focus:ring-transparent text-blue-600 hover:text-blue-700',
+    ghost: 'bg-transparent hover:bg-neutral-100 focus:ring-neutral-400 text-neutral-900',
+    link: 'bg-transparent hover:bg-transparent focus:ring-transparent text-primary-600 hover:text-primary-700',
   },
   // Input variants
   input: {
-    default: 'border-gray-300 focus:border-blue-500 focus:ring-blue-500',
-    error: 'border-red-300 focus:border-red-500 focus:ring-red-500',
-    success: 'border-green-300 focus:border-green-500 focus:ring-green-500',
-    disabled: 'bg-gray-50 border-gray-200 text-gray-500 cursor-not-allowed',
+    default: 'border-neutral-200 focus:border-primary-500 focus:ring-primary-200',
+    error: 'border-red-300 focus:border-red-500 focus:ring-red-200',
+    success: 'border-green-300 focus:border-green-500 focus:ring-green-200',
+    disabled: 'bg-neutral-50 border-neutral-200 text-neutral-500 cursor-not-allowed',
   },
   // Card variants
   card: {
-    default: 'bg-white border border-gray-200 rounded-lg shadow-sm',
-    elevated: 'bg-white border border-gray-200 rounded-lg shadow-md',
-    interactive: 'bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer',
-    danger: 'bg-red-50 border border-red-200 rounded-lg',
-    warning: 'bg-yellow-50 border border-yellow-200 rounded-lg',
-    success: 'bg-green-50 border border-green-200 rounded-lg',
-    info: 'bg-blue-50 border border-blue-200 rounded-lg',
+    default: 'bg-white rounded-2xl shadow-soft',
+    elevated: 'bg-white rounded-2xl shadow-medium',
+    interactive: 'bg-white rounded-2xl shadow-soft hover:shadow-medium hover:-translate-y-0.5 transition-all duration-200 cursor-pointer',
+    danger: 'bg-red-50 border border-red-200 rounded-2xl',
+    warning: 'bg-yellow-50 border border-yellow-200 rounded-2xl',
+    success: 'bg-primary-50 border border-primary-200 rounded-2xl',
+    info: 'bg-primary-50 border border-primary-200 rounded-2xl',
   },
   // Badge variants
   badge: {
-    default: 'bg-gray-100 text-gray-800',
-    primary: 'bg-blue-100 text-blue-800',
+    default: 'bg-neutral-100 text-neutral-800',
+    primary: 'bg-primary-100 text-primary-800',
+    accent: 'bg-accent-100 text-accent-800',
     success: 'bg-green-100 text-green-800',
     warning: 'bg-yellow-100 text-yellow-800',
     danger: 'bg-red-100 text-red-800',
-    info: 'bg-blue-100 text-blue-800',
+    info: 'bg-primary-100 text-primary-800',
   }
 };
 
@@ -296,8 +314,8 @@ export const accessibility = {
   semantic: {
     error: 'text-red-600',
     warning: 'text-yellow-600',
-    success: 'text-green-600',
-    info: 'text-blue-600',
+    success: 'text-primary-600',
+    info: 'text-primary-600',
   }
 };
 
@@ -306,16 +324,16 @@ export const sizing = {
   // Button sizes
   button: {
     xs: 'px-2.5 py-1.5 text-xs',
-    sm: 'px-3 py-2 text-sm',
-    md: 'px-4 py-2 text-sm',
-    lg: 'px-4 py-2 text-base',
-    xl: 'px-6 py-3 text-base',
+    sm: 'px-3.5 py-2 text-sm',
+    md: 'px-5 py-2.5 text-sm',
+    lg: 'px-6 py-3 text-base',
+    xl: 'px-8 py-3.5 text-base',
   },
   // Input sizes
   input: {
     sm: 'px-3 py-1.5 text-sm',
-    md: 'px-3 py-2 text-sm',
-    lg: 'px-4 py-2 text-base',
+    md: 'px-4 py-2.5 text-sm',
+    lg: 'px-4 py-3 text-base',
   },
   // Icon sizes
   icon: {
@@ -332,21 +350,21 @@ export const sizing = {
 export const components = {
   // Standard button
   button: (variant: keyof typeof variants.button = 'primary', size: keyof typeof sizing.button = 'md') => cn(
-    'inline-flex items-center justify-center font-medium rounded-md',
+    'inline-flex items-center justify-center font-semibold rounded-xl',
     'focus:outline-none focus:ring-2 focus:ring-offset-2',
     'disabled:opacity-50 disabled:cursor-not-allowed',
-    'transition-colors duration-200',
+    'transition-all duration-200 active:scale-[0.97]',
     variants.button[variant],
     sizing.button[size]
   ),
 
   // Standard input
   input: (variant: keyof typeof variants.input = 'default', size: keyof typeof sizing.input = 'md') => cn(
-    'block w-full rounded-md border',
-    'placeholder-gray-400',
-    'focus:outline-none focus:ring-1',
-    'disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed',
-    'transition-colors duration-200',
+    'block w-full rounded-xl border-2',
+    'placeholder-neutral-400',
+    'focus:outline-none focus:ring-2',
+    'disabled:bg-neutral-50 disabled:text-neutral-500 disabled:cursor-not-allowed',
+    'transition-all duration-200',
     variants.input[variant],
     sizing.input[size]
   ),
@@ -366,17 +384,17 @@ export const components = {
   formGroup: () => cn('space-y-1'),
 
   // Form label
-  formLabel: () => cn('block text-sm font-medium text-gray-700'),
+  formLabel: () => cn('block text-sm font-medium text-neutral-700'),
 
   // Form error
   formError: () => cn('text-sm text-red-600'),
 
   // Form help text
-  formHelp: () => cn('text-sm text-gray-500'),
+  formHelp: () => cn('text-sm text-neutral-500'),
 
   // Loading spinner
   spinner: (size: keyof typeof sizing.icon = 'md') => cn(
-    'animate-spin rounded-full border-2 border-gray-300 border-t-blue-600',
+    'animate-spin rounded-full border-2 border-neutral-300 border-t-primary-600',
     sizing.icon[size]
   ),
 
@@ -384,33 +402,33 @@ export const components = {
   tab: (active: boolean = false) => cn(
     'flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm transition-colors',
     active
-      ? 'border-blue-500 text-blue-600'
-      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+      ? 'border-primary-500 text-primary-600'
+      : 'border-transparent text-neutral-500 hover:text-neutral-700 hover:border-neutral-300'
   ),
 
   // Modal overlay
   modalOverlay: () => cn(
-    'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50',
+    'fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50',
     'transition-opacity duration-300'
   ),
 
   // Modal content
   modalContent: () => cn(
-    'bg-white rounded-lg shadow-xl max-w-md w-full mx-4',
+    'bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 ring-1 ring-black/5',
     'transform transition-all duration-300'
   ),
 
   // Toast notification
   toast: (variant: 'success' | 'error' | 'warning' | 'info' = 'info') => {
     const variantStyles = {
-      success: 'bg-green-50 border-green-200 text-green-800',
+      success: 'bg-primary-50 border-primary-200 text-primary-800',
       error: 'bg-red-50 border-red-200 text-red-800',
       warning: 'bg-yellow-50 border-yellow-200 text-yellow-800',
-      info: 'bg-blue-50 border-blue-200 text-blue-800',
+      info: 'bg-primary-50 border-primary-200 text-primary-800',
     };
 
     return cn(
-      'p-4 rounded-lg border',
+      'p-4 rounded-xl border',
       'transform transition-all duration-300',
       variantStyles[variant]
     );

@@ -341,12 +341,12 @@ const VehicleProfilePanel: React.FC<VehicleProfilePanelProps> = ({
       <div className="space-y-1">
         <div className="flex items-center space-x-2">
           <span className="text-base">{icon}</span>
-          <label htmlFor={field} className="text-sm font-medium text-gray-700">
+          <label htmlFor={field} className="text-sm font-medium text-neutral-700">
             {label}
           </label>
           {helpText && (
             <Tooltip content={helpText} size="sm">
-              <svg className="w-3.5 h-3.5 text-gray-400 cursor-help" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-3.5 h-3.5 text-neutral-400 cursor-help" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </Tooltip>
@@ -366,12 +366,12 @@ const VehicleProfilePanel: React.FC<VehicleProfilePanelProps> = ({
               'w-full px-3 py-2 pr-12 border rounded-lg text-sm focus:outline-none focus:ring-2 transition-colors',
               hasError
                 ? 'border-red-300 focus:ring-red-500 focus:border-red-500'
-                : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
+                : 'border-neutral-300 focus:ring-primary-500 focus:border-primary-500'
             )}
             placeholder={`Enter ${label.toLowerCase()}`}
           />
           <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-            <span className="text-gray-500 text-sm">{unit.label}</span>
+            <span className="text-neutral-500 text-sm">{unit.label}</span>
           </div>
         </div>
 
@@ -390,16 +390,16 @@ const VehicleProfilePanel: React.FC<VehicleProfilePanelProps> = ({
   return (
     <div className={cn(
       'bg-white rounded-lg',
-      compact ? '' : 'shadow-lg border border-gray-200 p-6',
+      compact ? '' : 'shadow-lg border border-neutral-200 p-6',
       className
     )}>
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h2 className="text-lg font-bold text-gray-900 flex items-center">
+          <h2 className="text-lg font-bold text-neutral-900 flex items-center">
             🚐 Vehicle Profile
           </h2>
-          <p className="text-xs text-gray-600 mt-0.5">
+          <p className="text-xs text-neutral-600 mt-0.5">
             Set your vehicle dimensions for safe routing
           </p>
         </div>
@@ -412,7 +412,7 @@ const VehicleProfilePanel: React.FC<VehicleProfilePanelProps> = ({
               className={cn(
                 'px-2 py-1 rounded text-xs font-medium transition-colors',
                 unitSystem === 'metric'
-                  ? 'bg-blue-100 text-blue-700'
+                  ? 'bg-primary-100 text-primary-700'
                   : 'bg-orange-100 text-orange-700'
               )}
             >
@@ -423,14 +423,14 @@ const VehicleProfilePanel: React.FC<VehicleProfilePanelProps> = ({
       </div>
 
       {/* Selection Mode Tabs */}
-      <div className="flex space-x-1 mb-4 bg-gray-100 rounded-lg p-1">
+      <div className="flex space-x-1 mb-4 bg-neutral-100 rounded-lg p-1">
         <button
           onClick={() => setSelectionMode('vehicle')}
           className={cn(
             'flex-1 px-3 py-2 text-xs font-medium rounded-md transition-colors',
             selectionMode === 'vehicle'
-              ? 'bg-white text-blue-700 shadow-sm'
-              : 'text-gray-600 hover:text-gray-900'
+              ? 'bg-white text-primary-700 shadow-sm'
+              : 'text-neutral-600 hover:text-neutral-900'
           )}
         >
           🚐 Base Vehicle
@@ -440,8 +440,8 @@ const VehicleProfilePanel: React.FC<VehicleProfilePanelProps> = ({
           className={cn(
             'flex-1 px-3 py-2 text-xs font-medium rounded-md transition-colors',
             selectionMode === 'motorhome'
-              ? 'bg-white text-blue-700 shadow-sm'
-              : 'text-gray-600 hover:text-gray-900'
+              ? 'bg-white text-primary-700 shadow-sm'
+              : 'text-neutral-600 hover:text-neutral-900'
           )}
         >
           🚌 Motorhome
@@ -451,8 +451,8 @@ const VehicleProfilePanel: React.FC<VehicleProfilePanelProps> = ({
           className={cn(
             'flex-1 px-3 py-2 text-xs font-medium rounded-md transition-colors',
             selectionMode === 'custom'
-              ? 'bg-white text-blue-700 shadow-sm'
-              : 'text-gray-600 hover:text-gray-900'
+              ? 'bg-white text-primary-700 shadow-sm'
+              : 'text-neutral-600 hover:text-neutral-900'
           )}
         >
           ✏️ Custom
@@ -462,19 +462,19 @@ const VehicleProfilePanel: React.FC<VehicleProfilePanelProps> = ({
       {/* Base Vehicle Selection (Make/Model/Variant) */}
       {selectionMode === 'vehicle' && (
         <div className="space-y-3 mb-4">
-          <p className="text-xs text-gray-500">
+          <p className="text-xs text-neutral-500">
             Select your base vehicle to auto-fill dimensions
           </p>
 
           {/* Make Dropdown */}
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1">
+            <label className="block text-xs font-medium text-neutral-700 mb-1">
               Make
             </label>
             <select
               value={selectedMakeId}
               onChange={(e) => handleMakeChange(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
             >
               <option value="">Select make...</option>
               {VEHICLE_DATABASE.map((make) => (
@@ -488,13 +488,13 @@ const VehicleProfilePanel: React.FC<VehicleProfilePanelProps> = ({
           {/* Model Dropdown */}
           {selectedMakeId && (
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">
+              <label className="block text-xs font-medium text-neutral-700 mb-1">
                 Model
               </label>
               <select
                 value={selectedModelId}
                 onChange={(e) => handleModelChange(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
               >
                 <option value="">Select model...</option>
                 {availableModels.map((model) => (
@@ -509,13 +509,13 @@ const VehicleProfilePanel: React.FC<VehicleProfilePanelProps> = ({
           {/* Variant Dropdown */}
           {selectedModelId && (
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">
+              <label className="block text-xs font-medium text-neutral-700 mb-1">
                 Size / Variant
               </label>
               <select
                 value={selectedVariantId}
                 onChange={(e) => handleVariantChange(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
               >
                 <option value="">Select variant...</option>
                 {availableVariants.map((variant) => (
@@ -529,8 +529,8 @@ const VehicleProfilePanel: React.FC<VehicleProfilePanelProps> = ({
 
           {/* Selected variant info */}
           {selectedVariantId && (
-            <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
-              <div className="text-xs text-blue-800">
+            <div className="p-3 bg-primary-50 border border-primary-200 rounded-lg">
+              <div className="text-xs text-primary-800">
                 <strong>Selected:</strong>{' '}
                 {VEHICLE_DATABASE.find(m => m.id === selectedMakeId)?.name}{' '}
                 {availableModels.find(m => m.id === selectedModelId)?.name}{' '}
@@ -544,14 +544,14 @@ const VehicleProfilePanel: React.FC<VehicleProfilePanelProps> = ({
       {/* Motorhome Presets */}
       {selectionMode === 'motorhome' && (
         <div className="space-y-3 mb-4">
-          <p className="text-xs text-gray-500">
+          <p className="text-xs text-neutral-500">
             Select a popular motorhome model
           </p>
 
           <select
             value={selectedMotorhomeId}
             onChange={(e) => handleMotorhomeChange(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
           >
             <option value="">Select motorhome...</option>
             <optgroup label="Compact Campervans">
@@ -586,13 +586,13 @@ const VehicleProfilePanel: React.FC<VehicleProfilePanelProps> = ({
 
           {/* Selected motorhome info */}
           {selectedMotorhomeId && (
-            <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+            <div className="p-3 bg-primary-50 border border-primary-200 rounded-lg">
               {(() => {
                 const preset = MOTORHOME_PRESETS.find(m => m.id === selectedMotorhomeId);
                 return preset ? (
-                  <div className="text-xs text-blue-800">
+                  <div className="text-xs text-primary-800">
                     <strong>{preset.name}</strong>
-                    <div className="text-blue-600 mt-1">
+                    <div className="text-primary-600 mt-1">
                       Base: {preset.base} • {preset.make}
                     </div>
                   </div>
@@ -605,8 +605,8 @@ const VehicleProfilePanel: React.FC<VehicleProfilePanelProps> = ({
 
       {/* Custom mode info */}
       {selectionMode === 'custom' && (
-        <div className="mb-4 p-3 bg-gray-50 border border-gray-200 rounded-lg">
-          <p className="text-xs text-gray-600">
+        <div className="mb-4 p-3 bg-neutral-50 border border-neutral-200 rounded-lg">
+          <p className="text-xs text-neutral-600">
             Enter your vehicle dimensions manually below. Measure your vehicle including any roof equipment (AC, antenna, solar panels).
           </p>
         </div>
@@ -661,8 +661,8 @@ const VehicleProfilePanel: React.FC<VehicleProfilePanelProps> = ({
           className={cn(
             'flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center',
             isDirty && Object.keys(errors).length === 0 && !isSaving
-              ? 'bg-blue-600 text-white hover:bg-blue-700'
-              : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              ? 'bg-primary-600 text-white hover:bg-primary-700'
+              : 'bg-neutral-300 text-neutral-500 cursor-not-allowed'
           )}
         >
           {isSaving && (
@@ -682,8 +682,8 @@ const VehicleProfilePanel: React.FC<VehicleProfilePanelProps> = ({
           className={cn(
             'px-4 py-2 rounded-lg text-sm font-medium border transition-colors',
             isDirty
-              ? 'border-gray-300 text-gray-700 hover:bg-gray-50'
-              : 'border-gray-200 text-gray-400 cursor-not-allowed'
+              ? 'border-neutral-300 text-neutral-700 hover:bg-neutral-50'
+              : 'border-neutral-200 text-neutral-400 cursor-not-allowed'
           )}
         >
           Reset

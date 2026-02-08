@@ -40,15 +40,15 @@ const WelcomeStep: React.FC = () => {
     <div className="text-center space-y-6">
       <div className="text-6xl">🏕️</div>
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">
+        <h2 className="text-2xl font-bold text-neutral-900 mb-2">
           Welcome to European Camper Trip Planner
         </h2>
-        <p className="text-gray-600 max-w-md mx-auto">
+        <p className="text-neutral-600 max-w-md mx-auto">
           Plan safe routes that respect your vehicle's size.
           Find campsites, calculate costs, and export to GPS.
         </p>
       </div>
-      <div className="text-sm text-gray-500">
+      <div className="text-sm text-neutral-500">
         Let's set up your vehicle and get you started with your first route.
       </div>
     </div>
@@ -160,21 +160,21 @@ const VehicleSetupStep: React.FC<VehicleSetupStepProps> = ({
   return (
     <div className="space-y-4">
       <div className="text-center">
-        <h2 className="text-xl font-bold text-gray-900 mb-1">Tell Us About Your Vehicle</h2>
-        <p className="text-gray-600 text-sm">
+        <h2 className="text-xl font-bold text-neutral-900 mb-1">Tell Us About Your Vehicle</h2>
+        <p className="text-neutral-600 text-sm">
           Select your base vehicle to auto-fill dimensions
         </p>
       </div>
 
       {/* Make Dropdown */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-neutral-700 mb-1">
           Make
         </label>
         <select
           value={vehicleData.makeId}
           onChange={(e) => handleMakeChange(e.target.value)}
-          className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
+          className="w-full px-3 py-2.5 border border-neutral-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white"
         >
           <option value="">Select make...</option>
           {VEHICLE_DATABASE.map((make) => (
@@ -188,13 +188,13 @@ const VehicleSetupStep: React.FC<VehicleSetupStepProps> = ({
       {/* Model Dropdown */}
       {vehicleData.makeId && (
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-neutral-700 mb-1">
             Model
           </label>
           <select
             value={vehicleData.modelId}
             onChange={(e) => handleModelChange(e.target.value)}
-            className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
+            className="w-full px-3 py-2.5 border border-neutral-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white"
           >
             <option value="">Select model...</option>
             {availableModels.map((model) => (
@@ -209,13 +209,13 @@ const VehicleSetupStep: React.FC<VehicleSetupStepProps> = ({
       {/* Variant Dropdown */}
       {vehicleData.modelId && (
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-neutral-700 mb-1">
             Size / Variant
           </label>
           <select
             value={vehicleData.variantId}
             onChange={(e) => handleVariantChange(e.target.value)}
-            className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
+            className="w-full px-3 py-2.5 border border-neutral-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white"
           >
             <option value="">Select variant...</option>
             {availableVariants.map((variant) => (
@@ -229,10 +229,10 @@ const VehicleSetupStep: React.FC<VehicleSetupStepProps> = ({
 
       {/* Selected vehicle info */}
       {selectedVariant && (
-        <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
-          <div className="text-sm text-blue-800">
+        <div className="p-3 bg-primary-50 border border-primary-200 rounded-xl">
+          <div className="text-sm text-primary-800">
             <strong>{selectedMake?.name} {selectedModel?.name} {selectedVariant.name}</strong>
-            <div className="text-blue-600 mt-1">
+            <div className="text-primary-600 mt-1">
               {selectedVariant.length}m L × {selectedVariant.width}m W × {selectedVariant.height}m H • {selectedVariant.weight}t
             </div>
           </div>
@@ -240,13 +240,13 @@ const VehicleSetupStep: React.FC<VehicleSetupStepProps> = ({
       )}
 
       {/* Dimension Inputs - For fine-tuning or custom entry */}
-      <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-        <h3 className="font-medium text-gray-900 mb-3 text-sm">
+      <div className="bg-neutral-50 rounded-xl p-4 border border-neutral-200">
+        <h3 className="font-medium text-neutral-900 mb-3 text-sm">
           {selectedVariant ? 'Fine-tune Dimensions' : 'Or Enter Dimensions Manually'}
         </h3>
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="block text-xs text-gray-600 mb-1">Height (m)</label>
+            <label className="block text-xs text-neutral-600 mb-1">Height (m)</label>
             <input
               type="number"
               step="0.1"
@@ -254,11 +254,11 @@ const VehicleSetupStep: React.FC<VehicleSetupStepProps> = ({
               max="5"
               value={vehicleData.height}
               onChange={(e) => handleDimensionChange('height', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 border border-neutral-300 rounded-md text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
             />
           </div>
           <div>
-            <label className="block text-xs text-gray-600 mb-1">Width (m)</label>
+            <label className="block text-xs text-neutral-600 mb-1">Width (m)</label>
             <input
               type="number"
               step="0.1"
@@ -266,11 +266,11 @@ const VehicleSetupStep: React.FC<VehicleSetupStepProps> = ({
               max="3.5"
               value={vehicleData.width}
               onChange={(e) => handleDimensionChange('width', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 border border-neutral-300 rounded-md text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
             />
           </div>
           <div>
-            <label className="block text-xs text-gray-600 mb-1">Length (m)</label>
+            <label className="block text-xs text-neutral-600 mb-1">Length (m)</label>
             <input
               type="number"
               step="0.1"
@@ -278,11 +278,11 @@ const VehicleSetupStep: React.FC<VehicleSetupStepProps> = ({
               max="20"
               value={vehicleData.length}
               onChange={(e) => handleDimensionChange('length', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 border border-neutral-300 rounded-md text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
             />
           </div>
           <div>
-            <label className="block text-xs text-gray-600 mb-1">Weight (tonnes)</label>
+            <label className="block text-xs text-neutral-600 mb-1">Weight (tonnes)</label>
             <input
               type="number"
               step="0.1"
@@ -290,11 +290,11 @@ const VehicleSetupStep: React.FC<VehicleSetupStepProps> = ({
               max="40"
               value={vehicleData.weight}
               onChange={(e) => handleDimensionChange('weight', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 border border-neutral-300 rounded-md text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
             />
           </div>
         </div>
-        <p className="text-xs text-gray-500 mt-3">
+        <p className="text-xs text-neutral-500 mt-3">
           💡 Include roof equipment (AC, solar panels, antenna) in height measurement.
         </p>
       </div>
@@ -348,25 +348,25 @@ const FuelSetupStep: React.FC<FuelSetupStepProps> = ({
   return (
     <div className="space-y-5">
       <div className="text-center">
-        <h2 className="text-xl font-bold text-gray-900 mb-1">Fuel Settings</h2>
-        <p className="text-gray-600 text-sm">
+        <h2 className="text-xl font-bold text-neutral-900 mb-1">Fuel Settings</h2>
+        <p className="text-neutral-600 text-sm">
           This helps us calculate your trip costs accurately.
         </p>
       </div>
 
       {/* Fuel Type Selection */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">Fuel Type</label>
+        <label className="block text-sm font-medium text-neutral-700 mb-2">Fuel Type</label>
         <div className="grid grid-cols-2 gap-2">
           {fuelTypes.map((fuel) => (
             <button
               key={fuel.id}
               onClick={() => setFuelData({ ...fuelData, fuelType: fuel.id })}
               className={cn(
-                'p-3 border-2 rounded-lg text-center transition-colors',
+                'p-3 border-2 rounded-xl text-center transition-colors',
                 fuelData.fuelType === fuel.id
-                  ? 'border-blue-500 bg-blue-50'
-                  : 'border-gray-200 hover:border-blue-300 hover:bg-gray-50'
+                  ? 'border-primary-500 bg-primary-50'
+                  : 'border-neutral-200 hover:border-primary-300 hover:bg-neutral-50'
               )}
             >
               <span className="text-lg">{fuel.icon}</span>
@@ -378,7 +378,7 @@ const FuelSetupStep: React.FC<FuelSetupStepProps> = ({
 
       {/* Consumption Input */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium text-neutral-700 mb-2">
           Fuel Consumption
         </label>
         <div className="flex items-center space-x-3">
@@ -389,16 +389,16 @@ const FuelSetupStep: React.FC<FuelSetupStepProps> = ({
             max="30"
             value={fuelData.consumption}
             onChange={(e) => setFuelData({ ...fuelData, consumption: parseFloat(e.target.value) || 0 })}
-            className="flex-1 px-4 py-3 border border-gray-300 rounded-md text-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="flex-1 px-4 py-3 border border-neutral-300 rounded-md text-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
           />
-          <span className="text-gray-600 text-sm whitespace-nowrap">L/100km</span>
+          <span className="text-neutral-600 text-sm whitespace-nowrap">L/100km</span>
         </div>
       </div>
 
       {/* Typical Values Reference */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <h4 className="font-medium text-blue-900 mb-2 text-sm">💡 Typical consumption values:</h4>
-        <ul className="text-sm text-blue-800 space-y-1">
+      <div className="bg-primary-50 border border-primary-200 rounded-xl p-4">
+        <h4 className="font-medium text-primary-900 mb-2 text-sm">💡 Typical consumption values:</h4>
+        <ul className="text-sm text-primary-800 space-y-1">
           <li>• Motorhome: 12-18 L/100km</li>
           <li>• Camper Van: 8-12 L/100km</li>
           <li>• Car + Caravan: 10-14 L/100km</li>
@@ -430,8 +430,8 @@ const InteractiveTutorialStep: React.FC<InteractiveTutorialStepProps> = ({
   return (
     <div className="space-y-4">
       <div className="text-center">
-        <h2 className="text-lg font-bold text-gray-900">🗺️ Let's Plan Your First Route</h2>
-        <p className="text-gray-600 text-sm mt-1">
+        <h2 className="text-lg font-bold text-neutral-900">🗺️ Let's Plan Your First Route</h2>
+        <p className="text-neutral-600 text-sm mt-1">
           Right-click on the map above to add locations
         </p>
       </div>
@@ -440,7 +440,7 @@ const InteractiveTutorialStep: React.FC<InteractiveTutorialStepProps> = ({
       <div className="flex justify-center gap-6">
         <div className={cn(
           'flex items-center gap-2 text-sm',
-          waypoints.length >= 1 ? 'text-green-600' : 'text-gray-400'
+          waypoints.length >= 1 ? 'text-green-600' : 'text-neutral-400'
         )}>
           <span className="w-6 h-6 rounded-full border-2 flex items-center justify-center text-xs font-bold">
             {waypoints.length >= 1 ? '✓' : '1'}
@@ -449,7 +449,7 @@ const InteractiveTutorialStep: React.FC<InteractiveTutorialStepProps> = ({
         </div>
         <div className={cn(
           'flex items-center gap-2 text-sm',
-          waypoints.length >= 2 ? 'text-green-600' : 'text-gray-400'
+          waypoints.length >= 2 ? 'text-green-600' : 'text-neutral-400'
         )}>
           <span className="w-6 h-6 rounded-full border-2 flex items-center justify-center text-xs font-bold">
             {waypoints.length >= 2 ? '✓' : '2'}
@@ -459,12 +459,12 @@ const InteractiveTutorialStep: React.FC<InteractiveTutorialStepProps> = ({
       </div>
 
       {waypoints.length === 0 && (
-        <p className="text-center text-sm text-gray-500">
+        <p className="text-center text-sm text-neutral-500">
           💡 Right-click anywhere on the map to add your first waypoint
         </p>
       )}
       {waypoints.length === 1 && (
-        <p className="text-center text-sm text-gray-500">
+        <p className="text-center text-sm text-neutral-500">
           👍 Great! Now right-click to add your destination
         </p>
       )}
@@ -522,32 +522,32 @@ const SummaryStep: React.FC<SummaryStepProps> = ({ vehicleData, fuelData }) => {
     <div className="space-y-5">
       <div className="text-center">
         <div className="text-4xl mb-2">✅</div>
-        <h2 className="text-xl font-bold text-gray-900">You're All Set!</h2>
-        <p className="text-gray-600 text-sm">Here's a summary of your setup</p>
+        <h2 className="text-xl font-bold text-neutral-900">You're All Set!</h2>
+        <p className="text-neutral-600 text-sm">Here's a summary of your setup</p>
       </div>
 
       {/* Settings Summary */}
-      <div className="bg-gray-50 rounded-lg p-4 border border-gray-200 space-y-3">
-        <div className="flex justify-between items-center py-2 border-b border-gray-200">
-          <span className="text-sm text-gray-600">Vehicle</span>
+      <div className="bg-neutral-50 rounded-xl p-4 border border-neutral-200 space-y-3">
+        <div className="flex justify-between items-center py-2 border-b border-neutral-200">
+          <span className="text-sm text-neutral-600">Vehicle</span>
           <span className="text-sm font-medium">
             {getVehicleName()} ({vehicleData.height}m × {vehicleData.width}m × {vehicleData.length}m)
           </span>
         </div>
-        <div className="flex justify-between items-center py-2 border-b border-gray-200">
-          <span className="text-sm text-gray-600">Weight</span>
+        <div className="flex justify-between items-center py-2 border-b border-neutral-200">
+          <span className="text-sm text-neutral-600">Weight</span>
           <span className="text-sm font-medium">{vehicleData.weight} tonnes</span>
         </div>
-        <div className="flex justify-between items-center py-2 border-b border-gray-200">
-          <span className="text-sm text-gray-600">Fuel</span>
+        <div className="flex justify-between items-center py-2 border-b border-neutral-200">
+          <span className="text-sm text-neutral-600">Fuel</span>
           <span className="text-sm font-medium">
             {fuelTypeNames[fuelData.fuelType]} @ {fuelData.consumption} L/100km
           </span>
         </div>
         {waypoints.length >= 2 && (
           <>
-            <div className="flex justify-between items-center py-2 border-b border-gray-200">
-              <span className="text-sm text-gray-600">Route</span>
+            <div className="flex justify-between items-center py-2 border-b border-neutral-200">
+              <span className="text-sm text-neutral-600">Route</span>
               <span className="text-sm font-medium">
                 {waypoints.length} waypoints
                 {distanceKm > 0 && ` • ${Math.round(distanceKm)} km`}
@@ -555,7 +555,7 @@ const SummaryStep: React.FC<SummaryStepProps> = ({ vehicleData, fuelData }) => {
             </div>
             {estimatedCost > 0 && (
               <div className="flex justify-between items-center py-2">
-                <span className="text-sm text-gray-600">Est. Fuel Cost</span>
+                <span className="text-sm text-neutral-600">Est. Fuel Cost</span>
                 <span className="text-sm font-medium text-green-600">
                   €{estimatedCost.toFixed(0)}
                 </span>
@@ -566,9 +566,9 @@ const SummaryStep: React.FC<SummaryStepProps> = ({ vehicleData, fuelData }) => {
       </div>
 
       {/* Quick Reference */}
-      <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
-        <h4 className="font-medium text-blue-900 mb-2 text-sm">Quick Reference</h4>
-        <ul className="text-sm text-blue-800 space-y-1">
+      <div className="bg-primary-50 rounded-xl p-4 border border-primary-200">
+        <h4 className="font-medium text-primary-900 mb-2 text-sm">Quick Reference</h4>
+        <ul className="text-sm text-primary-800 space-y-1">
           <li>🗺️ <strong>Right-click map</strong> → Add waypoints</li>
           <li>🏕️ <strong>Green button</strong> → Find campsites</li>
           <li>⚡ <strong>Lightning bolt</strong> → Optimize route order</li>
@@ -590,17 +590,17 @@ const ProgressIndicator: React.FC<{
   return (
     <div className="mb-6">
       <div className="flex items-center justify-between mb-2">
-        <span className="text-sm font-medium text-gray-700">
+        <span className="text-sm font-medium text-neutral-700">
           Step {currentStep + 1} of {totalSteps}
         </span>
-        <span className="text-sm text-gray-500">
+        <span className="text-sm text-neutral-500">
           {Math.round(((currentStep + 1) / totalSteps) * 100)}% complete
         </span>
       </div>
 
-      <div className="w-full bg-gray-200 rounded-full h-2">
+      <div className="w-full bg-neutral-200 rounded-full h-2">
         <div
-          className="bg-blue-600 h-2 rounded-full transition-all duration-300 ease-out"
+          className="bg-primary-600 h-2 rounded-full transition-all duration-300 ease-out"
           style={{ width: `${((currentStep + 1) / totalSteps) * 100}%` }}
         />
       </div>
@@ -611,17 +611,17 @@ const ProgressIndicator: React.FC<{
             key={step.id}
             className={cn(
               'flex items-center space-x-1 text-xs',
-              index <= currentStep ? 'text-blue-600' : 'text-gray-400'
+              index <= currentStep ? 'text-primary-600' : 'text-neutral-400'
             )}
           >
             <div
               className={cn(
                 'w-2 h-2 rounded-full',
                 index < currentStep
-                  ? 'bg-blue-600'
+                  ? 'bg-primary-600'
                   : index === currentStep
-                  ? 'bg-blue-600 animate-pulse'
-                  : 'bg-gray-300'
+                  ? 'bg-primary-600 animate-pulse'
+                  : 'bg-neutral-300'
               )}
             />
             <span className="hidden sm:inline">{step.title}</span>
@@ -798,10 +798,10 @@ const OnboardingFlow: React.FC<OnboardingFlowProps> = ({
   // For interactive step, render as bottom panel
   if (isInteractiveStep) {
     return (
-      <div className="fixed bottom-0 left-0 right-0 bg-white shadow-2xl rounded-t-2xl z-50 border-t border-gray-200">
+      <div className="fixed bottom-0 left-0 right-0 bg-white shadow-2xl rounded-t-2xl z-50 border-t border-neutral-200">
         <div className="max-w-2xl mx-auto p-4">
           {/* Drag handle indicator */}
-          <div className="w-12 h-1 bg-gray-300 rounded-full mx-auto mb-3" />
+          <div className="w-12 h-1 bg-neutral-300 rounded-full mx-auto mb-3" />
 
           {/* Progress */}
           <ProgressIndicator
@@ -814,12 +814,12 @@ const OnboardingFlow: React.FC<OnboardingFlowProps> = ({
           {currentStepData.content}
 
           {/* Actions */}
-          <div className="flex justify-between items-center mt-4 pt-3 border-t border-gray-200">
+          <div className="flex justify-between items-center mt-4 pt-3 border-t border-neutral-200">
             <div className="flex space-x-3">
               {currentStepData.canGoBack && currentStep > 0 && (
                 <button
                   onClick={handleBack}
-                  className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors text-sm"
+                  className="px-4 py-2 border border-neutral-300 rounded-md text-neutral-700 hover:bg-neutral-50 transition-colors text-sm"
                 >
                   Back
                 </button>
@@ -827,7 +827,7 @@ const OnboardingFlow: React.FC<OnboardingFlowProps> = ({
               {currentStepData.canSkip && (
                 <button
                   onClick={handleNext}
-                  className="text-sm text-gray-500 hover:text-gray-700 transition-colors"
+                  className="text-sm text-neutral-500 hover:text-neutral-700 transition-colors"
                 >
                   Skip this step
                 </button>
@@ -840,8 +840,8 @@ const OnboardingFlow: React.FC<OnboardingFlowProps> = ({
               className={cn(
                 'px-6 py-2 rounded-md font-medium transition-colors text-sm',
                 currentStepData.validation && !currentStepData.validation()
-                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                  : 'bg-blue-600 text-white hover:bg-blue-700'
+                  ? 'bg-neutral-300 text-neutral-500 cursor-not-allowed'
+                  : 'bg-primary-600 text-white hover:bg-primary-700 active:scale-[0.97]'
               )}
             >
               Continue
@@ -858,31 +858,31 @@ const OnboardingFlow: React.FC<OnboardingFlowProps> = ({
       <div
         ref={containerRef}
         className={cn(
-          'bg-white rounded-lg shadow-xl w-full max-w-lg max-h-[85vh] flex flex-col',
+          'bg-white rounded-2xl shadow-xl w-full max-w-lg max-h-[85vh] flex flex-col',
           className
         )}
         {...aria.dialog('onboarding-dialog', 'onboarding-description')}
       >
         {/* Header */}
-        <div className="p-5 border-b border-gray-200">
+        <div className="p-5 border-b border-neutral-200">
           <div className="flex justify-between items-center">
             <div>
               <h1
                 id="onboarding-dialog"
-                className="text-lg font-semibold text-gray-900"
+                className="text-lg font-semibold text-neutral-900"
               >
                 Getting Started
               </h1>
               <p
                 id="onboarding-description"
-                className="text-sm text-gray-600"
+                className="text-sm text-neutral-600"
               >
                 Let's set up your trip planner
               </p>
             </div>
             <button
               onClick={handleSkip}
-              className="text-gray-400 hover:text-gray-600 transition-colors"
+              className="text-neutral-400 hover:text-neutral-600 transition-colors"
               {...aria.button()}
               aria-label="Close onboarding"
             >
@@ -907,12 +907,12 @@ const OnboardingFlow: React.FC<OnboardingFlowProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="p-5 border-t border-gray-200 flex justify-between items-center">
+        <div className="p-5 border-t border-neutral-200 flex justify-between items-center">
           <div>
             {currentStepData.canSkip && currentStep < steps.length - 1 && (
               <button
                 onClick={handleSkip}
-                className="text-sm text-gray-500 hover:text-gray-700 transition-colors"
+                className="text-sm text-neutral-500 hover:text-neutral-700 transition-colors"
               >
                 Skip setup
               </button>
@@ -923,7 +923,7 @@ const OnboardingFlow: React.FC<OnboardingFlowProps> = ({
             {currentStepData.canGoBack && currentStep > 0 && (
               <button
                 onClick={handleBack}
-                className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors"
+                className="px-4 py-2 border border-neutral-300 rounded-md text-neutral-700 hover:bg-neutral-50 transition-colors"
               >
                 Back
               </button>
@@ -935,8 +935,8 @@ const OnboardingFlow: React.FC<OnboardingFlowProps> = ({
               className={cn(
                 'px-6 py-2 rounded-md font-medium transition-colors',
                 currentStepData.validation && !currentStepData.validation()
-                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                  : 'bg-blue-600 text-white hover:bg-blue-700'
+                  ? 'bg-neutral-300 text-neutral-500 cursor-not-allowed'
+                  : 'bg-primary-600 text-white hover:bg-primary-700 active:scale-[0.97]'
               )}
             >
               {currentStep === steps.length - 1 ? 'Start Planning' : 'Continue'}

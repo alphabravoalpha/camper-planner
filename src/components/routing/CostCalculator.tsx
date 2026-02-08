@@ -139,26 +139,26 @@ const CostCalculator: React.FC<CostCalculatorProps> = ({
   return (
     <div className={`bg-white rounded-lg shadow-lg border ${className}`}>
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b bg-gradient-to-r from-green-50 to-blue-50">
+      <div className="flex items-center justify-between p-4 border-b bg-gradient-to-r from-green-50 to-primary-50">
         <div className="flex items-center gap-2">
           <Calculator className="w-5 h-5 text-green-600" />
-          <h3 className="text-lg font-semibold text-gray-800">Trip Cost Calculator</h3>
+          <h3 className="text-lg font-semibold text-neutral-800">Trip Cost Calculator</h3>
         </div>
         <button
           onClick={() => setShowSettings(!showSettings)}
           className="p-2 hover:bg-white rounded-lg transition-colors"
         >
-          <Settings className="w-4 h-4 text-gray-600" />
+          <Settings className="w-4 h-4 text-neutral-600" />
         </button>
       </div>
 
       {/* Settings Panel */}
       {showSettings && (
-        <div className="p-4 border-b bg-gray-50">
+        <div className="p-4 border-b bg-neutral-50">
           <div className="space-y-4">
             {/* Fuel Consumption Settings */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-neutral-700 mb-2">
                 Fuel Consumption
               </label>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
@@ -205,7 +205,7 @@ const CostCalculator: React.FC<CostCalculatorProps> = ({
 
             {/* Fuel Price Settings */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-neutral-700 mb-2">
                 Fuel Prices
               </label>
               <div className="space-y-2">
@@ -321,25 +321,25 @@ const CostCalculator: React.FC<CostCalculatorProps> = ({
 
         {isCalculating ? (
           <div className="flex items-center justify-center py-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-            <span className="ml-2 text-gray-600">Calculating costs...</span>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+            <span className="ml-2 text-neutral-600">Calculating costs...</span>
           </div>
         ) : costBreakdown ? (
           <div className="space-y-4">
             {/* Total Cost Summary */}
-            <div className="bg-gradient-to-r from-blue-50 to-green-50 rounded-lg p-4">
+            <div className="bg-gradient-to-r from-primary-50 to-green-50 rounded-lg p-4">
               <div className="text-center">
-                <div className="text-3xl font-bold text-gray-800 mb-1">
+                <div className="text-3xl font-bold text-neutral-800 mb-1">
                   {formatCurrency(costBreakdown.totalCost, costBreakdown.currency)}
                 </div>
-                <div className="text-sm text-gray-600">Total Trip Cost</div>
+                <div className="text-sm text-neutral-600">Total Trip Cost</div>
               </div>
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
                 <div className="text-center">
                   <div className="flex items-center justify-center gap-1 mb-1">
-                    <Fuel className="w-4 h-4 text-blue-600" />
-                    <span className="text-sm text-gray-600">Fuel</span>
+                    <Fuel className="w-4 h-4 text-primary-600" />
+                    <span className="text-sm text-neutral-600">Fuel</span>
                   </div>
                   <div className="font-semibold">
                     {formatCurrency(costBreakdown.fuelCost, costBreakdown.currency)}
@@ -349,7 +349,7 @@ const CostCalculator: React.FC<CostCalculatorProps> = ({
                 <div className="text-center">
                   <div className="flex items-center justify-center gap-1 mb-1">
                     <MapPin className="w-4 h-4 text-green-600" />
-                    <span className="text-sm text-gray-600">Accommodation</span>
+                    <span className="text-sm text-neutral-600">Accommodation</span>
                   </div>
                   <div className="font-semibold">
                     {formatCurrency(costBreakdown.accommodationCost, costBreakdown.currency)}
@@ -359,7 +359,7 @@ const CostCalculator: React.FC<CostCalculatorProps> = ({
                 <div className="text-center">
                   <div className="flex items-center justify-center gap-1 mb-1">
                     <Euro className="w-4 h-4 text-purple-600" />
-                    <span className="text-sm text-gray-600">Tolls</span>
+                    <span className="text-sm text-neutral-600">Tolls</span>
                   </div>
                   <div className="font-semibold">
                     {formatCurrency(costBreakdown.tollCost, costBreakdown.currency)}
@@ -369,7 +369,7 @@ const CostCalculator: React.FC<CostCalculatorProps> = ({
                 <div className="text-center">
                   <div className="flex items-center justify-center gap-1 mb-1">
                     <Calculator className="w-4 h-4 text-orange-600" />
-                    <span className="text-sm text-gray-600">Other</span>
+                    <span className="text-sm text-neutral-600">Other</span>
                   </div>
                   <div className="font-semibold">
                     {formatCurrency(costBreakdown.otherCosts, costBreakdown.currency)}
@@ -379,8 +379,8 @@ const CostCalculator: React.FC<CostCalculatorProps> = ({
             </div>
 
             {/* Fuel Settings Display */}
-            <div className="bg-gray-50 rounded-lg p-3">
-              <div className="text-sm text-gray-600 mb-2">Current Settings:</div>
+            <div className="bg-neutral-50 rounded-lg p-3">
+              <div className="text-sm text-neutral-600 mb-2">Current Settings:</div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                 <div>
                   <span className="font-medium">Consumption: </span>
@@ -401,18 +401,18 @@ const CostCalculator: React.FC<CostCalculatorProps> = ({
             {preferences.showDailyEstimates && costBreakdown.dailyBreakdown.length > 0 && (
               <div>
                 <div className="flex items-center gap-2 mb-3">
-                  <Calendar className="w-4 h-4 text-blue-600" />
-                  <h4 className="font-medium text-gray-800">Daily Cost Breakdown</h4>
+                  <Calendar className="w-4 h-4 text-primary-600" />
+                  <h4 className="font-medium text-neutral-800">Daily Cost Breakdown</h4>
                 </div>
                 <div className="space-y-2">
                   {costBreakdown.dailyBreakdown.map((day, index) => (
-                    <div key={index} className="bg-gray-50 rounded-lg p-3">
+                    <div key={index} className="bg-neutral-50 rounded-lg p-3">
                       <div className="flex justify-between items-center">
                         <div>
-                          <div className="font-medium text-gray-800">
+                          <div className="font-medium text-neutral-800">
                             Day {index + 1} - {day.date.toLocaleDateString()}
                           </div>
-                          <div className="text-sm text-gray-600">
+                          <div className="text-sm text-neutral-600">
                             {day.distance.toFixed(0)}km driving
                           </div>
                         </div>
@@ -420,7 +420,7 @@ const CostCalculator: React.FC<CostCalculatorProps> = ({
                           <div className="font-semibold">
                             {formatCurrency(day.totalDailyCost, costBreakdown.currency)}
                           </div>
-                          <div className="text-sm text-gray-600">
+                          <div className="text-sm text-neutral-600">
                             Fuel: {formatCurrency(day.fuelCost, costBreakdown.currency)}
                           </div>
                         </div>
@@ -436,20 +436,21 @@ const CostCalculator: React.FC<CostCalculatorProps> = ({
               <div>
                 <div className="flex items-center gap-2 mb-3">
                   <MapPin className="w-4 h-4 text-green-600" />
-                  <h4 className="font-medium text-gray-800">Route Segments</h4>
+                  <h4 className="font-medium text-neutral-800">Route Segments</h4>
+
                 </div>
                 <div className="space-y-2 max-h-60 overflow-y-auto">
                   {costBreakdown.segments.map((segment, index) => (
-                    <div key={index} className="bg-gray-50 rounded-lg p-3">
+                    <div key={index} className="bg-neutral-50 rounded-lg p-3">
                       <div className="flex justify-between items-start">
                         <div className="flex-1">
-                          <div className="font-medium text-gray-800 truncate">
+                          <div className="font-medium text-neutral-800 truncate">
                             {segment.startWaypoint.name} → {segment.endWaypoint.name}
                           </div>
-                          <div className="text-sm text-gray-600">
+                          <div className="text-sm text-neutral-600">
                             {segment.distance.toFixed(0)}km • {Math.round(segment.duration)}min
                             {segment.segmentType === 'overnight' && (
-                              <span className="ml-2 px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs">
+                              <span className="ml-2 px-2 py-1 bg-primary-100 text-primary-700 rounded-full text-xs">
                                 Overnight
                               </span>
                             )}
@@ -459,7 +460,7 @@ const CostCalculator: React.FC<CostCalculatorProps> = ({
                           <div className="font-semibold">
                             {formatCurrency(segment.fuelCost + (segment.accommodationCost || 0), costBreakdown.currency)}
                           </div>
-                          <div className="text-sm text-gray-600">
+                          <div className="text-sm text-neutral-600">
                             Fuel: {formatCurrency(segment.fuelCost, costBreakdown.currency)}
                           </div>
                         </div>
@@ -475,7 +476,7 @@ const CostCalculator: React.FC<CostCalculatorProps> = ({
               <div>
                 <div className="flex items-center gap-2 mb-3">
                   <TrendingDown className="w-4 h-4 text-orange-600" />
-                  <h4 className="font-medium text-gray-800">Cost Optimization</h4>
+                  <h4 className="font-medium text-neutral-800">Cost Optimization</h4>
                 </div>
                 <div className="bg-orange-50 rounded-lg p-4">
                   <div className="text-center mb-3">
@@ -491,8 +492,8 @@ const CostCalculator: React.FC<CostCalculatorProps> = ({
                       <div key={index} className="bg-white rounded-lg p-3">
                         <div className="flex justify-between items-start">
                           <div className="flex-1">
-                            <div className="font-medium text-gray-800">{suggestion.description}</div>
-                            <div className="text-sm text-gray-600 mt-1">{suggestion.actionRequired}</div>
+                            <div className="font-medium text-neutral-800">{suggestion.description}</div>
+                            <div className="text-sm text-neutral-600 mt-1">{suggestion.actionRequired}</div>
                           </div>
                           <div className="text-right ml-4">
                             <div className="font-semibold text-green-600">
@@ -508,8 +509,8 @@ const CostCalculator: React.FC<CostCalculatorProps> = ({
             )}
           </div>
         ) : (
-          <div className="text-center py-8 text-gray-500">
-            <Calculator className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+          <div className="text-center py-8 text-neutral-500">
+            <Calculator className="w-12 h-12 mx-auto mb-3 text-neutral-300" />
             <p>Add waypoints to your route to calculate trip costs</p>
           </div>
         )}

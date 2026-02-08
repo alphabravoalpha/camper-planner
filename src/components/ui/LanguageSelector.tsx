@@ -74,8 +74,8 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
         className={cn(
           'flex items-center space-x-1 rounded-md font-medium transition-colors',
           FeatureFlags.MULTI_LANGUAGE_COMPLETE
-            ? 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
-            : 'text-gray-400 cursor-not-allowed',
+            ? 'text-neutral-700 hover:text-neutral-900 hover:bg-neutral-100'
+            : 'text-neutral-400 cursor-not-allowed',
           sizeClasses[size],
           className
         )}
@@ -103,8 +103,8 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
           'flex items-center space-x-2 rounded-md font-medium transition-colors',
-          'text-gray-700 hover:text-gray-900 hover:bg-gray-100',
-          'focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500',
+          'text-neutral-700 hover:text-neutral-900 hover:bg-neutral-100',
+          'focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500',
           sizeClasses[size]
         )}
         aria-expanded={isOpen}
@@ -130,18 +130,18 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
                 key={language.code}
                 onClick={() => handleLanguageChange(language.code)}
                 className={cn(
-                  'flex items-center w-full px-4 py-2 text-sm text-left hover:bg-gray-50 transition-colors',
-                  language.code === currentLanguage.code && 'bg-blue-50 text-blue-700'
+                  'flex items-center w-full px-4 py-2 text-sm text-left hover:bg-neutral-50 transition-colors',
+                  language.code === currentLanguage.code && 'bg-primary-50 text-primary-700'
                 )}
                 role="menuitem"
               >
                 <span className="text-base mr-3">{language.flag}</span>
                 <div className="flex-1">
                   <div className="font-medium">{language.nativeName}</div>
-                  <div className="text-xs text-gray-500">{language.name}</div>
+                  <div className="text-xs text-neutral-500">{language.name}</div>
                 </div>
                 {language.code === currentLanguage.code && (
-                  <svg className="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="w-4 h-4 text-primary-600" fill="currentColor" viewBox="0 0 20 20">
                     <path
                       fillRule="evenodd"
                       d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
@@ -154,10 +154,10 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
           </div>
 
           {/* Footer */}
-          <div className="border-t border-gray-100 px-4 py-2">
-            <p className="text-xs text-gray-500 text-center">
+          <div className="border-t border-neutral-100 px-4 py-2">
+            <p className="text-xs text-neutral-500 text-center">
               Missing your language?{' '}
-              <a href="/help" className="text-blue-600 hover:text-blue-500">
+              <a href="/help" className="text-primary-600 hover:text-primary-500">
                 Let us know
               </a>
             </p>

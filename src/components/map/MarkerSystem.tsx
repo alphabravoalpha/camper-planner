@@ -64,7 +64,7 @@ const createCustomIcon = (type: MarkerType, options: {
   };
 
   const iconColors = {
-    waypoint: 'bg-blue-600 border-blue-700',
+    waypoint: 'bg-primary-600 border-primary-700',
     campsite: 'bg-green-600 border-green-700',
     aire: 'bg-orange-600 border-orange-700',
     poi: 'bg-purple-600 border-purple-700',
@@ -134,11 +134,11 @@ const MarkerComponent: React.FC<MarkerComponentProps> = ({
   const renderPopupContent = () => {
     const baseContent = (
       <div className="min-w-48">
-        <h3 className="font-semibold text-gray-900 mb-1">{marker.title}</h3>
+        <h3 className="font-semibold text-neutral-900 mb-1">{marker.title}</h3>
         {marker.description && (
-          <p className="text-sm text-gray-600 mb-2">{marker.description}</p>
+          <p className="text-sm text-neutral-600 mb-2">{marker.description}</p>
         )}
-        <div className="text-xs text-gray-500">
+        <div className="text-xs text-neutral-500">
           {marker.lat.toFixed(6)}, {marker.lng.toFixed(6)}
         </div>
       </div>
@@ -154,7 +154,7 @@ const MarkerComponent: React.FC<MarkerComponentProps> = ({
             <div className="mt-2 text-xs">
               <span className={cn(
                 'px-2 py-1 rounded text-white',
-                waypoint.isDestination ? 'bg-red-600' : 'bg-blue-600'
+                waypoint.isDestination ? 'bg-red-600' : 'bg-primary-600'
               )}>
                 {waypoint.isDestination ? 'Destination' : `Waypoint ${waypoint.order}`}
               </span>
@@ -169,7 +169,7 @@ const MarkerComponent: React.FC<MarkerComponentProps> = ({
             {baseContent}
             {campsite.amenities && campsite.amenities.length > 0 && (
               <div className="mt-2">
-                <div className="text-xs text-gray-500 mb-1">Amenities:</div>
+                <div className="text-xs text-neutral-500 mb-1">Amenities:</div>
                 <div className="flex flex-wrap gap-1">
                   {campsite.amenities.slice(0, 3).map((amenity, index) => (
                     <span key={index} className="px-1 py-0.5 bg-green-100 text-green-700 text-xs rounded">
@@ -177,7 +177,7 @@ const MarkerComponent: React.FC<MarkerComponentProps> = ({
                     </span>
                   ))}
                   {campsite.amenities.length > 3 && (
-                    <span className="text-xs text-gray-400">
+                    <span className="text-xs text-neutral-400">
                       +{campsite.amenities.length - 3} more
                     </span>
                   )}
@@ -214,7 +214,7 @@ const MarkerComponent: React.FC<MarkerComponentProps> = ({
           <div>
             {baseContent}
             {location.accuracy && (
-              <div className="mt-2 text-xs text-gray-500">
+              <div className="mt-2 text-xs text-neutral-500">
                 Accuracy: ±{location.accuracy}m
               </div>
             )}

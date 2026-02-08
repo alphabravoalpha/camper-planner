@@ -24,16 +24,16 @@ const ExportProgress: React.FC<{
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Exporting Route</h3>
+        <h3 className="text-lg font-semibold text-neutral-900 mb-4">Exporting Route</h3>
 
         <div className="mb-4">
-          <div className="flex justify-between text-sm text-gray-600 mb-2">
+          <div className="flex justify-between text-sm text-neutral-600 mb-2">
             <span>{currentStep}</span>
             <span>{Math.round(progress)}%</span>
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-2">
+          <div className="w-full bg-neutral-200 rounded-full h-2">
             <div
-              className="bg-blue-600 h-2 rounded-full transition-all duration-300 ease-out"
+              className="bg-primary-600 h-2 rounded-full transition-all duration-300 ease-out"
               style={{ width: `${progress}%` }}
             />
           </div>
@@ -43,7 +43,7 @@ const ExportProgress: React.FC<{
           <div className="flex justify-end">
             <button
               onClick={onCancel}
-              className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+              className="px-4 py-2 text-neutral-600 hover:text-neutral-800 transition-colors"
             >
               Cancel
             </button>
@@ -67,7 +67,7 @@ const ExportOptionsPanel: React.FC<{
     <div className="space-y-6">
       {/* Format Selection */}
       <div>
-        <h4 className="text-sm font-medium text-gray-900 mb-3">Export Format</h4>
+        <h4 className="text-sm font-medium text-neutral-900 mb-3">Export Format</h4>
         <div className="grid grid-cols-2 gap-3">
           {[
             { id: 'gpx', label: 'GPX', desc: 'For GPS devices' },
@@ -87,11 +87,11 @@ const ExportOptionsPanel: React.FC<{
               <div className={cn(
                 "p-3 border-2 rounded-lg cursor-pointer transition-all",
                 options.format === format.id
-                  ? "border-blue-500 bg-blue-50"
-                  : "border-gray-200 hover:border-gray-300"
+                  ? "border-primary-500 bg-primary-50"
+                  : "border-neutral-200 hover:border-neutral-300"
               )}>
                 <div className="font-medium text-sm">{format.label}</div>
-                <div className="text-xs text-gray-500">{format.desc}</div>
+                <div className="text-xs text-neutral-500">{format.desc}</div>
               </div>
             </label>
           ))}
@@ -101,7 +101,7 @@ const ExportOptionsPanel: React.FC<{
 
       {/* Data Inclusion Options */}
       <div>
-        <h4 className="text-sm font-medium text-gray-900 mb-3">Include Data</h4>
+        <h4 className="text-sm font-medium text-neutral-900 mb-3">Include Data</h4>
         <div className="space-y-2">
           {[
             { key: 'includeWaypoints', label: 'Route Waypoints', desc: 'All route points and navigation' },
@@ -115,11 +115,11 @@ const ExportOptionsPanel: React.FC<{
                 type="checkbox"
                 checked={options[option.key as keyof ExportOptions] as boolean}
                 onChange={(e) => updateOption(option.key as keyof ExportOptions, e.target.checked)}
-                className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                className="mt-1 h-4 w-4 text-primary-600 focus:ring-primary-500 border-neutral-300 rounded"
               />
               <div className="flex-1 min-w-0">
-                <div className="text-sm font-medium text-gray-900">{option.label}</div>
-                <div className="text-xs text-gray-500">{option.desc}</div>
+                <div className="text-sm font-medium text-neutral-900">{option.label}</div>
+                <div className="text-xs text-neutral-500">{option.desc}</div>
               </div>
             </label>
           ))}
@@ -128,36 +128,36 @@ const ExportOptionsPanel: React.FC<{
 
       {/* Custom Metadata */}
       <div>
-        <h4 className="text-sm font-medium text-gray-900 mb-3">Custom Information</h4>
+        <h4 className="text-sm font-medium text-neutral-900 mb-3">Custom Information</h4>
         <div className="space-y-3">
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1">Trip Name</label>
+            <label className="block text-xs font-medium text-neutral-700 mb-1">Trip Name</label>
             <input
               type="text"
               value={options.description || ''}
               onChange={(e) => updateOption('description', e.target.value)}
               placeholder="My European Camper Trip"
-              className="w-full p-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full p-2 text-sm border border-neutral-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1">Description</label>
+            <label className="block text-xs font-medium text-neutral-700 mb-1">Description</label>
             <textarea
               value={options.description || ''}
               onChange={(e) => updateOption('description', e.target.value)}
               placeholder="A wonderful journey through Europe..."
               rows={2}
-              className="w-full p-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full p-2 text-sm border border-neutral-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1">Creator</label>
+            <label className="block text-xs font-medium text-neutral-700 mb-1">Creator</label>
             <input
               type="text"
               value={options.creator || ''}
               onChange={(e) => updateOption('creator', e.target.value)}
               placeholder="European Camper Trip Planner"
-              className="w-full p-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full p-2 text-sm border border-neutral-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
             />
           </div>
         </div>
@@ -217,27 +217,27 @@ const ImportPanel: React.FC<{
         onDragLeave={() => setIsDragging(false)}
         className={cn(
           "border-2 border-dashed rounded-lg p-8 text-center transition-colors",
-          isDragging ? "border-blue-500 bg-blue-50" : "border-gray-300",
+          isDragging ? "border-primary-500 bg-primary-50" : "border-neutral-300",
           isImporting && "opacity-50 pointer-events-none"
         )}
       >
         {isImporting ? (
           <div className="space-y-3">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto" />
-            <p className="text-sm text-gray-600">Importing route...</p>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 mx-auto" />
+            <p className="text-sm text-neutral-600">Importing route...</p>
           </div>
         ) : (
           <div className="space-y-3">
-            <svg className="w-12 h-12 mx-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-12 h-12 mx-auto text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
             </svg>
             <div>
-              <p className="text-lg font-medium text-gray-900">Import Route</p>
-              <p className="text-sm text-gray-600">Drag and drop a GPX, JSON, KML, or CSV file here</p>
+              <p className="text-lg font-medium text-neutral-900">Import Route</p>
+              <p className="text-sm text-neutral-600">Drag and drop a GPX, JSON, KML, or CSV file here</p>
             </div>
             <div>
               <label className="cursor-pointer">
-                <span className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors inline-block">
+                <span className="bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition-colors inline-block">
                   Choose File
                 </span>
                 <input
@@ -248,7 +248,7 @@ const ImportPanel: React.FC<{
                 />
               </label>
             </div>
-            <p className="text-xs text-gray-500">Supports GPX, JSON, KML, and CSV formats</p>
+            <p className="text-xs text-neutral-500">Supports GPX, JSON, KML, and CSV formats</p>
           </div>
         )}
       </div>
@@ -434,12 +434,12 @@ const RouteExporter: React.FC<RouteExporterProps> = ({ className }) => {
 
   if (!waypoints.length) {
     return (
-      <div className={cn('bg-white rounded-lg border border-gray-200 p-6', className)}>
-        <div className="text-center text-gray-500">
-          <svg className="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div className={cn('bg-white rounded-lg border border-neutral-200 p-6', className)}>
+        <div className="text-center text-neutral-500">
+          <svg className="w-12 h-12 mx-auto mb-3 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
-          <h3 className="text-lg font-medium text-gray-900 mb-1">No Route to Export</h3>
+          <h3 className="text-lg font-medium text-neutral-900 mb-1">No Route to Export</h3>
           <p>Add waypoints to your route to enable export functionality</p>
         </div>
       </div>
@@ -447,9 +447,9 @@ const RouteExporter: React.FC<RouteExporterProps> = ({ className }) => {
   }
 
   return (
-    <div className={cn('bg-white rounded-lg border border-gray-200', className)}>
+    <div className={cn('bg-white rounded-lg border border-neutral-200', className)}>
       {/* Tab Navigation */}
-      <div className="border-b border-gray-200">
+      <div className="border-b border-neutral-200">
         <nav className="-mb-px flex space-x-8 px-4">
           {[
             { id: 'export', label: 'Export Route', icon: '📤' },
@@ -461,8 +461,8 @@ const RouteExporter: React.FC<RouteExporterProps> = ({ className }) => {
               className={cn(
                 'flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm transition-colors',
                 activeTab === tab.id
-                  ? 'border-blue-500 text-blue-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  ? 'border-primary-500 text-primary-600'
+                  : 'border-transparent text-neutral-500 hover:text-neutral-700 hover:border-neutral-300'
               )}
             >
               <span>{tab.icon}</span>
@@ -478,8 +478,8 @@ const RouteExporter: React.FC<RouteExporterProps> = ({ className }) => {
           <div className="space-y-6">
             {/* Export Header */}
             <div>
-              <h3 className="text-lg font-semibold text-gray-900">Export Route</h3>
-              <p className="text-sm text-gray-600 mt-1">
+              <h3 className="text-lg font-semibold text-neutral-900">Export Route</h3>
+              <p className="text-sm text-neutral-600 mt-1">
                 Export your route with {waypoints.length} waypoints to various formats for GPS devices and trip planning
               </p>
             </div>
@@ -491,23 +491,23 @@ const RouteExporter: React.FC<RouteExporterProps> = ({ className }) => {
             />
 
             {/* Export Summary */}
-            <div className="bg-gray-50 rounded-lg p-4">
-              <h4 className="text-sm font-medium text-gray-900 mb-2">Export Summary</h4>
+            <div className="bg-neutral-50 rounded-lg p-4">
+              <h4 className="text-sm font-medium text-neutral-900 mb-2">Export Summary</h4>
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
-                  <span className="text-gray-600">Waypoints:</span>
+                  <span className="text-neutral-600">Waypoints:</span>
                   <span className="ml-2 font-medium">{waypoints.length}</span>
                 </div>
                 <div>
-                  <span className="text-gray-600">Format:</span>
+                  <span className="text-neutral-600">Format:</span>
                   <span className="ml-2 font-medium uppercase">{exportOptions.format}</span>
                 </div>
                 <div>
-                  <span className="text-gray-600">Estimated Size:</span>
+                  <span className="text-neutral-600">Estimated Size:</span>
                   <span className="ml-2 font-medium">{estimatedSize} KB</span>
                 </div>
                 <div>
-                  <span className="text-gray-600">Creator:</span>
+                  <span className="text-neutral-600">Creator:</span>
                   <span className="ml-2 font-medium">
                     {exportOptions.creator || 'European Camper Trip Planner'}
                   </span>
@@ -523,8 +523,8 @@ const RouteExporter: React.FC<RouteExporterProps> = ({ className }) => {
                 className={cn(
                   'px-6 py-3 rounded-lg font-medium transition-colors',
                   canExport && !isExporting
-                    ? 'bg-blue-600 text-white hover:bg-blue-700'
-                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    ? 'bg-primary-600 text-white hover:bg-primary-700'
+                    : 'bg-neutral-300 text-neutral-500 cursor-not-allowed'
                 )}
               >
                 {isExporting ? 'Exporting...' : 'Export Route'}
@@ -537,8 +537,8 @@ const RouteExporter: React.FC<RouteExporterProps> = ({ className }) => {
           <div className="space-y-6">
             {/* Import Header */}
             <div>
-              <h3 className="text-lg font-semibold text-gray-900">Import Route</h3>
-              <p className="text-sm text-gray-600 mt-1">
+              <h3 className="text-lg font-semibold text-neutral-900">Import Route</h3>
+              <p className="text-sm text-neutral-600 mt-1">
                 Import routes from GPX, JSON, KML, or CSV files to restore your trip planning
               </p>
             </div>

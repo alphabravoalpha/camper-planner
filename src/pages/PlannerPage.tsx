@@ -24,8 +24,8 @@ const PlannerPage: React.FC = () => {
             onClick={openWizard}
             className={`absolute z-[1000] flex items-center gap-2 shadow-lg transition-all font-semibold ${
               hasWaypoints
-                ? 'bottom-4 right-4 px-4 py-2.5 bg-white text-blue-600 border border-blue-200 rounded-lg hover:bg-blue-50 text-sm'
-                : 'bottom-6 left-1/2 -translate-x-1/2 px-6 py-3.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 text-base shadow-xl'
+                ? 'bottom-4 right-4 px-4 py-2.5 bg-white text-accent-600 rounded-xl hover:bg-accent-50 text-sm shadow-medium ring-1 ring-black/5'
+                : 'bottom-6 left-1/2 -translate-x-1/2 px-6 py-3.5 bg-accent-500 text-white rounded-2xl hover:bg-accent-600 text-base shadow-float active:scale-[0.97]'
             }`}
           >
             <RouteIcon className={hasWaypoints ? 'w-4 h-4' : 'w-5 h-5'} />

@@ -9,12 +9,12 @@ const PlannerPageMinimal: React.FC = () => {
 
   return (
     <div className="h-full flex flex-col">
-      <div className="flex-1 relative bg-gray-100 flex items-center justify-center">
+      <div className="flex-1 relative bg-neutral-100 flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">
+          <h1 className="text-2xl font-bold text-neutral-900 mb-4">
             🧪 Minimal Test Page
           </h1>
-          <p className="text-gray-600">
+          <p className="text-neutral-600">
             This page has no MapContainer or React-Leaflet components.
             <br />
             If the Leaflet context error still occurs, the issue is elsewhere.

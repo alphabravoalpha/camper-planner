@@ -23,12 +23,12 @@ const DevicePreview: React.FC<{
       className={cn(
         'p-3 border rounded-lg text-left transition-colors',
         isActive
-          ? 'border-blue-500 bg-blue-50'
-          : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+          ? 'border-primary-500 bg-primary-50'
+          : 'border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50'
       )}
     >
-      <div className="font-medium text-sm text-gray-900">{device}</div>
-      <div className="text-xs text-gray-600">
+      <div className="font-medium text-sm text-neutral-900">{device}</div>
+      <div className="text-xs text-neutral-600">
         {specs.width} × {specs.height} (×{specs.pixelRatio})
       </div>
     </button>
@@ -132,13 +132,13 @@ const ViewportInfo: React.FC = () => {
   ];
 
   return (
-    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-      <h4 className="font-medium text-blue-900 mb-3">Current Viewport</h4>
+    <div className="bg-primary-50 border border-primary-200 rounded-lg p-4">
+      <h4 className="font-medium text-primary-900 mb-3">Current Viewport</h4>
       <div className="grid grid-cols-2 gap-3 text-sm">
         {info.map((item) => (
           <div key={item.label}>
-            <span className="text-blue-700 font-medium">{item.label}:</span>
-            <span className="ml-2 text-blue-800">{item.value}</span>
+            <span className="text-primary-700 font-medium">{item.label}:</span>
+            <span className="ml-2 text-primary-800">{item.value}</span>
           </div>
         ))}
       </div>
@@ -218,8 +218,8 @@ const PerformanceMetrics: React.FC = () => {
   };
 
   return (
-    <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-      <h4 className="font-medium text-gray-900 mb-3">Performance Metrics</h4>
+    <div className="bg-neutral-50 border border-neutral-200 rounded-lg p-4">
+      <h4 className="font-medium text-neutral-900 mb-3">Performance Metrics</h4>
       <div className="space-y-2 text-sm">
         <div className="flex justify-between">
           <span>Render Time:</span>
@@ -338,17 +338,17 @@ const ResponsiveTestSuite: React.FC<ResponsiveTestSuiteProps> = ({ className }) 
   }, [responsive.windowSize]);
 
   return (
-    <div className={cn('bg-white border border-gray-200 rounded-lg p-6', className)}>
+    <div className={cn('bg-white border border-neutral-200 rounded-lg p-6', className)}>
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h3 className="text-lg font-semibold text-gray-900">Responsive Test Suite</h3>
-          <p className="text-sm text-gray-600">
+          <h3 className="text-lg font-semibold text-neutral-900">Responsive Test Suite</h3>
+          <p className="text-sm text-neutral-600">
             Test and validate responsive behavior across different devices
           </p>
         </div>
         <button
           onClick={() => setShowAdvanced(!showAdvanced)}
-          className="px-3 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+          className="px-3 py-2 text-sm border border-neutral-300 rounded-md hover:bg-neutral-50 transition-colors"
         >
           {showAdvanced ? 'Hide' : 'Show'} Advanced
         </button>
@@ -363,7 +363,7 @@ const ResponsiveTestSuite: React.FC<ResponsiveTestSuiteProps> = ({ className }) 
 
         {/* Device Presets */}
         <div>
-          <h4 className="font-medium text-gray-900 mb-3">Device Presets</h4>
+          <h4 className="font-medium text-neutral-900 mb-3">Device Presets</h4>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
             {Object.keys(commonDevices).map((device) => (
               <DevicePreview
@@ -375,8 +375,8 @@ const ResponsiveTestSuite: React.FC<ResponsiveTestSuiteProps> = ({ className }) 
             ))}
           </div>
           {activeDevice && (
-            <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded">
-              <div className="text-sm text-blue-800">
+            <div className="mt-3 p-3 bg-primary-50 border border-primary-200 rounded">
+              <div className="text-sm text-primary-800">
                 <strong>Note:</strong> Device presets are for reference only.
                 Use browser dev tools to actually simulate device viewports.
               </div>
@@ -391,9 +391,9 @@ const ResponsiveTestSuite: React.FC<ResponsiveTestSuiteProps> = ({ className }) 
             <ComponentStressTest />
 
             {/* Responsive Guidelines */}
-            <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-              <h4 className="font-medium text-gray-900 mb-3">Responsive Guidelines</h4>
-              <div className="text-sm text-gray-700 space-y-2">
+            <div className="bg-neutral-50 border border-neutral-200 rounded-lg p-4">
+              <h4 className="font-medium text-neutral-900 mb-3">Responsive Guidelines</h4>
+              <div className="text-sm text-neutral-700 space-y-2">
                 <div>• Touch targets should be at least 44×44px on mobile</div>
                 <div>• Text should be at least 14px on mobile devices</div>
                 <div>• Avoid horizontal scrolling at any breakpoint</div>

@@ -85,17 +85,17 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
   return (
     <div
       ref={menuRef}
-      className="fixed z-50 min-w-48 bg-white border border-gray-200 rounded-lg shadow-lg py-2 animate-fade-in"
+      className="fixed z-50 min-w-48 bg-white border border-neutral-200 rounded-lg shadow-lg py-2 animate-fade-in"
       style={{ left: position.x, top: position.y }}
     >
       {items.map((item) => {
         const itemClass = cn(
           'flex items-center justify-between px-4 py-2 text-sm cursor-pointer transition-colors',
           {
-            'text-gray-700 hover:bg-gray-50': item.variant === 'default' || !item.variant,
+            'text-neutral-700 hover:bg-neutral-50': item.variant === 'default' || !item.variant,
             'text-red-600 hover:bg-red-50': item.variant === 'danger',
-            'text-blue-600 hover:bg-blue-50': item.variant === 'primary',
-            'text-gray-400 cursor-not-allowed': item.disabled,
+            'text-primary-600 hover:bg-primary-50': item.variant === 'primary',
+            'text-neutral-400 cursor-not-allowed': item.disabled,
           }
         );
 
@@ -120,7 +120,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
               <span>{item.label}</span>
             </div>
             {item.shortcut && (
-              <span className="text-xs text-gray-400 ml-4">
+              <span className="text-xs text-neutral-400 ml-4">
                 {item.shortcut}
               </span>
             )}

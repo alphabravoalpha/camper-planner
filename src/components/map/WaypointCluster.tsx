@@ -30,7 +30,7 @@ const createClusterIcon = (count: number, size: 'small' | 'medium' | 'large'): D
     large: 'w-12 h-12 text-base'
   };
 
-  const bgColor = count < 5 ? 'bg-blue-500' : count < 10 ? 'bg-orange-500' : 'bg-red-500';
+  const bgColor = count < 5 ? 'bg-primary-500' : count < 10 ? 'bg-orange-500' : 'bg-red-500';
 
   return L.divIcon({
     html: `
@@ -218,7 +218,7 @@ const WaypointCluster: React.FC<WaypointClusterProps> = ({
 
         // Apply selected styling to cluster if it's selected
         if (isSelected) {
-          clusterIcon.options.className = `${clusterIcon.options.className} ring-2 ring-blue-400 ring-offset-2`;
+          clusterIcon.options.className = `${clusterIcon.options.className} ring-2 ring-primary-400 ring-offset-2`;
         }
 
         return (
@@ -236,7 +236,7 @@ const WaypointCluster: React.FC<WaypointClusterProps> = ({
 
       {/* Cluster details popup for selected cluster */}
       {selectedCluster && (
-        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 bg-white rounded-lg shadow-lg border border-gray-200 p-4 max-w-md">
+        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 bg-white rounded-lg shadow-lg border border-neutral-200 p-4 max-w-md">
           {(() => {
             const cluster = clusters.find(c => c.id === selectedCluster);
             if (!cluster || cluster.waypoints.length <= 1) return null;
@@ -244,12 +244,12 @@ const WaypointCluster: React.FC<WaypointClusterProps> = ({
             return (
               <>
                 <div className="flex items-center justify-between mb-3">
-                  <h3 className="font-semibold text-gray-900">
+                  <h3 className="font-semibold text-neutral-900">
                     Cluster ({cluster.waypoints.length} waypoints)
                   </h3>
                   <button
                     onClick={() => setSelectedCluster(null)}
-                    className="text-gray-400 hover:text-gray-600 p-1 rounded transition-colors"
+                    className="text-neutral-400 hover:text-neutral-600 p-1 rounded transition-colors"
                   >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -261,32 +261,32 @@ const WaypointCluster: React.FC<WaypointClusterProps> = ({
                   {cluster.waypoints.map((waypoint, index) => (
                     <div
                       key={waypoint.id}
-                      className="flex items-center justify-between p-2 rounded hover:bg-gray-50 cursor-pointer"
+                      className="flex items-center justify-between p-2 rounded hover:bg-neutral-50 cursor-pointer"
                       onClick={() => {
                         if (onWaypointClick) onWaypointClick(waypoint);
                         setSelectedCluster(null);
                       }}
                     >
                       <div className="flex items-center space-x-2">
-                        <span className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold">
+                        <span className="w-6 h-6 bg-primary-500 text-white rounded-full flex items-center justify-center text-xs font-bold">
                           {index + 1}
                         </span>
-                        <span className="text-sm text-gray-900">{waypoint.name}</span>
+                        <span className="text-sm text-neutral-900">{waypoint.name}</span>
                       </div>
-                      <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                       </svg>
                     </div>
                   ))}
                 </div>
 
-                <div className="mt-3 pt-3 border-t border-gray-200">
+                <div className="mt-3 pt-3 border-t border-neutral-200">
                   <button
                     onClick={() => {
                       map.fitBounds(cluster.bounds, { padding: [20, 20] });
                       setSelectedCluster(null);
                     }}
-                    className="w-full bg-blue-600 text-white py-2 px-4 rounded text-sm font-medium hover:bg-blue-700 transition-colors"
+                    className="w-full bg-primary-600 text-white py-2 px-4 rounded text-sm font-medium hover:bg-primary-700 transition-colors"
                   >
                     Zoom to Fit All
                   </button>

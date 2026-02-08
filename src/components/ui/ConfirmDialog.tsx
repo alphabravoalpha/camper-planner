@@ -53,7 +53,7 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
     'px-4 py-2 rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2',
     {
       'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500': confirmVariant === 'danger',
-      'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500': confirmVariant === 'primary',
+      'bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500': confirmVariant === 'primary',
       'bg-yellow-600 text-white hover:bg-yellow-700 focus:ring-yellow-500': confirmVariant === 'warning',
     }
   );
@@ -71,12 +71,12 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
         <div className="p-6">
           {/* Header */}
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">
+            <h3 className="text-lg font-semibold text-neutral-900">
               {title}
             </h3>
             <button
               onClick={onCancel}
-              className="text-gray-400 hover:text-gray-600 p-1 rounded transition-colors"
+              className="text-neutral-400 hover:text-neutral-600 p-1 rounded transition-colors"
               aria-label="Close dialog"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -87,7 +87,7 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
 
           {/* Message */}
           <div className="mb-6">
-            <p className="text-gray-600 text-sm leading-relaxed">
+            <p className="text-neutral-600 text-sm leading-relaxed">
               {message}
             </p>
           </div>
@@ -96,7 +96,7 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
           <div className="flex space-x-3 justify-end">
             <button
               onClick={onCancel}
-              className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+              className="px-4 py-2 border border-neutral-300 rounded-lg text-neutral-700 hover:bg-neutral-50 transition-colors focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:ring-offset-2"
             >
               {cancelLabel}
             </button>

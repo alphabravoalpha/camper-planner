@@ -221,14 +221,14 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
 
   return (
     <div className={cn(
-      'bg-white shadow-lg border border-gray-200 overflow-hidden flex flex-col',
+      'bg-white shadow-lg border border-neutral-200 overflow-hidden flex flex-col',
       isMobile ? 'rounded-t-2xl' : 'rounded-lg',
       className
     )}>
       {/* Drag handle for mobile */}
       {isMobile && (
-        <div className="flex justify-center py-2 bg-gray-50">
-          <div className="w-12 h-1 bg-gray-300 rounded-full"></div>
+        <div className="flex justify-center py-2 bg-neutral-50">
+          <div className="w-12 h-1 bg-neutral-300 rounded-full"></div>
         </div>
       )}
 
@@ -317,7 +317,7 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
       <div className="flex-1 overflow-y-auto">
         {/* Key Amenities Grid - Quick visual scan */}
         {keyAmenitiesAvailable.length > 0 && (
-          <div className="p-4 border-b border-gray-100">
+          <div className="p-4 border-b border-neutral-100">
             <div className="flex flex-wrap gap-2">
               {keyAmenitiesAvailable.slice(0, 8).map(amenity => {
                 const config = AMENITY_CONFIG[amenity];
@@ -337,35 +337,35 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
         )}
 
         {/* Quick Facts - Address, Hours */}
-        <div className="p-4 space-y-3 border-b border-gray-100">
+        <div className="p-4 space-y-3 border-b border-neutral-100">
           {/* Address */}
           {campsite.address && (
             <div className="flex items-start gap-3">
-              <svg className="w-5 h-5 text-gray-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 text-neutral-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
-              <span className="text-sm text-gray-700">{campsite.address}</span>
+              <span className="text-sm text-neutral-700">{campsite.address}</span>
             </div>
           )}
 
           {/* Opening hours */}
           {campsite.opening_hours && (
             <div className="flex items-start gap-3">
-              <svg className="w-5 h-5 text-gray-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 text-neutral-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              <span className="text-sm text-gray-700">{campsite.opening_hours}</span>
+              <span className="text-sm text-neutral-700">{campsite.opening_hours}</span>
             </div>
           )}
 
           {/* Campsite type description if no other info */}
           {!campsite.address && !campsite.opening_hours && (
             <div className="flex items-start gap-3">
-              <svg className="w-5 h-5 text-gray-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 text-neutral-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
               </svg>
-              <span className="text-sm text-gray-500 italic">
+              <span className="text-sm text-neutral-500 italic">
                 {campsite.type === 'aire' ? 'Motorhome service area with facilities' :
                  campsite.type === 'caravan_site' ? 'Caravan and motorhome site' :
                  'Camping site'}
@@ -466,21 +466,21 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
 
         {/* All Amenities - Expandable */}
         {allAmenities.length > 0 && (
-          <div className="border-b border-gray-100">
+          <div className="border-b border-neutral-100">
             <button
               onClick={() => setShowAllAmenities(!showAllAmenities)}
-              className="w-full p-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
+              className="w-full p-4 flex items-center justify-between hover:bg-neutral-50 transition-colors"
             >
               <div className="flex items-center gap-3">
-                <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                 </svg>
-                <span className="text-sm font-medium text-gray-700">
+                <span className="text-sm font-medium text-neutral-700">
                   All Amenities ({availableAmenities.length}/{allAmenities.length} available)
                 </span>
               </div>
               <svg
-                className={cn('w-5 h-5 text-gray-400 transition-transform', showAllAmenities && 'rotate-180')}
+                className={cn('w-5 h-5 text-neutral-400 transition-transform', showAllAmenities && 'rotate-180')}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -509,7 +509,7 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
                           'flex items-center gap-2 p-2 rounded text-sm',
                           isConfirmed
                             ? 'bg-green-50 text-green-800 border border-green-200'
-                            : 'bg-gray-50 text-gray-500 border border-gray-200'
+                            : 'bg-neutral-50 text-neutral-500 border border-neutral-200'
                         )}
                       >
                         <span className="text-base">{config?.icon || '•'}</span>
@@ -519,7 +519,7 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                           </svg>
                         ) : (
-                          <span className="w-4 h-4 flex items-center justify-center text-gray-400 font-medium text-xs">?</span>
+                          <span className="w-4 h-4 flex items-center justify-center text-neutral-400 font-medium text-xs">?</span>
                         )}
                       </div>
                     );
@@ -532,19 +532,19 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
 
         {/* Contact Section - Collapsible */}
         {(campsite.contact?.phone || campsite.contact?.website || campsite.contact?.email) && (
-          <div className="border-b border-gray-100">
+          <div className="border-b border-neutral-100">
             <button
               onClick={() => setShowContact(!showContact)}
-              className="w-full p-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
+              className="w-full p-4 flex items-center justify-between hover:bg-neutral-50 transition-colors"
             >
               <div className="flex items-center gap-3">
-                <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                 </svg>
-                <span className="text-sm font-medium text-gray-700">Contact Details</span>
+                <span className="text-sm font-medium text-neutral-700">Contact Details</span>
               </div>
               <svg
-                className={cn('w-5 h-5 text-gray-400 transition-transform', showContact && 'rotate-180')}
+                className={cn('w-5 h-5 text-neutral-400 transition-transform', showContact && 'rotate-180')}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -558,7 +558,7 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
                 {campsite.contact?.phone && (
                   <a
                     href={`tel:${campsite.contact.phone.replace(/[^\d+]/g, '')}`}
-                    className="flex items-center gap-3 text-blue-600 hover:text-blue-800 text-sm"
+                    className="flex items-center gap-3 text-primary-600 hover:text-primary-800 text-sm"
                   >
                     <span>📞</span>
                     <span>{campsite.contact.phone}</span>
@@ -567,7 +567,7 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
                 {campsite.contact?.email && (
                   <a
                     href={`mailto:${campsite.contact.email}`}
-                    className="flex items-center gap-3 text-blue-600 hover:text-blue-800 text-sm"
+                    className="flex items-center gap-3 text-primary-600 hover:text-primary-800 text-sm"
                   >
                     <span>✉️</span>
                     <span>{campsite.contact.email}</span>
@@ -578,7 +578,7 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
                     href={campsite.contact.website}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-3 text-blue-600 hover:text-blue-800 text-sm"
+                    className="flex items-center gap-3 text-primary-600 hover:text-primary-800 text-sm"
                   >
                     <span>🌐</span>
                     <span className="truncate">{campsite.contact.website.replace(/^https?:\/\//, '')}</span>
@@ -590,9 +590,9 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
         )}
 
         {/* Booking Section */}
-        <div ref={bookingSectionRef} className="p-4 border-b border-gray-100">
-          <h3 className="text-sm font-medium text-gray-900 mb-3 flex items-center gap-2">
-            <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div ref={bookingSectionRef} className="p-4 border-b border-neutral-100">
+          <h3 className="text-sm font-medium text-neutral-900 mb-3 flex items-center gap-2">
+            <svg className="w-5 h-5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
             Book This Campsite
@@ -615,7 +615,7 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
 
           {/* Affiliate booking options */}
           <div className="space-y-2">
-            <div className="text-xs font-medium text-gray-500 mb-2">Search on booking platforms:</div>
+            <div className="text-xs font-medium text-neutral-500 mb-2">Search on booking platforms:</div>
             {Object.entries(AFFILIATE_CONFIGS).map(([key, config]) => (
               <button
                 key={key}
@@ -623,8 +623,8 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
                 className={cn(
                   'w-full flex items-center justify-between p-3 border rounded-lg text-sm transition-colors',
                   config.enabled
-                    ? 'border-blue-200 bg-blue-50 text-blue-800 hover:bg-blue-100'
-                    : 'border-gray-200 bg-gray-50 text-gray-400 cursor-not-allowed'
+                    ? 'border-primary-200 bg-primary-50 text-primary-800 hover:bg-primary-100'
+                    : 'border-neutral-200 bg-neutral-50 text-neutral-400 cursor-not-allowed'
                 )}
                 onClick={() => {
                   if (config.enabled) {
@@ -646,7 +646,7 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
           </div>
 
           {/* Booking tips */}
-          <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg text-xs text-blue-800">
+          <div className="mt-4 p-3 bg-primary-50 border border-primary-200 rounded-lg text-xs text-primary-800">
             <div className="font-medium mb-1">💡 Booking Tips:</div>
             <ul className="space-y-0.5">
               <li>• Check availability directly with the campsite</li>
@@ -657,12 +657,12 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
         </div>
 
         {/* Directions Section */}
-        <div className="p-4 border-b border-gray-100">
+        <div className="p-4 border-b border-neutral-100">
           <a
             href={getDirectionsUrl()}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-center gap-2 w-full px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+            className="flex items-center justify-center gap-2 w-full px-4 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors text-sm font-medium"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
@@ -672,14 +672,14 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="p-4 bg-gray-50">
-          <div className="flex items-center justify-between text-xs text-gray-500 mb-3">
+        <div className="p-4 bg-neutral-50">
+          <div className="flex items-center justify-between text-xs text-neutral-500 mb-3">
             <div className="flex items-center gap-2">
               <span>Data from {campsite.source || 'OpenStreetMap'}</span>
             </div>
             <button
               onClick={handleCopyCoords}
-              className="flex items-center gap-1 text-gray-400 hover:text-gray-600 transition-colors"
+              className="flex items-center gap-1 text-neutral-400 hover:text-neutral-600 transition-colors"
               title="Copy coordinates"
             >
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -692,7 +692,7 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
           {/* Export button */}
           <button
             onClick={handleExport}
-            className="w-full flex items-center justify-center gap-2 px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-600 hover:bg-gray-100 transition-colors"
+            className="w-full flex items-center justify-center gap-2 px-3 py-2 border border-neutral-300 rounded-lg text-sm text-neutral-600 hover:bg-neutral-100 transition-colors"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />

@@ -160,12 +160,12 @@ const UserGuidance: React.FC<UserGuidanceProps> = ({ className }) => {
 
   // Tips component
   const TipsPanel = () => (
-    <div className="bg-white rounded-lg shadow-lg border border-gray-200 p-4 max-w-md">
+    <div className="bg-white rounded-lg shadow-lg border border-neutral-200 p-4 max-w-md">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-gray-900">💡 Quick Tips</h3>
+        <h3 className="text-lg font-semibold text-neutral-900">💡 Quick Tips</h3>
         <button
           onClick={() => setShowHelpPanel(false)}
-          className="text-gray-400 hover:text-gray-600 p-1 rounded transition-colors"
+          className="text-neutral-400 hover:text-neutral-600 p-1 rounded transition-colors"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -175,12 +175,12 @@ const UserGuidance: React.FC<UserGuidanceProps> = ({ className }) => {
 
       <div className="space-y-4">
         {Object.entries(TIPS).map(([key, tip]) => (
-          <div key={key} className="border-b border-gray-100 last:border-0 pb-3 last:pb-0">
-            <h4 className="font-medium text-gray-900 mb-2">{tip.title}</h4>
-            <ul className="text-sm text-gray-600 space-y-1">
+          <div key={key} className="border-b border-neutral-100 last:border-0 pb-3 last:pb-0">
+            <h4 className="font-medium text-neutral-900 mb-2">{tip.title}</h4>
+            <ul className="text-sm text-neutral-600 space-y-1">
               {tip.items.map((item, index) => (
                 <li key={index} className="flex items-start">
-                  <span className="text-blue-500 mr-2">•</span>
+                  <span className="text-primary-500 mr-2">•</span>
                   {item}
                 </li>
               ))}
@@ -190,10 +190,10 @@ const UserGuidance: React.FC<UserGuidanceProps> = ({ className }) => {
       </div>
 
       {import.meta.env.DEV && (
-        <div className="mt-4 pt-4 border-t border-gray-200">
+        <div className="mt-4 pt-4 border-t border-neutral-200">
           <button
             onClick={resetGuidance}
-            className="text-xs text-gray-500 hover:text-gray-700 underline"
+            className="text-xs text-neutral-500 hover:text-neutral-700 underline"
           >
             Reset Guidance (Dev)
           </button>
@@ -207,7 +207,7 @@ const UserGuidance: React.FC<UserGuidanceProps> = ({ className }) => {
       {/* Active Guidance Step */}
       {activeStep && !dismissedSteps.has(activeStep.id) && (
         <div className="fixed bottom-20 left-1/2 transform -translate-x-1/2 z-40 max-w-sm">
-          <div className="bg-blue-600 text-white rounded-lg shadow-lg p-4 border border-blue-500 animate-fade-in">
+          <div className="bg-primary-600 text-white rounded-lg shadow-lg p-4 border border-primary-500 animate-fade-in">
             <div className="flex items-start justify-between mb-2">
               <div className="flex items-center">
                 {activeStep.icon && (
@@ -218,7 +218,7 @@ const UserGuidance: React.FC<UserGuidanceProps> = ({ className }) => {
               {activeStep.dismissible && (
                 <button
                   onClick={() => dismissStep(activeStep.id)}
-                  className="text-blue-200 hover:text-white p-1 rounded transition-colors"
+                  className="text-primary-200 hover:text-white p-1 rounded transition-colors"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -227,10 +227,10 @@ const UserGuidance: React.FC<UserGuidanceProps> = ({ className }) => {
               )}
             </div>
 
-            <p className="text-blue-100 mb-3">{activeStep.content}</p>
+            <p className="text-primary-100 mb-3">{activeStep.content}</p>
 
             {activeStep.action && (
-              <div className="text-sm text-blue-200 bg-blue-700 bg-opacity-50 rounded px-3 py-2">
+              <div className="text-sm text-primary-200 bg-primary-700 bg-opacity-50 rounded px-3 py-2">
                 💡 {activeStep.action}
               </div>
             )}
@@ -238,7 +238,7 @@ const UserGuidance: React.FC<UserGuidanceProps> = ({ className }) => {
             {!activeStep.dismissible && (
               <button
                 onClick={() => dismissStep(activeStep.id)}
-                className="mt-3 w-full bg-blue-500 hover:bg-blue-400 text-white py-2 px-4 rounded text-sm font-medium transition-colors"
+                className="mt-3 w-full bg-primary-500 hover:bg-primary-400 text-white py-2 px-4 rounded text-sm font-medium transition-colors"
               >
                 Got it!
               </button>
@@ -257,14 +257,14 @@ const UserGuidance: React.FC<UserGuidanceProps> = ({ className }) => {
           <button
             onClick={() => setShowHelpPanel(!showHelpPanel)}
             className={cn(
-              'w-12 h-12 bg-white rounded-full shadow-lg border border-gray-200',
+              'w-12 h-12 bg-white rounded-full shadow-lg border border-neutral-200',
               'flex items-center justify-center transition-all duration-200',
-              'hover:bg-blue-50 hover:border-blue-300 hover:scale-105',
-              showHelpPanel && 'bg-blue-50 border-blue-300 scale-105'
+              'hover:bg-primary-50 hover:border-primary-300 hover:scale-105',
+              showHelpPanel && 'bg-primary-50 border-primary-300 scale-105'
             )}
             aria-label="Toggle help panel"
           >
-            <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </button>

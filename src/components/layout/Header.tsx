@@ -36,7 +36,7 @@ const Header: React.FC = () => {
 
   return (
     <>
-      <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-40">
+      <header className="bg-white/80 backdrop-blur-md shadow-soft sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo and Title */}
@@ -45,7 +45,7 @@ const Header: React.FC = () => {
               {location.pathname === '/' && (
                 <button
                   onClick={toggleSidebar}
-                  className="lg:hidden p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100"
+                  className="lg:hidden p-2 rounded-xl text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100"
                   aria-label="Toggle sidebar"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -55,7 +55,7 @@ const Header: React.FC = () => {
               )}
 
               <Link to="/" className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                <div className="w-8 h-8 bg-gradient-to-br from-primary-500 to-primary-700 rounded-full flex items-center justify-center shadow-sm">
                   <svg
                     className="w-5 h-5 text-white"
                     fill="currentColor"
@@ -69,13 +69,13 @@ const Header: React.FC = () => {
                   </svg>
                 </div>
                 <div className="hidden sm:block">
-                  <h1 className="text-lg lg:text-xl font-bold text-gray-900">
+                  <h1 className="text-lg lg:text-xl font-bold text-neutral-900">
                     European Camper Planner
                   </h1>
-                  <p className="text-xs text-gray-500 hidden lg:block">Free trip planning for Europe</p>
+                  <p className="text-xs text-primary-600 font-medium tracking-wide uppercase hidden lg:block">Free trip planning for Europe</p>
                 </div>
                 <div className="sm:hidden">
-                  <h1 className="text-lg font-bold text-gray-900">Camper Planner</h1>
+                  <h1 className="text-lg font-bold text-neutral-900">Camper Planner</h1>
                 </div>
               </Link>
             </div>
@@ -87,10 +87,10 @@ const Header: React.FC = () => {
                   key={item.key}
                   to={item.path}
                   className={cn(
-                    'px-3 py-2 rounded-md text-sm font-medium transition-colors',
+                    'px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200',
                     isActivePath(item.path)
-                      ? 'text-blue-700 bg-blue-50 border-b-2 border-blue-700'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                      ? 'text-primary-700 bg-primary-50'
+                      : 'text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100'
                   )}
                 >
                   {item.label}
@@ -104,7 +104,7 @@ const Header: React.FC = () => {
               {location.pathname === '/' && (
                 <button
                   onClick={() => { openWizard(); setIsMobileMenuOpen(false); }}
-                  className="hidden sm:flex items-center gap-1.5 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium transition-colors"
+                  className="hidden sm:flex items-center gap-1.5 px-4 py-2 bg-accent-500 text-white rounded-xl hover:bg-accent-600 text-sm font-semibold transition-all duration-200 shadow-sm hover:shadow-medium active:scale-[0.97]"
                 >
                   <Route className="w-4 h-4" />
                   Plan a Trip
@@ -123,7 +123,7 @@ const Header: React.FC = () => {
               <button
                 type="button"
                 onClick={toggleMobileMenu}
-                className="md:hidden p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100"
+                className="md:hidden p-2 rounded-xl text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100"
                 aria-label="Toggle menu"
               >
                 <svg
@@ -144,7 +144,7 @@ const Header: React.FC = () => {
 
           {/* Mobile Navigation Menu */}
           {isMobileMenuOpen && (
-            <div className="md:hidden border-t border-gray-200 bg-white">
+            <div className="md:hidden bg-white/95 backdrop-blur-sm">
               <div className="px-2 pt-2 pb-3 space-y-1">
                 {navigationItems.map((item) => (
                   <Link
@@ -152,10 +152,10 @@ const Header: React.FC = () => {
                     to={item.path}
                     onClick={() => setIsMobileMenuOpen(false)}
                     className={cn(
-                      'block px-3 py-2 rounded-md text-base font-medium transition-colors',
+                      'block px-3 py-2 rounded-xl text-base font-medium transition-all duration-200',
                       isActivePath(item.path)
-                        ? 'text-blue-700 bg-blue-50'
-                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                        ? 'text-primary-700 bg-primary-50'
+                        : 'text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100'
                     )}
                   >
                     {item.label}
@@ -164,7 +164,7 @@ const Header: React.FC = () => {
                 {location.pathname === '/' && (
                   <button
                     onClick={() => { openWizard(); setIsMobileMenuOpen(false); }}
-                    className="w-full flex items-center gap-2 px-3 py-2 rounded-md text-base font-medium text-blue-700 bg-blue-50 hover:bg-blue-100 transition-colors"
+                    className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-base font-semibold text-accent-700 bg-accent-50 hover:bg-accent-100 transition-all duration-200"
                   >
                     <Route className="w-4 h-4" />
                     Plan a Trip
@@ -179,7 +179,7 @@ const Header: React.FC = () => {
       {/* Mobile menu overlay */}
       {isMobileMenuOpen && (
         <div
-          className="fixed inset-0 z-30 bg-black bg-opacity-25 md:hidden"
+          className="fixed inset-0 z-30 bg-black/25 backdrop-blur-sm md:hidden"
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}

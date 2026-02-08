@@ -61,7 +61,7 @@ class ErrorBoundary extends Component<Props, State> {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+        <div className="min-h-screen bg-neutral-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
           <div className="sm:mx-auto sm:w-full sm:max-w-md">
             <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
               <div className="text-center">
@@ -81,16 +81,16 @@ class ErrorBoundary extends Component<Props, State> {
                     />
                   </svg>
                 </div>
-                <h2 className="mt-6 text-lg font-medium text-gray-900">
+                <h2 className="mt-6 text-lg font-medium text-neutral-900">
                   Something went wrong
                 </h2>
-                <p className="mt-2 text-sm text-gray-600">
+                <p className="mt-2 text-sm text-neutral-600">
                   We're sorry, but something unexpected happened. Please try refreshing the page.
                 </p>
 
                 {import.meta.env.DEV && this.state.error && (
                   <details className="mt-4 text-left">
-                    <summary className="text-sm text-gray-500 cursor-pointer">
+                    <summary className="text-sm text-neutral-500 cursor-pointer">
                       Error Details (Development)
                     </summary>
                     <pre className="mt-2 text-xs text-red-600 bg-red-50 p-2 rounded overflow-auto">
@@ -103,19 +103,19 @@ class ErrorBoundary extends Component<Props, State> {
                 <div className="mt-6 flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
                   <button
                     onClick={this.handleReset}
-                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                    className="px-4 py-2 text-sm font-medium text-neutral-700 bg-white border border-neutral-300 rounded-md hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
                   >
                     Try Again
                   </button>
                   <button
                     onClick={this.handleReload}
-                    className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                    className="px-4 py-2 text-sm font-medium text-white bg-primary-600 border border-transparent rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
                   >
                     Reload Page
                   </button>
                   <a
                     href="/"
-                    className="px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 border border-blue-200 rounded-md hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 text-center"
+                    className="px-4 py-2 text-sm font-medium text-primary-600 bg-primary-50 border border-primary-200 rounded-md hover:bg-primary-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 text-center"
                   >
                     Go Home
                   </a>
