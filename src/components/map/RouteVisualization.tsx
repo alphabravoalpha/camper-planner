@@ -404,7 +404,7 @@ const WaypointNumber: React.FC<WaypointNumberProps> = ({ waypoint, index, total 
 };
 
 // Calculate route visualization component - displays actual calculated routes
-const CalculatedRouteDisplay: React.FC<{ route: RouteResponse }> = ({ route }) => {
+const CalculatedRouteDisplay: React.FC<{ route: RouteResponse; waypoints?: Waypoint[] }> = ({ route, waypoints: userWaypoints }) => {
   const routeData = route?.routes?.[0]; // Use first route if available
 
   // Extract coordinates from the route geometry - must be called before early return
@@ -476,12 +476,40 @@ const CalculatedRouteDisplay: React.FC<{ route: RouteResponse }> = ({ route }) =
 
       {/* Route segment information */}
       {routeData.segments?.map((segment, index) => {
-        // Calculate segment midpoint for info display
-        const segmentStart = routeCoordinates[Math.floor((index * routeCoordinates.length) / routeData.segments.length)];
-        const segmentEnd = routeCoordinates[Math.floor(((index + 1) * routeCoordinates.length) / routeData.segments.length)];
+        // Use actual waypoint coordinates for accurate label placement
+        // Each segment connects waypoint[index] to waypoint[index+1]
+        let midpoint: [number, number] | null = null;
 
-        if (segmentStart && segmentEnd) {
-          const midpoint = calculateMidpoint(segmentStart[0], segmentStart[1], segmentEnd[0], segmentEnd[1]);
+        if (userWaypoints && userWaypoints.length >= 2 && index < userWaypoints.length - 1) {
+          // Best: use the actual user waypoint coordinates
+          midpoint = calculateMidpoint(
+            userWaypoints[index].lat, userWaypoints[index].lng,
+            userWaypoints[index + 1].lat, userWaypoints[index + 1].lng
+          );
+        } else if (routeData.waypoints && routeData.waypoints.length >= 2 && index < routeData.waypoints.length - 1) {
+          // Fallback: use waypoint indices into the route coordinates
+          const startIdx = routeData.waypoints[index];
+          const endIdx = routeData.waypoints[index + 1];
+          const segStart = routeCoordinates[startIdx];
+          const segEnd = routeCoordinates[Math.min(endIdx, routeCoordinates.length - 1)];
+          if (segStart && segEnd) {
+            midpoint = calculateMidpoint(segStart[0], segStart[1], segEnd[0], segEnd[1]);
+          }
+        } else {
+          // Last resort: evenly divide coordinates (clamped to valid range)
+          const startIdx = Math.floor((index * routeCoordinates.length) / routeData.segments.length);
+          const endIdx = Math.min(
+            Math.floor(((index + 1) * routeCoordinates.length) / routeData.segments.length),
+            routeCoordinates.length - 1
+          );
+          const segStart = routeCoordinates[startIdx];
+          const segEnd = routeCoordinates[endIdx];
+          if (segStart && segEnd) {
+            midpoint = calculateMidpoint(segStart[0], segStart[1], segEnd[0], segEnd[1]);
+          }
+        }
+
+        if (midpoint) {
           const infoIcon = createRouteInfoIcon(segment.distance, segment.duration);
 
           return (
@@ -652,28 +680,28 @@ const StraightLineRouteDisplay: React.FC<{ waypoints: Waypoint[] }> = ({ waypoin
 
 // Main route visualization component
 const RouteVisualization: React.FC = () => {
-  const { waypoints, calculatedRoute } = useRouteStore();
+  const { waypoints: routeWaypoints, calculatedRoute } = useRouteStore();
 
   // Don't render if no waypoints
-  if (waypoints.length === 0) return null;
+  if (routeWaypoints.length === 0) return null;
 
   return (
     <>
       {/* Display calculated route if available and routing is enabled */}
       {FeatureFlags.BASIC_ROUTING && calculatedRoute ? (
-        <CalculatedRouteDisplay route={calculatedRoute} />
-      ) : waypoints.length >= 2 ? (
+        <CalculatedRouteDisplay route={calculatedRoute} waypoints={routeWaypoints} />
+      ) : routeWaypoints.length >= 2 ? (
         /* Fallback to straight lines if no calculated route */
-        <StraightLineRouteDisplay waypoints={waypoints} />
+        <StraightLineRouteDisplay waypoints={routeWaypoints} />
       ) : null}
 
       {/* Enhanced waypoint numbers overlay - always show */}
-      {waypoints.map((waypoint, index) => (
+      {routeWaypoints.map((waypoint, index) => (
         <WaypointNumber
           key={`number-${waypoint.id}`}
           waypoint={waypoint}
           index={index}
-          total={waypoints.length}
+          total={routeWaypoints.length}
         />
       ))}
     </>
