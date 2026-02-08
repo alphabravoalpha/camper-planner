@@ -44,10 +44,10 @@ const Header: React.FC = () => {
   return (
     <>
       <header className="bg-white/80 backdrop-blur-md shadow-soft sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center h-16 gap-6">
+        <div className="px-4 sm:px-6">
+          <div className="flex items-center h-16 gap-4">
             {/* Logo and Title */}
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-3">
               {/* Sidebar toggle for planner page */}
               {location.pathname === '/' && (
                 <button
@@ -100,12 +100,9 @@ const Header: React.FC = () => {
                   title={vehicleSummary ? 'Edit vehicle profile' : 'Set up your vehicle profile'}
                 >
                   <span>🚐</span>
-                  <span className="max-w-[160px] truncate">
+                  <span className="max-w-[120px] truncate">
                     {vehicleSummary ? vehicleSummary.name : 'Setup Vehicle'}
                   </span>
-                  {vehicleSummary && (
-                    <span className="text-green-600/70 hidden lg:inline">{vehicleSummary.dims}</span>
-                  )}
                 </button>
               )}
             </div>
