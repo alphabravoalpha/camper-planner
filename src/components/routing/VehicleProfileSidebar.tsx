@@ -87,7 +87,7 @@ const VehicleProfileSidebar: React.FC<VehicleProfileSidebarProps> = ({ className
   return (
     <>
       {/* Toggle Button */}
-      <div className={cn('fixed top-[72px] left-4 z-30', className)}>
+      <div className={cn('fixed top-[72px] left-[64px] z-30', className)}>
         <Tooltip
           content={profile ? 'Edit vehicle profile' : 'Set up your vehicle profile'}
           position="right"
