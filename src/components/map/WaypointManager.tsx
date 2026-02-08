@@ -9,6 +9,7 @@ import { type Waypoint } from '../../types';
 import { cn } from '../../utils/cn';
 import ContextMenu, { type ContextMenuItem } from '../ui/ContextMenu';
 import ConfirmDialog from '../ui/ConfirmDialog';
+import LocationSearch from '../ui/LocationSearch';
 import RouteVisualization from './RouteVisualization';
 import { useKeyboardShortcuts } from '../../hooks/useKeyboardShortcuts';
 
@@ -129,6 +130,8 @@ const WaypointMarker: React.FC<WaypointMarkerProps> = ({
   const [editedNotes, setEditedNotes] = useState(waypoint.notes || '');
   const [isDragging, setIsDragging] = useState(false);
   const [, setIsHovered] = useState(false);
+  const [stagedLocation, setStagedLocation] = useState<{ lat: number; lng: number; name: string } | null>(null);
+  const [showLocationSearch, setShowLocationSearch] = useState(false);
 
   // Detect if on mobile/touch device
   const isMobile = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
@@ -180,6 +183,11 @@ const WaypointMarker: React.FC<WaypointMarkerProps> = ({
   const handleSaveEdit = useCallback(() => {
     const updates: Partial<Waypoint> = {};
 
+    if (stagedLocation) {
+      updates.lat = stagedLocation.lat;
+      updates.lng = stagedLocation.lng;
+    }
+
     if (editedName.trim() !== waypoint.name) {
       updates.name = editedName.trim();
     }
@@ -193,11 +201,15 @@ const WaypointMarker: React.FC<WaypointMarkerProps> = ({
     }
 
     setIsEditing(false);
-  }, [waypoint.id, waypoint.name, waypoint.notes, editedName, editedNotes, onUpdate]);
+    setStagedLocation(null);
+    setShowLocationSearch(false);
+  }, [waypoint.id, waypoint.name, waypoint.notes, editedName, editedNotes, stagedLocation, onUpdate]);
 
   const handleCancelEdit = useCallback(() => {
     setEditedName(waypoint.name);
     setEditedNotes(waypoint.notes || '');
+    setStagedLocation(null);
+    setShowLocationSearch(false);
     setIsEditing(false);
   }, [waypoint.name, waypoint.notes]);
 
@@ -366,6 +378,49 @@ const WaypointMarker: React.FC<WaypointMarkerProps> = ({
                     rows={3}
                     placeholder="Add notes about this waypoint..."
                   />
+                </div>
+
+                {/* Change Location Section */}
+                <div className="mb-3">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      setShowLocationSearch(!showLocationSearch);
+                    }}
+                    className="text-xs text-primary-600 hover:text-primary-700 font-medium flex items-center gap-1"
+                  >
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    <span>{showLocationSearch ? 'Hide location search' : 'Change location'}</span>
+                  </button>
+
+                  {showLocationSearch && (
+                    <div className="mt-2">
+                      <LocationSearch
+                        onLocationSelect={(result) => {
+                          const name = result.name || result.display_name.split(',')[0].trim();
+                          setStagedLocation({
+                            lat: result.lat,
+                            lng: result.lng,
+                            name
+                          });
+                          setEditedName(name);
+                          setShowLocationSearch(false);
+                        }}
+                        placeholder="Search new location..."
+                      />
+                    </div>
+                  )}
+
+                  {stagedLocation && (
+                    <div className="mt-1.5 text-xs text-green-600 flex items-center gap-1">
+                      <span>📍</span>
+                      <span>New location: {stagedLocation.name}</span>
+                    </div>
+                  )}
                 </div>
 
                 <div className="flex space-x-2 pt-2 border-t border-neutral-200">

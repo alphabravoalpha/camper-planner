@@ -8,5 +8,8 @@ export { default as ConfirmDialog } from './ConfirmDialog';
 export { default as ContextMenu } from './ContextMenu';
 export type { ContextMenuItem } from './ContextMenu';
 
+// Location search (for waypoint editing)
+export { default as LocationSearch } from './LocationSearch';
+
 // Loading components (Phase 6.3)
 export { default as LoadingSpinner, LoadingSkeleton, LoadingOverlay, InlineLoading } from './LoadingSpinner';
