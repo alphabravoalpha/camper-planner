@@ -93,11 +93,14 @@ interface UIState {
   error: string | null;
   notifications: Array<{ id: string; type: 'success' | 'error' | 'warning' | 'info'; message: string }>;
   sidebarOpen: boolean;
+  vehicleSidebarOpen: boolean;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
   addNotification: (notification: Omit<UIState['notifications'][0], 'id'>) => void;
   removeNotification: (id: string) => void;
   toggleSidebar: () => void;
+  openVehicleSidebar: () => void;
+  closeVehicleSidebar: () => void;
 }
 
 // Create Map Store
@@ -450,6 +453,7 @@ export const useUIStore = create<UIState>()(
       error: null,
       notifications: [],
       sidebarOpen: true,
+      vehicleSidebarOpen: false,
       setLoading: (isLoading) => set({ isLoading }),
       setError: (error) => set({ error }),
       addNotification: (notification) => {
@@ -467,6 +471,8 @@ export const useUIStore = create<UIState>()(
           notifications: state.notifications.filter(n => n.id !== id)
         })),
       toggleSidebar: () => set((state) => ({ sidebarOpen: !state.sidebarOpen })),
+      openVehicleSidebar: () => set({ vehicleSidebarOpen: true }),
+      closeVehicleSidebar: () => set({ vehicleSidebarOpen: false }),
     }),
     { name: 'ui-store' }
   )

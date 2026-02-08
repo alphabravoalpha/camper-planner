@@ -7,15 +7,22 @@ import { useTranslation } from 'react-i18next';
 import { Route } from 'lucide-react';
 import { FeatureFlags } from '../../config';
 import { cn } from '../../utils/cn';
-import { useUIStore, useTripWizardStore } from '../../store';
+import { useUIStore, useVehicleStore, useTripWizardStore } from '../../store';
 import { LanguageSelector } from '../ui';
 
 const Header: React.FC = () => {
   const location = useLocation();
   const { t } = useTranslation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { toggleSidebar } = useUIStore();
+  const { toggleSidebar, openVehicleSidebar } = useUIStore();
+  const { profile } = useVehicleStore();
   const { openWizard } = useTripWizardStore();
+
+  // Vehicle summary for badge
+  const vehicleSummary = profile ? {
+    name: profile.name || 'Custom Vehicle',
+    dims: `${profile.height}×${profile.width}×${profile.length}m`,
+  } : null;
 
   const navigationItems = [
     { path: '/', label: t('nav.planner'), key: 'planner' },
@@ -78,6 +85,29 @@ const Header: React.FC = () => {
                   <h1 className="text-lg font-bold text-neutral-900">Camper Planner</h1>
                 </div>
               </Link>
+
+              {/* Vehicle Badge — compact pill in header */}
+              {location.pathname === '/' && (
+                <button
+                  onClick={openVehicleSidebar}
+                  className={cn(
+                    'hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all duration-200',
+                    'hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary-500',
+                    vehicleSummary
+                      ? 'bg-green-50 text-green-700 ring-1 ring-green-200 hover:bg-green-100'
+                      : 'bg-primary-50 text-primary-700 ring-1 ring-primary-200 hover:bg-primary-100'
+                  )}
+                  title={vehicleSummary ? 'Edit vehicle profile' : 'Set up your vehicle profile'}
+                >
+                  <span>🚐</span>
+                  <span className="max-w-[160px] truncate">
+                    {vehicleSummary ? vehicleSummary.name : 'Setup Vehicle'}
+                  </span>
+                  {vehicleSummary && (
+                    <span className="text-green-600/70 hidden lg:inline">{vehicleSummary.dims}</span>
+                  )}
+                </button>
+              )}
             </div>
 
             {/* Desktop Navigation */}
