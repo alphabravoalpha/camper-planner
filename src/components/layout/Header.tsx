@@ -46,6 +46,26 @@ const Header: React.FC = () => {
       <header className="bg-white/80 backdrop-blur-md shadow-soft sticky top-0 z-40">
         <div className="px-4 sm:px-6">
           <div className="flex items-center h-16 gap-4">
+            {/* Vehicle Badge — first item, far left */}
+            {location.pathname === '/' && (
+              <button
+                onClick={openVehicleSidebar}
+                className={cn(
+                  'hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all duration-200',
+                  'hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary-500',
+                  vehicleSummary
+                    ? 'bg-green-50 text-green-700 ring-1 ring-green-200 hover:bg-green-100'
+                    : 'bg-primary-50 text-primary-700 ring-1 ring-primary-200 hover:bg-primary-100'
+                )}
+                title={vehicleSummary ? 'Edit vehicle profile' : 'Set up your vehicle profile'}
+              >
+                <span>🚐</span>
+                <span className="max-w-[120px] truncate">
+                  {vehicleSummary ? vehicleSummary.name : 'Setup Vehicle'}
+                </span>
+              </button>
+            )}
+
             {/* Logo and Title */}
             <div className="flex items-center space-x-3">
               {/* Sidebar toggle for planner page */}
@@ -85,26 +105,6 @@ const Header: React.FC = () => {
                   <h1 className="text-lg font-bold text-neutral-900">Camper Planner</h1>
                 </div>
               </Link>
-
-              {/* Vehicle Badge — compact pill right next to logo */}
-              {location.pathname === '/' && (
-                <button
-                  onClick={openVehicleSidebar}
-                  className={cn(
-                    'hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all duration-200',
-                    'hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary-500',
-                    vehicleSummary
-                      ? 'bg-green-50 text-green-700 ring-1 ring-green-200 hover:bg-green-100'
-                      : 'bg-primary-50 text-primary-700 ring-1 ring-primary-200 hover:bg-primary-100'
-                  )}
-                  title={vehicleSummary ? 'Edit vehicle profile' : 'Set up your vehicle profile'}
-                >
-                  <span>🚐</span>
-                  <span className="max-w-[120px] truncate">
-                    {vehicleSummary ? vehicleSummary.name : 'Setup Vehicle'}
-                  </span>
-                </button>
-              )}
             </div>
 
             {/* Desktop Navigation */}
