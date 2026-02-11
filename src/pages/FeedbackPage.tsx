@@ -1,10 +1,10 @@
 // Feedback Page
 // Embedded Google Form for user suggestions, bug reports, and feature requests
 
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  MessageSquare, ChevronLeft, Lightbulb, Bug, Star, ExternalLink, ChevronRight
+  MessageSquare, ChevronLeft, Lightbulb, Bug, Star, ExternalLink, ChevronRight, AlertTriangle
 } from 'lucide-react';
 
 // Replace this with your actual Google Form embed URL
@@ -31,6 +31,47 @@ const FEEDBACK_TYPES = [
 ];
 
 const FeedbackPage: React.FC = () => {
+  const [iframeBlocked, setIframeBlocked] = useState(false);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+
+  useEffect(() => {
+    // Set a timeout to detect if iframe fails to load
+    const timeoutId = setTimeout(() => {
+      if (iframeRef.current) {
+        try {
+          // Try to access iframe's contentWindow
+          // If blocked by browser, this will throw or contentWindow will be null
+          const iframeWindow = iframeRef.current.contentWindow;
+          if (!iframeWindow) {
+            setIframeBlocked(true);
+          }
+        } catch (e) {
+          // Cross-origin access blocked - this is expected for Google Forms
+          // But the iframe should still load. If we can't detect load after timeout,
+          // assume it's blocked
+        }
+      }
+    }, 3000); // 3 second timeout
+
+    // Listen for iframe load event
+    const iframe = iframeRef.current;
+    const handleLoad = () => {
+      clearTimeout(timeoutId);
+      setIframeBlocked(false);
+    };
+
+    if (iframe) {
+      iframe.addEventListener('load', handleLoad);
+    }
+
+    return () => {
+      clearTimeout(timeoutId);
+      if (iframe) {
+        iframe.removeEventListener('load', handleLoad);
+      }
+    };
+  }, []);
+
   return (
     <div className="min-h-screen bg-neutral-50 animate-fade-in">
       {/* Hero */}
@@ -100,8 +141,38 @@ const FeedbackPage: React.FC = () => {
                 <ExternalLink className="w-3 h-3" />
               </a>
             </p>
+
+            {/* Alert banner when iframe is blocked */}
+            {iframeBlocked && (
+              <div className="mb-4 bg-amber-50 border border-amber-200 rounded-xl p-4">
+                <div className="flex items-start gap-3">
+                  <AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+                  <div className="flex-1">
+                    <h3 className="text-sm font-semibold text-amber-900 mb-1">
+                      Form not loading?
+                    </h3>
+                    <p className="text-sm text-amber-800 mb-3">
+                      Your browser's privacy settings may be blocking the embedded form. This is common in browsers like Brave or Firefox with Enhanced Tracking Protection enabled.
+                    </p>
+                    <a
+                      href={GOOGLE_FORM_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 px-4 py-2 bg-amber-600 text-white rounded-lg text-sm font-semibold hover:bg-amber-700 transition-colors"
+                    >
+                      Open form in new tab
+                      <ExternalLink className="w-4 h-4" />
+                    </a>
+                    <p className="text-xs text-amber-700 mt-3">
+                      <strong>Tip:</strong> To use the embedded form, you can temporarily disable tracking protection for this site in your browser settings.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
           <iframe
+            ref={iframeRef}
             src={GOOGLE_FORM_EMBED_URL}
             width="100%"
             height="800"
