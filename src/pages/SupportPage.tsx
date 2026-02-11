@@ -59,7 +59,7 @@ const SupportPage: React.FC = () => {
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
 
-        {/* Ko-fi CTA Card */}
+        {/* Ko-fi Embedded Donation Card */}
         <div className="bg-white rounded-2xl shadow-soft p-6 sm:p-8 -mt-8 relative z-10">
           <div className="text-center">
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-accent-50 text-accent-700 rounded-full text-sm font-medium mb-4">
@@ -73,18 +73,26 @@ const SupportPage: React.FC = () => {
               Every contribution, no matter how small, helps keep the lights on and the code
               flowing. 100% of donations go towards development and hosting.
             </p>
-            <a
-              href={KOFI_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#FF5E5B] text-white rounded-xl font-semibold hover:bg-[#e54e4b] transition-all duration-200 shadow-sm hover:shadow-medium active:scale-[0.97] text-lg"
-            >
-              <Coffee className="w-5 h-5" />
-              Support on Ko-fi
-              <ExternalLink className="w-4 h-4" />
-            </a>
+            <div className="flex justify-center">
+              <iframe
+                id="kofiframe"
+                src="https://ko-fi.com/camperplanning/?hidefeed=true&widget=true&embed=true&preview=true"
+                className="border-0 w-full max-w-[400px] rounded-xl"
+                style={{ height: '712px' }}
+                title="Support on Ko-fi"
+              />
+            </div>
             <p className="text-neutral-400 text-xs mt-3">
-              Ko-fi charges 0% platform fees on donations
+              Ko-fi charges 0% platform fees on donations.{' '}
+              <a
+                href={KOFI_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-neutral-500 underline hover:text-neutral-700 transition-colors"
+              >
+                Open in Ko-fi
+                <ExternalLink className="w-3 h-3 inline ml-1" />
+              </a>
             </p>
           </div>
         </div>

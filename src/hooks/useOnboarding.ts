@@ -4,7 +4,7 @@
 import { useState, useEffect } from 'react';
 
 const ONBOARDING_STORAGE_KEY = 'camper-planner-onboarding-complete';
-const ONBOARDING_VERSION = '1.0'; // Increment to re-show onboarding after major updates
+const ONBOARDING_VERSION = '2.0'; // Bumped: replaced interactive wizard with passive guided tour
 
 interface OnboardingState {
   isComplete: boolean;
