@@ -172,6 +172,9 @@ const MapContainer: React.FC = () => {
   // Mobile state - must be at top with other useState
   const [isMobile, setIsMobile] = useState(false);
 
+  // Tour active state — hides helper overlays during onboarding
+  const [isTourActive, setIsTourActive] = useState(false);
+
   // Load persisted map state on mount
   useEffect(() => {
     const persistedState = mapStorage.getMapState();
@@ -210,6 +213,24 @@ const MapContainer: React.FC = () => {
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
+
+  // Detect when onboarding tour is active and which step is current
+  const [currentTourStep, setCurrentTourStep] = useState<string | null>(null);
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      const stepAttr = document.body.getAttribute('data-tour-step');
+      setIsTourActive(!!stepAttr);
+      setCurrentTourStep(stepAttr);
+    });
+    observer.observe(document.body, { attributes: true, attributeFilter: ['data-tour-step'] });
+    setIsTourActive(document.body.hasAttribute('data-tour-step'));
+    setCurrentTourStep(document.body.getAttribute('data-tour-step'));
+    return () => observer.disconnect();
+  }, []);
+
+  // Search bar should be visible during waypoint-related tour steps
+  const SEARCH_VISIBLE_STEPS = ['search-start', 'search-paris', 'search-barcelona'];
+  const isSearchVisibleDuringTour = currentTourStep !== null && SEARCH_VISIBLE_STEPS.includes(currentTourStep);
 
   // Fallback: ensure map becomes visible after 2 seconds even if whenReady doesn't fire
   useEffect(() => {
@@ -334,10 +355,13 @@ const MapContainer: React.FC = () => {
   };
 
   return (
-    <div className={cn(
-      "h-full relative transition-all duration-300",
-      isFullscreen && "fixed inset-0 z-50 bg-black"
-    )}>
+    <div
+      data-tour-id="map-area"
+      className={cn(
+        "h-full relative transition-all duration-300",
+        isFullscreen && "fixed inset-0 z-50 bg-black"
+      )}
+    >
       {/* Loading overlay */}
       {!isMapReady && (
         <div className="absolute inset-0 bg-neutral-100 flex items-center justify-center z-20">
@@ -403,8 +427,8 @@ const MapContainer: React.FC = () => {
       </LeafletMapContainer>
 
       {/* Unified Search Bar - positioned at top center */}
-      {FeatureFlags.CAMPSITE_DISPLAY && (
-        <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-30 w-full max-w-md px-4 hidden md:block">
+      {FeatureFlags.CAMPSITE_DISPLAY && (!isTourActive || isSearchVisibleDuringTour) && (
+        <div data-tour-id="search-bar" className="absolute top-4 left-1/2 transform -translate-x-1/2 z-30 w-full max-w-md px-4 hidden md:block">
           <ComponentErrorBoundary componentName="UnifiedSearch">
             <UnifiedSearch
               map={mapInstance}
@@ -422,8 +446,8 @@ const MapContainer: React.FC = () => {
         </div>
       )}
 
-      {/* Waypoint hint for new users - shown when no waypoints exist */}
-      {waypoints.length === 0 && isMapReady && (
+      {/* Waypoint hint for new users - shown when no waypoints exist (hidden during tour) */}
+      {waypoints.length === 0 && isMapReady && !isTourActive && (
         <div className="absolute bottom-24 left-1/2 transform -translate-x-1/2 z-20 pointer-events-none hidden sm:block animate-fade-in">
           <div className="bg-white/95 backdrop-blur-sm px-5 py-3 rounded-xl shadow-lg border border-neutral-200">
             <div className="flex items-center space-x-3">
@@ -448,7 +472,7 @@ const MapContainer: React.FC = () => {
       </ComponentErrorBoundary>
 
       {/* Route Calculator Panel - positioned to avoid overlap with map controls */}
-      {FeatureFlags.BASIC_ROUTING && (
+      {FeatureFlags.BASIC_ROUTING && !isTourActive && (
         <div className="absolute top-4 right-14 z-20 w-64 hidden lg:block">
           <ComponentErrorBoundary componentName="RouteCalculator">
             <RouteCalculator />
@@ -457,7 +481,7 @@ const MapContainer: React.FC = () => {
       )}
 
       {/* Campsite Controls Panel - right of toolbar */}
-      {FeatureFlags.CAMPSITE_DISPLAY && showCampsiteControls && !showCampsiteFilter && (
+      {FeatureFlags.CAMPSITE_DISPLAY && showCampsiteControls && !showCampsiteFilter && !isTourActive && (
         <div className="absolute top-4 left-[60px] z-20 w-72 hidden md:block">
           <ComponentErrorBoundary componentName="CampsiteControls">
             <CampsiteControls
@@ -476,7 +500,7 @@ const MapContainer: React.FC = () => {
       )}
 
       {/* Advanced Campsite Filter Panel - right of toolbar */}
-      {FeatureFlags.CAMPSITE_DISPLAY && showCampsiteFilter && (
+      {FeatureFlags.CAMPSITE_DISPLAY && showCampsiteFilter && !isTourActive && (
         <div className="absolute top-4 left-[60px] z-20 w-80 hidden md:block">
           <ComponentErrorBoundary componentName="CampsiteFilter">
             <CampsiteFilter
@@ -520,7 +544,7 @@ const MapContainer: React.FC = () => {
       />
 
       {/* Compact left toolbar - organized into logical groups */}
-      <div className="absolute top-4 left-4 z-30 flex flex-col space-y-2 hidden sm:flex">
+      <div data-tour-id="left-toolbar" className="absolute top-4 left-4 z-30 flex flex-col space-y-2 hidden sm:flex">
         {/* Primary actions: Undo/Redo */}
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
           <button
@@ -638,6 +662,7 @@ const MapContainer: React.FC = () => {
         {/* Campsite toggle */}
         {FeatureFlags.CAMPSITE_DISPLAY && (
           <button
+            data-tour-id="campsite-toggle"
             onClick={() => {
               if (!showCampsiteControls && !showCampsiteFilter) {
                 setShowCampsiteControls(true);
@@ -679,8 +704,8 @@ const MapContainer: React.FC = () => {
         )}
       </div>
 
-      {/* Map info overlay - responsive design */}
-      <div className="absolute bottom-4 left-4 z-30 hidden sm:block">
+      {/* Map info overlay - responsive design (hidden during tour) */}
+      {!isTourActive && <div className="absolute bottom-4 left-4 z-30 hidden sm:block">
         <div className="bg-white bg-opacity-95 rounded-lg shadow-md px-3 py-2 text-xs text-neutral-600 animate-fade-in">
           <div className="sm:block hidden">
             Zoom: {zoom} | Center: {center[0].toFixed(4)}, {center[1].toFixed(4)}
@@ -704,10 +729,9 @@ const MapContainer: React.FC = () => {
             )}
           </div>
         </div>
-      </div>
+      </div>}
 
-      {/* Mobile-optimized info bar */}
-      <div className="absolute bottom-0 left-0 right-0 z-30 sm:hidden">
+      {!isTourActive && <div className="absolute bottom-0 left-0 right-0 z-30 sm:hidden">
         <div className="bg-white bg-opacity-95 border-t border-neutral-200 px-4 py-2 text-sm">
           <div className="flex items-center justify-between">
             <span className="text-neutral-600">
@@ -728,7 +752,7 @@ const MapContainer: React.FC = () => {
             )}
           </div>
         </div>
-      </div>
+      </div>}
 
       {/* Route Information Panel */}
       {showRouteInfo && FeatureFlags.BASIC_ROUTING && calculatedRoute && !showCampsiteDetails && !showCampsiteRecommendations && (
@@ -866,7 +890,7 @@ const MapContainer: React.FC = () => {
 
       {/* Cost Calculator Panel */}
       {showCostCalculator && (
-        <div className="fixed inset-y-0 right-0 z-40 w-full sm:w-96 bg-white border-l border-neutral-200 shadow-xl transform transition-transform sm:translate-x-0">
+        <div className="map-panel-right fixed inset-y-0 right-0 z-40 w-full sm:w-96 bg-white border-l border-neutral-200 shadow-xl transform transition-transform sm:translate-x-0">
           <div className="h-full flex flex-col">
             {/* Panel Header */}
             <div className="flex items-center justify-between p-4 border-b border-neutral-200 bg-emerald-50">
@@ -963,8 +987,8 @@ const MapContainer: React.FC = () => {
         </div>
       )}
 
-      {/* User guidance and help system */}
-      <UserGuidance />
+      {/* User guidance and help system (hidden during tour) */}
+      {!isTourActive && <UserGuidance />}
 
       {/* Clear confirmation dialog */}
       <ConfirmDialog

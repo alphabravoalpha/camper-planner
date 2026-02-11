@@ -8,10 +8,10 @@ This is the **European Camper Trip Planner** - a free, comprehensive camper trip
 
 ## Development Status
 
-**Current Status:** Phase 6 Complete + Monetization Infrastructure Built — Ready for Production Launch
-**Custom Domain:** camperplanning.com (GitHub Pages, DNS via Squarespace)
-**Monetization:** Affiliate links (Booking.com, Pitchup, ACSI) + Ko-fi donations
-**Last Updated:** February 10, 2026
+**Current Status:** LIVE IN PRODUCTION at camperplanning.com
+**Custom Domain:** camperplanning.com (GitHub Pages, DNS via Squarespace) — live with HTTPS
+**Monetization:** Booking.com affiliate (via CJ, pending approval) + Ko-fi donations (live, embedded on Support page)
+**Last Updated:** February 11, 2026
 
 ## Technology Stack (Implemented)
 
@@ -125,7 +125,7 @@ All external APIs are abstracted through service classes:
 - **GPXExportService** - GPX export for GPS devices
 - **RouteExportService** - Multi-format route export (29KB)
 - **MultiFormatExportService** - JSON/KML/other formats
-- **BookingService** - Affiliate link generation (Booking.com, Pitchup, ACSI) — wired to CampsiteDetails UI
+- **BookingService** - Affiliate link generation (Booking.com via CJ) — wired to CampsiteDetails UI
 - **TripWizardService** - Trip planning wizard with itinerary generation
 - **DataService** - Base service with caching and rate limiting
 
@@ -173,7 +173,7 @@ All external APIs are abstracted through service classes:
 ### Phase 6: Export & Polish ✅ COMPLETE
 - ✅ GPX export service implemented (ahead of schedule)
 - ✅ Multi-format export (JSON, KML)
-- ✅ User onboarding (welcome screen, tutorial, contextual tooltips)
+- ✅ User onboarding (passive guided tour — click-through feature overview)
 - ✅ Error handling improvements (user-friendly messages, retry mechanisms)
 - ✅ Mobile experience polish (haptic feedback, touch optimization, bottom sheets)
 - ✅ Performance optimization (bundle reduced to ~300KB gzipped)
@@ -185,8 +185,8 @@ All external APIs are abstracted through service classes:
 ### Phase 7: Monetization & Launch Infrastructure ✅ COMPLETE
 - ✅ Footer component with legal links, affiliate disclosure, donation button
 - ✅ Legal pages: Privacy Policy (GDPR), Terms of Use, Affiliate Disclosure (FTC/ASA)
-- ✅ Support/Donate page with Ko-fi integration
-- ✅ BookingService wired to CampsiteDetails UI (affiliate links for Booking.com, Pitchup, ACSI)
+- ✅ Support/Donate page with Ko-fi embedded inline (iframe widget)
+- ✅ BookingService wired to CampsiteDetails UI (Booking.com affiliate via CJ)
 - ✅ AFFILIATE_LINKS feature flag enabled in features.ts
 - ✅ GitHub Actions CI/CD configured with affiliate ID secrets
 - ✅ Custom domain (camperplanning.com) configured — CNAME, base path, router basename
@@ -283,13 +283,13 @@ Core feature differentiator - routes must respect:
 - `docs/05-data-sources-api-spec.md` - API integration specifications
 
 ### Monetization & Legal Pages
-- `src/pages/SupportPage.tsx` - Ko-fi donation page
+- `src/pages/SupportPage.tsx` - Ko-fi donation page (embedded iframe widget)
 - `src/pages/PrivacyPolicyPage.tsx` - GDPR-compliant privacy policy
 - `src/pages/TermsPage.tsx` - Terms of use (England & Wales law)
 - `src/pages/AffiliateDisclosurePage.tsx` - FTC/ASA affiliate disclosure
 - `src/components/layout/Footer.tsx` - Site footer (hidden on planner, shown on content pages)
 - `src/config/features.ts` - Feature flags (AFFILIATE_LINKS: true, ADVANCED_BOOKING: false)
-- `src/services/BookingService.ts` - Affiliate link generation for Booking.com, Pitchup, ACSI
+- `src/services/BookingService.ts` - Affiliate link generation (Booking.com via CJ — pending approval)
 
 ### SEO & Domain
 - `index.html` - Meta tags, OG tags, Twitter Cards, JSON-LD structured data
@@ -301,51 +301,44 @@ Core feature differentiator - routes must respect:
 ### CI/CD
 - `.github/workflows/gh-pages.yml` - Deploys to GitHub Pages with affiliate secrets from GitHub Secrets
 
-## Current Development Priority: Production Launch
+## Current Development Priority: Post-Launch Growth
 
-### Current Status: Code Complete — Awaiting Manual Launch Steps
+### Current Status: LIVE IN PRODUCTION
 
-**All code is built, tested, and production-ready.** The remaining steps are manual actions by the project owner.
+**Site is live at camperplanning.com.** All core features working.
 
 **Technical Summary:**
 - 14,109+ lines of code written
 - **357 service tests** (99.7% pass rate) ✅
 - **86% service coverage** (12/14 services tested) ✅
 - **7 critical bugs fixed** during testing ✅
-- Monetization infrastructure fully wired ✅
-- Custom domain configured (camperplanning.com) ✅
-- SEO meta tags, OG tags, sitemap, robots.txt ✅
 - Production build succeeds with all new pages code-split ✅
 
-### Manual Launch Steps Required (Owner Action)
+### Launch Checklist (Completed)
 
-1. **Configure Squarespace DNS** — Point camperplanning.com to GitHub Pages:
-   - A records: 185.199.108.153, 185.199.109.153, 185.199.110.153, 185.199.111.153
-   - CNAME: www → alphabravoalpha.github.io
-2. **Enable HTTPS** in GitHub Pages settings after DNS propagates
-3. **Create Ko-fi account** at ko-fi.com/camperplanning
-4. **Apply to affiliate programs:**
-   - Booking.com Affiliate Partner Programme
-   - Pitchup.com partnerships
-   - ACSI partner program
-5. **Add affiliate IDs as GitHub Secrets** once approved:
-   - `BOOKING_AFFILIATE_ID`
-   - `PITCHUP_AFFILIATE_ID`
-   - `ACSI_AFFILIATE_CODE`
-6. **Create OG social sharing image** (1200x630px) at `public/og-image.png`
+1. ✅ **Squarespace DNS configured** — camperplanning.com pointing to GitHub Pages
+2. ✅ **HTTPS enabled** in GitHub Pages settings
+3. ✅ **Ko-fi account created** — ko-fi.com/camperplanning (embedded on Support page)
+4. ✅ **Booking.com affiliate applied** — via CJ (Commission Junction), awaiting approval
+5. ⏳ **Add `BOOKING_AFFILIATE_ID` as GitHub Secret** — once CJ/Booking.com approves
+6. 📋 **Pitchup** — no public affiliate programme; revisit when site has traffic to approach directly
+7. ❌ **ACSI** — not a fit (sells guides/cards, not bookings)
+8. 📋 **Create OG social sharing image** (1200x630px) at `public/og-image.png`
 
 ### Post-Launch Priorities
 
-**Immediate (Week 1 after launch):**
+**Immediate:**
 - Monitor for bugs via GitHub Issues
-- Verify affiliate links track correctly once IDs are live
+- Add Booking.com affiliate ID once CJ approval comes through
 - Check Google Search Console for indexing
+- Drive initial traffic to build stats for future partnerships
 
 **Short-term:**
 - Performance audit with Lighthouse (target >85)
 - Full WCAG AA compliance validation
 - User guide / FAQ documentation
 - Monitor Ko-fi donations and affiliate conversion
+- Approach Pitchup directly once traffic numbers are established
 
 **Medium-term (V2 considerations):**
 - Advanced booking integration (availability, price comparison)
@@ -354,6 +347,15 @@ Core feature differentiator - routes must respect:
 - Progressive Web App (PWA) support
 
 ## Recent Updates (February 11, 2026)
+
+### Production Launch & Monetization Setup
+- Site went live at camperplanning.com with HTTPS
+- Ko-fi account created and embedded inline on Support page (replaced redirect button with iframe widget)
+- Booking.com affiliate application submitted via CJ (Commission Junction) — awaiting approval
+- Pitchup has no affiliate programme — will approach directly once site has traffic
+- ACSI affiliate programme not a fit (sells guides, not campsite bookings)
+- Onboarding rewritten: replaced interactive setup wizard with passive guided tour (no forms, click-through feature overview)
+- Onboarding version bumped to 2.0 (returning users see new tour)
 
 ### Feedback System & Bug Triage Pipeline
 **New Page:**
@@ -390,7 +392,7 @@ Core feature differentiator - routes must respect:
 **Affiliate Integration:**
 - Wired existing `BookingService` (26 tests) to `CampsiteDetails.tsx` — replaced hardcoded `AFFILIATE_CONFIGS` with dynamic `bookingService.generateBookingLinks()`
 - Added `AFFILIATE_LINKS: true` feature flag in `features.ts`
-- Configured GitHub Actions to inject `VITE_BOOKING_AFFILIATE_ID`, `VITE_PITCHUP_AFFILIATE_ID`, `VITE_ACSI_AFFILIATE_CODE` from GitHub Secrets
+- Configured GitHub Actions to inject affiliate IDs from GitHub Secrets (currently only `VITE_BOOKING_AFFILIATE_ID` relevant — awaiting CJ approval)
 - All affiliate links use `rel="sponsored noopener noreferrer"` and include transparency labels
 
 **Custom Domain:**

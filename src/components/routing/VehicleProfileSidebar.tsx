@@ -56,15 +56,15 @@ const VehicleProfileSidebar: React.FC<VehicleProfileSidebarProps> = () => {
     <>
       {/* Sidebar Overlay — opened via useUIStore.openVehicleSidebar() from Header badge */}
       {vehicleSidebarOpen && (
-        <div className="fixed inset-0 z-50 overflow-hidden">
+        <div className="vehicle-sidebar-wrapper fixed inset-0 z-50 overflow-hidden">
           {/* Background overlay */}
           <div
-            className="absolute inset-0 bg-black bg-opacity-50 transition-opacity"
+            className="vehicle-sidebar-backdrop absolute inset-0 bg-black bg-opacity-50 transition-opacity"
             onClick={closeVehicleSidebar}
           />
 
           {/* Sidebar */}
-          <div className="absolute left-0 top-0 h-full w-full max-w-md bg-white shadow-xl transform transition-transform">
+          <div data-tour-id="vehicle-sidebar-panel" className="absolute left-0 top-0 h-full w-full max-w-md bg-white shadow-xl transform transition-transform">
             <div className="h-full flex flex-col">
               {/* Header */}
               <div className="flex items-center justify-between p-4 border-b border-neutral-200">

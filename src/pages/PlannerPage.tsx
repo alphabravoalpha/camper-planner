@@ -23,6 +23,7 @@ const PlannerPage: React.FC = () => {
         {/* "Plan a Trip" floating button — always visible, prominent when no waypoints */}
         {!wizardOpen && !showOnboarding && (
           <button
+            data-tour-id="plan-trip-float"
             onClick={openWizard}
             className={`absolute z-[1000] flex items-center gap-2 shadow-lg transition-all font-semibold ${
               hasWaypoints

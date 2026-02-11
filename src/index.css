@@ -37,3 +37,44 @@ h1 {
   font-size: 3.2em;
   line-height: 1.1;
 }
+
+/* ─── Tour / Onboarding Z-Index Overrides ────────────────────────────────
+   When the guided tour is active, specific UI panels need to render ABOVE
+   the spotlight overlay (z-9997) but BELOW the tooltip (z-9999).
+   The body[data-tour-step] attribute is set by OnboardingFlow.tsx.
+   ────────────────────────────────────────────────────────────────────── */
+
+/* Steps 2-4 (search-start, search-paris, search-barcelona): Boost search bar above overlay */
+body[data-tour-step="search-start"] [data-tour-id="search-bar"],
+body[data-tour-step="search-paris"] [data-tour-id="search-bar"],
+body[data-tour-step="search-barcelona"] [data-tour-id="search-bar"] {
+  z-index: 9998 !important;
+  position: relative;
+}
+
+/* Step 6 (vehicle-button): Boost vehicle badge button above overlay */
+body[data-tour-step="vehicle-button"] [data-tour-id="vehicle-badge"] {
+  z-index: 9998 !important;
+  position: relative;
+}
+
+/* Step 7 (vehicle-panel): Boost vehicle sidebar above overlay, hide its own backdrop */
+body[data-tour-step="vehicle-panel"] .vehicle-sidebar-wrapper {
+  z-index: 9998 !important;
+}
+body[data-tour-step="vehicle-panel"] .vehicle-sidebar-backdrop {
+  background-color: transparent !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Step 8 (tools): Boost cost calculator panel above overlay */
+body[data-tour-step="tools"] .map-panel-right {
+  z-index: 9998 !important;
+}
+
+/* Step 9 (campsites): Boost campsite toggle button above overlay */
+body[data-tour-step="campsites"] [data-tour-id="campsite-toggle"] {
+  z-index: 9998 !important;
+  position: relative;
+}

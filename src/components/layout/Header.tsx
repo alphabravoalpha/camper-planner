@@ -52,6 +52,7 @@ const Header: React.FC = () => {
             {location.pathname === '/' && (
               <button
                 onClick={openVehicleSidebar}
+                data-tour-id="vehicle-badge"
                 className={cn(
                   'hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all duration-200',
                   'hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary-500',
