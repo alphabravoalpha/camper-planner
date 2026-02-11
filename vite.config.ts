@@ -6,8 +6,9 @@ import path from 'node:path'
 export default defineConfig({
   plugins: [react()],
 
-  // GitHub Pages deployment configuration
-  base: '/camper-planner/',
+  // Custom domain deployment (camperplanning.com)
+  // Previously: '/camper-planner/' for GitHub Pages subdirectory
+  base: '/',
 
   // Path resolution
   resolve: {

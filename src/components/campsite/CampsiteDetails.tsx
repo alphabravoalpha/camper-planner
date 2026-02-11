@@ -1,9 +1,10 @@
 // Campsite Details Component
 // Redesigned: Single scrollable layout with complete traveler information + booking
 
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useMemo } from 'react';
 import { FeatureFlags } from '../../config';
 import { type Campsite } from '../../services/CampsiteService';
+import { bookingService, type BookingLink } from '../../services/BookingService';
 import { useRouteStore, useVehicleStore, useUIStore } from '../../store';
 import { cn } from '../../utils/cn';
 
@@ -14,43 +15,6 @@ export interface CampsiteDetailsProps {
   onExportData?: (campsite: Campsite) => void;
   className?: string;
 }
-
-// Affiliate link configuration (prepared for booking integrations)
-interface AffiliateConfig {
-  provider: string;
-  baseUrl: string;
-  trackingParams: Record<string, string>;
-  enabled: boolean;
-}
-
-const AFFILIATE_CONFIGS: Record<string, AffiliateConfig> = {
-  booking: {
-    provider: 'Booking.com',
-    baseUrl: 'https://www.booking.com',
-    trackingParams: {
-      aid: 'camper-planner',
-      label: 'camping-search'
-    },
-    enabled: false
-  },
-  pitchup: {
-    provider: 'Pitchup',
-    baseUrl: 'https://www.pitchup.com',
-    trackingParams: {
-      utm_source: 'camper-planner',
-      utm_medium: 'referral'
-    },
-    enabled: false
-  },
-  coolcamping: {
-    provider: 'Cool Camping',
-    baseUrl: 'https://www.coolcamping.com',
-    trackingParams: {
-      ref: 'camper-planner'
-    },
-    enabled: false
-  }
-};
 
 // Amenity configuration with icons and labels
 const AMENITY_CONFIG: Record<string, { icon: string; label: string }> = {
@@ -178,16 +142,10 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
     });
   }, [campsite, onExportData, addNotification]);
 
-  // Generate affiliate booking link
-  const generateBookingLink = useCallback((provider: string): string | null => {
-    const config = AFFILIATE_CONFIGS[provider];
-    if (!config || !config.enabled) return null;
-
-    const params = new URLSearchParams(config.trackingParams);
-    if (campsite.name) params.append('ss', campsite.name);
-    if (campsite.address) params.append('dest_id', campsite.address);
-
-    return `${config.baseUrl}/search?${params.toString()}`;
+  // Generate affiliate booking links via BookingService
+  const affiliateLinks: BookingLink[] = useMemo(() => {
+    if (!FeatureFlags.AFFILIATE_LINKS) return [];
+    return bookingService.generateBookingLinks(campsite);
   }, [campsite]);
 
   // Get directions URL
@@ -598,7 +556,7 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
             Book This Campsite
           </h3>
 
-          {/* Direct booking link if website available */}
+          {/* Direct booking link if website available — always shown first */}
           {campsite.contact?.website && (
             <a
               href={campsite.contact.website}
@@ -613,45 +571,48 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
             </a>
           )}
 
-          {/* Affiliate booking options */}
-          <div className="space-y-2">
-            <div className="text-xs font-medium text-neutral-500 mb-2">Search on booking platforms:</div>
-            {Object.entries(AFFILIATE_CONFIGS).map(([key, config]) => (
-              <button
-                key={key}
-                disabled={!config.enabled}
-                className={cn(
-                  'w-full flex items-center justify-between p-3 border rounded-lg text-sm transition-colors',
-                  config.enabled
-                    ? 'border-primary-200 bg-primary-50 text-primary-800 hover:bg-primary-100'
-                    : 'border-neutral-200 bg-neutral-50 text-neutral-400 cursor-not-allowed'
-                )}
-                onClick={() => {
-                  if (config.enabled) {
-                    const link = generateBookingLink(key);
-                    if (link) window.open(link, '_blank');
-                  }
-                }}
-              >
-                <span>{config.provider}</span>
-                {config.enabled ? (
+          {/* Affiliate booking links — powered by BookingService */}
+          {affiliateLinks.length > 0 && (
+            <div className="space-y-2">
+              <div className="text-xs font-medium text-neutral-500 mb-2">Search on booking platforms:</div>
+              {affiliateLinks.map((link) => (
+                <a
+                  key={link.provider.id}
+                  href={link.url}
+                  target="_blank"
+                  rel="sponsored noopener noreferrer"
+                  className="w-full flex items-center justify-between p-3 border border-primary-200 bg-primary-50 text-primary-800 hover:bg-primary-100 rounded-lg text-sm transition-colors"
+                  onClick={() => {
+                    bookingService.trackBookingClick(link.provider.id, String(campsite.id));
+                  }}
+                >
+                  <span>{link.provider.name}</span>
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                   </svg>
-                ) : (
-                  <span className="text-xs">Coming Soon</span>
-                )}
-              </button>
-            ))}
-          </div>
+                </a>
+              ))}
+              {/* Affiliate disclosure */}
+              <p className="text-[10px] text-neutral-400 mt-1.5 leading-relaxed">
+                We may earn a small commission from bookings at no extra cost to you.
+              </p>
+            </div>
+          )}
+
+          {/* Show non-affiliate fallback if no affiliate links configured */}
+          {affiliateLinks.length === 0 && !campsite.contact?.website && (
+            <p className="text-sm text-neutral-500 italic">
+              No booking links available. Try searching for this campsite online.
+            </p>
+          )}
 
           {/* Booking tips */}
           <div className="mt-4 p-3 bg-primary-50 border border-primary-200 rounded-lg text-xs text-primary-800">
-            <div className="font-medium mb-1">💡 Booking Tips:</div>
+            <div className="font-medium mb-1">Booking Tips:</div>
             <ul className="space-y-0.5">
-              <li>• Check availability directly with the campsite</li>
-              <li>• Book in advance during peak season</li>
-              <li>• Confirm vehicle size restrictions</li>
+              <li>Check availability directly with the campsite</li>
+              <li>Book in advance during peak season</li>
+              <li>Confirm vehicle size restrictions</li>
             </ul>
           </div>
         </div>

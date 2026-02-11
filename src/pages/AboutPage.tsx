@@ -5,7 +5,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import {
   Shield, Route, Tent, Download, Globe, Truck,
-  MapPin, Fuel, ChevronRight
+  MapPin, Fuel, ChevronRight, Heart, ExternalLink
 } from 'lucide-react';
 
 const FEATURES = [
@@ -130,7 +130,8 @@ const AboutPage: React.FC = () => {
                 Current trip planning requires £65-150+/year in subscriptions plus hours
                 of manual research across multiple fragmented tools. We built this using
                 free open-source tools and static hosting — so there are no running costs
-                to pass on to you.
+                to pass on to you. When you book campsites through our links, we may earn a
+                small commission at no extra cost to you, which helps fund development.
               </p>
             </div>
           </div>
@@ -154,6 +155,42 @@ const AboutPage: React.FC = () => {
           <p className="text-center text-sm text-neutral-400 mt-3">
             ...and many more including UK, Ireland, Denmark, Finland, Poland, Czech Republic, Hungary, Romania, and beyond.
           </p>
+        </div>
+
+        {/* Support Card */}
+        <div className="bg-white rounded-2xl shadow-soft p-8 mb-12">
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center flex-shrink-0">
+              <Heart className="w-6 h-6 text-red-500" />
+            </div>
+            <div>
+              <h2 className="text-xl font-bold text-neutral-900 mb-2">
+                Support this project
+              </h2>
+              <p className="text-neutral-600 leading-relaxed mb-4">
+                If this tool helps you plan your travels, consider supporting its development.
+                Every contribution helps keep the app free and fund new features.
+              </p>
+              <div className="flex flex-wrap gap-3">
+                <Link
+                  to="/support"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#FF5E5B] text-white rounded-xl font-semibold hover:bg-[#e54e4b] transition-all duration-200 text-sm"
+                >
+                  <Heart className="w-4 h-4" />
+                  Support Us
+                </Link>
+                <a
+                  href="https://ko-fi.com/camperplanning"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 border border-neutral-300 text-neutral-700 rounded-xl font-medium hover:bg-neutral-50 transition-all duration-200 text-sm"
+                >
+                  Buy us a coffee
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* CTA */}

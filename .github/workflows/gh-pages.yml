@@ -39,6 +39,9 @@ jobs:
           NODE_ENV: production
           VITE_APP_VERSION: ${{ github.sha }}
           VITE_BUILD_TIME: ${{ github.event.head_commit.timestamp }}
+          VITE_BOOKING_AFFILIATE_ID: ${{ secrets.BOOKING_AFFILIATE_ID }}
+          VITE_PITCHUP_AFFILIATE_ID: ${{ secrets.PITCHUP_AFFILIATE_ID }}
+          VITE_ACSI_AFFILIATE_CODE: ${{ secrets.ACSI_AFFILIATE_CODE }}
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
@@ -67,5 +70,5 @@ jobs:
         run: sleep 30
       - name: Verify deployment
         run: |
-          curl -f https://alphabravoalpha.github.io/camper-planner/ || echo "Verification skipped (CDN may still be propagating)"
+          curl -f https://camperplanning.com/ || echo "Verification skipped (CDN may still be propagating)"
           echo "✅ Deployment completed!"

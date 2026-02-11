@@ -3,7 +3,7 @@
 
 import React, { Suspense } from 'react';
 import { createBrowserRouter, RouterProvider, useLocation, Outlet } from 'react-router-dom';
-import { ErrorBoundary, Header, LoadingSpinner, MainLayout, Sidebar } from './components/layout';
+import { ErrorBoundary, Header, Footer, LoadingSpinner, MainLayout, Sidebar } from './components/layout';
 import { useUIStore } from './store';
 import { useOnboarding } from './hooks/useOnboarding';
 import OnboardingFlow from './components/onboarding/OnboardingFlow';
@@ -15,6 +15,11 @@ const AboutPage = React.lazy(() => import('./pages/AboutPage'));
 const HelpPage = React.lazy(() => import('./pages/HelpPage'));
 const SettingsPage = React.lazy(() => import('./pages/SettingsPage'));
 const NotFoundPage = React.lazy(() => import('./pages/NotFoundPage'));
+const SupportPage = React.lazy(() => import('./pages/SupportPage'));
+const PrivacyPolicyPage = React.lazy(() => import('./pages/PrivacyPolicyPage'));
+const TermsPage = React.lazy(() => import('./pages/TermsPage'));
+const AffiliateDisclosurePage = React.lazy(() => import('./pages/AffiliateDisclosurePage'));
+const FeedbackPage = React.lazy(() => import('./pages/FeedbackPage'));
 
 // Debug pages - only loaded in development
 const MapTestPage = import.meta.env.DEV ? React.lazy(() => import('./pages/MapTestPage')) : null;
@@ -32,9 +37,12 @@ const RootLayout: React.FC = () => {
   // cost calculator, route optimizer, etc.). This provides a cleaner, more map-focused UX.
   const shouldShowSidebar = false; // Disabled: sidebar functionality moved to MapContainer toolbar
 
+  // Hide footer on planner page (full-screen map)
+  const shouldShowFooter = location.pathname !== '/';
+
   return (
     <ErrorBoundary>
-      <div className="h-screen flex flex-col bg-neutral-50">
+      <div className={shouldShowFooter ? 'min-h-screen flex flex-col bg-neutral-50' : 'h-screen flex flex-col bg-neutral-50'}>
         {/* Onboarding Flow - Show for first-time users */}
         {showOnboarding && location.pathname === '/' && (
           <OnboardingFlow
@@ -113,6 +121,9 @@ const RootLayout: React.FC = () => {
             <Outlet />
           </Suspense>
         </MainLayout>
+
+        {/* Footer - hidden on planner page (full-screen map) */}
+        {shouldShowFooter && <Footer />}
       </div>
     </ErrorBoundary>
   );
@@ -141,6 +152,26 @@ const router = createBrowserRouter(
           path: "settings",
           element: <SettingsPage />,
         },
+        {
+          path: "support",
+          element: <SupportPage />,
+        },
+        {
+          path: "privacy",
+          element: <PrivacyPolicyPage />,
+        },
+        {
+          path: "terms",
+          element: <TermsPage />,
+        },
+        {
+          path: "affiliate-disclosure",
+          element: <AffiliateDisclosurePage />,
+        },
+        {
+          path: "feedback",
+          element: <FeedbackPage />,
+        },
         // Debug routes - only available in development
         ...(import.meta.env.DEV && MapTestPage ? [{
           path: "test-map",
@@ -158,7 +189,8 @@ const router = createBrowserRouter(
     },
   ],
   {
-    basename: "/camper-planner",
+    // Custom domain: no basename needed (was "/camper-planner" for GitHub Pages subdirectory)
+    basename: "/",
   }
 );
 

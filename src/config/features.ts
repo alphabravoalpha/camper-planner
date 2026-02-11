@@ -13,6 +13,7 @@ export const FeatureFlags = {
   TRIP_MANAGEMENT: true,          // Phase 5: Save and manage multiple trips locally
   PLANNING_TOOLS: true,           // Phase 5: Duration estimation and itinerary planning
   DATA_EXPORT: true,              // Phase 6: GPX/JSON export (MVP REQUIRED)
+  AFFILIATE_LINKS: true,          // Phase 6: Affiliate booking links in campsite details
 
   // Language Support
   MULTI_LANGUAGE_FRAMEWORK: true,    // Phase 1: i18n framework ready

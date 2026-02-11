@@ -350,7 +350,7 @@ const helpArticles: HelpArticle[] = [
         <div className="bg-neutral-50 border border-neutral-200 rounded-lg p-4">
           <h5 className="font-medium text-neutral-900 mb-2">Still Having Issues?</h5>
           <p className="text-sm text-neutral-700">
-            If these solutions don't help, please use the feedback form to report the issue.
+            If these solutions don't help, please <a href="/feedback" className="text-primary-600 underline hover:text-primary-700">use the feedback form</a> to report the issue.
             Include details about your browser, device, and what you were trying to do.
           </p>
         </div>

@@ -433,16 +433,6 @@ const WaypointNumber: React.FC<WaypointNumberProps> = ({ waypoint, index, total 
                   onClick={(e) => {
                     e.stopPropagation();
                     e.preventDefault();
-                    setIsEditing(true);
-                  }}
-                  className="flex-1 px-3 py-1 text-xs bg-primary-600 text-white rounded hover:bg-primary-700 transition-colors"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
                     handleDelete();
                   }}
                   className="flex-1 px-3 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
