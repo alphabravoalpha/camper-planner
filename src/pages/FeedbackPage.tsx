@@ -2,7 +2,7 @@
 // Embedded Google Form for user suggestions, bug reports, and feature requests
 
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {
   MessageSquare, ChevronLeft, Lightbulb, Bug, Star, ExternalLink, ChevronRight
 } from 'lucide-react';
@@ -31,15 +31,20 @@ const FEEDBACK_TYPES = [
 ];
 
 const FeedbackPage: React.FC = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="min-h-screen bg-neutral-50 animate-fade-in">
       {/* Hero */}
       <div className="bg-gradient-to-br from-teal-500 to-teal-700 text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
-          <Link to="/" className="inline-flex items-center gap-1 text-teal-200 hover:text-white text-sm mb-4 transition-colors">
+          <button
+            onClick={() => navigate(-1)}
+            className="inline-flex items-center gap-1 text-teal-200 hover:text-white text-sm mb-4 transition-colors"
+          >
             <ChevronLeft className="w-4 h-4" />
             Back to planner
-          </Link>
+          </button>
           <div className="text-center">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-white/15 rounded-2xl mb-5 backdrop-blur-sm">
               <MessageSquare className="w-8 h-8" />
@@ -151,13 +156,13 @@ const FeedbackPage: React.FC = () => {
           <p className="text-neutral-500 mb-6">
             Your input directly shapes the tools that thousands of camper travellers rely on.
           </p>
-          <Link
-            to="/"
+          <button
+            onClick={() => navigate(-1)}
             className="inline-flex items-center gap-2 px-6 py-3 bg-teal-600 text-white rounded-xl font-semibold hover:bg-teal-700 transition-all duration-200 shadow-sm hover:shadow-medium active:scale-[0.97]"
           >
             Back to Planner
             <ChevronRight className="w-5 h-5" />
-          </Link>
+          </button>
         </div>
       </div>
     </div>
