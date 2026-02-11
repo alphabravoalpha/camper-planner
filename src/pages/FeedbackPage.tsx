@@ -9,8 +9,8 @@ import {
 
 // Replace this with your actual Google Form embed URL
 // To get the embed URL: Open your Google Form → click "Send" → click the embed icon (<>) → copy the src URL
-const GOOGLE_FORM_EMBED_URL = 'https://docs.google.com/forms/d/e/YOUR_FORM_ID/viewform?embedded=true';
-const GOOGLE_FORM_URL = 'https://docs.google.com/forms/d/e/YOUR_FORM_ID/viewform';
+const GOOGLE_FORM_EMBED_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfSdsNTLk6LhzYoWsPoRNyWvlp8EsyZb-b1NzOpgKIIO1SDhg/viewform?embedded=true';
+const GOOGLE_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfSdsNTLk6LhzYoWsPoRNyWvlp8EsyZb-b1NzOpgKIIO1SDhg/viewform';
 
 const FEEDBACK_TYPES = [
   {
