@@ -35,6 +35,9 @@ jobs:
 
       - name: Build application
         run: npm run build:prod
+
+      - name: Copy index.html to 404.html for SPA routing
+        run: cp dist/index.html dist/404.html
         env:
           NODE_ENV: production
           VITE_APP_VERSION: ${{ github.sha }}

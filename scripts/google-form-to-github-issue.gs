@@ -2,8 +2,8 @@
  * Google Apps Script: Auto-create GitHub Issues from Google Form bug reports
  *
  * SETUP INSTRUCTIONS:
- * 1. Open your Google Form's linked Google Sheet
- * 2. Go to Extensions → Apps Script
+ * 1. Open your Google Form (edit mode)
+ * 2. Click the three-dot menu → Script editor (or Extensions → Apps Script)
  * 3. Paste this entire script
  * 4. Replace GITHUB_TOKEN with a Personal Access Token (repo scope)
  *    - Create at: https://github.com/settings/tokens/new
@@ -12,36 +12,33 @@
  * 6. Click Run → onFormSubmit (to authorise permissions)
  * 7. Go to Triggers (clock icon) → Add Trigger:
  *    - Function: onFormSubmit
- *    - Event source: From spreadsheet
+ *    - Event source: From form
  *    - Event type: On form submit
  *    - Click Save
  *
- * GOOGLE FORM FIELDS EXPECTED:
- * - Column 1: Timestamp (auto)
- * - Column 2: Feedback type (Feature request / Bug report / General suggestion)
- * - Column 3: Description
- * - Column 4: Email (optional)
- *
- * Adjust COLUMN indexes below if your form columns differ.
+ * GOOGLE FORM FIELDS EXPECTED (in order):
+ * 1. Type of Feedback (dropdown: Feature Request / Bug Report / General Suggestion)
+ * 2. Description
+ * 3. Email Address (optional)
  */
 
 // ── Configuration ──────────────────────────────────────────
 const GITHUB_TOKEN = 'YOUR_GITHUB_PERSONAL_ACCESS_TOKEN';
 const GITHUB_REPO = 'AlphaBravoAlpha/camper-planner';
-
-// Column indexes (1-based, matching your Google Form response columns)
-const COL_FEEDBACK_TYPE = 2;
-const COL_DESCRIPTION = 3;
-const COL_EMAIL = 4;
 // ────────────────────────────────────────────────────────────
 
 function onFormSubmit(e) {
-  const row = e.values;
+  const response = e.response;
+  const answers = response.getItemResponses();
+  const timestamp = response.getTimestamp().toISOString();
 
-  const feedbackType = row[COL_FEEDBACK_TYPE - 1] || '';
-  const description = row[COL_DESCRIPTION - 1] || '';
-  const email = row[COL_EMAIL - 1] || '';
-  const timestamp = row[0] || new Date().toISOString();
+  // Extract answers by index (matching form field order)
+  const feedbackType = answers[0] ? answers[0].getResponse() : '';
+  const description = answers[1] ? answers[1].getResponse() : '';
+  const email = answers[2] ? answers[2].getResponse() : '';
+
+  Logger.log('Feedback type: ' + feedbackType);
+  Logger.log('Description: ' + description);
 
   // Only create GitHub issues for bug reports
   if (!feedbackType.toLowerCase().includes('bug')) {
