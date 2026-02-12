@@ -1,81 +1,81 @@
 // Design System Utilities
-// European Camper Trip Planner - Outdoor/Camping theme
+// European Camper Trip Planner - Mediterranean Teal theme
 
 import { cn } from './cn';
 
-// Color palette configuration - Forest Green + Warm Amber
+// Color palette configuration - Ocean Teal + Sunset Coral
 export const colors = {
   primary: {
-    50: '#f0f7f4',
-    100: '#d9ede2',
-    200: '#b3dbc5',
-    300: '#80c4a0',
-    400: '#4fa97a',
-    500: '#2d8a5e',
-    600: '#236e4a',
-    700: '#1d5a3d',
-    800: '#174832',
-    900: '#0f3324',
+    50: '#f0fafb',
+    100: '#d0f0f4',
+    200: '#a3e0ea',
+    300: '#6cc8d7',
+    400: '#3eaec2',
+    500: '#2794a8',
+    600: '#1e7a8d',
+    700: '#1a6275',
+    800: '#194f5e',
+    900: '#173f4d',
   },
   accent: {
-    50: '#fef7ed',
-    100: '#fdecd3',
-    200: '#fbd5a5',
-    300: '#f8b96d',
-    400: '#f59a3e',
-    500: '#e8811d',
-    600: '#cc6714',
-    700: '#a94d12',
-    800: '#8a3d14',
-    900: '#723414',
+    50: '#fff5f0',
+    100: '#ffe4d6',
+    200: '#ffc7ad',
+    300: '#ffa179',
+    400: '#ff7a4a',
+    500: '#f25d2a',
+    600: '#e04416',
+    700: '#ba3312',
+    800: '#962c15',
+    900: '#7a2916',
   },
   success: {
-    50: '#f0f7f4',
-    100: '#d9ede2',
-    200: '#b3dbc5',
-    300: '#80c4a0',
-    400: '#4fa97a',
-    500: '#2d8a5e',
-    600: '#236e4a',
-    700: '#1d5a3d',
-    800: '#174832',
-    900: '#0f3324',
+    50: '#edfcf2',
+    100: '#d1fae0',
+    200: '#a7f3c5',
+    300: '#6ee7a0',
+    400: '#34d278',
+    500: '#27ae60',
+    600: '#1a8a4b',
+    700: '#166d3e',
+    800: '#155633',
+    900: '#13472b',
   },
   warning: {
-    50: '#fffbeb',
-    100: '#fef3c7',
-    200: '#fde68a',
-    300: '#fcd34d',
-    400: '#fbbf24',
-    500: '#f59e0b',
-    600: '#d97706',
-    700: '#b45309',
-    800: '#92400e',
-    900: '#78350f',
+    50: '#fef9ec',
+    100: '#fdf0c8',
+    200: '#fbe08d',
+    300: '#f8cb52',
+    400: '#f5b72a',
+    500: '#e9a100',
+    600: '#cc7d00',
+    700: '#a95b02',
+    800: '#8a4809',
+    900: '#723b0c',
   },
   error: {
-    50: '#fef2f2',
-    100: '#fee2e2',
-    200: '#fecaca',
-    300: '#fca5a5',
-    400: '#f87171',
-    500: '#ef4444',
-    600: '#dc2626',
-    700: '#b91c1c',
-    800: '#991b1b',
-    900: '#7f1d1d',
+    50: '#fef0f1',
+    100: '#fddee0',
+    200: '#fcc0c4',
+    300: '#f5a3a9',
+    400: '#f07580',
+    500: '#e63946',
+    600: '#d32535',
+    700: '#b11c2b',
+    800: '#931a28',
+    900: '#7c1b27',
   },
   gray: {
-    50: '#faf9f7',
-    100: '#f4f2ef',
-    200: '#e8e5e0',
-    300: '#d5d0c9',
-    400: '#a9a29a',
-    500: '#7a7268',
-    600: '#5e5750',
-    700: '#44403b',
-    800: '#2c2924',
-    900: '#1a1815',
+    50: '#f8f9fa',
+    100: '#f1f3f5',
+    200: '#e2e5e9',
+    300: '#ced3da',
+    400: '#98a2af',
+    500: '#6b7785',
+    600: '#556170',
+    700: '#3d4754',
+    800: '#2b333e',
+    900: '#1a2029',
   }
 };
 
@@ -98,6 +98,7 @@ export const typography = {
     medium: 'font-medium',     // 500
     semibold: 'font-semibold', // 600
     bold: 'font-bold',         // 700
+    extrabold: 'font-extrabold', // 800
   },
   // Line heights
   leading: {
@@ -231,8 +232,8 @@ export const variants = {
     primary: 'bg-primary-600 hover:bg-primary-700 focus:ring-primary-500 text-white',
     secondary: 'bg-neutral-100 hover:bg-neutral-200 focus:ring-neutral-400 text-neutral-900',
     accent: 'bg-accent-500 hover:bg-accent-600 focus:ring-accent-500 text-white',
-    success: 'bg-green-600 hover:bg-green-700 focus:ring-green-500 text-white',
-    warning: 'bg-yellow-600 hover:bg-yellow-700 focus:ring-yellow-500 text-white',
+    success: 'bg-success-600 hover:bg-success-700 focus:ring-success-500 text-white',
+    warning: 'bg-warning-600 hover:bg-warning-700 focus:ring-warning-500 text-white',
     danger: 'bg-red-600 hover:bg-red-700 focus:ring-red-500 text-white',
     ghost: 'bg-transparent hover:bg-neutral-100 focus:ring-neutral-400 text-neutral-900',
     link: 'bg-transparent hover:bg-transparent focus:ring-transparent text-primary-600 hover:text-primary-700',
@@ -241,26 +242,26 @@ export const variants = {
   input: {
     default: 'border-neutral-200 focus:border-primary-500 focus:ring-primary-200',
     error: 'border-red-300 focus:border-red-500 focus:ring-red-200',
-    success: 'border-green-300 focus:border-green-500 focus:ring-green-200',
+    success: 'border-success-300 focus:border-success-500 focus:ring-success-200',
     disabled: 'bg-neutral-50 border-neutral-200 text-neutral-500 cursor-not-allowed',
   },
   // Card variants
   card: {
-    default: 'bg-white rounded-2xl shadow-soft',
-    elevated: 'bg-white rounded-2xl shadow-medium',
-    interactive: 'bg-white rounded-2xl shadow-soft hover:shadow-medium hover:-translate-y-0.5 transition-all duration-200 cursor-pointer',
-    danger: 'bg-red-50 border border-red-200 rounded-2xl',
-    warning: 'bg-yellow-50 border border-yellow-200 rounded-2xl',
-    success: 'bg-primary-50 border border-primary-200 rounded-2xl',
-    info: 'bg-primary-50 border border-primary-200 rounded-2xl',
+    default: 'bg-white rounded-xl border border-neutral-200 shadow-soft',
+    elevated: 'bg-white rounded-xl shadow-medium',
+    interactive: 'bg-white rounded-xl border border-neutral-200 shadow-soft hover:shadow-medium hover:-translate-y-0.5 transition-all duration-200 cursor-pointer',
+    danger: 'bg-red-50 border border-red-200 rounded-xl',
+    warning: 'bg-warning-50 border border-warning-200 rounded-xl',
+    success: 'bg-success-50 border border-success-200 rounded-xl',
+    info: 'bg-primary-50 border border-primary-200 rounded-xl',
   },
   // Badge variants
   badge: {
     default: 'bg-neutral-100 text-neutral-800',
     primary: 'bg-primary-100 text-primary-800',
     accent: 'bg-accent-100 text-accent-800',
-    success: 'bg-green-100 text-green-800',
-    warning: 'bg-yellow-100 text-yellow-800',
+    success: 'bg-success-100 text-success-800',
+    warning: 'bg-warning-100 text-warning-800',
     danger: 'bg-red-100 text-red-800',
     info: 'bg-primary-100 text-primary-800',
   }
@@ -313,8 +314,8 @@ export const accessibility = {
   // Semantic colors for screen readers
   semantic: {
     error: 'text-red-600',
-    warning: 'text-yellow-600',
-    success: 'text-primary-600',
+    warning: 'text-warning-600',
+    success: 'text-success-600',
     info: 'text-primary-600',
   }
 };
@@ -350,17 +351,17 @@ export const sizing = {
 export const components = {
   // Standard button
   button: (variant: keyof typeof variants.button = 'primary', size: keyof typeof sizing.button = 'md') => cn(
-    'inline-flex items-center justify-center font-semibold rounded-xl',
+    'inline-flex items-center justify-center font-display font-semibold rounded-lg',
     'focus:outline-none focus:ring-2 focus:ring-offset-2',
     'disabled:opacity-50 disabled:cursor-not-allowed',
-    'transition-all duration-200 active:scale-[0.97]',
+    'transition-all duration-200 active:scale-[0.98]',
     variants.button[variant],
     sizing.button[size]
   ),
 
   // Standard input
   input: (variant: keyof typeof variants.input = 'default', size: keyof typeof sizing.input = 'md') => cn(
-    'block w-full rounded-xl border-2',
+    'block w-full rounded-lg border-2',
     'placeholder-neutral-400',
     'focus:outline-none focus:ring-2',
     'disabled:bg-neutral-50 disabled:text-neutral-500 disabled:cursor-not-allowed',
@@ -376,7 +377,7 @@ export const components = {
 
   // Standard badge
   badge: (variant: keyof typeof variants.badge = 'default') => cn(
-    'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium',
+    'inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-display font-medium',
     variants.badge[variant]
   ),
 
@@ -400,7 +401,7 @@ export const components = {
 
   // Tab navigation
   tab: (active: boolean = false) => cn(
-    'flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm transition-colors',
+    'flex items-center space-x-2 py-4 px-1 border-b-2 font-display font-medium text-sm transition-colors',
     active
       ? 'border-primary-500 text-primary-600'
       : 'border-transparent text-neutral-500 hover:text-neutral-700 hover:border-neutral-300'
@@ -414,21 +415,21 @@ export const components = {
 
   // Modal content
   modalContent: () => cn(
-    'bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 ring-1 ring-black/5',
+    'bg-white rounded-xl shadow-2xl max-w-md w-full mx-4 ring-1 ring-black/5',
     'transform transition-all duration-300'
   ),
 
   // Toast notification
   toast: (variant: 'success' | 'error' | 'warning' | 'info' = 'info') => {
     const variantStyles = {
-      success: 'bg-primary-50 border-primary-200 text-primary-800',
+      success: 'bg-success-50 border-success-200 text-success-800',
       error: 'bg-red-50 border-red-200 text-red-800',
-      warning: 'bg-yellow-50 border-yellow-200 text-yellow-800',
+      warning: 'bg-warning-50 border-warning-200 text-warning-800',
       info: 'bg-primary-50 border-primary-200 text-primary-800',
     };
 
     return cn(
-      'p-4 rounded-xl border',
+      'p-4 rounded-lg border',
       'transform transition-all duration-300',
       variantStyles[variant]
     );

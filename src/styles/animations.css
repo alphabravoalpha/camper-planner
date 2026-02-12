@@ -96,10 +96,10 @@
 /* Glow animation for focused elements */
 @keyframes glow {
   0%, 100% {
-    box-shadow: 0 0 5px rgba(59, 130, 246, 0.3);
+    box-shadow: 0 0 5px rgba(39, 148, 168, 0.3);
   }
   50% {
-    box-shadow: 0 0 20px rgba(59, 130, 246, 0.6);
+    box-shadow: 0 0 20px rgba(39, 148, 168, 0.6);
   }
 }
 
@@ -219,7 +219,7 @@
   }
   50% {
     transform: scale(1.1);
-    box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5);
+    box-shadow: 0 6px 20px rgba(242, 93, 42, 0.5);
   }
 }
 
@@ -228,7 +228,7 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   }
   50% {
-    box-shadow: 0 4px 20px rgba(59, 130, 246, 0.6);
+    box-shadow: 0 4px 20px rgba(39, 148, 168, 0.6);
   }
 }
 
@@ -357,9 +357,9 @@
 .animate-shimmer {
   background: linear-gradient(
     90deg,
-    #f3f4f6 0%,
-    #e5e7eb 50%,
-    #f3f4f6 100%
+    #f1f3f5 0%,
+    #e2e5e9 50%,
+    #f1f3f5 100%
   );
   background-size: 1000px 100%;
   animation: shimmer 2s infinite linear;
@@ -383,7 +383,7 @@
 
 .focus-ring:focus {
   outline: 2px solid transparent;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+  box-shadow: 0 0 0 3px rgba(39, 148, 168, 0.5);
 }
 
 .focus-ring:focus:not(:focus-visible) {

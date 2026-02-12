@@ -2,6 +2,7 @@
 // Phase 4.2: Enhanced filtering, display controls, and search for campsite data
 
 import React, { useState } from 'react';
+import { Tent, Truck, ParkingCircle } from 'lucide-react';
 import { FeatureFlags } from '../../config';
 import { type CampsiteType, type Campsite } from '../../services/CampsiteService';
 import { cn } from '../../utils/cn';
@@ -21,23 +22,23 @@ interface CampsiteControlsProps {
   campsiteCount?: number;
 }
 
-const CAMPSITE_TYPES: { type: CampsiteType; label: string; icon: string; description: string }[] = [
+const CAMPSITE_TYPES: { type: CampsiteType; label: string; icon: React.FC<{ className?: string }>; description: string }[] = [
   {
     type: 'campsite',
     label: 'Campsites',
-    icon: '⛺',
+    icon: Tent,
     description: 'Traditional camping with tents/caravans'
   },
   {
     type: 'caravan_site',
     label: 'Caravan Sites',
-    icon: '🚐',
+    icon: Truck,
     description: 'Sites specifically for caravans/motorhomes'
   },
   {
     type: 'aire',
     label: 'Aires de Service',
-    icon: '🅿️',
+    icon: ParkingCircle,
     description: 'Motorhome service areas with facilities'
   }
 ];
@@ -93,7 +94,7 @@ const CampsiteControls: React.FC<CampsiteControlsProps> = ({
                 : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'
             )}
           >
-            <div className="text-base">🏕️</div>
+            <Tent className="w-4 h-4" />
             <span>Campsites</span>
             {isVisible && campsiteCount > 0 && (
               <span className="bg-green-200 text-green-800 px-1.5 py-0.5 rounded-full text-xs font-medium">
@@ -158,7 +159,7 @@ const CampsiteControls: React.FC<CampsiteControlsProps> = ({
         <div className="p-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              {CAMPSITE_TYPES.map(({ type, icon }) => (
+              {CAMPSITE_TYPES.map(({ type, icon: Icon }) => (
                 <button
                   key={type}
                   onClick={() => handleTypeToggle(type)}
@@ -170,7 +171,7 @@ const CampsiteControls: React.FC<CampsiteControlsProps> = ({
                   )}
                   title={CAMPSITE_TYPES.find(ct => ct.type === type)?.label}
                 >
-                  <span className="text-sm">{icon}</span>
+                  <Icon className="w-4 h-4" />
                 </button>
               ))}
             </div>
@@ -198,7 +199,7 @@ const CampsiteControls: React.FC<CampsiteControlsProps> = ({
             </div>
 
             <div className="space-y-2">
-              {CAMPSITE_TYPES.map(({ type, label, icon, description }) => (
+              {CAMPSITE_TYPES.map(({ type, label, icon: Icon, description }) => (
                 <label key={type} className="flex items-start space-x-3 cursor-pointer">
                   <input
                     type="checkbox"
@@ -208,7 +209,7 @@ const CampsiteControls: React.FC<CampsiteControlsProps> = ({
                   />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center space-x-2">
-                      <span className="text-sm">{icon}</span>
+                      <Icon className="w-4 h-4" />
                       <span className="text-sm font-medium text-neutral-900">{label}</span>
                     </div>
                     <p className="text-xs text-neutral-500 mt-0.5">{description}</p>
@@ -275,7 +276,7 @@ const CampsiteControls: React.FC<CampsiteControlsProps> = ({
               <div className="flex items-center space-x-2">
                 <div className="w-5 h-6 flex-shrink-0">
                   <svg viewBox="0 0 20 28" className="w-full h-full">
-                    <path d="M10 0C4.5 0 0 4.5 0 10c0 7.5 10 18 10 18s10-10.5 10-18C20 4.5 15.5 0 10 0z" fill="#22c55e" stroke="#16a34a" strokeWidth="1.5"/>
+                    <path d="M10 0C4.5 0 0 4.5 0 10c0 7.5 10 18 10 18s10-10.5 10-18C20 4.5 15.5 0 10 0z" fill="#27ae60" stroke="#1a8a4b" strokeWidth="1.5"/>
                   </svg>
                 </div>
                 <span className="text-xs text-neutral-700">Campsite (tent/caravan)</span>
@@ -283,7 +284,7 @@ const CampsiteControls: React.FC<CampsiteControlsProps> = ({
               <div className="flex items-center space-x-2">
                 <div className="w-5 h-6 flex-shrink-0">
                   <svg viewBox="0 0 20 28" className="w-full h-full">
-                    <path d="M10 0C4.5 0 0 4.5 0 10c0 7.5 10 18 10 18s10-10.5 10-18C20 4.5 15.5 0 10 0z" fill="#3b82f6" stroke="#2563eb" strokeWidth="1.5"/>
+                    <path d="M10 0C4.5 0 0 4.5 0 10c0 7.5 10 18 10 18s10-10.5 10-18C20 4.5 15.5 0 10 0z" fill="#2794a8" stroke="#1e7a8d" strokeWidth="1.5"/>
                   </svg>
                 </div>
                 <span className="text-xs text-neutral-700">Caravan/Motorhome site</span>
@@ -291,7 +292,7 @@ const CampsiteControls: React.FC<CampsiteControlsProps> = ({
               <div className="flex items-center space-x-2">
                 <div className="w-5 h-6 flex-shrink-0">
                   <svg viewBox="0 0 20 28" className="w-full h-full">
-                    <path d="M10 0C4.5 0 0 4.5 0 10c0 7.5 10 18 10 18s10-10.5 10-18C20 4.5 15.5 0 10 0z" fill="#8b5cf6" stroke="#7c3aed" strokeWidth="1.5"/>
+                    <path d="M10 0C4.5 0 0 4.5 0 10c0 7.5 10 18 10 18s10-10.5 10-18C20 4.5 15.5 0 10 0z" fill="#7c5cbf" stroke="#6b47b0" strokeWidth="1.5"/>
                   </svg>
                 </div>
                 <span className="text-xs text-neutral-700">Aire de Service</span>
@@ -302,7 +303,7 @@ const CampsiteControls: React.FC<CampsiteControlsProps> = ({
                 <div className="flex items-center space-x-2">
                   <div className="w-5 h-6 flex-shrink-0">
                     <svg viewBox="0 0 20 28" className="w-full h-full">
-                      <path d="M10 0C4.5 0 0 4.5 0 10c0 7.5 10 18 10 18s10-10.5 10-18C20 4.5 15.5 0 10 0z" fill="#ef4444" stroke="#dc2626" strokeWidth="1.5"/>
+                      <path d="M10 0C4.5 0 0 4.5 0 10c0 7.5 10 18 10 18s10-10.5 10-18C20 4.5 15.5 0 10 0z" fill="#e63946" stroke="#d32535" strokeWidth="1.5"/>
                     </svg>
                   </div>
                   <span className="text-xs text-neutral-700">May not fit your vehicle</span>

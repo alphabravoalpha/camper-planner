@@ -2,6 +2,7 @@
 // Phase 6.4: Comprehensive user documentation and support system
 
 import React, { useState, useCallback, useMemo } from 'react';
+import { Rocket, Map, Truck, Share2, Wrench, Lightbulb, BookOpen, Tag, Library, Search, ThumbsUp, ThumbsDown, AlertTriangle, Info, Tent, Save, Target, MapPin } from 'lucide-react';
 import { cn } from '../../utils/cn';
 import { aria, useAnnounce } from '../../utils/accessibility';
 
@@ -19,7 +20,7 @@ interface HelpCategory {
   id: string;
   name: string;
   description: string;
-  icon: string;
+  icon: React.FC<{ className?: string }>;
 }
 
 interface HelpSystemProps {
@@ -34,37 +35,37 @@ const helpCategories: HelpCategory[] = [
     id: 'getting-started',
     name: 'Getting Started',
     description: 'Learn the basics of trip planning',
-    icon: '🚀'
+    icon: Rocket
   },
   {
     id: 'route-planning',
     name: 'Route Planning',
     description: 'Plan and optimize your routes',
-    icon: '🗺️'
+    icon: Map
   },
   {
     id: 'vehicle-setup',
     name: 'Vehicle Setup',
     description: 'Configure your camper specifications',
-    icon: '🚐'
+    icon: Truck
   },
   {
     id: 'sharing-export',
     name: 'Sharing & Export',
     description: 'Share trips and export to GPS devices',
-    icon: '📤'
+    icon: Share2
   },
   {
     id: 'troubleshooting',
     name: 'Troubleshooting',
     description: 'Common issues and solutions',
-    icon: '🔧'
+    icon: Wrench
   },
   {
     id: 'tips-tricks',
     name: 'Tips & Tricks',
     description: 'Advanced features and pro tips',
-    icon: '💡'
+    icon: Lightbulb
   }
 ];
 
@@ -137,7 +138,7 @@ const helpArticles: HelpArticle[] = [
         </div>
 
         <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-          <h5 className="font-medium text-green-900 mb-2">💡 Pro Tip</h5>
+          <h5 className="font-medium text-green-900 mb-2 flex items-center gap-1"><Lightbulb className="w-4 h-4" /> Pro Tip</h5>
           <p className="text-green-800 text-sm">Right-click on any waypoint for additional options like editing details, adding notes, or removing the waypoint.</p>
         </div>
       </div>
@@ -176,7 +177,7 @@ const helpArticles: HelpArticle[] = [
         <p className="text-neutral-700">View the elevation changes along your route to prepare for mountain passes and steep climbs.</p>
 
         <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-          <h5 className="font-medium text-yellow-900 mb-2">⚠️ Important for Campers</h5>
+          <h5 className="font-medium text-yellow-900 mb-2 flex items-center gap-1"><AlertTriangle className="w-4 h-4" /> Important for Campers</h5>
           <p className="text-yellow-800 text-sm">Always check vehicle restrictions and road conditions, especially in mountainous areas. Some roads may not be suitable for large motorhomes.</p>
         </div>
       </div>
@@ -226,7 +227,7 @@ const helpArticles: HelpArticle[] = [
         </ul>
 
         <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-          <h5 className="font-medium text-green-900 mb-2">💡 Pro Tip</h5>
+          <h5 className="font-medium text-green-900 mb-2 flex items-center gap-1"><Lightbulb className="w-4 h-4" /> Pro Tip</h5>
           <p className="text-green-800 text-sm">You can save multiple vehicle profiles if you have different campers or plan to rent different vehicles for different trips.</p>
         </div>
       </div>
@@ -305,7 +306,7 @@ const helpArticles: HelpArticle[] = [
 
         <div className="space-y-4">
           <div className="border border-red-200 rounded-lg p-4">
-            <h5 className="font-medium text-red-900 mb-2">❌ Map Won't Load</h5>
+            <h5 className="font-medium text-red-900 mb-2 flex items-center gap-1"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 5.636l-12.728 12.728M5.636 5.636l12.728 12.728" /></svg> Map Won't Load</h5>
             <div className="text-sm text-red-800 space-y-1">
               <p><strong>Possible causes:</strong> Network issues, browser settings, ad blockers</p>
               <p><strong>Solutions:</strong></p>
@@ -319,7 +320,7 @@ const helpArticles: HelpArticle[] = [
           </div>
 
           <div className="border border-yellow-200 rounded-lg p-4">
-            <h5 className="font-medium text-yellow-900 mb-2">⚠️ Route Calculation Fails</h5>
+            <h5 className="font-medium text-yellow-900 mb-2 flex items-center gap-1"><AlertTriangle className="w-4 h-4" /> Route Calculation Fails</h5>
             <div className="text-sm text-yellow-800 space-y-1">
               <p><strong>Possible causes:</strong> Invalid waypoints, server issues, too many waypoints</p>
               <p><strong>Solutions:</strong></p>
@@ -333,7 +334,7 @@ const helpArticles: HelpArticle[] = [
           </div>
 
           <div className="border border-primary-200 rounded-lg p-4">
-            <h5 className="font-medium text-primary-900 mb-2">ℹ️ Saved Trip Disappeared</h5>
+            <h5 className="font-medium text-primary-900 mb-2 flex items-center gap-1"><Info className="w-4 h-4" /> Saved Trip Disappeared</h5>
             <div className="text-sm text-primary-800 space-y-1">
               <p><strong>Possible causes:</strong> Browser data cleared, different device/browser</p>
               <p><strong>Solutions:</strong></p>
@@ -372,7 +373,7 @@ const helpArticles: HelpArticle[] = [
 
         <div className="space-y-6">
           <div>
-            <h4 className="font-semibold text-neutral-900 mb-2">🚀 Efficiency Tips</h4>
+            <h4 className="font-semibold text-neutral-900 mb-2 flex items-center gap-1"><Rocket className="w-4 h-4" /> Efficiency Tips</h4>
             <ul className="space-y-2 text-neutral-700">
               <li><strong>Use keyboard shortcuts:</strong> Ctrl+Z to undo, Ctrl+Y to redo waypoint changes</li>
               <li><strong>Bulk operations:</strong> Select multiple waypoints by holding Ctrl while clicking</li>
@@ -382,7 +383,7 @@ const helpArticles: HelpArticle[] = [
           </div>
 
           <div>
-            <h4 className="font-semibold text-neutral-900 mb-2">🗺️ Route Planning Tips</h4>
+            <h4 className="font-semibold text-neutral-900 mb-2 flex items-center gap-1"><Map className="w-4 h-4" /> Route Planning Tips</h4>
             <ul className="space-y-2 text-neutral-700">
               <li><strong>Seasonal planning:</strong> Consider seasonal road closures in mountainous areas</li>
               <li><strong>Fuel strategy:</strong> Plan fuel stops in areas with lower prices</li>
@@ -392,7 +393,7 @@ const helpArticles: HelpArticle[] = [
           </div>
 
           <div>
-            <h4 className="font-semibold text-neutral-900 mb-2">🏕️ Camping Tips</h4>
+            <h4 className="font-semibold text-neutral-900 mb-2 flex items-center gap-1"><Tent className="w-4 h-4" /> Camping Tips</h4>
             <ul className="space-y-2 text-neutral-700">
               <li><strong>Book ahead:</strong> Popular campsites fill up quickly in summer</li>
               <li><strong>Wild camping:</strong> Research local laws - it varies by country</li>
@@ -402,7 +403,7 @@ const helpArticles: HelpArticle[] = [
           </div>
 
           <div>
-            <h4 className="font-semibold text-neutral-900 mb-2">💾 Data Management</h4>
+            <h4 className="font-semibold text-neutral-900 mb-2 flex items-center gap-1"><Save className="w-4 h-4" /> Data Management</h4>
             <ul className="space-y-2 text-neutral-700">
               <li><strong>Regular exports:</strong> Export your trips regularly as backup</li>
               <li><strong>Multiple formats:</strong> Export in both GPX and JSON for maximum compatibility</li>
@@ -413,7 +414,7 @@ const helpArticles: HelpArticle[] = [
         </div>
 
         <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
-          <h5 className="font-medium text-purple-900 mb-2">🎯 Master User Tip</h5>
+          <h5 className="font-medium text-purple-900 mb-2 flex items-center gap-1"><Target className="w-4 h-4" /> Master User Tip</h5>
           <p className="text-purple-800 text-sm">
             Create template trips for different regions or trip types. Export these templates and
             import them as starting points for new trips. This saves time and ensures you don't
@@ -484,11 +485,11 @@ const ArticleView: React.FC<{
           <span className={cn('px-2 py-1 rounded-full text-xs font-medium', getDifficultyColor(article.difficulty))}>
             {article.difficulty}
           </span>
-          <span className="text-neutral-600">
-            📖 {article.estimatedReadTime} min read
+          <span className="text-neutral-600 flex items-center gap-1">
+            <BookOpen className="w-3 h-3" /> {article.estimatedReadTime} min read
           </span>
-          <span className="text-neutral-600">
-            🏷️ {article.tags.join(', ')}
+          <span className="text-neutral-600 flex items-center gap-1">
+            <Tag className="w-3 h-3" /> {article.tags.join(', ')}
           </span>
         </div>
       </div>
@@ -503,11 +504,11 @@ const ArticleView: React.FC<{
         <div className="bg-neutral-50 rounded-lg p-4">
           <h4 className="font-medium text-neutral-900 mb-2">Was this helpful?</h4>
           <div className="flex space-x-3">
-            <button className="px-3 py-1 bg-green-100 text-green-800 rounded-md hover:bg-green-200 transition-colors">
-              👍 Yes
+            <button className="px-3 py-1 bg-green-100 text-green-800 rounded-md hover:bg-green-200 transition-colors flex items-center gap-1">
+              <ThumbsUp className="w-4 h-4" /> Yes
             </button>
-            <button className="px-3 py-1 bg-red-100 text-red-800 rounded-md hover:bg-red-200 transition-colors">
-              👎 No
+            <button className="px-3 py-1 bg-red-100 text-red-800 rounded-md hover:bg-red-200 transition-colors flex items-center gap-1">
+              <ThumbsDown className="w-4 h-4" /> No
             </button>
           </div>
         </div>
@@ -603,7 +604,7 @@ const HelpSystem: React.FC<HelpSystemProps> = ({
               )}
             >
               <div className="flex items-center space-x-3">
-                <span className="text-lg">📚</span>
+                <Library className="w-5 h-5" />
                 <div>
                   <div className="font-medium">All Articles</div>
                   <div className="text-xs text-neutral-600">{helpArticles.length} articles</div>
@@ -626,7 +627,7 @@ const HelpSystem: React.FC<HelpSystemProps> = ({
                   )}
                 >
                   <div className="flex items-center space-x-3">
-                    <span className="text-lg">{category.icon}</span>
+                    <category.icon className="w-5 h-5" />
                     <div>
                       <div className="font-medium">{category.name}</div>
                       <div className="text-xs text-neutral-600">
@@ -664,7 +665,7 @@ const HelpSystem: React.FC<HelpSystemProps> = ({
                   </div>
 
                   <div className="flex items-center space-x-3 text-xs text-neutral-600">
-                    <span>{category?.icon} {category?.name}</span>
+                    <span className="flex items-center gap-1">{category?.icon && <category.icon className="w-4 h-4" />} {category?.name}</span>
                     <span className={cn(
                       'px-2 py-0.5 rounded-full',
                       article.difficulty === 'beginner' ? 'bg-green-100 text-green-700' :
@@ -673,7 +674,7 @@ const HelpSystem: React.FC<HelpSystemProps> = ({
                     )}>
                       {article.difficulty}
                     </span>
-                    <span>🏷️ {article.tags.join(', ')}</span>
+                    <span className="flex items-center gap-1"><Tag className="w-3 h-3" /> {article.tags.join(', ')}</span>
                   </div>
                 </button>
               );
@@ -682,7 +683,7 @@ const HelpSystem: React.FC<HelpSystemProps> = ({
 
           {categoryArticles.length === 0 && (
             <div className="text-center py-12 text-neutral-500">
-              <div className="text-4xl mb-4">🔍</div>
+              <div className="mb-4 flex justify-center"><Search className="w-10 h-10 text-neutral-400" /></div>
               <h3 className="text-lg font-medium text-neutral-900 mb-2">No articles found</h3>
               <p>Try adjusting your search or browse different categories</p>
             </div>

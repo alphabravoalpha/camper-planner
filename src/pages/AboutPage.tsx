@@ -57,7 +57,7 @@ const AboutPage: React.FC = () => {
               <MapPin className="w-4 h-4" />
               Free trip planning for Europe
             </div>
-            <h1 className="text-4xl sm:text-5xl font-bold mb-4 tracking-tight">
+            <h1 className="text-4xl sm:text-5xl font-display font-bold mb-4 tracking-tight">
               European Camper<br />Trip Planner
             </h1>
             <p className="text-lg sm:text-xl text-primary-100 max-w-2xl mx-auto leading-relaxed">
@@ -67,7 +67,7 @@ const AboutPage: React.FC = () => {
             <div className="mt-8">
               <Link
                 to="/"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-accent-500 text-white rounded-xl font-semibold hover:bg-accent-600 transition-all duration-200 shadow-lg hover:shadow-xl active:scale-[0.97]"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-accent-500 text-white rounded-lg font-display font-semibold hover:bg-accent-600 transition-all duration-200 shadow-lg hover:shadow-xl active:scale-[0.97]"
               >
                 Start Planning
                 <ChevronRight className="w-5 h-5" />
@@ -79,8 +79,8 @@ const AboutPage: React.FC = () => {
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Mission Card */}
-        <div className="bg-white rounded-2xl shadow-soft p-8 mb-12 -mt-8 relative z-10">
-          <h2 className="text-2xl font-bold text-neutral-900 mb-3">Our Mission</h2>
+        <div className="bg-white rounded-xl shadow-soft p-8 mb-12 -mt-8 relative z-10">
+          <h2 className="text-2xl font-display font-bold text-neutral-900 mb-3">Our Mission</h2>
           <p className="text-neutral-600 leading-relaxed text-lg">
             While North America has tools like RV LIFE Trip Wizard, Europe's 15+ million
             camper travellers have been left without a dedicated solution. We believe
@@ -90,7 +90,7 @@ const AboutPage: React.FC = () => {
 
         {/* Features Grid */}
         <div className="mb-12">
-          <h2 className="text-2xl font-bold text-neutral-900 mb-6 text-center">
+          <h2 className="text-2xl font-display font-bold text-neutral-900 mb-6 text-center">
             Everything you need to plan your trip
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -99,12 +99,12 @@ const AboutPage: React.FC = () => {
               return (
                 <div
                   key={feature.title}
-                  className="bg-white rounded-2xl shadow-soft p-6 hover:shadow-medium hover:-translate-y-1 transition-all duration-200"
+                  className="bg-white rounded-xl shadow-soft p-6 hover:shadow-medium hover:-translate-y-1 transition-all duration-200"
                 >
-                  <div className="w-11 h-11 bg-primary-50 rounded-xl flex items-center justify-center mb-4">
+                  <div className="w-11 h-11 bg-primary-50 rounded-lg flex items-center justify-center mb-4">
                     <Icon className="w-5 h-5 text-primary-600" />
                   </div>
-                  <h3 className="text-base font-semibold text-neutral-900 mb-1.5">
+                  <h3 className="text-base font-display font-semibold text-neutral-900 mb-1.5">
                     {feature.title}
                   </h3>
                   <p className="text-sm text-neutral-500 leading-relaxed">
@@ -117,13 +117,13 @@ const AboutPage: React.FC = () => {
         </div>
 
         {/* Why Free Card */}
-        <div className="bg-gradient-to-br from-accent-50 to-accent-100 rounded-2xl p-8 mb-12">
+        <div className="bg-gradient-to-br from-accent-50 to-accent-100 rounded-xl p-8 mb-12">
           <div className="flex items-start gap-4">
-            <div className="w-12 h-12 bg-accent-500 rounded-xl flex items-center justify-center flex-shrink-0">
+            <div className="w-12 h-12 bg-accent-500 rounded-lg flex items-center justify-center flex-shrink-0">
               <Fuel className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-accent-900 mb-2">
+              <h2 className="text-xl font-display font-bold text-accent-900 mb-2">
                 Why is it free?
               </h2>
               <p className="text-accent-800 leading-relaxed">
@@ -139,14 +139,14 @@ const AboutPage: React.FC = () => {
 
         {/* Countries Grid */}
         <div className="mb-12">
-          <h2 className="text-2xl font-bold text-neutral-900 mb-6 text-center">
+          <h2 className="text-2xl font-display font-bold text-neutral-900 mb-6 text-center">
             Explore 40+ European countries
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
             {COUNTRIES.map((country) => (
               <div
                 key={country}
-                className="bg-white rounded-xl shadow-soft px-4 py-3 text-center text-sm font-medium text-neutral-700 hover:shadow-medium hover:-translate-y-0.5 transition-all duration-200"
+                className="bg-white rounded-lg shadow-soft px-4 py-3 text-center text-sm font-medium text-neutral-700 hover:shadow-medium hover:-translate-y-0.5 transition-all duration-200"
               >
                 {country}
               </div>
@@ -158,13 +158,13 @@ const AboutPage: React.FC = () => {
         </div>
 
         {/* Support Card */}
-        <div className="bg-white rounded-2xl shadow-soft p-8 mb-12">
+        <div className="bg-white rounded-xl shadow-soft p-8 mb-12">
           <div className="flex items-start gap-4">
-            <div className="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center flex-shrink-0">
+            <div className="w-12 h-12 bg-red-50 rounded-lg flex items-center justify-center flex-shrink-0">
               <Heart className="w-6 h-6 text-red-500" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-neutral-900 mb-2">
+              <h2 className="text-xl font-display font-bold text-neutral-900 mb-2">
                 Support this project
               </h2>
               <p className="text-neutral-600 leading-relaxed mb-4">
@@ -174,7 +174,7 @@ const AboutPage: React.FC = () => {
               <div className="flex flex-wrap gap-3">
                 <Link
                   to="/support"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#FF5E5B] text-white rounded-xl font-semibold hover:bg-[#e54e4b] transition-all duration-200 text-sm"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#FF5E5B] text-white rounded-lg font-display font-semibold hover:bg-[#e54e4b] transition-all duration-200 text-sm"
                 >
                   <Heart className="w-4 h-4" />
                   Support Us
@@ -183,7 +183,7 @@ const AboutPage: React.FC = () => {
                   href="https://ko-fi.com/camperplanning"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 border border-neutral-300 text-neutral-700 rounded-xl font-medium hover:bg-neutral-50 transition-all duration-200 text-sm"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 border border-neutral-300 text-neutral-700 rounded-lg font-medium hover:bg-neutral-50 transition-all duration-200 text-sm"
                 >
                   Buy us a coffee
                   <ExternalLink className="w-3.5 h-3.5" />
@@ -194,14 +194,14 @@ const AboutPage: React.FC = () => {
         </div>
 
         {/* CTA */}
-        <div className="text-center bg-white rounded-2xl shadow-soft p-8">
-          <h2 className="text-2xl font-bold text-neutral-900 mb-3">Ready to hit the road?</h2>
+        <div className="text-center bg-white rounded-xl shadow-soft p-8">
+          <h2 className="text-2xl font-display font-bold text-neutral-900 mb-3">Ready to hit the road?</h2>
           <p className="text-neutral-500 mb-6">
             Start planning your next European camper adventure — no sign-up required.
           </p>
           <Link
             to="/"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-primary-600 text-white rounded-xl font-semibold hover:bg-primary-700 transition-all duration-200 shadow-sm hover:shadow-medium active:scale-[0.97]"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-primary-600 text-white rounded-lg font-display font-semibold hover:bg-primary-700 transition-all duration-200 shadow-sm hover:shadow-medium active:scale-[0.97]"
           >
             Open the Planner
             <ChevronRight className="w-5 h-5" />

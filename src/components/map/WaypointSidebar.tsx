@@ -2,6 +2,7 @@
 // Shows list of waypoints with management options
 
 import React from 'react';
+import { Flag } from 'lucide-react';
 import { useRouteStore, useMapStore } from '../../store';
 import { type Waypoint } from '../../types';
 import { cn } from '../../utils/cn';
@@ -35,9 +36,9 @@ const WaypointListItem: React.FC<WaypointListItemProps> = ({
   const getTypeIcon = (type: string) => {
     switch (type) {
       case 'start':
-        return '🏁';
+        return <Flag className="w-4 h-4" />;
       case 'end':
-        return '🏁';
+        return <Flag className="w-4 h-4" />;
       default:
         return (index + 1).toString();
     }

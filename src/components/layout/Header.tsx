@@ -45,7 +45,7 @@ const Header: React.FC = () => {
 
   return (
     <>
-      <header className="bg-white/80 backdrop-blur-md shadow-soft sticky top-0 z-40">
+      <header className="bg-white border-b border-neutral-200 sticky top-0 z-40">
         <div className="px-4 sm:px-6">
           <div className="flex items-center h-16 gap-4">
             {/* Vehicle Badge — first item, far left */}
@@ -62,7 +62,7 @@ const Header: React.FC = () => {
                 )}
                 title={vehicleSummary ? 'Edit vehicle profile' : 'Set up your vehicle profile'}
               >
-                <span>🚐</span>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M8 17h8M8 17v-4h8v4M8 17H5a2 2 0 01-2-2v-3a2 2 0 012-2h1l2-4h8l2 4h1a2 2 0 012 2v3a2 2 0 01-2 2h-3M7 17a1 1 0 11-2 0 1 1 0 012 0zm12 0a1 1 0 11-2 0 1 1 0 012 0z" /></svg>
                 <span className="max-w-[120px] truncate">
                   {vehicleSummary ? vehicleSummary.name : 'Setup Vehicle'}
                 </span>
@@ -75,7 +75,7 @@ const Header: React.FC = () => {
               {location.pathname === '/' && (
                 <button
                   onClick={toggleSidebar}
-                  className="lg:hidden p-2 rounded-xl text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100"
+                  className="lg:hidden p-2 rounded-lg text-neutral-500 hover:text-neutral-700 hover:bg-neutral-50"
                   aria-label="Toggle sidebar"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -99,13 +99,13 @@ const Header: React.FC = () => {
                   </svg>
                 </div>
                 <div className="hidden sm:block">
-                  <h1 className="text-lg lg:text-xl font-bold text-neutral-900">
+                  <h1 className="text-lg lg:text-xl font-display font-extrabold text-neutral-900">
                     European Camper Planner
                   </h1>
-                  <p className="text-xs text-primary-600 font-medium tracking-wide uppercase hidden lg:block">Free trip planning for Europe</p>
+                  <p className="text-xs text-primary-600 font-display font-semibold tracking-wider uppercase hidden lg:block">Free trip planning for Europe</p>
                 </div>
                 <div className="sm:hidden">
-                  <h1 className="text-lg font-bold text-neutral-900">Camper Planner</h1>
+                  <h1 className="text-lg font-display font-extrabold text-neutral-900">Camper Planner</h1>
                 </div>
               </Link>
             </div>
@@ -117,10 +117,10 @@ const Header: React.FC = () => {
                   key={item.key}
                   to={item.path}
                   className={cn(
-                    'px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200',
+                    'px-3 py-2 rounded-lg text-sm font-display font-medium transition-all duration-200 border-b-2',
                     isActivePath(item.path)
-                      ? 'text-primary-700 bg-primary-50'
-                      : 'text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100'
+                      ? 'text-primary-700 border-accent-500'
+                      : 'text-neutral-600 border-transparent hover:text-neutral-900 hover:bg-neutral-50'
                   )}
                 >
                   {item.label}
@@ -134,7 +134,7 @@ const Header: React.FC = () => {
               {location.pathname === '/' && (
                 <button
                   onClick={() => { openWizard(); setIsMobileMenuOpen(false); }}
-                  className="hidden sm:flex items-center gap-1.5 px-4 py-2 bg-accent-500 text-white rounded-xl hover:bg-accent-600 text-sm font-semibold transition-all duration-200 shadow-sm hover:shadow-medium active:scale-[0.97]"
+                  className="hidden sm:flex items-center gap-1.5 px-4 py-2 bg-accent-500 text-white rounded-lg hover:bg-accent-600 text-sm font-display font-semibold transition-all duration-200 shadow-sm hover:shadow-medium active:scale-[0.98]"
                 >
                   <Route className="w-4 h-4" />
                   Plan a Trip
@@ -153,7 +153,7 @@ const Header: React.FC = () => {
               <button
                 type="button"
                 onClick={toggleMobileMenu}
-                className="md:hidden p-2 rounded-xl text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100"
+                className="md:hidden p-2 rounded-lg text-neutral-500 hover:text-neutral-700 hover:bg-neutral-50"
                 aria-label="Toggle menu"
               >
                 <svg
@@ -174,7 +174,7 @@ const Header: React.FC = () => {
 
           {/* Mobile Navigation Menu */}
           {isMobileMenuOpen && (
-            <div className="md:hidden bg-white/95 backdrop-blur-sm">
+            <div className="md:hidden bg-white">
               <div className="px-2 pt-2 pb-3 space-y-1">
                 {navigationItems.map((item) => (
                   <Link
@@ -182,10 +182,10 @@ const Header: React.FC = () => {
                     to={item.path}
                     onClick={() => setIsMobileMenuOpen(false)}
                     className={cn(
-                      'block px-3 py-2 rounded-xl text-base font-medium transition-all duration-200',
+                      'block px-3 py-2 rounded-lg text-base font-display font-medium transition-all duration-200',
                       isActivePath(item.path)
                         ? 'text-primary-700 bg-primary-50'
-                        : 'text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100'
+                        : 'text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50'
                     )}
                   >
                     {item.label}
@@ -194,7 +194,7 @@ const Header: React.FC = () => {
                 {location.pathname === '/' && (
                   <button
                     onClick={() => { openWizard(); setIsMobileMenuOpen(false); }}
-                    className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-base font-semibold text-accent-700 bg-accent-50 hover:bg-accent-100 transition-all duration-200"
+                    className="w-full flex items-center gap-2 px-3 py-2.5 rounded-lg text-base font-display font-semibold text-accent-700 bg-accent-50 hover:bg-accent-100 transition-all duration-200"
                   >
                     <Route className="w-4 h-4" />
                     Plan a Trip

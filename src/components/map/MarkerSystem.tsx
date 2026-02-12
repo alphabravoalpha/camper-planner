@@ -86,13 +86,16 @@ const createCustomIcon = (type: MarkerType, options: {
   });
 };
 
+const svgIcon = (path: string, size = 14) =>
+  `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle">${path}</svg>`;
+
 const getMarkerSymbol = (type: MarkerType): string => {
   switch (type) {
     case 'waypoint': return '●';
-    case 'campsite': return '⛺';
+    case 'campsite': return svgIcon('<path d="M3 20 12 4l9 16Z"/><path d="M12 4v16"/>');
     case 'aire': return 'P';
-    case 'poi': return 'ℹ';
-    case 'current-location': return '📍';
+    case 'poi': return svgIcon('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>');
+    case 'current-location': return svgIcon('<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>');
     default: return '●';
   }
 };

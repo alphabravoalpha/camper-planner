@@ -12,6 +12,7 @@ import { FeatureFlags } from '../../config';
 import { type Campsite, type CampsiteRequest, type CampsiteType } from '../../services/CampsiteService';
 import { type CampsiteFilterState } from './CampsiteFilter';
 import { createCampsiteIcon, createClusterIcon } from './CampsiteIcons';
+import { CheckCircle, AlertTriangle } from 'lucide-react';
 
 
 export interface SimpleCampsiteLayerProps {
@@ -685,7 +686,7 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
                         ? 'bg-green-100 text-green-800'
                         : 'bg-red-100 text-red-800'
                     }`}>
-                      {campsite.vehicleCompatible ? '✓ Compatible' : '⚠ Check Size'}
+                      {campsite.vehicleCompatible ? <><CheckCircle className="inline-block w-3 h-3 mr-1" /> Compatible</> : <><AlertTriangle className="inline-block w-3 h-3 mr-1" /> Check Size</>}
                     </span>
                   </div>
 
@@ -728,7 +729,7 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
                   {/* Vehicle restrictions */}
                   {!campsite.vehicleCompatible && campsite.restrictions && (
                     <div className="mt-2 p-2 bg-red-50 border border-red-200 rounded">
-                      <div className="text-xs font-medium text-red-800 mb-1">⚠️ Vehicle Restrictions:</div>
+                      <div className="text-xs font-medium text-red-800 mb-1"><AlertTriangle className="inline-block w-3 h-3 mr-1" /> Vehicle Restrictions:</div>
                       <div className="text-xs text-red-700">
                         {campsite.restrictions}
                       </div>

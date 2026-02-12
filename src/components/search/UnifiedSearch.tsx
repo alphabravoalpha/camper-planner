@@ -423,7 +423,7 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
     <div className={cn('relative', className)}>
       {/* Search input */}
       <div className="relative">
-        <div className="flex items-center bg-white rounded-2xl shadow-float border-0 ring-1 ring-black/5 overflow-hidden">
+        <div className="flex items-center bg-white rounded-xl shadow-float border-0 ring-1 ring-black/5 overflow-hidden">
           <div className="pl-4 pr-2 py-3">
             <svg className="h-5 w-5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -462,7 +462,7 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
       {showResults && (results.length > 0 || searchHistory.length > 0 || searchError) && (
         <div
           ref={dropdownRef}
-          className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-float border-0 ring-1 ring-black/5 z-50 max-h-96 overflow-y-auto"
+          className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-float border-0 ring-1 ring-black/5 z-50 max-h-96 overflow-y-auto"
           onMouseDown={(e) => e.preventDefault()}
         >
           {/* Search error message */}

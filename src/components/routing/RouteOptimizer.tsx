@@ -2,6 +2,7 @@
 // Phase 5.1: Multi-stop optimization with TSP solver and visual feedback
 
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import { Ruler, Zap, Scale, Tent, MapPin } from 'lucide-react';
 import { FeatureFlags } from '../../config';
 import { routeOptimizationService, type OptimizationCriteria, type OptimizationResult, type WaypointInsertionResult } from '../../services/RouteOptimizationService';
 import { useRouteStore, useVehicleStore, useUIStore } from '../../store';
@@ -234,10 +235,12 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
           </label>
           <div className="grid grid-cols-3 gap-2">
             {[
-              { value: 'shortest', label: 'Shortest', icon: '📏', desc: 'Minimize distance' },
-              { value: 'fastest', label: 'Fastest', icon: '⚡', desc: 'Minimize time' },
-              { value: 'balanced', label: 'Balanced', icon: '⚖️', desc: 'Balance time & distance' }
-            ].map(option => (
+              { value: 'shortest', label: 'Shortest', icon: Ruler, desc: 'Minimize distance' },
+              { value: 'fastest', label: 'Fastest', icon: Zap, desc: 'Minimize time' },
+              { value: 'balanced', label: 'Balanced', icon: Scale, desc: 'Balance time & distance' }
+            ].map(option => {
+              const Icon = option.icon;
+              return (
               <button
                 key={option.value}
                 onClick={() => setSettings(prev => ({ ...prev, objective: option.value as any }))}
@@ -248,11 +251,12 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
                     : 'border-neutral-200 hover:border-neutral-300 text-neutral-700'
                 )}
               >
-                <div className="text-lg mb-1">{option.icon}</div>
+                <div className="flex justify-center mb-1"><Icon className="w-5 h-5" /></div>
                 <div className="font-medium">{option.label}</div>
                 <div className="text-xs text-neutral-500">{option.desc}</div>
               </button>
-            ))}
+              );
+            })}
           </div>
         </div>
 
@@ -430,7 +434,9 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
                       {waypoint.name}
                     </div>
                     <div className="text-xs text-neutral-500">
-                      {waypoint.type === 'campsite' ? '🏕️ Campsite' : '📍 Waypoint'}
+                      <span className="inline-flex items-center gap-1">
+                        {waypoint.type === 'campsite' ? <><Tent className="w-3 h-3" /> Campsite</> : <><MapPin className="w-3 h-3" /> Waypoint</>}
+                      </span>
                     </div>
                   </div>
 

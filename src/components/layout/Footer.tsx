@@ -27,7 +27,7 @@ const Footer: React.FC = () => {
                   />
                 </svg>
               </div>
-              <span className="text-white font-semibold text-sm">
+              <span className="text-white font-display font-semibold text-sm">
                 European Camper Planner
               </span>
             </div>
@@ -38,20 +38,20 @@ const Footer: React.FC = () => {
 
           {/* Navigation */}
           <div>
-            <h3 className="text-white font-semibold text-sm mb-3">Plan</h3>
+            <h3 className="text-white font-display font-semibold text-sm mb-3">Plan</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/" className="text-sm text-neutral-400 hover:text-white transition-colors">
+                <Link to="/" className="text-sm text-neutral-400 hover:text-white hover:underline transition-colors">
                   Trip Planner
                 </Link>
               </li>
               <li>
-                <Link to="/about" className="text-sm text-neutral-400 hover:text-white transition-colors">
+                <Link to="/about" className="text-sm text-neutral-400 hover:text-white hover:underline transition-colors">
                   About
                 </Link>
               </li>
               <li>
-                <Link to="/help" className="text-sm text-neutral-400 hover:text-white transition-colors">
+                <Link to="/help" className="text-sm text-neutral-400 hover:text-white hover:underline transition-colors">
                   Help Guide
                 </Link>
               </li>
@@ -60,20 +60,20 @@ const Footer: React.FC = () => {
 
           {/* Legal */}
           <div>
-            <h3 className="text-white font-semibold text-sm mb-3">Legal</h3>
+            <h3 className="text-white font-display font-semibold text-sm mb-3">Legal</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/privacy" className="text-sm text-neutral-400 hover:text-white transition-colors">
+                <Link to="/privacy" className="text-sm text-neutral-400 hover:text-white hover:underline transition-colors">
                   Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link to="/terms" className="text-sm text-neutral-400 hover:text-white transition-colors">
+                <Link to="/terms" className="text-sm text-neutral-400 hover:text-white hover:underline transition-colors">
                   Terms of Use
                 </Link>
               </li>
               <li>
-                <Link to="/affiliate-disclosure" className="text-sm text-neutral-400 hover:text-white transition-colors">
+                <Link to="/affiliate-disclosure" className="text-sm text-neutral-400 hover:text-white hover:underline transition-colors">
                   Affiliate Disclosure
                 </Link>
               </li>
@@ -82,16 +82,16 @@ const Footer: React.FC = () => {
 
           {/* Support */}
           <div>
-            <h3 className="text-white font-semibold text-sm mb-3">Support</h3>
+            <h3 className="text-white font-display font-semibold text-sm mb-3">Support</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/support" className="text-sm text-neutral-400 hover:text-white transition-colors inline-flex items-center gap-1">
+                <Link to="/support" className="text-sm text-neutral-400 hover:text-white hover:underline transition-colors inline-flex items-center gap-1">
                   <Heart className="w-3.5 h-3.5" />
                   Support This Project
                 </Link>
               </li>
               <li>
-                <Link to="/feedback" className="text-sm text-neutral-400 hover:text-white transition-colors inline-flex items-center gap-1">
+                <Link to="/feedback" className="text-sm text-neutral-400 hover:text-white hover:underline transition-colors inline-flex items-center gap-1">
                   <MessageSquare className="w-3.5 h-3.5" />
                   Feedback
                 </Link>
@@ -101,7 +101,7 @@ const Footer: React.FC = () => {
                   href={KOFI_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm text-neutral-400 hover:text-white transition-colors inline-flex items-center gap-1"
+                  className="text-sm text-neutral-400 hover:text-white hover:underline transition-colors inline-flex items-center gap-1"
                 >
                   Buy us a coffee
                   <ExternalLink className="w-3 h-3" />
@@ -112,7 +112,7 @@ const Footer: React.FC = () => {
                   href="https://github.com/AlphaBravoAlpha/camper-planner"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm text-neutral-400 hover:text-white transition-colors inline-flex items-center gap-1"
+                  className="text-sm text-neutral-400 hover:text-white hover:underline transition-colors inline-flex items-center gap-1"
                 >
                   GitHub
                   <ExternalLink className="w-3 h-3" />

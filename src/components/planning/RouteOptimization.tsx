@@ -85,7 +85,7 @@ const RouteOptimization: React.FC<RouteOptimizationProps> = ({ className }) => {
       {/* Optimization Controls */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <h3 className="text-sm font-medium text-neutral-900">
+          <h3 className="text-sm font-display font-medium text-neutral-900">
 Route Optimization
           </h3>
           <div className="text-xs text-neutral-500">

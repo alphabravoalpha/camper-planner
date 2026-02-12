@@ -17,7 +17,7 @@ const PrivacyPolicyPage: React.FC = () => {
           </Link>
           <div className="flex items-center gap-3 mb-3">
             <Shield className="w-8 h-8" />
-            <h1 className="text-3xl sm:text-4xl font-bold">Privacy Policy</h1>
+            <h1 className="text-3xl sm:text-4xl font-display font-bold">Privacy Policy</h1>
           </div>
           <p className="text-primary-100 text-sm">Last updated: February 2026</p>
         </div>
@@ -25,7 +25,7 @@ const PrivacyPolicyPage: React.FC = () => {
 
       {/* Content */}
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <div className="bg-white rounded-2xl shadow-soft p-6 sm:p-8 space-y-8">
+        <div className="bg-white rounded-xl shadow-soft p-6 sm:p-8 space-y-8">
 
           {/* Intro */}
           <section>
@@ -37,8 +37,8 @@ const PrivacyPolicyPage: React.FC = () => {
           </section>
 
           {/* TL;DR */}
-          <section className="bg-green-50 border border-green-200 rounded-xl p-5">
-            <h2 className="text-lg font-semibold text-green-900 mb-2">The short version</h2>
+          <section className="bg-green-50 border border-green-200 rounded-lg p-5">
+            <h2 className="text-lg font-display font-semibold text-green-900 mb-2">The short version</h2>
             <ul className="text-green-800 text-sm space-y-1 list-disc list-inside">
               <li>We do not collect, store, or sell your personal data</li>
               <li>All your trip data is stored locally in your browser</li>
@@ -50,7 +50,7 @@ const PrivacyPolicyPage: React.FC = () => {
 
           {/* Sections */}
           <section>
-            <h2 className="text-xl font-semibold text-neutral-900 mb-3">1. Data We Collect</h2>
+            <h2 className="text-xl font-display font-semibold text-neutral-900 mb-3">1. Data We Collect</h2>
             <p className="text-neutral-700 leading-relaxed mb-3">
               We collect <strong>no personal data</strong>. The app runs entirely in your browser.
             </p>
@@ -68,7 +68,7 @@ const PrivacyPolicyPage: React.FC = () => {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-neutral-900 mb-3">2. Third-Party Services</h2>
+            <h2 className="text-xl font-display font-semibold text-neutral-900 mb-3">2. Third-Party Services</h2>
             <p className="text-neutral-700 leading-relaxed mb-3">
               The app uses the following external services to provide functionality. These services
               may receive limited, non-personal technical data (such as search coordinates) as part
@@ -99,7 +99,7 @@ const PrivacyPolicyPage: React.FC = () => {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-neutral-900 mb-3">3. Affiliate Links</h2>
+            <h2 className="text-xl font-display font-semibold text-neutral-900 mb-3">3. Affiliate Links</h2>
             <p className="text-neutral-700 leading-relaxed mb-3">
               The app may display links to third-party campsite booking platforms (such as
               Booking.com, Pitchup, and ACSI). These links contain affiliate tracking parameters
@@ -117,7 +117,7 @@ const PrivacyPolicyPage: React.FC = () => {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-neutral-900 mb-3">4. Cookies</h2>
+            <h2 className="text-xl font-display font-semibold text-neutral-900 mb-3">4. Cookies</h2>
             <p className="text-neutral-700 leading-relaxed">
               We do not use cookies. The app uses browser localStorage and IndexedDB for local
               data storage. These are not cookies and are not transmitted to any server. Third-party
@@ -126,7 +126,7 @@ const PrivacyPolicyPage: React.FC = () => {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-neutral-900 mb-3">5. Your Rights (GDPR)</h2>
+            <h2 className="text-xl font-display font-semibold text-neutral-900 mb-3">5. Your Rights (GDPR)</h2>
             <p className="text-neutral-700 leading-relaxed mb-3">
               Since we do not collect or store any personal data on our servers, most GDPR data
               subject requests do not apply. However, you have full control over your locally
@@ -141,7 +141,7 @@ const PrivacyPolicyPage: React.FC = () => {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-neutral-900 mb-3">6. Children&apos;s Privacy</h2>
+            <h2 className="text-xl font-display font-semibold text-neutral-900 mb-3">6. Children&apos;s Privacy</h2>
             <p className="text-neutral-700 leading-relaxed">
               The app does not knowingly collect any data from children or any other users.
               No registration or personal information is required to use the app.
@@ -149,7 +149,7 @@ const PrivacyPolicyPage: React.FC = () => {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-neutral-900 mb-3">7. Changes to This Policy</h2>
+            <h2 className="text-xl font-display font-semibold text-neutral-900 mb-3">7. Changes to This Policy</h2>
             <p className="text-neutral-700 leading-relaxed">
               We may update this privacy policy from time to time. Any changes will be reflected
               on this page with an updated &quot;last updated&quot; date. Since we do not collect email
@@ -158,7 +158,7 @@ const PrivacyPolicyPage: React.FC = () => {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-neutral-900 mb-3">8. Contact</h2>
+            <h2 className="text-xl font-display font-semibold text-neutral-900 mb-3">8. Contact</h2>
             <p className="text-neutral-700 leading-relaxed">
               If you have questions about this privacy policy, you can open an issue on our{' '}
               <a

@@ -90,7 +90,7 @@ const TourTooltip: React.FC<TourTooltipProps> = ({
     <div
       ref={containerRef}
       className={cn(
-        'fixed bg-white rounded-2xl shadow-xl p-5 max-w-[calc(100vw-2rem)] animate-fade-in',
+        'fixed bg-white rounded-lg shadow-xl border border-neutral-200 p-5 max-w-[calc(100vw-2rem)] animate-fade-in',
         isWelcome ? 'w-96' : 'w-80'
       )}
       style={{
@@ -119,7 +119,7 @@ const TourTooltip: React.FC<TourTooltipProps> = ({
         <>
           {/* Logo placeholder */}
           <div className="flex justify-center mb-3">
-            <div className="w-14 h-14 bg-primary-100 rounded-2xl flex items-center justify-center">
+            <div className="w-14 h-14 bg-primary-100 rounded-lg flex items-center justify-center">
               <Truck className="w-7 h-7 text-primary-600" />
             </div>
           </div>
@@ -127,7 +127,7 @@ const TourTooltip: React.FC<TourTooltipProps> = ({
           {/* Headline */}
           <h2
             id={`tour-step-${step.id}`}
-            className="text-lg font-bold text-neutral-900 leading-tight text-center mb-2"
+            className="text-lg font-display font-bold text-neutral-900 leading-tight text-center mb-2"
           >
             {step.headline}
           </h2>
@@ -145,7 +145,7 @@ const TourTooltip: React.FC<TourTooltipProps> = ({
             <ul className="space-y-2 mb-4">
               {step.features.map((feature, i) => (
                 <li key={i} className="flex items-start gap-2 text-xs text-neutral-600">
-                  <CheckCircle className="w-3.5 h-3.5 text-green-500 flex-shrink-0 mt-0.5" />
+                  <CheckCircle className="w-3.5 h-3.5 text-success-500 flex-shrink-0 mt-0.5" />
                   <span>{feature}</span>
                 </li>
               ))}
@@ -156,13 +156,13 @@ const TourTooltip: React.FC<TourTooltipProps> = ({
         <>
           {/* Icon + Headline */}
           <div className="flex items-start gap-3 mb-3">
-            <div className="w-10 h-10 rounded-xl bg-primary-50 flex items-center justify-center text-primary-600 flex-shrink-0">
+            <div className="w-10 h-10 rounded-lg bg-primary-50 flex items-center justify-center text-primary-600 flex-shrink-0">
               <Icon className="w-5 h-5" />
             </div>
             <div className="pt-1">
               <h2
                 id={`tour-step-${step.id}`}
-                className="text-base font-bold text-neutral-900 leading-tight"
+                className="text-base font-display font-bold text-neutral-900 leading-tight"
               >
                 {step.headline}
               </h2>
@@ -179,7 +179,7 @@ const TourTooltip: React.FC<TourTooltipProps> = ({
 
           {/* Tip (optional) */}
           {step.tip && (
-            <div className="bg-primary-50 border border-primary-200 rounded-xl p-2.5 text-xs text-primary-800 mb-4">
+            <div className="bg-primary-50 border border-primary-200 rounded-lg p-2.5 text-xs text-primary-800 mb-4">
               <span className="font-medium">Tip: </span>
               {step.tip}
             </div>

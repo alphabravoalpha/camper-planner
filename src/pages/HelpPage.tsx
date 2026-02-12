@@ -104,7 +104,7 @@ const HelpPage: React.FC = () => {
               <HelpCircle className="w-4 h-4" />
               Help & Getting Started
             </div>
-            <h1 className="text-4xl sm:text-5xl font-bold mb-4 tracking-tight">
+            <h1 className="text-4xl sm:text-5xl font-display font-bold mb-4 tracking-tight">
               How can we help?
             </h1>
             <p className="text-lg sm:text-xl text-primary-100 max-w-2xl mx-auto leading-relaxed">
@@ -117,13 +117,13 @@ const HelpPage: React.FC = () => {
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Tutorial CTA Card */}
-        <div className="bg-gradient-to-br from-accent-50 to-accent-100 rounded-2xl shadow-soft p-8 mb-12 -mt-8 relative z-10">
+        <div className="bg-gradient-to-br from-accent-50 to-accent-100 rounded-xl shadow-soft p-8 mb-12 -mt-8 relative z-10">
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-            <div className="w-14 h-14 bg-accent-500 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-sm">
+            <div className="w-14 h-14 bg-accent-500 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm">
               <PlayCircle className="w-7 h-7 text-white" />
             </div>
             <div className="flex-1">
-              <h2 className="text-xl font-bold text-accent-900 mb-1">
+              <h2 className="text-xl font-display font-bold text-accent-900 mb-1">
                 New here? Take the interactive tutorial
               </h2>
               <p className="text-accent-800 leading-relaxed">
@@ -133,7 +133,7 @@ const HelpPage: React.FC = () => {
             </div>
             <button
               onClick={handleShowTutorial}
-              className="inline-flex items-center gap-2 px-6 py-3 bg-accent-500 text-white rounded-xl font-semibold hover:bg-accent-600 transition-all duration-200 shadow-sm hover:shadow-medium active:scale-[0.97] flex-shrink-0"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-accent-500 text-white rounded-lg font-display font-semibold hover:bg-accent-600 transition-all duration-200 shadow-sm hover:shadow-medium active:scale-[0.97] flex-shrink-0"
             >
               Start Tutorial
               <ChevronRight className="w-5 h-5" />
@@ -143,19 +143,19 @@ const HelpPage: React.FC = () => {
 
         {/* How It Works */}
         <div className="mb-12">
-          <h2 className="text-2xl font-bold text-neutral-900 mb-6 text-center">
+          <h2 className="text-2xl font-display font-bold text-neutral-900 mb-6 text-center">
             How it works
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {STEPS.map((step) => (
               <div
                 key={step.number}
-                className="bg-white rounded-2xl shadow-soft p-6 hover:shadow-medium hover:-translate-y-1 transition-all duration-200 relative"
+                className="bg-white rounded-xl shadow-soft p-6 hover:shadow-medium hover:-translate-y-1 transition-all duration-200 relative"
               >
-                <div className="w-10 h-10 bg-primary-600 rounded-xl flex items-center justify-center mb-4 text-white font-bold text-lg shadow-sm">
+                <div className="w-10 h-10 bg-primary-600 rounded-lg flex items-center justify-center mb-4 text-white font-display font-bold text-lg shadow-sm">
                   {step.number}
                 </div>
-                <h3 className="text-base font-semibold text-neutral-900 mb-1.5">
+                <h3 className="text-base font-display font-semibold text-neutral-900 mb-1.5">
                   {step.title}
                 </h3>
                 <p className="text-sm text-neutral-500 leading-relaxed">
@@ -168,7 +168,7 @@ const HelpPage: React.FC = () => {
 
         {/* Features Grid */}
         <div className="mb-12">
-          <h2 className="text-2xl font-bold text-neutral-900 mb-6 text-center">
+          <h2 className="text-2xl font-display font-bold text-neutral-900 mb-6 text-center">
             What you can do
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -177,12 +177,12 @@ const HelpPage: React.FC = () => {
               return (
                 <div
                   key={feature.title}
-                  className="bg-white rounded-2xl shadow-soft p-6 hover:shadow-medium hover:-translate-y-1 transition-all duration-200"
+                  className="bg-white rounded-xl shadow-soft p-6 hover:shadow-medium hover:-translate-y-1 transition-all duration-200"
                 >
-                  <div className="w-11 h-11 bg-primary-50 rounded-xl flex items-center justify-center mb-4">
+                  <div className="w-11 h-11 bg-primary-50 rounded-lg flex items-center justify-center mb-4">
                     <Icon className="w-5 h-5 text-primary-600" />
                   </div>
-                  <h3 className="text-base font-semibold text-neutral-900 mb-1.5">
+                  <h3 className="text-base font-display font-semibold text-neutral-900 mb-1.5">
                     {feature.title}
                   </h3>
                   <p className="text-sm text-neutral-500 leading-relaxed">
@@ -196,17 +196,17 @@ const HelpPage: React.FC = () => {
 
         {/* Vehicle Compatibility */}
         <div className="mb-12">
-          <h2 className="text-2xl font-bold text-neutral-900 mb-6 text-center">
+          <h2 className="text-2xl font-display font-bold text-neutral-900 mb-6 text-center">
             Built for every camping vehicle
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
             {VEHICLES.map((vehicle) => (
               <div
                 key={vehicle.title}
-                className="bg-white rounded-2xl shadow-soft p-6 hover:shadow-medium hover:-translate-y-0.5 transition-all duration-200 text-center"
+                className="bg-white rounded-xl shadow-soft p-6 hover:shadow-medium hover:-translate-y-0.5 transition-all duration-200 text-center"
               >
                 <div className="text-3xl mb-3">{vehicle.emoji}</div>
-                <h3 className="text-base font-semibold text-neutral-900 mb-1.5">
+                <h3 className="text-base font-display font-semibold text-neutral-900 mb-1.5">
                   {vehicle.title}
                 </h3>
                 <p className="text-sm text-neutral-500 leading-relaxed">
@@ -218,13 +218,13 @@ const HelpPage: React.FC = () => {
         </div>
 
         {/* Tips Section */}
-        <div className="bg-white rounded-2xl shadow-soft p-8 mb-12">
+        <div className="bg-white rounded-xl shadow-soft p-8 mb-12">
           <div className="flex items-start gap-4">
-            <div className="w-12 h-12 bg-primary-50 rounded-xl flex items-center justify-center flex-shrink-0">
+            <div className="w-12 h-12 bg-primary-50 rounded-lg flex items-center justify-center flex-shrink-0">
               <Compass className="w-6 h-6 text-primary-600" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-neutral-900 mb-3">
+              <h2 className="text-xl font-display font-bold text-neutral-900 mb-3">
                 Pro tips
               </h2>
               <ul className="space-y-2.5 text-neutral-600 leading-relaxed">
@@ -255,7 +255,7 @@ const HelpPage: React.FC = () => {
 
         {/* Countries Grid */}
         <div className="mb-12">
-          <h2 className="text-2xl font-bold text-neutral-900 mb-6 text-center">
+          <h2 className="text-2xl font-display font-bold text-neutral-900 mb-6 text-center">
             Covering all of Europe
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
@@ -267,7 +267,7 @@ const HelpPage: React.FC = () => {
             ].map((country) => (
               <div
                 key={country}
-                className="bg-white rounded-xl shadow-soft px-4 py-3 text-center text-sm font-medium text-neutral-700 hover:shadow-medium hover:-translate-y-0.5 transition-all duration-200"
+                className="bg-white rounded-lg shadow-soft px-4 py-3 text-center text-sm font-medium text-neutral-700 hover:shadow-medium hover:-translate-y-0.5 transition-all duration-200"
               >
                 {country}
               </div>
@@ -279,22 +279,22 @@ const HelpPage: React.FC = () => {
         </div>
 
         {/* CTA */}
-        <div className="text-center bg-white rounded-2xl shadow-soft p-8">
-          <h2 className="text-2xl font-bold text-neutral-900 mb-3">Ready to plan your trip?</h2>
+        <div className="text-center bg-white rounded-xl shadow-soft p-8">
+          <h2 className="text-2xl font-display font-bold text-neutral-900 mb-3">Ready to plan your trip?</h2>
           <p className="text-neutral-500 mb-6">
             Jump in and start adding waypoints — no sign-up, no fees, just open road ahead.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
               to="/"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-primary-600 text-white rounded-xl font-semibold hover:bg-primary-700 transition-all duration-200 shadow-sm hover:shadow-medium active:scale-[0.97]"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-primary-600 text-white rounded-lg font-display font-semibold hover:bg-primary-700 transition-all duration-200 shadow-sm hover:shadow-medium active:scale-[0.97]"
             >
               Open the Planner
               <ChevronRight className="w-5 h-5" />
             </Link>
             <button
               onClick={handleShowTutorial}
-              className="inline-flex items-center gap-2 px-6 py-3 bg-neutral-100 text-neutral-700 rounded-xl font-semibold hover:bg-neutral-200 transition-all duration-200"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-neutral-100 text-neutral-700 rounded-lg font-display font-semibold hover:bg-neutral-200 transition-all duration-200"
             >
               <PlayCircle className="w-5 h-5" />
               Watch Tutorial

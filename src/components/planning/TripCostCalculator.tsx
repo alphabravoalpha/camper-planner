@@ -94,7 +94,7 @@ const TripCostCalculator: React.FC<TripCostCalculatorProps> = ({ className }) =>
       {/* Cost Calculator Controls */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <h3 className="text-sm font-medium text-neutral-900">
+          <h3 className="text-sm font-display font-medium text-neutral-900">
             Trip Cost Calculator
           </h3>
           <div className="text-xs text-neutral-500">

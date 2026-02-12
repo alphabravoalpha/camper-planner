@@ -3,6 +3,7 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
 import { Marker, Popup } from 'react-leaflet';
+import { MapPin, Phone, Globe, Tent, Truck, ParkingCircle } from 'lucide-react';
 import * as L from 'leaflet';
 import '../../types/leaflet';
 import { campsiteService } from '../../services/CampsiteService';
@@ -17,14 +18,20 @@ interface CampsiteMarkersProps {
   onCampsiteClick?: (campsite: Campsite) => void;
 }
 
+// Inline SVG for HTML strings
+const svgStr = (path: string, size = 16) =>
+  `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${path}</svg>`;
+
+const MARKER_SVG: Record<CampsiteType, string> = {
+  campsite: svgStr('<path d="M3 20 12 4l9 16Z"/><path d="M12 4v16"/>'),
+  caravan_site: svgStr('<path d="M10 17h4V5H2v12h3"/><path d="M20 17h2v-3.34a4 4 0 0 0-1.17-2.83L19 9h-5"/><path d="M14 17h1"/><circle cx="7.5" cy="17.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/>'),
+  aire: svgStr('<circle cx="12" cy="12" r="10"/><path d="M9 17V7h4a3 3 0 0 1 0 6H9"/>'),
+  parking: svgStr('<rect x="1" y="3" width="22" height="18" rx="2"/><path d="M9 17V7h4a3 3 0 0 1 0 6H9"/>'),
+};
+
 // Custom campsite icons
 const createCampsiteIcon = (type: CampsiteType, vehicleCompatible: boolean = true) => {
-  const color = vehicleCompatible ? '#22c55e' : '#ef4444'; // green for compatible, red for incompatible
-  const iconHtml = type === 'campsite'
-    ? '⛺'
-    : type === 'caravan_site'
-    ? '🚐'
-    : '🅿️'; // aires/parking
+  const color = vehicleCompatible ? '#27ae60' : '#e63946'; // green for compatible, red for incompatible
 
   return L.divIcon({
     className: 'campsite-marker',
@@ -38,8 +45,7 @@ const createCampsiteIcon = (type: CampsiteType, vehicleCompatible: boolean = tru
       justify-content: center;
       border: 2px solid white;
       box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-      font-size: 16px;
-    ">${iconHtml}</div>`,
+    ">${MARKER_SVG[type]}</div>`,
     iconSize: [32, 32],
     iconAnchor: [16, 16],
     popupAnchor: [0, -16]
@@ -166,9 +172,9 @@ const CampsiteMarkers: React.FC<CampsiteMarkersProps> = ({
 
               {/* Type indicator */}
               <div className="flex items-center mb-2">
-                <span className="text-lg mr-2">
-                  {campsite.type === 'campsite' ? '⛺' :
-                   campsite.type === 'caravan_site' ? '🚐' : '🅿️'}
+                <span className="mr-2">
+                  {campsite.type === 'campsite' ? <Tent className="w-5 h-5" /> :
+                   campsite.type === 'caravan_site' ? <Truck className="w-5 h-5" /> : <ParkingCircle className="w-5 h-5" />}
                 </span>
                 <span className="text-xs text-neutral-600 capitalize">
                   {campsite.type.replace('_', ' ')}
@@ -178,16 +184,16 @@ const CampsiteMarkers: React.FC<CampsiteMarkersProps> = ({
               {/* Basic info */}
               <div className="space-y-1 text-xs text-neutral-700">
                 {campsite.address && (
-                  <div>📍 {campsite.address}</div>
+                  <div className="flex items-center gap-1"><MapPin className="w-3 h-3" /> {campsite.address}</div>
                 )}
 
                 {campsite.phone && (
-                  <div>📞 {campsite.phone}</div>
+                  <div className="flex items-center gap-1"><Phone className="w-3 h-3" /> {campsite.phone}</div>
                 )}
 
                 {campsite.website && (
-                  <div>
-                    🌐 <a
+                  <div className="flex items-center gap-1">
+                    <Globe className="w-3 h-3" /> <a
                       href={campsite.website}
                       target="_blank"
                       rel="noopener noreferrer"

@@ -27,40 +27,40 @@ export const CAMPSITE_ICON_CONFIGS: Record<CampsiteType | 'unknown', CampsiteIco
   campsite: {
     icon: SVG_ICONS.campsite,
     color: '#ffffff',
-    backgroundColor: '#22c55e',
-    borderColor: '#16a34a',
+    backgroundColor: '#27ae60',
+    borderColor: '#1a8a4b',
     size: 32,
     description: 'Traditional campsite with tent/caravan pitches'
   },
   caravan_site: {
     icon: SVG_ICONS.caravan_site,
     color: '#ffffff',
-    backgroundColor: '#3b82f6',
-    borderColor: '#2563eb',
+    backgroundColor: '#2794a8',
+    borderColor: '#1e7a8d',
     size: 32,
     description: 'Caravan and motorhome specific site'
   },
   aire: {
     icon: SVG_ICONS.aire,
     color: '#ffffff',
-    backgroundColor: '#8b5cf6',
-    borderColor: '#7c3aed',
+    backgroundColor: '#7c5cbf',
+    borderColor: '#6b47b0',
     size: 32,
     description: 'Aire de service for motorhomes'
   },
   parking: {
     icon: SVG_ICONS.parking,
     color: '#ffffff',
-    backgroundColor: '#f59e0b',
-    borderColor: '#d97706',
+    backgroundColor: '#e9a100',
+    borderColor: '#cc7d00',
     size: 32,
     description: 'Parking area with overnight stays allowed'
   },
   unknown: {
     icon: SVG_ICONS.unknown,
     color: '#ffffff',
-    backgroundColor: '#6b7280',
-    borderColor: '#4b5563',
+    backgroundColor: '#6b7785',
+    borderColor: '#556170',
     size: 28,
     description: 'Unknown campsite type'
   }
@@ -69,24 +69,24 @@ export const CAMPSITE_ICON_CONFIGS: Record<CampsiteType | 'unknown', CampsiteIco
 // Enhanced icon configs based on specific amenities
 export const AMENITY_ENHANCED_CONFIGS: Record<string, Partial<CampsiteIconConfig>> = {
   'electricity': {
-    borderColor: '#fbbf24',
-    backgroundColor: '#f59e0b'
+    borderColor: '#cc7d00',
+    backgroundColor: '#e9a100'
   },
   'wifi': {
-    borderColor: '#06b6d4',
-    backgroundColor: '#0891b2'
+    borderColor: '#1e7a8d',
+    backgroundColor: '#2794a8'
   },
   'shower': {
-    borderColor: '#2dd4bf',
-    backgroundColor: '#14b8a6'
+    borderColor: '#1a8a4b',
+    backgroundColor: '#27ae60'
   },
   'toilets': {
-    borderColor: '#a78bfa',
-    backgroundColor: '#8b5cf6'
+    borderColor: '#6b47b0',
+    backgroundColor: '#7c5cbf'
   },
   'drinking_water': {
-    borderColor: '#60a5fa',
-    backgroundColor: '#3b82f6'
+    borderColor: '#1e7a8d',
+    backgroundColor: '#3eaec2'
   }
 };
 
@@ -137,16 +137,16 @@ export function createCampsiteIcon(options: CampsiteMarkerOptions): L.DivIcon {
   let borderColor = baseConfig.borderColor;
 
   if (!vehicleCompatible) {
-    backgroundColor = '#ef4444';
-    borderColor = '#dc2626';
+    backgroundColor = '#e63946';
+    borderColor = '#d32535';
   }
 
   if (isSelected) {
-    borderColor = '#f59e0b';
+    borderColor = '#f25d2a';
   }
 
   if (isHighlighted) {
-    borderColor = '#3b82f6';
+    borderColor = '#2794a8';
   }
 
   // Enhanced styling based on amenities (only if not incompatible)
@@ -202,7 +202,7 @@ export function createCampsiteIcon(options: CampsiteMarkerOptions): L.DivIcon {
       right: -4px;
       width: 14px;
       height: 14px;
-      background: #22c55e;
+      background: #27ae60;
       border: 2px solid white;
       border-radius: 50%;
       display: flex;
@@ -225,14 +225,14 @@ export function createCampsiteIcon(options: CampsiteMarkerOptions): L.DivIcon {
       width: 12px;
       height: 12px;
       background: #fef2f2;
-      border: 2px solid #dc2626;
+      border: 2px solid #d32535;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 8px;
       font-weight: bold;
-      color: #dc2626;
+      color: #d32535;
     ">!</div>
   ` : '';
 
@@ -306,7 +306,7 @@ export function createClusterIcon(cluster: any): L.DivIcon {
       <div style="
         width: ${size}px;
         height: ${size}px;
-        background: linear-gradient(135deg, #22c55e, #16a34a);
+        background: linear-gradient(135deg, #27ae60, #1a8a4b);
         border: 3px solid #ffffff;
         border-radius: 50%;
         display: flex;

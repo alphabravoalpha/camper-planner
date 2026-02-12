@@ -2,6 +2,11 @@
 // Phase 4.3: Comprehensive filtering and search functionality
 
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import {
+  Tent, Truck, ParkingCircle, Zap, Wifi, Droplets, Bath, GlassWater,
+  Trash2, Shirt, UtensilsCrossed, ShoppingCart, Baby, Waves, Dog,
+  Search, Settings, Lightbulb, MapPin
+} from 'lucide-react';
 import { FeatureFlags } from '../../config';
 import { type CampsiteType, type Campsite } from '../../services/CampsiteService';
 import { useRouteStore } from '../../store';
@@ -88,37 +93,37 @@ const CAMPSITE_TYPES = [
   {
     type: 'campsite' as CampsiteType,
     label: 'Campsites',
-    icon: '⛺',
+    icon: Tent,
     description: 'Traditional camping with tents/caravans'
   },
   {
     type: 'caravan_site' as CampsiteType,
     label: 'Caravan Sites',
-    icon: '🚐',
+    icon: Truck,
     description: 'Sites specifically for caravans/motorhomes'
   },
   {
     type: 'aire' as CampsiteType,
     label: 'Aires de Service',
-    icon: '🅿️',
+    icon: ParkingCircle,
     description: 'Motorhome service areas with facilities'
   }
 ];
 
 // Amenity configurations
 const AMENITY_OPTIONS = [
-  { key: 'electricity' as keyof CampsiteFilterState['amenities'], label: 'Electricity', icon: '⚡' },
-  { key: 'wifi' as keyof CampsiteFilterState['amenities'], label: 'WiFi', icon: '📶' },
-  { key: 'shower' as keyof CampsiteFilterState['amenities'], label: 'Showers', icon: '🚿' },
-  { key: 'toilets' as keyof CampsiteFilterState['amenities'], label: 'Toilets', icon: '🚻' },
-  { key: 'drinking_water' as keyof CampsiteFilterState['amenities'], label: 'Drinking Water', icon: '🚰' },
-  { key: 'waste_disposal' as keyof CampsiteFilterState['amenities'], label: 'Waste Disposal', icon: '🗑️' },
-  { key: 'laundry' as keyof CampsiteFilterState['amenities'], label: 'Laundry', icon: '👕' },
-  { key: 'restaurant' as keyof CampsiteFilterState['amenities'], label: 'Restaurant', icon: '🍽️' },
-  { key: 'shop' as keyof CampsiteFilterState['amenities'], label: 'Shop', icon: '🛒' },
-  { key: 'playground' as keyof CampsiteFilterState['amenities'], label: 'Playground', icon: '🎠' },
-  { key: 'swimming_pool' as keyof CampsiteFilterState['amenities'], label: 'Swimming Pool', icon: '🏊' },
-  { key: 'pet_allowed' as keyof CampsiteFilterState['amenities'], label: 'Pets Allowed', icon: '🐕' },
+  { key: 'electricity' as keyof CampsiteFilterState['amenities'], label: 'Electricity', icon: Zap },
+  { key: 'wifi' as keyof CampsiteFilterState['amenities'], label: 'WiFi', icon: Wifi },
+  { key: 'shower' as keyof CampsiteFilterState['amenities'], label: 'Showers', icon: Droplets },
+  { key: 'toilets' as keyof CampsiteFilterState['amenities'], label: 'Toilets', icon: Bath },
+  { key: 'drinking_water' as keyof CampsiteFilterState['amenities'], label: 'Drinking Water', icon: GlassWater },
+  { key: 'waste_disposal' as keyof CampsiteFilterState['amenities'], label: 'Waste Disposal', icon: Trash2 },
+  { key: 'laundry' as keyof CampsiteFilterState['amenities'], label: 'Laundry', icon: Shirt },
+  { key: 'restaurant' as keyof CampsiteFilterState['amenities'], label: 'Restaurant', icon: UtensilsCrossed },
+  { key: 'shop' as keyof CampsiteFilterState['amenities'], label: 'Shop', icon: ShoppingCart },
+  { key: 'playground' as keyof CampsiteFilterState['amenities'], label: 'Playground', icon: Baby },
+  { key: 'swimming_pool' as keyof CampsiteFilterState['amenities'], label: 'Swimming Pool', icon: Waves },
+  { key: 'pet_allowed' as keyof CampsiteFilterState['amenities'], label: 'Pets Allowed', icon: Dog },
 ];
 
 const SORT_OPTIONS = [
@@ -232,12 +237,12 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
   if (!FeatureFlags.CAMPSITE_DISPLAY) return null;
 
   return (
-    <div className={cn('bg-white rounded-2xl shadow-soft', className)}>
+    <div className={cn('bg-white rounded-xl shadow-soft', className)}>
       {/* Header */}
       <div className="flex items-center justify-between p-3 border-b border-neutral-100">
         <div className="flex items-center space-x-2">
-          <div className="text-lg">🔍</div>
-          <h3 className="text-sm font-semibold text-neutral-900">Campsite Filters</h3>
+          <Search className="w-5 h-5 text-neutral-600" />
+          <h3 className="text-sm font-display font-semibold text-neutral-900">Campsite Filters</h3>
           {activeFilterCount > 0 && (
             <span className="bg-primary-100 text-primary-800 px-2 py-1 rounded-full text-xs font-medium">
               {activeFilterCount} active
@@ -289,7 +294,7 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               {/* Type toggles */}
-              {CAMPSITE_TYPES.map(({ type, icon, label }) => (
+              {CAMPSITE_TYPES.map(({ type, icon: Icon, label }) => (
                 <button
                   key={type}
                   onClick={() => toggleType(type)}
@@ -301,7 +306,7 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
                   )}
                   title={label}
                 >
-                  <span className="text-sm">{icon}</span>
+                  <Icon className="w-4 h-4" />
                 </button>
               ))}
 
@@ -316,7 +321,7 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
                       : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'
                   )}
                 >
-                  📍 Route only
+                  <MapPin className="w-3 h-3 inline mr-0.5" /> Route only
                 </button>
               )}
             </div>
@@ -333,26 +338,29 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
         <div className="border-b border-neutral-200">
           {/* Tab navigation */}
           <div className="flex border-b border-neutral-200 bg-neutral-50">
-            {[
-              { id: 'types', label: 'Types', icon: '🏕️' },
-              { id: 'amenities', label: 'Amenities', icon: '⚡' },
-              { id: 'advanced', label: 'Advanced', icon: '⚙️' },
-              { id: 'search', label: 'Search', icon: '🔍' }
-            ].map(tab => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id as any)}
-                className={cn(
-                  'flex-1 flex items-center justify-center space-x-1 py-3 px-2 text-sm font-medium transition-colors',
-                  activeTab === tab.id
-                    ? 'text-primary-600 border-b-2 border-primary-600 bg-white'
-                    : 'text-neutral-500 hover:text-neutral-700'
-                )}
-              >
-                <span className="text-sm">{tab.icon}</span>
-                <span>{tab.label}</span>
-              </button>
-            ))}
+            {([
+              { id: 'types', label: 'Types', icon: Tent },
+              { id: 'amenities', label: 'Amenities', icon: Zap },
+              { id: 'advanced', label: 'Advanced', icon: Settings },
+              { id: 'search', label: 'Search', icon: Search }
+            ] as const).map(tab => {
+              const TabIcon = tab.icon;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id as any)}
+                  className={cn(
+                    'flex-1 flex items-center justify-center space-x-1 py-3 px-2 text-sm font-medium transition-colors',
+                    activeTab === tab.id
+                      ? 'text-primary-600 border-b-2 border-primary-600 bg-white'
+                      : 'text-neutral-500 hover:text-neutral-700'
+                  )}
+                >
+                  <TabIcon className="w-4 h-4" />
+                  <span>{tab.label}</span>
+                </button>
+              );
+            })}
           </div>
 
           {/* Tab content */}
@@ -373,7 +381,7 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
                   </button>
                 </div>
 
-                {CAMPSITE_TYPES.map(({ type, label, icon, description }) => (
+                {CAMPSITE_TYPES.map(({ type, label, icon: Icon, description }) => (
                   <label key={type} className="flex items-start space-x-3 cursor-pointer">
                     <input
                       type="checkbox"
@@ -383,7 +391,7 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
                     />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center space-x-2">
-                        <span className="text-sm">{icon}</span>
+                        <Icon className="w-4 h-4" />
                         <span className="text-sm font-medium text-neutral-900">{label}</span>
                       </div>
                       <p className="text-xs text-neutral-500 mt-0.5">{description}</p>
@@ -414,7 +422,7 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
                 </div>
 
                 <div className="grid grid-cols-2 gap-2">
-                  {AMENITY_OPTIONS.map(({ key, label, icon }) => (
+                  {AMENITY_OPTIONS.map(({ key, label, icon: Icon }) => (
                     <label key={key} className="flex items-center space-x-2 cursor-pointer">
                       <input
                         type="checkbox"
@@ -422,14 +430,14 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
                         onChange={() => toggleAmenity(key)}
                         className="h-4 w-4 text-green-600 rounded border-neutral-300 focus:ring-green-500"
                       />
-                      <span className="text-sm">{icon}</span>
+                      <Icon className="w-4 h-4" />
                       <span className="text-sm text-neutral-900">{label}</span>
                     </label>
                   ))}
                 </div>
 
-                <div className="mt-3 p-2 bg-primary-50 rounded-lg text-xs text-primary-800">
-                  💡 Only campsites with ALL selected amenities will be shown
+                <div className="mt-3 p-2 bg-primary-50 rounded-lg text-xs text-primary-800 flex items-center gap-1.5">
+                  <Lightbulb className="w-3.5 h-3.5 flex-shrink-0" /> Only campsites with ALL selected amenities will be shown
                 </div>
               </div>
             )}
@@ -575,7 +583,7 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
                     <div className="flex items-center space-x-2">
                       <div className="w-5 h-6 flex-shrink-0">
                         <svg viewBox="0 0 20 28" className="w-full h-full">
-                          <path d="M10 0C4.5 0 0 4.5 0 10c0 7.5 10 18 10 18s10-10.5 10-18C20 4.5 15.5 0 10 0z" fill="#22c55e" stroke="#16a34a" strokeWidth="1.5"/>
+                          <path d="M10 0C4.5 0 0 4.5 0 10c0 7.5 10 18 10 18s10-10.5 10-18C20 4.5 15.5 0 10 0z" fill="#27ae60" stroke="#1a8a4b" strokeWidth="1.5"/>
                         </svg>
                       </div>
                       <span className="text-xs text-neutral-700">Campsite (tent/caravan)</span>
@@ -583,7 +591,7 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
                     <div className="flex items-center space-x-2">
                       <div className="w-5 h-6 flex-shrink-0">
                         <svg viewBox="0 0 20 28" className="w-full h-full">
-                          <path d="M10 0C4.5 0 0 4.5 0 10c0 7.5 10 18 10 18s10-10.5 10-18C20 4.5 15.5 0 10 0z" fill="#3b82f6" stroke="#2563eb" strokeWidth="1.5"/>
+                          <path d="M10 0C4.5 0 0 4.5 0 10c0 7.5 10 18 10 18s10-10.5 10-18C20 4.5 15.5 0 10 0z" fill="#2794a8" stroke="#1e7a8d" strokeWidth="1.5"/>
                         </svg>
                       </div>
                       <span className="text-xs text-neutral-700">Caravan/Motorhome site</span>
@@ -591,7 +599,7 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
                     <div className="flex items-center space-x-2">
                       <div className="w-5 h-6 flex-shrink-0">
                         <svg viewBox="0 0 20 28" className="w-full h-full">
-                          <path d="M10 0C4.5 0 0 4.5 0 10c0 7.5 10 18 10 18s10-10.5 10-18C20 4.5 15.5 0 10 0z" fill="#8b5cf6" stroke="#7c3aed" strokeWidth="1.5"/>
+                          <path d="M10 0C4.5 0 0 4.5 0 10c0 7.5 10 18 10 18s10-10.5 10-18C20 4.5 15.5 0 10 0z" fill="#7c5cbf" stroke="#6b47b0" strokeWidth="1.5"/>
                         </svg>
                       </div>
                       <span className="text-xs text-neutral-700">Aire de Service</span>
@@ -602,7 +610,7 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
                       <div className="flex items-center space-x-2">
                         <div className="w-5 h-6 flex-shrink-0">
                           <svg viewBox="0 0 20 28" className="w-full h-full">
-                            <path d="M10 0C4.5 0 0 4.5 0 10c0 7.5 10 18 10 18s10-10.5 10-18C20 4.5 15.5 0 10 0z" fill="#ef4444" stroke="#dc2626" strokeWidth="1.5"/>
+                            <path d="M10 0C4.5 0 0 4.5 0 10c0 7.5 10 18 10 18s10-10.5 10-18C20 4.5 15.5 0 10 0z" fill="#e63946" stroke="#d32535" strokeWidth="1.5"/>
                           </svg>
                         </div>
                         <span className="text-xs text-neutral-700">May not fit your vehicle</span>

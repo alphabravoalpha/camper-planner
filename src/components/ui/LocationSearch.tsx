@@ -4,6 +4,7 @@
 
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { campsiteService, type GeocodeResult } from '../../services/CampsiteService';
+import { AlertTriangle } from 'lucide-react';
 import { cn } from '../../utils/cn';
 
 interface LocationSearchProps {
@@ -215,7 +216,7 @@ const LocationSearch: React.FC<LocationSearchProps> = ({
       {/* Error state */}
       {error && (
         <div className="mt-1 text-xs text-red-600 flex items-center gap-1">
-          <span>⚠️</span>
+          <AlertTriangle className="w-3 h-3 flex-shrink-0" />
           <span>{error}</span>
           <button
             onClick={(e) => {

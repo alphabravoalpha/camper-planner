@@ -495,7 +495,7 @@ const TripManager: React.FC<TripManagerProps> = ({
       <div className="flex items-center justify-between p-4 border-b bg-gradient-to-r from-primary-50 to-primary-100">
         <div className="flex items-center gap-3">
           <Navigation className="w-6 h-6 text-primary-600" />
-          <h2 className="text-xl font-semibold text-neutral-800">Trip Manager</h2>
+          <h2 className="text-xl font-display font-semibold text-neutral-800">Trip Manager</h2>
         </div>
         <div className="flex items-center gap-2">
           {/* Quick actions */}
@@ -609,7 +609,7 @@ const TripManager: React.FC<TripManagerProps> = ({
         {viewMode === 'my_trips' && (
           <div>
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-medium text-neutral-800">
+              <h3 className="text-lg font-display font-medium text-neutral-800">
                 My Trips ({filteredTrips.length})
               </h3>
               <div className="flex gap-2">
@@ -743,7 +743,7 @@ const TripManager: React.FC<TripManagerProps> = ({
         {viewMode === 'templates' && (
           <div>
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-medium text-neutral-800">
+              <h3 className="text-lg font-display font-medium text-neutral-800">
                 Trip Templates ({filteredTemplates.length})
               </h3>
             </div>
@@ -825,7 +825,7 @@ const TripManager: React.FC<TripManagerProps> = ({
         {viewMode === 'recent' && (
           <div>
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-medium text-neutral-800">
+              <h3 className="text-lg font-display font-medium text-neutral-800">
                 Recent Trips ({recentTrips.length})
               </h3>
             </div>
@@ -868,7 +868,7 @@ const TripManager: React.FC<TripManagerProps> = ({
         {viewMode === 'comparison' && comparison && (
           <div>
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-medium text-neutral-800">
+              <h3 className="text-lg font-display font-medium text-neutral-800">
                 Trip Comparison
               </h3>
               <button
@@ -1022,7 +1022,7 @@ const TripManager: React.FC<TripManagerProps> = ({
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
             <div className="p-4 border-b">
-              <h3 className="text-lg font-semibold">Save Current Trip</h3>
+              <h3 className="text-lg font-display font-semibold">Save Current Trip</h3>
             </div>
             <div className="p-4 space-y-4">
               <div>
@@ -1121,7 +1121,7 @@ const TripManager: React.FC<TripManagerProps> = ({
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-xl max-w-lg w-full mx-4">
             <div className="p-4 border-b">
-              <h3 className="text-lg font-semibold">Import Trip</h3>
+              <h3 className="text-lg font-display font-semibold">Import Trip</h3>
             </div>
             <div className="p-4">
               <label className="block text-sm font-medium text-neutral-700 mb-2">
@@ -1159,7 +1159,7 @@ const TripManager: React.FC<TripManagerProps> = ({
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
             <div className="p-4 border-b">
-              <h3 className="text-lg font-semibold">Export Trip</h3>
+              <h3 className="text-lg font-display font-semibold">Export Trip</h3>
             </div>
             <div className="p-4 space-y-4">
               {/* Format Selection */}

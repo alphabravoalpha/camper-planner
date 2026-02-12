@@ -4,12 +4,17 @@
 import React, { useMemo, useState, useCallback } from 'react';
 import { Polyline, Marker, Popup } from 'react-leaflet';
 import L, { DivIcon } from 'leaflet';
+import { MapPin } from 'lucide-react';
 import { useRouteStore, useUIStore } from '../../store';
 import { type Waypoint } from '../../types';
 import { type RouteResponse, type RestrictedSegment } from '../../services/RoutingService';
 import { FeatureFlags } from '../../config';
 import { cn } from '../../utils/cn';
 import LocationSearch from '../ui/LocationSearch';
+
+// Inline SVG helper for HTML template string contexts (Leaflet divIcon)
+const svgIcon = (path: string, size = 14) =>
+  `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle">${path}</svg>`;
 
 // Create direction arrow icon
 const createDirectionArrowIcon = (rotation: number): DivIcon => {
@@ -87,16 +92,16 @@ const createRouteInfoIcon = (distance: number, duration: number, isHighlighted =
 // Create restriction warning icon
 const createRestrictionIcon = (restriction: RestrictedSegment): DivIcon => {
   const getRestrictionColor = (severity: 'warning' | 'error') => {
-    return severity === 'error' ? '#dc2626' : '#f59e0b'; // red-600 or amber-500
+    return severity === 'error' ? '#d32535' : '#e9a100'; // red-600 or amber-500
   };
 
   const getRestrictionSymbol = (type: string) => {
     switch (type) {
-      case 'height': return '↕️';
-      case 'width': return '↔️';
-      case 'weight': return '⚖️';
-      case 'length': return '📏';
-      default: return '⚠️';
+      case 'height': return svgIcon('<path d="M12 2v20"/><path d="m5 5 7-3 7 3"/><path d="m5 19 7 3 7-3"/>', 14);
+      case 'width': return svgIcon('<path d="M2 12h20"/><path d="m5 9-3 3 3 3"/><path d="m19 9 3 3-3 3"/>', 14);
+      case 'weight': return svgIcon('<path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/>', 14);
+      case 'length': return svgIcon('<path d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.41 2.41 0 0 1 0-3.4l2.6-2.6a2.41 2.41 0 0 1 3.4 0Z"/><path d="m14.5 12.5 2-2"/><path d="m11.5 9.5 2-2"/><path d="m8.5 6.5 2-2"/><path d="m17.5 15.5 2-2"/>', 14);
+      default: return svgIcon('<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/>', 14);
     }
   };
 
@@ -198,11 +203,15 @@ const WaypointNumber: React.FC<WaypointNumberProps> = ({ waypoint, index, total 
   };
 
   const getWaypointIcon = () => {
-    if (waypoint.type === 'start') return '🏁';
-    if (waypoint.type === 'end') return '🏁';
-    if (waypoint.type === 'campsite') return '🏕️';
-    if (waypoint.type === 'accommodation') return '🏨';
-    return '📍';
+    const flagSvg = svgIcon('<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/>');
+    const tentSvg = svgIcon('<path d="M3 20 12 4l9 16Z"/><path d="M12 4v16"/>');
+    const buildingSvg = svgIcon('<path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/>');
+    const pinSvg = svgIcon('<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>');
+    if (waypoint.type === 'start') return flagSvg;
+    if (waypoint.type === 'end') return flagSvg;
+    if (waypoint.type === 'campsite') return tentSvg;
+    if (waypoint.type === 'accommodation') return buildingSvg;
+    return pinSvg;
   };
 
   const numberIcon = L.divIcon({
@@ -273,7 +282,7 @@ const WaypointNumber: React.FC<WaypointNumberProps> = ({ waypoint, index, total 
         <div className="p-3 min-w-[250px]" onClick={(e) => e.stopPropagation()}>
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
-              <span className="text-lg">{getWaypointIcon()}</span>
+              <span className="text-lg" dangerouslySetInnerHTML={{ __html: getWaypointIcon() }} />
               <h3 className="font-semibold text-sm">{waypoint.name || `Waypoint ${index + 1}`}</h3>
             </div>
             {!isEditing && (
@@ -362,7 +371,7 @@ const WaypointNumber: React.FC<WaypointNumberProps> = ({ waypoint, index, total 
 
                 {stagedLocation && (
                   <div className="mt-1.5 text-xs text-green-600 flex items-center gap-1">
-                    <span>📍</span>
+                    <MapPin className="w-3 h-3" />
                     <span>New location: {stagedLocation.name}</span>
                   </div>
                 )}
@@ -465,18 +474,18 @@ const CalculatedRouteDisplay: React.FC<{ route: RouteResponse; waypoints?: Waypo
   // Determine route color based on service and vehicle profile
   const getRouteColor = () => {
     if (route.restrictions?.cannotAccommodate) {
-      return '#dc2626'; // red-600 for impossible routes
+      return '#d32535'; // error red for impossible routes
     }
     if (route.restrictions?.violatedDimensions.length) {
-      return '#f59e0b'; // amber-500 for restricted routes
+      return '#e9a100'; // warning amber for restricted routes
     }
     if (route.warnings && route.warnings.length > 0) {
-      return '#f59e0b'; // amber-500 for warnings (fallback service)
+      return '#e9a100'; // warning amber for warnings (fallback service)
     }
     if (route.metadata.service === 'openrouteservice') {
-      return '#059669'; // emerald-600 for primary service
+      return '#27ae60'; // success green for primary service
     }
-    return '#3b82f6'; // blue-500 for OSRM fallback
+    return '#2794a8'; // teal for OSRM fallback
   };
 
   // Get dash pattern based on restrictions

@@ -170,13 +170,13 @@ const ElevationProfile: React.FC<ElevationProfileProps> = ({ route, className })
             {/* Gradient definition */}
             <defs>
               <linearGradient id="elevationGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#3b82f6" stopOpacity={0.3} />
-                <stop offset="100%" stopColor="#3b82f6" stopOpacity={0.1} />
+                <stop offset="0%" stopColor="#2794a8" stopOpacity={0.3} />
+                <stop offset="100%" stopColor="#2794a8" stopOpacity={0.1} />
               </linearGradient>
             </defs>
 
             {/* Grid lines */}
-            <g stroke="#e5e7eb" strokeWidth="1">
+            <g stroke="#e2e5e9" strokeWidth="1">
               {/* Horizontal grid lines */}
               {[0, 0.25, 0.5, 0.75, 1].map(ratio => {
                 const y = MARGIN.top + ratio * CHART_HEIGHT;
@@ -194,7 +194,7 @@ const ElevationProfile: React.FC<ElevationProfileProps> = ({ route, className })
                       y={y + 4}
                       textAnchor="end"
                       fontSize="12"
-                      fill="#6b7280"
+                      fill="#6b7785"
                     >
                       {Math.round(elevation)}m
                     </text>
@@ -219,7 +219,7 @@ const ElevationProfile: React.FC<ElevationProfileProps> = ({ route, className })
                       y={MARGIN.top + CHART_HEIGHT + 20}
                       textAnchor="middle"
                       fontSize="12"
-                      fill="#6b7280"
+                      fill="#6b7785"
                     >
                       {distance.toFixed(1)}km
                     </text>
@@ -239,7 +239,7 @@ const ElevationProfile: React.FC<ElevationProfileProps> = ({ route, className })
             <path
               d={pathData}
               fill="none"
-              stroke="#3b82f6"
+              stroke="#2794a8"
               strokeWidth="2"
               transform={`translate(${MARGIN.left}, ${MARGIN.top})`}
             />

@@ -17,7 +17,7 @@ const TermsPage: React.FC = () => {
           </Link>
           <div className="flex items-center gap-3 mb-3">
             <FileText className="w-8 h-8" />
-            <h1 className="text-3xl sm:text-4xl font-bold">Terms of Use</h1>
+            <h1 className="text-3xl sm:text-4xl font-display font-bold">Terms of Use</h1>
           </div>
           <p className="text-primary-100 text-sm">Last updated: February 2026</p>
         </div>
@@ -25,7 +25,7 @@ const TermsPage: React.FC = () => {
 
       {/* Content */}
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <div className="bg-white rounded-2xl shadow-soft p-6 sm:p-8 space-y-8">
+        <div className="bg-white rounded-xl shadow-soft p-6 sm:p-8 space-y-8">
 
           <section>
             <p className="text-neutral-700 leading-relaxed">
@@ -35,7 +35,7 @@ const TermsPage: React.FC = () => {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-neutral-900 mb-3">1. Use of the App</h2>
+            <h2 className="text-xl font-display font-semibold text-neutral-900 mb-3">1. Use of the App</h2>
             <p className="text-neutral-700 leading-relaxed mb-3">
               The app is free to use for personal, non-commercial trip planning purposes. You may
               use it to plan routes, discover campsites, calculate costs, and export trip data.
@@ -48,7 +48,7 @@ const TermsPage: React.FC = () => {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-neutral-900 mb-3">2. Route and Campsite Data</h2>
+            <h2 className="text-xl font-display font-semibold text-neutral-900 mb-3">2. Route and Campsite Data</h2>
             <p className="text-neutral-700 leading-relaxed mb-3">
               Routes, campsite information, and other data displayed in the app are sourced from
               third-party services (OpenStreetMap, OpenRouteService, Overpass API). While we strive
@@ -60,7 +60,7 @@ const TermsPage: React.FC = () => {
               <li>Campsite information (amenities, opening hours, availability) may not be current</li>
               <li>Cost estimates are approximations and may not reflect actual prices</li>
             </ul>
-            <div className="mt-3 p-4 bg-amber-50 border border-amber-200 rounded-xl">
+            <div className="mt-3 p-4 bg-amber-50 border border-amber-200 rounded-lg">
               <p className="text-amber-800 text-sm font-medium">
                 Always verify critical information (bridge heights, road restrictions, campsite
                 availability) independently before your trip. This app is a planning aid, not a
@@ -70,7 +70,7 @@ const TermsPage: React.FC = () => {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-neutral-900 mb-3">3. Your Data</h2>
+            <h2 className="text-xl font-display font-semibold text-neutral-900 mb-3">3. Your Data</h2>
             <p className="text-neutral-700 leading-relaxed">
               All trip data is stored locally in your browser. You own your data entirely. We do not
               have access to it, cannot recover it, and are not responsible for data loss. We
@@ -83,7 +83,7 @@ const TermsPage: React.FC = () => {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-neutral-900 mb-3">4. Affiliate Links</h2>
+            <h2 className="text-xl font-display font-semibold text-neutral-900 mb-3">4. Affiliate Links</h2>
             <p className="text-neutral-700 leading-relaxed">
               The app may display links to third-party booking platforms. These are affiliate links,
               meaning we may earn a small commission from bookings made through them at no additional
@@ -98,7 +98,7 @@ const TermsPage: React.FC = () => {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-neutral-900 mb-3">5. Disclaimer of Warranties</h2>
+            <h2 className="text-xl font-display font-semibold text-neutral-900 mb-3">5. Disclaimer of Warranties</h2>
             <p className="text-neutral-700 leading-relaxed">
               The app is provided &quot;as is&quot; and &quot;as available&quot; without warranties of any kind, either
               express or implied. We do not guarantee that the app will be uninterrupted,
@@ -107,7 +107,7 @@ const TermsPage: React.FC = () => {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-neutral-900 mb-3">6. Limitation of Liability</h2>
+            <h2 className="text-xl font-display font-semibold text-neutral-900 mb-3">6. Limitation of Liability</h2>
             <p className="text-neutral-700 leading-relaxed">
               To the fullest extent permitted by law, we shall not be liable for any indirect,
               incidental, special, or consequential damages arising from the use of the app. This
@@ -117,7 +117,7 @@ const TermsPage: React.FC = () => {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-neutral-900 mb-3">7. Third-Party Services</h2>
+            <h2 className="text-xl font-display font-semibold text-neutral-900 mb-3">7. Third-Party Services</h2>
             <p className="text-neutral-700 leading-relaxed">
               The app relies on third-party APIs and services. Their availability is outside our
               control. We are not responsible for downtime, rate limiting, or changes to these
@@ -126,7 +126,7 @@ const TermsPage: React.FC = () => {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-neutral-900 mb-3">8. Changes to These Terms</h2>
+            <h2 className="text-xl font-display font-semibold text-neutral-900 mb-3">8. Changes to These Terms</h2>
             <p className="text-neutral-700 leading-relaxed">
               We may update these terms from time to time. Continued use of the app after changes
               constitutes acceptance of the updated terms. The &quot;last updated&quot; date at the top of
@@ -135,7 +135,7 @@ const TermsPage: React.FC = () => {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-neutral-900 mb-3">9. Governing Law</h2>
+            <h2 className="text-xl font-display font-semibold text-neutral-900 mb-3">9. Governing Law</h2>
             <p className="text-neutral-700 leading-relaxed">
               These terms are governed by the laws of England and Wales. Any disputes arising from
               the use of the app shall be subject to the exclusive jurisdiction of the courts of
@@ -144,7 +144,7 @@ const TermsPage: React.FC = () => {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-neutral-900 mb-3">10. Contact</h2>
+            <h2 className="text-xl font-display font-semibold text-neutral-900 mb-3">10. Contact</h2>
             <p className="text-neutral-700 leading-relaxed">
               For questions about these terms, please open an issue on our{' '}
               <a

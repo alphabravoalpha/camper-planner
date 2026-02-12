@@ -2,6 +2,11 @@
 // Redesigned: Single scrollable layout with complete traveler information + booking
 
 import React, { useState, useCallback, useRef, useMemo } from 'react';
+import {
+  Zap, Wifi, Droplets, Bath, GlassWater, Trash2, Shirt,
+  UtensilsCrossed, ShoppingCart, Baby, Waves, Dog,
+  Phone, Mail, Globe, Info
+} from 'lucide-react';
 import { FeatureFlags } from '../../config';
 import { type Campsite } from '../../services/CampsiteService';
 import { bookingService, type BookingLink } from '../../services/BookingService';
@@ -17,19 +22,19 @@ export interface CampsiteDetailsProps {
 }
 
 // Amenity configuration with icons and labels
-const AMENITY_CONFIG: Record<string, { icon: string; label: string }> = {
-  electricity: { icon: '⚡', label: 'Power' },
-  wifi: { icon: '📶', label: 'WiFi' },
-  showers: { icon: '🚿', label: 'Showers' },
-  toilets: { icon: '🚻', label: 'Toilets' },
-  drinking_water: { icon: '🚰', label: 'Water' },
-  waste_disposal: { icon: '🗑️', label: 'Waste' },
-  laundry: { icon: '👕', label: 'Laundry' },
-  restaurant: { icon: '🍽️', label: 'Food' },
-  shop: { icon: '🛒', label: 'Shop' },
-  playground: { icon: '🎠', label: 'Kids' },
-  swimming_pool: { icon: '🏊', label: 'Pool' },
-  pet_allowed: { icon: '🐕', label: 'Pets OK' }
+const AMENITY_CONFIG: Record<string, { icon: React.FC<{ className?: string }>; label: string }> = {
+  electricity: { icon: Zap, label: 'Power' },
+  wifi: { icon: Wifi, label: 'WiFi' },
+  showers: { icon: Droplets, label: 'Showers' },
+  toilets: { icon: Bath, label: 'Toilets' },
+  drinking_water: { icon: GlassWater, label: 'Water' },
+  waste_disposal: { icon: Trash2, label: 'Waste' },
+  laundry: { icon: Shirt, label: 'Laundry' },
+  restaurant: { icon: UtensilsCrossed, label: 'Food' },
+  shop: { icon: ShoppingCart, label: 'Shop' },
+  playground: { icon: Baby, label: 'Kids' },
+  swimming_pool: { icon: Waves, label: 'Pool' },
+  pet_allowed: { icon: Dog, label: 'Pets OK' }
 };
 
 // Key amenities to show at the top (most important for travelers)
@@ -180,7 +185,7 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
   return (
     <div className={cn(
       'bg-white shadow-lg border border-neutral-200 overflow-hidden flex flex-col',
-      isMobile ? 'rounded-t-2xl' : 'rounded-lg',
+      isMobile ? 'rounded-t-xl' : 'rounded-lg',
       className
     )}>
       {/* Drag handle for mobile */}
@@ -194,7 +199,7 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
       <div className="bg-gradient-to-r from-green-500 to-green-600 text-white p-4">
         <div className="flex items-start justify-between">
           <div className="flex-1 min-w-0">
-            <h2 className="text-lg font-semibold truncate">
+            <h2 className="text-lg font-display font-semibold truncate">
               {campsite.name || `${campsite.type.replace('_', ' ')} #${campsite.id}`}
             </h2>
             <div className="flex items-center space-x-2 mt-1 text-sm text-green-100">
@@ -285,7 +290,7 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
                     className="flex items-center gap-1.5 px-2.5 py-1.5 bg-green-50 text-green-800 rounded-lg text-sm"
                     title={config?.label || amenity}
                   >
-                    <span className="text-base">{config?.icon || '•'}</span>
+                    {config?.icon ? <config.icon className="w-4 h-4" /> : <span>•</span>}
                     <span className="font-medium">{config?.label || amenity.replace(/_/g, ' ')}</span>
                   </div>
                 );
@@ -451,8 +456,8 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
               <div className="px-4 pb-4">
                 {/* Note about data source */}
                 {availableAmenities.length === 0 && (
-                  <div className="mb-3 p-2 bg-amber-50 border border-amber-200 rounded text-xs text-amber-700">
-                    ℹ️ Amenity data not available from OpenStreetMap. Check the campsite website for details.
+                  <div className="mb-3 p-2 bg-amber-50 border border-amber-200 rounded text-xs text-amber-700 flex items-start gap-1.5">
+                    <Info className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" /> Amenity data not available from OpenStreetMap. Check the campsite website for details.
                   </div>
                 )}
                 <div className="grid grid-cols-2 gap-2">
@@ -470,7 +475,7 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
                             : 'bg-neutral-50 text-neutral-500 border border-neutral-200'
                         )}
                       >
-                        <span className="text-base">{config?.icon || '•'}</span>
+                        {config?.icon ? <config.icon className="w-4 h-4 flex-shrink-0" /> : <span>•</span>}
                         <span className="flex-1 capitalize">{config?.label || amenity.replace(/_/g, ' ')}</span>
                         {isConfirmed ? (
                           <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -518,7 +523,7 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
                     href={`tel:${campsite.contact.phone.replace(/[^\d+]/g, '')}`}
                     className="flex items-center gap-3 text-primary-600 hover:text-primary-800 text-sm"
                   >
-                    <span>📞</span>
+                    <Phone className="w-4 h-4 flex-shrink-0" />
                     <span>{campsite.contact.phone}</span>
                   </a>
                 )}
@@ -527,7 +532,7 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
                     href={`mailto:${campsite.contact.email}`}
                     className="flex items-center gap-3 text-primary-600 hover:text-primary-800 text-sm"
                   >
-                    <span>✉️</span>
+                    <Mail className="w-4 h-4 flex-shrink-0" />
                     <span>{campsite.contact.email}</span>
                   </a>
                 )}
@@ -538,7 +543,7 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
                     rel="noopener noreferrer"
                     className="flex items-center gap-3 text-primary-600 hover:text-primary-800 text-sm"
                   >
-                    <span>🌐</span>
+                    <Globe className="w-4 h-4 flex-shrink-0" />
                     <span className="truncate">{campsite.contact.website.replace(/^https?:\/\//, '')}</span>
                   </a>
                 )}

@@ -83,7 +83,7 @@ const MapControlsPanel: React.FC<MapControlsPanelProps> = ({
   return (
     <div className="absolute top-4 right-3 z-40 flex flex-col space-y-2 hidden sm:flex">
       {/* Main Controls */}
-      <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-medium overflow-hidden">
+      <div className="bg-white/90 backdrop-blur-sm rounded-lg shadow-medium overflow-hidden">
         {/* Zoom Controls */}
         <button
           onClick={handleZoomIn}
@@ -108,7 +108,7 @@ const MapControlsPanel: React.FC<MapControlsPanelProps> = ({
       </div>
 
       {/* Advanced Controls */}
-      <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-medium overflow-hidden">
+      <div className="bg-white/90 backdrop-blur-sm rounded-lg shadow-medium overflow-hidden">
         {/* Zoom to Fit */}
         <button
           onClick={handleZoomToFit}
@@ -180,7 +180,7 @@ const MapControlsPanel: React.FC<MapControlsPanelProps> = ({
       <button
         onClick={() => setShowShortcuts(!showShortcuts)}
         className={cn(
-          "bg-white/90 backdrop-blur-sm rounded-xl shadow-medium p-2 hover:bg-neutral-50 transition-all duration-200",
+          "bg-white/90 backdrop-blur-sm rounded-lg shadow-medium p-2 hover:bg-neutral-50 transition-all duration-200",
           showShortcuts && "bg-primary-50 text-primary-600"
         )}
         title="Show keyboard shortcuts"
@@ -194,7 +194,7 @@ const MapControlsPanel: React.FC<MapControlsPanelProps> = ({
       {/* Keyboard Shortcuts Panel */}
       {showShortcuts && (
         <div className="bg-white rounded-lg shadow-lg p-4 min-w-64 max-w-sm">
-          <h3 className="font-semibold text-neutral-900 mb-3 text-sm">Keyboard Shortcuts</h3>
+          <h3 className="font-display font-semibold text-neutral-900 mb-3 text-sm">Keyboard Shortcuts</h3>
           <div className="space-y-2">
             {shortcuts.map((shortcut, index) => (
               <div key={index} className="flex items-center justify-between text-xs">

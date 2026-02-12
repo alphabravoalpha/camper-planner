@@ -41,10 +41,10 @@ const FeedbackPage: React.FC = () => {
             Back to planner
           </Link>
           <div className="text-center">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-white/15 rounded-2xl mb-5 backdrop-blur-sm">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-white/15 rounded-xl mb-5 backdrop-blur-sm">
               <MessageSquare className="w-8 h-8" />
             </div>
-            <h1 className="text-3xl sm:text-4xl font-bold mb-3">
+            <h1 className="text-3xl sm:text-4xl font-display font-bold mb-3">
               Share Your Feedback
             </h1>
             <p className="text-teal-100 text-lg max-w-2xl mx-auto leading-relaxed">
@@ -58,8 +58,8 @@ const FeedbackPage: React.FC = () => {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
 
         {/* What we're looking for */}
-        <div className="bg-white rounded-2xl shadow-soft p-6 sm:p-8 -mt-8 relative z-10">
-          <h2 className="text-xl font-bold text-neutral-900 mb-5 text-center">
+        <div className="bg-white rounded-xl shadow-soft p-6 sm:p-8 -mt-8 relative z-10">
+          <h2 className="text-xl font-display font-bold text-neutral-900 mb-5 text-center">
             What you can share
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
@@ -67,10 +67,10 @@ const FeedbackPage: React.FC = () => {
               const Icon = type.icon;
               return (
                 <div key={type.title} className="text-center">
-                  <div className="w-11 h-11 bg-teal-50 rounded-xl flex items-center justify-center mx-auto mb-3">
+                  <div className="w-11 h-11 bg-teal-50 rounded-lg flex items-center justify-center mx-auto mb-3">
                     <Icon className="w-5 h-5 text-teal-600" />
                   </div>
-                  <h3 className="text-sm font-semibold text-neutral-900 mb-1">
+                  <h3 className="text-sm font-display font-semibold text-neutral-900 mb-1">
                     {type.title}
                   </h3>
                   <p className="text-xs text-neutral-500 leading-relaxed">
@@ -83,9 +83,9 @@ const FeedbackPage: React.FC = () => {
         </div>
 
         {/* Embedded Google Form */}
-        <div className="bg-white rounded-2xl shadow-soft overflow-hidden">
+        <div className="bg-white rounded-xl shadow-soft overflow-hidden">
           <div className="p-6 pb-0">
-            <h2 className="text-2xl font-bold text-neutral-900 mb-1">
+            <h2 className="text-2xl font-display font-bold text-neutral-900 mb-1">
               Feedback Form
             </h2>
             <p className="text-neutral-500 text-sm mb-4">
@@ -113,8 +113,8 @@ const FeedbackPage: React.FC = () => {
         </div>
 
         {/* What happens next */}
-        <div className="bg-gradient-to-br from-teal-50 to-teal-100 rounded-2xl p-6 sm:p-8">
-          <h2 className="text-xl font-bold text-teal-900 mb-4 text-center">
+        <div className="bg-gradient-to-br from-teal-50 to-teal-100 rounded-xl p-6 sm:p-8">
+          <h2 className="text-xl font-display font-bold text-teal-900 mb-4 text-center">
             What happens next?
           </h2>
           <div className="space-y-3 max-w-lg mx-auto">
@@ -146,14 +146,14 @@ const FeedbackPage: React.FC = () => {
         </div>
 
         {/* CTA */}
-        <div className="text-center bg-white rounded-2xl shadow-soft p-8">
-          <h2 className="text-2xl font-bold text-neutral-900 mb-3">Thanks for helping us improve</h2>
+        <div className="text-center bg-white rounded-xl shadow-soft p-8">
+          <h2 className="text-2xl font-display font-bold text-neutral-900 mb-3">Thanks for helping us improve</h2>
           <p className="text-neutral-500 mb-6">
             Your input directly shapes the tools that thousands of camper travellers rely on.
           </p>
           <Link
             to="/"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-teal-600 text-white rounded-xl font-semibold hover:bg-teal-700 transition-all duration-200 shadow-sm hover:shadow-medium active:scale-[0.97]"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-teal-600 text-white rounded-lg font-display font-semibold hover:bg-teal-700 transition-all duration-200 shadow-sm hover:shadow-medium active:scale-[0.97]"
           >
             Back to Planner
             <ChevronRight className="w-5 h-5" />

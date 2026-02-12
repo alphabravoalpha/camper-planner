@@ -3,6 +3,7 @@
 
 import React, { useState, useCallback } from 'react';
 import { TileLayer } from 'react-leaflet';
+import { Map, Mountain, Bike, Cross } from 'lucide-react';
 import { cn } from '../../utils/cn';
 import { useUIStore } from '../../store';
 
@@ -16,7 +17,7 @@ export interface TileLayerConfig {
   maxZoom: number;
   subdomains?: string[];
   category: 'standard' | 'topographic' | 'outdoor' | 'satellite';
-  icon: string;
+  icon: React.FC<{ className?: string }>;
 }
 
 export const TILE_LAYERS: TileLayerConfig[] = [
@@ -29,7 +30,7 @@ export const TILE_LAYERS: TileLayerConfig[] = [
     maxZoom: 19,
     subdomains: ['a', 'b', 'c'],
     category: 'standard',
-    icon: '🗺️'
+    icon: Map
   },
   {
     id: 'opentopomap',
@@ -40,7 +41,7 @@ export const TILE_LAYERS: TileLayerConfig[] = [
     maxZoom: 15,
     subdomains: ['a', 'b', 'c'],
     category: 'topographic',
-    icon: '🏔️'
+    icon: Mountain
   },
   {
     id: 'cyclosm',
@@ -51,7 +52,7 @@ export const TILE_LAYERS: TileLayerConfig[] = [
     maxZoom: 19,
     subdomains: ['a', 'b', 'c'],
     category: 'outdoor',
-    icon: '🚴'
+    icon: Bike
   },
   {
     id: 'humanitarian',
@@ -62,7 +63,7 @@ export const TILE_LAYERS: TileLayerConfig[] = [
     maxZoom: 19,
     subdomains: ['a', 'b'],
     category: 'standard',
-    icon: '🏥'
+    icon: Cross
   }
 ];
 
@@ -156,7 +157,7 @@ const MapLayerControl: React.FC<MapLayerControlProps> = ({
             title={`Current: ${currentLayer?.name || 'Unknown'}`}
             aria-label="Open layer control"
           >
-            <span className="text-lg">{currentLayer?.icon || '🗺️'}</span>
+            {currentLayer ? <currentLayer.icon className="w-5 h-5" /> : <Map className="w-5 h-5" />}
           </button>
         </div>
       </>
@@ -224,7 +225,7 @@ const MapLayerControl: React.FC<MapLayerControlProps> = ({
                     <div className="animate-spin rounded-full h-4 w-4 border-2 border-primary-600 border-t-transparent"></div>
                   </div>
                 ) : (
-                  <span className="text-lg">{layer.icon}</span>
+                  <layer.icon className="w-5 h-5" />
                 )}
               </div>
 

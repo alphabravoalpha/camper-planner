@@ -449,7 +449,7 @@ const MapContainer: React.FC = () => {
       {/* Waypoint hint for new users - shown when no waypoints exist (hidden during tour) */}
       {waypoints.length === 0 && isMapReady && !isTourActive && (
         <div className="absolute bottom-24 left-1/2 transform -translate-x-1/2 z-20 pointer-events-none hidden sm:block animate-fade-in">
-          <div className="bg-white/95 backdrop-blur-sm px-5 py-3 rounded-xl shadow-lg border border-neutral-200">
+          <div className="bg-white/95 backdrop-blur-sm px-5 py-3 rounded-lg shadow-lg border border-neutral-200">
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center flex-shrink-0">
                 <svg className="w-4 h-4 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -761,7 +761,7 @@ const MapContainer: React.FC = () => {
           {/* Panel Header */}
           <div className="flex items-center justify-between p-4 border-b border-neutral-200 bg-neutral-50">
             <div className="flex items-center space-x-3">
-              <h2 className="text-lg font-semibold text-neutral-900">Route Details</h2>
+              <h2 className="text-lg font-display font-semibold text-neutral-900">Route Details</h2>
               {calculatedRoute.alternativeRoutes && calculatedRoute.alternativeRoutes.length > 0 && (
                 <span className="bg-primary-100 text-primary-800 text-xs px-2 py-1 rounded-full">
                   +{calculatedRoute.alternativeRoutes.length} alternatives
@@ -835,7 +835,7 @@ const MapContainer: React.FC = () => {
         <div className="fixed inset-y-0 right-0 z-40 w-full sm:w-96 bg-white border-l border-neutral-200 shadow-xl transform transition-transform sm:translate-x-0">
           <div className="h-full flex flex-col">
             <div className="flex items-center justify-between p-4 border-b border-neutral-200 bg-purple-50">
-              <h2 className="text-lg font-semibold text-neutral-900">Campsite Recommendations</h2>
+              <h2 className="text-lg font-display font-semibold text-neutral-900">Campsite Recommendations</h2>
               <button
                 onClick={() => setShowCampsiteRecommendations(false)}
                 className="p-1 hover:bg-purple-200 rounded transition-colors"
@@ -859,7 +859,7 @@ const MapContainer: React.FC = () => {
           <div className="h-full flex flex-col">
             {/* Panel Header */}
             <div className="flex items-center justify-between p-4 border-b border-neutral-200 bg-orange-50">
-              <h2 className="text-lg font-semibold text-neutral-900">Route Optimizer</h2>
+              <h2 className="text-lg font-display font-semibold text-neutral-900">Route Optimizer</h2>
               <button
                 onClick={() => setShowRouteOptimizer(false)}
                 className="p-1 hover:bg-orange-200 rounded transition-colors"
@@ -895,7 +895,7 @@ const MapContainer: React.FC = () => {
           <div className="h-full flex flex-col">
             {/* Panel Header */}
             <div className="flex items-center justify-between p-4 border-b border-neutral-200 bg-emerald-50">
-              <h2 className="text-lg font-semibold text-neutral-900">Trip Cost Calculator</h2>
+              <h2 className="text-lg font-display font-semibold text-neutral-900">Trip Cost Calculator</h2>
               <button
                 onClick={() => setShowCostCalculator(false)}
                 className="p-1 hover:bg-emerald-200 rounded transition-colors"
@@ -927,7 +927,7 @@ const MapContainer: React.FC = () => {
           <div className="h-full flex flex-col">
             {/* Panel Header */}
             <div className="flex items-center justify-between p-4 border-b border-neutral-200 bg-indigo-50">
-              <h2 className="text-lg font-semibold text-neutral-900">Trip Manager</h2>
+              <h2 className="text-lg font-display font-semibold text-neutral-900">Trip Manager</h2>
               <button
                 onClick={() => setShowTripManager(false)}
                 className="p-1 hover:bg-indigo-200 rounded transition-colors"
@@ -962,7 +962,7 @@ const MapContainer: React.FC = () => {
           <div className="h-full flex flex-col">
             {/* Panel Header */}
             <div className="flex items-center justify-between p-4 border-b border-neutral-200 bg-violet-50">
-              <h2 className="text-lg font-semibold text-neutral-900">Planning Tools</h2>
+              <h2 className="text-lg font-display font-semibold text-neutral-900">Planning Tools</h2>
               <button
                 onClick={() => setShowPlanningTools(false)}
                 className="p-1 hover:bg-violet-200 rounded transition-colors"

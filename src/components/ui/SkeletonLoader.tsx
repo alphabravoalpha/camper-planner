@@ -39,7 +39,7 @@ export const Skeleton: React.FC<SkeletonProps> = ({
 
 // Campsite Card Skeleton
 export const CampsiteCardSkeleton: React.FC = () => (
-  <div className="rounded-2xl shadow-soft p-4 space-y-3 bg-white">
+  <div className="rounded-xl shadow-soft p-4 space-y-3 bg-white">
     <div className="flex items-start space-x-3">
       <Skeleton variant="circular" width={40} height={40} />
       <div className="flex-1 space-y-2">
@@ -87,7 +87,7 @@ export const RouteInfoSkeleton: React.FC = () => (
 export const WaypointListSkeleton: React.FC<{ count?: number }> = ({ count = 3 }) => (
   <div className="space-y-2">
     {Array.from({ length: count }).map((_, i) => (
-      <div key={i} className="flex items-center space-x-3 p-3 rounded-2xl shadow-soft bg-white">
+      <div key={i} className="flex items-center space-x-3 p-3 rounded-xl shadow-soft bg-white">
         <Skeleton variant="circular" width={36} height={36} />
         <div className="flex-1 space-y-2">
           <Skeleton variant="text" width="70%" height={14} />

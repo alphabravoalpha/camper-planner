@@ -2,6 +2,7 @@
 // Phase 2.4: Intuitive onboarding and contextual help
 
 import React, { useState, useEffect } from 'react';
+import { Truck, Map, MapPin, Target, Route, Sparkles, Lightbulb } from 'lucide-react';
 import { useRouteStore, useUIStore, useVehicleStore } from '../../store';
 import { cn } from '../../utils/cn';
 import Tooltip from './Tooltip';
@@ -12,7 +13,7 @@ interface GuidanceStep {
   content: string;
   action?: string;
   position?: 'top' | 'bottom' | 'left' | 'right';
-  icon?: string;
+  icon?: React.FC<{ className?: string }>;
   dismissible?: boolean;
 }
 
@@ -24,25 +25,25 @@ interface UserGuidanceProps {
 const GUIDANCE_STEPS: GuidanceStep[] = [
   {
     id: 'welcome',
-    title: 'Welcome to Camper Planner! 🚐',
+    title: 'Welcome to Camper Planner!',
     content: 'Plan your perfect European camping trip by clicking on the map to add waypoints.',
     action: 'Click anywhere on the map to start',
-    icon: '🗺️',
+    icon: Map,
     dismissible: true
   },
   {
     id: 'first-waypoint',
-    title: 'Great start! 🎯',
+    title: 'Great start!',
     content: 'You\'ve added your first waypoint. Add more points to create your route.',
     action: 'Click another location to continue',
-    icon: '📍'
+    icon: MapPin
   },
   {
     id: 'route-ready',
-    title: 'Route ready! 🛣️',
+    title: 'Route ready!',
     content: 'Perfect! You now have a route. Use the controls to zoom, add layers, or go fullscreen.',
     action: 'Try the map controls on the right',
-    icon: '✨'
+    icon: Sparkles
   }
 ];
 
@@ -162,7 +163,7 @@ const UserGuidance: React.FC<UserGuidanceProps> = ({ className }) => {
   const TipsPanel = () => (
     <div className="bg-white rounded-lg shadow-lg border border-neutral-200 p-4 max-w-md">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-neutral-900">💡 Quick Tips</h3>
+        <h3 className="text-lg font-semibold text-neutral-900 flex items-center gap-2"><Lightbulb className="w-5 h-5" /> Quick Tips</h3>
         <button
           onClick={() => setShowHelpPanel(false)}
           className="text-neutral-400 hover:text-neutral-600 p-1 rounded transition-colors"
@@ -211,7 +212,7 @@ const UserGuidance: React.FC<UserGuidanceProps> = ({ className }) => {
             <div className="flex items-start justify-between mb-2">
               <div className="flex items-center">
                 {activeStep.icon && (
-                  <span className="text-xl mr-2">{activeStep.icon}</span>
+                  <activeStep.icon className="w-5 h-5 mr-2" />
                 )}
                 <h3 className="font-semibold">{activeStep.title}</h3>
               </div>
@@ -230,8 +231,8 @@ const UserGuidance: React.FC<UserGuidanceProps> = ({ className }) => {
             <p className="text-primary-100 mb-3">{activeStep.content}</p>
 
             {activeStep.action && (
-              <div className="text-sm text-primary-200 bg-primary-700 bg-opacity-50 rounded px-3 py-2">
-                💡 {activeStep.action}
+              <div className="text-sm text-primary-200 bg-primary-700 bg-opacity-50 rounded px-3 py-2 flex items-center gap-1">
+                <Lightbulb className="w-4 h-4 flex-shrink-0" /> {activeStep.action}
               </div>
             )}
 

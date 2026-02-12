@@ -70,41 +70,41 @@ const SettingsPage: React.FC = () => {
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Header */}
         <div className="flex items-center gap-3 mb-8">
-          <Link to="/" className="p-2 rounded-xl text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100 transition-colors">
+          <Link to="/" className="p-2 rounded-lg text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100 transition-colors">
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-primary-50 rounded-xl flex items-center justify-center">
+            <div className="w-10 h-10 bg-primary-50 rounded-lg flex items-center justify-center">
               <Settings className="w-5 h-5 text-primary-600" />
             </div>
-            <h1 className="text-2xl font-bold text-neutral-900">Settings</h1>
+            <h1 className="text-2xl font-display font-bold text-neutral-900">Settings</h1>
           </div>
         </div>
 
         <div className="space-y-6">
           {/* Data Summary */}
-          <div className="bg-white rounded-2xl shadow-soft p-6">
+          <div className="bg-white rounded-xl shadow-soft p-6">
             <div className="flex items-center gap-3 mb-4">
               <Database className="w-5 h-5 text-primary-600" />
-              <h2 className="text-lg font-semibold text-neutral-900">Your Data</h2>
+              <h2 className="text-lg font-display font-semibold text-neutral-900">Your Data</h2>
             </div>
             <p className="text-sm text-neutral-500 mb-4">
               All your data is stored locally in your browser. Nothing is sent to any server.
             </p>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              <div className="bg-neutral-50 rounded-xl p-3 text-center">
+              <div className="bg-neutral-50 rounded-lg p-3 text-center">
                 <div className="text-xl font-bold text-primary-600">{profile ? 1 : 0}</div>
                 <div className="text-xs text-neutral-500 mt-0.5">Vehicle Profile</div>
               </div>
-              <div className="bg-neutral-50 rounded-xl p-3 text-center">
+              <div className="bg-neutral-50 rounded-lg p-3 text-center">
                 <div className="text-xl font-bold text-primary-600">{waypoints?.length || 0}</div>
                 <div className="text-xs text-neutral-500 mt-0.5">Waypoints</div>
               </div>
-              <div className="bg-neutral-50 rounded-xl p-3 text-center">
+              <div className="bg-neutral-50 rounded-lg p-3 text-center">
                 <div className="text-xl font-bold text-primary-600">{savedTrips?.length || 0}</div>
                 <div className="text-xs text-neutral-500 mt-0.5">Saved Trips</div>
               </div>
-              <div className="bg-neutral-50 rounded-xl p-3 text-center">
+              <div className="bg-neutral-50 rounded-lg p-3 text-center">
                 <div className="text-xl font-bold text-primary-600">{getStorageSize()}</div>
                 <div className="text-xs text-neutral-500 mt-0.5">KB Used</div>
               </div>
@@ -112,12 +112,12 @@ const SettingsPage: React.FC = () => {
           </div>
 
           {/* Data Management */}
-          <div className="bg-white rounded-2xl shadow-soft p-6">
-            <h2 className="text-lg font-semibold text-neutral-900 mb-4">Data Management</h2>
+          <div className="bg-white rounded-xl shadow-soft p-6">
+            <h2 className="text-lg font-display font-semibold text-neutral-900 mb-4">Data Management</h2>
             <div className="space-y-3">
               <button
                 onClick={handleExportAllData}
-                className="w-full flex items-center gap-3 p-3 border border-neutral-200 rounded-xl text-sm font-medium text-neutral-700 hover:bg-neutral-50 transition-colors"
+                className="w-full flex items-center gap-3 p-3 border border-neutral-200 rounded-lg text-sm font-medium text-neutral-700 hover:bg-neutral-50 transition-colors"
               >
                 <Download className="w-5 h-5 text-primary-600" />
                 <div className="text-left">
@@ -129,7 +129,7 @@ const SettingsPage: React.FC = () => {
               {!showConfirmClear ? (
                 <button
                   onClick={() => setShowConfirmClear(true)}
-                  className="w-full flex items-center gap-3 p-3 border border-red-200 rounded-xl text-sm font-medium text-red-700 hover:bg-red-50 transition-colors"
+                  className="w-full flex items-center gap-3 p-3 border border-red-200 rounded-lg text-sm font-medium text-red-700 hover:bg-red-50 transition-colors"
                 >
                   <Trash2 className="w-5 h-5 text-red-500" />
                   <div className="text-left">
@@ -138,7 +138,7 @@ const SettingsPage: React.FC = () => {
                   </div>
                 </button>
               ) : (
-                <div className="p-4 bg-red-50 border border-red-200 rounded-xl">
+                <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
                   <p className="text-sm text-red-800 font-medium mb-3">
                     Are you sure? This will permanently delete all your data. Export a backup first if needed.
                   </p>
@@ -162,10 +162,10 @@ const SettingsPage: React.FC = () => {
           </div>
 
           {/* Privacy Info */}
-          <div className="bg-white rounded-2xl shadow-soft p-6">
+          <div className="bg-white rounded-xl shadow-soft p-6">
             <div className="flex items-center gap-3 mb-4">
               <Shield className="w-5 h-5 text-green-600" />
-              <h2 className="text-lg font-semibold text-neutral-900">Privacy</h2>
+              <h2 className="text-lg font-display font-semibold text-neutral-900">Privacy</h2>
             </div>
             <ul className="space-y-2 text-sm text-neutral-600">
               <li className="flex items-start gap-2">
