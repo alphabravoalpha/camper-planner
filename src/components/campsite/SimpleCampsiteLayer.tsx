@@ -411,7 +411,7 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
     }
   }, [map, visibleTypes, maxResults, profile, isVisible, onCampsitesLoaded, classifyError]);
 
-  // Auto-load campsites around route
+  // Auto-load campsites around route, splitting large bboxes into tiles
   const loadCampsitesAroundRoute = useCallback(async () => {
     if (!calculatedRoute?.routes?.[0]?.geometry || !isVisible) return;
 
@@ -431,32 +431,58 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
 
     // Add buffer around route (approximately 10km)
     const buffer = 0.1;
+    const south = minLat - buffer;
+    const north = maxLat + buffer;
+    const west = minLng - buffer;
+    const east = maxLng + buffer;
+
+    // Split into tiles if the bbox exceeds the 4.5-degree API limit
+    const maxSpan = 4.5;
+    const tiles: { north: number; south: number; east: number; west: number }[] = [];
+    for (let latStart = south; latStart < north; latStart += maxSpan) {
+      for (let lngStart = west; lngStart < east; lngStart += maxSpan) {
+        tiles.push({
+          south: latStart,
+          north: Math.min(latStart + maxSpan, north),
+          west: lngStart,
+          east: Math.min(lngStart + maxSpan, east),
+        });
+      }
+    }
 
     setIsLoading(true);
     setError(null);
 
     try {
-      const request: CampsiteRequest = {
-        bounds: {
-          north: maxLat + buffer,
-          south: minLat - buffer,
-          east: maxLng + buffer,
-          west: minLng - buffer
-        },
-        types: visibleTypes,
-        maxResults,
-        includeDetails: true,
-        vehicleFilter: profile || undefined
-      };
+      // Fetch all tiles in parallel and merge results
+      const allCampsites: Campsite[] = [];
+      const seenIds = new Set<number>();
 
-      const response = await campsiteService.searchCampsites(request);
+      const tileResults = await Promise.allSettled(
+        tiles.map(bounds =>
+          campsiteService.searchCampsites({
+            bounds,
+            types: visibleTypes,
+            maxResults,
+            includeDetails: true,
+            vehicleFilter: profile || undefined,
+          })
+        )
+      );
 
-      if (response.status === 'success') {
-        setCampsites(response.campsites);
-        onCampsitesLoaded?.(response.campsites.length, response.campsites);
-      } else {
-        throw new Error(response.error || 'Failed to load campsites');
+      for (const result of tileResults) {
+        if (result.status === 'fulfilled' && result.value.status === 'success') {
+          for (const campsite of result.value.campsites) {
+            if (!seenIds.has(campsite.id)) {
+              seenIds.add(campsite.id);
+              allCampsites.push(campsite);
+            }
+          }
+        }
       }
+
+      setCampsites(allCampsites);
+      onCampsitesLoaded?.(allCampsites.length, allCampsites);
     } catch (err) {
       console.error('Error loading route campsites:', err);
       const errorInfo = classifyError(err);
@@ -477,9 +503,9 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
     loadCampsitesAroundRouteRef.current = loadCampsitesAroundRoute;
   }, [loadCampsitesAroundRoute]);
 
-  // State to track last loaded bounds for intelligent loading
-  const [lastLoadedBounds, setLastLoadedBounds] = useState<L.LatLngBounds | null>(null);
-  const [lastLoadedZoom, setLastLoadedZoom] = useState<number>(0);
+  // Refs to track last loaded bounds for intelligent loading (refs avoid stale closures)
+  const lastLoadedBoundsRef = useRef<L.LatLngBounds | null>(null);
+  const lastLoadedZoomRef = useRef<number>(0);
 
   // Load campsites when map moves with intelligent loading
   useEffect(() => {
@@ -492,31 +518,33 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
         const currentZoom = map.getZoom();
 
         // Skip loading if the movement is minor and zoom hasn't changed significantly
-        if (lastLoadedBounds && Math.abs(currentZoom - lastLoadedZoom) < 1) {
-          const boundsExpansion = 0.1; // 10% expansion threshold
+        const lastBounds = lastLoadedBoundsRef.current;
+        const lastZoom = lastLoadedZoomRef.current;
+        if (lastBounds && Math.abs(currentZoom - lastZoom) < 1) {
+          const boundsExpansion = 0.3; // 30% threshold — skip small pans, reload on significant moves
           const currentSouth = currentBounds.getSouth();
           const currentNorth = currentBounds.getNorth();
           const currentWest = currentBounds.getWest();
           const currentEast = currentBounds.getEast();
-          const lastSouth = lastLoadedBounds.getSouth();
-          const lastNorth = lastLoadedBounds.getNorth();
-          const lastWest = lastLoadedBounds.getWest();
-          const lastEast = lastLoadedBounds.getEast();
+          const lastSouth = lastBounds.getSouth();
+          const lastNorth = lastBounds.getNorth();
+          const lastWest = lastBounds.getWest();
+          const lastEast = lastBounds.getEast();
 
           const latDiff = Math.abs(currentSouth - lastSouth) + Math.abs(currentNorth - lastNorth);
           const lngDiff = Math.abs(currentWest - lastWest) + Math.abs(currentEast - lastEast);
           const latRange = lastNorth - lastSouth;
           const lngRange = lastEast - lastWest;
 
-          // If movement is less than 10% of the current view, skip loading
+          // If movement is less than 30% of the current view, skip loading
           if (latDiff < latRange * boundsExpansion && lngDiff < lngRange * boundsExpansion) {
             return;
           }
         }
 
-        // Update tracking variables
-        setLastLoadedBounds(currentBounds);
-        setLastLoadedZoom(currentZoom);
+        // Update tracking refs
+        lastLoadedBoundsRef.current = currentBounds;
+        lastLoadedZoomRef.current = currentZoom;
         // Use ref to call latest version of loadCampsites (avoids stale closure)
         loadCampsitesRef.current?.();
       }, 250); // Reduced from 500ms to 250ms for faster response

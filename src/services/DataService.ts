@@ -167,8 +167,8 @@ export abstract class DataService {
           if (error.name === 'AbortError') {
             throw new Error(`Request timeout after ${timeout}ms`);
           }
-          if (error.message.includes('HTTP 4')) {
-            // Client errors (4xx) shouldn't be retried
+          if (error.message.includes('HTTP 4') && !error.message.includes('HTTP 429')) {
+            // Client errors (4xx) shouldn't be retried, except 429 (rate limited)
             throw error;
           }
         }

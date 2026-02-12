@@ -326,11 +326,11 @@ export class CampsiteService extends DataService {
       userAgent: 'EuropeanCamperPlanner/1.0',
     };
 
-    // Rate limiting: Disabled for testing
+    // Rate limiting: 2 requests per second to avoid Overpass API 429 errors
     const rateLimit = {
       requests: 2,
       windowMs: 1000, // 1 second window
-      enabled: false,
+      enabled: true,
     };
 
     super(config, rateLimit);
@@ -646,10 +646,11 @@ export class CampsiteService extends DataService {
         };
       }
 
-      // Return empty result instead of failing to prevent infinite retries
-      console.warn('No campsite data available, returning empty result');
+      // Return error status so the UI can show a retry option
+      console.warn('No campsite data available, returning error result');
       return {
-        status: 'success',
+        status: 'error',
+        error: 'Unable to load campsites. The server may be busy — try again in a moment.',
         campsites: [],
         metadata: {
           service: 'overpass' as const,
@@ -683,7 +684,18 @@ export class CampsiteService extends DataService {
       },
     };
 
-    const response = await this.request<any>(context);
+    let response = await this.request<any>(context);
+
+    // Overpass may return non-JSON (HTML error pages, rate limit responses)
+    // DataService returns raw text when content-type isn't application/json
+    if (typeof response === 'string') {
+      try {
+        response = JSON.parse(response);
+      } catch {
+        throw new Error('Overpass API returned an invalid response (non-JSON). The server may be overloaded.');
+      }
+    }
+
     const campsites = this.parseOverpassResponse(response);
 
     // Filter and score results
@@ -1169,7 +1181,9 @@ export class CampsiteService extends DataService {
       return `campsites_invalid_bounds_${Date.now()}_${types.join(',')}_${amenities.join(',')}`;
     }
 
-    return `campsites_${bounds.south}_${bounds.west}_${bounds.north}_${bounds.east}_${types.join(',')}_${amenities.join(',')}`;
+    // Round to 1 decimal place (~11km grid) so nearby viewports share cache keys
+    const round = (v: number) => Math.round(v * 10) / 10;
+    return `campsites_${round(bounds.south)}_${round(bounds.west)}_${round(bounds.north)}_${round(bounds.east)}_${types.join(',')}_${amenities.join(',')}`;
   }
 
   /**
