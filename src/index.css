@@ -44,37 +44,35 @@ h1 {
    The body[data-tour-step] attribute is set by OnboardingFlow.tsx.
    ────────────────────────────────────────────────────────────────────── */
 
-/* Steps 2-4 (search-start, search-paris, search-barcelona): Boost search bar above overlay */
-body[data-tour-step="search-start"] [data-tour-id="search-bar"],
-body[data-tour-step="search-paris"] [data-tour-id="search-bar"],
-body[data-tour-step="search-barcelona"] [data-tour-id="search-bar"] {
+/* Steps 2-3 (add-start, search-destination): Boost search bar above overlay */
+body[data-tour-step="add-start"] [data-tour-id="search-bar"],
+body[data-tour-step="search-destination"] [data-tour-id="search-bar"] {
   z-index: 9998 !important;
   position: relative;
 }
 
-/* Step 6 (vehicle-button): Boost vehicle badge button above overlay */
-body[data-tour-step="vehicle-button"] [data-tour-id="vehicle-badge"] {
-  z-index: 9998 !important;
-  position: relative;
-}
-
-/* Step 7 (vehicle-panel): Boost vehicle sidebar above overlay, hide its own backdrop */
-body[data-tour-step="vehicle-panel"] .vehicle-sidebar-wrapper {
+/* Step 6 (vehicle-setup): Boost vehicle sidebar above overlay, hide its own backdrop */
+body[data-tour-step="vehicle-setup"] .vehicle-sidebar-wrapper {
   z-index: 9998 !important;
 }
-body[data-tour-step="vehicle-panel"] .vehicle-sidebar-backdrop {
+body[data-tour-step="vehicle-setup"] .vehicle-sidebar-backdrop {
   background-color: transparent !important;
   opacity: 0 !important;
   pointer-events: none !important;
 }
 
-/* Step 8 (tools): Boost cost calculator panel above overlay */
-body[data-tour-step="tools"] .map-panel-right {
+/* Step 7 (daily-stages): Boost planning tools panel above overlay */
+body[data-tour-step="daily-stages"] [data-tour-id="planning-tools-panel"] {
   z-index: 9998 !important;
 }
 
-/* Step 9 (campsites): Boost campsite toggle button above overlay */
-body[data-tour-step="campsites"] [data-tour-id="campsite-toggle"] {
+/* Step 8 (cost-calculator): Boost cost calculator panel above overlay */
+body[data-tour-step="cost-calculator"] .map-panel-right {
+  z-index: 9998 !important;
+}
+
+/* Step 9 (campsites-map): Boost campsite toggle button above overlay */
+body[data-tour-step="campsites-map"] [data-tour-id="campsite-toggle"] {
   z-index: 9998 !important;
   position: relative;
 }

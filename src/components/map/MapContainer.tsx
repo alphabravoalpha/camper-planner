@@ -229,7 +229,7 @@ const MapContainer: React.FC = () => {
   }, []);
 
   // Search bar should be visible during waypoint-related tour steps
-  const SEARCH_VISIBLE_STEPS = ['search-start', 'search-paris', 'search-barcelona'];
+  const SEARCH_VISIBLE_STEPS = ['add-start', 'search-destination'];
   const isSearchVisibleDuringTour = currentTourStep !== null && SEARCH_VISIBLE_STEPS.includes(currentTourStep);
 
   // Fallback: ensure map becomes visible after 2 seconds even if whenReady doesn't fire
@@ -602,6 +602,7 @@ const MapContainer: React.FC = () => {
                 )}
                 title="Trip planning tools"
                 aria-label="Toggle planning tools"
+                data-tour-id="planning-tools-button"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -957,7 +958,7 @@ const MapContainer: React.FC = () => {
 
       {/* Planning Tools Panel */}
       {showPlanningTools && (
-        <div className="fixed inset-y-0 right-0 z-40 w-full sm:w-96 bg-white border-l border-neutral-200 shadow-xl transform transition-transform sm:translate-x-0">
+        <div className="fixed inset-y-0 right-0 z-40 w-full sm:w-96 bg-white border-l border-neutral-200 shadow-xl transform transition-transform sm:translate-x-0" data-tour-id="planning-tools-panel">
           <div className="h-full flex flex-col">
             {/* Panel Header */}
             <div className="flex items-center justify-between p-4 border-b border-neutral-200 bg-violet-50">

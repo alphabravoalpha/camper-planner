@@ -3,31 +3,39 @@
 // Uses Zustand getState() for store actions, synthetic DOM clicks for local panel state.
 //
 // Z-index layering during the tour is managed via CSS in index.css:
-//   body[data-tour-step="vehicle-panel"] boosts the vehicle sidebar to z-9998
-//   body[data-tour-step="tools"]         boosts right-side panels to z-9998
+//   body[data-tour-step="vehicle-setup"]   boosts the vehicle sidebar to z-9998
+//   body[data-tour-step="daily-stages"]    boosts the planning tools panel to z-9998
+//   body[data-tour-step="cost-calculator"] boosts right-side panels to z-9998
 // This ensures panels render ABOVE the overlay (z-9997) but BELOW the tooltip (z-9999).
 
 import { useRouteStore, useVehicleStore, useUIStore, useMapStore } from '../../store';
 import { useCostStore } from '../../store/costStore';
 
 // =============================================================================
-// Demo Data
+// Demo Data — London to French Riviera trip narrative
 // =============================================================================
 
 const DEMO_WAYPOINTS = [
   {
-    id: 'demo-paris',
-    lat: 48.8566,
-    lng: 2.3522,
+    id: 'demo-london',
+    lat: 51.5074,
+    lng: -0.1278,
     type: 'start' as const,
-    name: 'Paris, France',
+    name: 'London, United Kingdom',
   },
   {
-    id: 'demo-barcelona',
-    lat: 41.3893,
-    lng: 2.159,
-    type: 'end' as const,
-    name: 'Barcelona, Spain',
+    id: 'demo-campsite-lyon',
+    lat: 45.75,
+    lng: 4.85,
+    type: 'campsite' as const,
+    name: 'Campsite near Lyon',
+  },
+  {
+    id: 'demo-campsite-nice',
+    lat: 43.7,
+    lng: 7.27,
+    type: 'campsite' as const,
+    name: 'Campsite near Nice',
   },
 ];
 
@@ -72,8 +80,8 @@ function isButtonActive(selector: string): boolean {
   const el = document.querySelector(selector);
   if (!el) return false;
   const cls = el.className;
-  // Toolbar buttons: active = bg-green-600; Cost calculator: active = bg-emerald-50
-  return cls.includes('bg-green-600') || cls.includes('bg-emerald-50');
+  // Campsite toggle: bg-green-600; Cost calculator: bg-emerald-50; Planning tools: bg-violet-50
+  return cls.includes('bg-green-600') || cls.includes('bg-emerald-50') || cls.includes('bg-violet-50');
 }
 
 // =============================================================================
@@ -82,57 +90,72 @@ function isButtonActive(selector: string): boolean {
 
 export const demoActions = {
   /**
-   * Step 3 (search-paris): Add Paris as the first waypoint and pan map.
+   * Step 2 (add-start): Add London as the starting waypoint and pan map.
    */
-  addParis: () => {
+  addLondon: () => {
     const route = useRouteStore.getState();
-    // Clear any existing waypoints first
+    // Clear any existing waypoints first (idempotent)
     if (route.waypoints.length > 0) {
       route.clearRoute();
     }
-    // Add Paris
+    // Add London
     route.addWaypoint(DEMO_WAYPOINTS[0]);
-    // Pan map so Paris marker is visible in the center-left of the viewport
-    // (tooltip will be bottom-right, so center the map slightly north of Paris)
-    useMapStore.getState().setCenter([47.5, 2.3]);
-    useMapStore.getState().setZoom(5);
+    // Pan map to London
+    useMapStore.getState().setCenter([51.5, -0.1]);
+    useMapStore.getState().setZoom(8);
   },
 
   /**
-   * Step 4 (search-barcelona): Add Barcelona as the second waypoint.
+   * Step 3 (search-destination): Pan map to show France overview.
+   * No API calls — just shows the map at a zoom level where
+   * the user can imagine searching for a destination.
    */
-  addBarcelona: () => {
+  panToFrance: () => {
+    useMapStore.getState().setCenter([46.5, 2.3]);
+    useMapStore.getState().setZoom(6);
+  },
+
+  /**
+   * Step 4 (campsite-near-lyon): Add campsite near Lyon as overnight stop.
+   */
+  addLyonCampsite: () => {
     const route = useRouteStore.getState();
-    // Only add Barcelona if it doesn't already exist
-    const hasBarcelona = route.waypoints.some((wp) => wp.id === 'demo-barcelona');
-    if (!hasBarcelona) {
+    // Only add if not already present (idempotent)
+    const hasLyon = route.waypoints.some((wp) => wp.id === 'demo-campsite-lyon');
+    if (!hasLyon) {
       route.addWaypoint(DEMO_WAYPOINTS[1]);
     }
-    // Pan map to show both Paris (48.8N) and Barcelona (41.4N) with margin
-    // Midpoint is ~45.1N, shift slightly south so both markers have padding
-    useMapStore.getState().setCenter([44.5, 2.3]);
-    useMapStore.getState().setZoom(5);
+    // Pan to show both London and Lyon area
+    useMapStore.getState().setCenter([48.5, 2.5]);
+    useMapStore.getState().setZoom(6);
   },
 
   /**
-   * Step 5 (route-overview): Pan map to show the full route between Paris and Barcelona.
-   * Low overlay opacity lets the route line and markers show clearly.
+   * Step 5 (campsite-destination): Add campsite near Nice as final destination.
    */
-  panToRoute: () => {
-    // Same center as Barcelona step — both markers visible, zoom 5 shows full route
-    useMapStore.getState().setCenter([44.5, 2.3]);
+  addNiceCampsite: () => {
+    const route = useRouteStore.getState();
+    // Only add if not already present (idempotent)
+    const hasNice = route.waypoints.some((wp) => wp.id === 'demo-campsite-nice');
+    if (!hasNice) {
+      route.addWaypoint(DEMO_WAYPOINTS[2]);
+    }
+    // Pan to show full route from London to Nice
+    useMapStore.getState().setCenter([47.0, 3.5]);
     useMapStore.getState().setZoom(5);
   },
 
   /**
-   * Step 7 (vehicle-panel): Set demo vehicle profile and open the vehicle sidebar.
+   * Step 6 (vehicle-setup): Set demo vehicle profile and open the vehicle sidebar.
    * CSS boosts the sidebar to z-9998 so it renders above the overlay.
-   * The sidebar's own dark backdrop is hidden via CSS (our overlay handles dimming).
    */
   openVehiclePanel: () => {
     // Close any MapContainer panels left over from previous steps
     if (isButtonActive('[aria-label="Toggle cost calculator"]')) {
       clickByAriaLabel('Toggle cost calculator');
+    }
+    if (isButtonActive('[aria-label="Toggle planning tools"]')) {
+      clickByAriaLabel('Toggle planning tools');
     }
     useVehicleStore.getState().setProfile(DEMO_VEHICLE);
     useCostStore.getState().setFuelConsumptionSettings({
@@ -146,13 +169,36 @@ export const demoActions = {
   },
 
   /**
-   * Step 8 (tools): Close vehicle sidebar, open cost calculator panel.
-   * CSS boosts .map-panel-right to z-9998 so it renders above the overlay.
-   * Idempotent: only clicks the toggle if cost calc is currently closed.
+   * Step 7 (daily-stages): Close vehicle sidebar, open planning tools panel.
+   * CSS boosts planning-tools-panel to z-9998 so it renders above the overlay.
    */
-  showTools: () => {
+  showPlanningTools: () => {
     useUIStore.getState().closeVehicleSidebar();
+    // Close cost calculator if open
+    if (isButtonActive('[aria-label="Toggle cost calculator"]')) {
+      clickByAriaLabel('Toggle cost calculator');
+    }
     // Delay to let sidebar close animation finish
+    setTimeout(() => {
+      // Only open planning tools if not already open
+      if (!isButtonActive('[aria-label="Toggle planning tools"]')) {
+        clickByTourId('planning-tools-button');
+      }
+    }, 250);
+  },
+
+  /**
+   * Step 8 (cost-calculator): Close planning tools, open cost calculator panel.
+   * CSS boosts .map-panel-right to z-9998 so it renders above the overlay.
+   */
+  showCostCalculator: () => {
+    // Close planning tools if open
+    if (isButtonActive('[aria-label="Toggle planning tools"]')) {
+      clickByAriaLabel('Toggle planning tools');
+    }
+    // Close vehicle sidebar if still open
+    useUIStore.getState().closeVehicleSidebar();
+    // Delay to let panels close
     setTimeout(() => {
       // Only open cost calculator if it's not already open
       if (!isButtonActive('[aria-label="Toggle cost calculator"]')) {
@@ -162,12 +208,16 @@ export const demoActions = {
   },
 
   /**
-   * Step 9 (campsites): Close cost calculator, toggle campsites on.
+   * Step 9 (campsites-map): Close cost calculator, toggle campsites on.
    */
   showCampsites: () => {
     // Close cost calculator if it's open
     if (isButtonActive('[aria-label="Toggle cost calculator"]')) {
       clickByAriaLabel('Toggle cost calculator');
+    }
+    // Close planning tools if open
+    if (isButtonActive('[aria-label="Toggle planning tools"]')) {
+      clickByAriaLabel('Toggle planning tools');
     }
     // Close vehicle sidebar if still open
     useUIStore.getState().closeVehicleSidebar();
@@ -191,6 +241,10 @@ export const demoActions = {
     // Close cost calculator if open
     if (isButtonActive('[aria-label="Toggle cost calculator"]')) {
       clickByAriaLabel('Toggle cost calculator');
+    }
+    // Close planning tools if open
+    if (isButtonActive('[aria-label="Toggle planning tools"]')) {
+      clickByAriaLabel('Toggle planning tools');
     }
     // Close vehicle sidebar if still open
     useUIStore.getState().closeVehicleSidebar();
