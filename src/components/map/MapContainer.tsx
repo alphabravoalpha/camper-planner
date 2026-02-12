@@ -1,7 +1,7 @@
 // Map Container Component
 // Phase 1.5: Basic map foundation with React-Leaflet
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { MapContainer as LeafletMapContainer, useMap, useMapEvents } from 'react-leaflet';
 import * as L from 'leaflet';
 import { FeatureFlags } from '../../config';
@@ -335,12 +335,12 @@ const MapContainer: React.FC = () => {
     });
   };
 
-  const handleCampsitesLoaded = (count: number, campsites?: Campsite[]) => {
+  const handleCampsitesLoaded = useCallback((count: number, campsites?: Campsite[]) => {
     setCampsiteCount(count);
     if (campsites) {
       setAllCampsites(campsites);
     }
-  };
+  }, []);
 
   const handleCampsiteDetailsClose = () => {
     setShowCampsiteDetails(false);
