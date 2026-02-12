@@ -13,12 +13,6 @@ import { type Campsite, type CampsiteRequest, type CampsiteType } from '../../se
 import { type CampsiteFilterState } from './CampsiteFilter';
 import { createCampsiteIcon, createClusterIcon } from './CampsiteIcons';
 
-// Extend Window interface for custom properties
-declare global {
-  interface Window {
-    campsiteDebounceTimer?: NodeJS.Timeout;
-  }
-}
 
 export interface SimpleCampsiteLayerProps {
   visibleTypes: CampsiteType[];
@@ -176,9 +170,6 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
   // const [selectedCampsiteId, setSelectedCampsiteId] = useState<number | null>(null); // Unused for now
   const [zoom, setZoom] = useState(map.getZoom());
 
-  // Refs to hold the latest loading functions to avoid stale closures in event handlers
-  const loadCampsitesRef = useRef<(() => Promise<void>) | null>(null);
-  const loadCampsitesAroundRouteRef = useRef<(() => Promise<void>) | null>(null);
 
   // Track zoom changes for clustering
   useEffect(() => {
@@ -398,14 +389,15 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
         setCampsites(response.campsites);
         onCampsitesLoaded?.(response.campsites.length, response.campsites);
       } else {
-        throw new Error(response.error || 'Failed to load campsites');
+        // Show error but keep existing campsites visible
+        const errorInfo = classifyError(new Error(response.error || 'Failed to load campsites'));
+        setError(errorInfo);
       }
     } catch (err) {
       console.error('Error loading campsites:', err);
       const errorInfo = classifyError(err);
       setError(errorInfo);
-      setCampsites([]);
-      onCampsitesLoaded?.(0, []);
+      // Don't clear existing campsites on error — keep showing what we had
     } finally {
       setIsLoading(false);
     }
@@ -487,33 +479,24 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
       console.error('Error loading route campsites:', err);
       const errorInfo = classifyError(err);
       setError(errorInfo);
-      setCampsites([]);
-      onCampsitesLoaded?.(0, []);
+      // Don't clear existing campsites on error — keep showing what we had
     } finally {
       setIsLoading(false);
     }
   }, [calculatedRoute, visibleTypes, maxResults, profile, isVisible, onCampsitesLoaded]);
 
-  // Keep refs updated with the latest loading functions to avoid stale closures
-  useEffect(() => {
-    loadCampsitesRef.current = loadCampsites;
-  }, [loadCampsites]);
-
-  useEffect(() => {
-    loadCampsitesAroundRouteRef.current = loadCampsitesAroundRoute;
-  }, [loadCampsitesAroundRoute]);
-
-  // Refs to track last loaded bounds for intelligent loading (refs avoid stale closures)
+  // Refs to track last loaded bounds for intelligent load-skipping
   const lastLoadedBoundsRef = useRef<L.LatLngBounds | null>(null);
   const lastLoadedZoomRef = useRef<number>(0);
+  const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Load campsites when map moves with intelligent loading
+  // Load campsites when map moves — includes loadCampsites in deps so handler is always fresh
   useEffect(() => {
     if (!isVisible || !map) return;
 
     const handleMoveEnd = () => {
-      clearTimeout(window.campsiteDebounceTimer);
-      window.campsiteDebounceTimer = setTimeout(() => {
+      if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+      debounceTimerRef.current = setTimeout(() => {
         const currentBounds = map.getBounds();
         const currentZoom = map.getZoom();
 
@@ -522,21 +505,13 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
         const lastZoom = lastLoadedZoomRef.current;
         if (lastBounds && Math.abs(currentZoom - lastZoom) < 1) {
           const boundsExpansion = 0.3; // 30% threshold — skip small pans, reload on significant moves
-          const currentSouth = currentBounds.getSouth();
-          const currentNorth = currentBounds.getNorth();
-          const currentWest = currentBounds.getWest();
-          const currentEast = currentBounds.getEast();
-          const lastSouth = lastBounds.getSouth();
-          const lastNorth = lastBounds.getNorth();
-          const lastWest = lastBounds.getWest();
-          const lastEast = lastBounds.getEast();
+          const latDiff = Math.abs(currentBounds.getSouth() - lastBounds.getSouth()) +
+                          Math.abs(currentBounds.getNorth() - lastBounds.getNorth());
+          const lngDiff = Math.abs(currentBounds.getWest() - lastBounds.getWest()) +
+                          Math.abs(currentBounds.getEast() - lastBounds.getEast());
+          const latRange = lastBounds.getNorth() - lastBounds.getSouth();
+          const lngRange = lastBounds.getEast() - lastBounds.getWest();
 
-          const latDiff = Math.abs(currentSouth - lastSouth) + Math.abs(currentNorth - lastNorth);
-          const lngDiff = Math.abs(currentWest - lastWest) + Math.abs(currentEast - lastEast);
-          const latRange = lastNorth - lastSouth;
-          const lngRange = lastEast - lastWest;
-
-          // If movement is less than 30% of the current view, skip loading
           if (latDiff < latRange * boundsExpansion && lngDiff < lngRange * boundsExpansion) {
             return;
           }
@@ -545,29 +520,27 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
         // Update tracking refs
         lastLoadedBoundsRef.current = currentBounds;
         lastLoadedZoomRef.current = currentZoom;
-        // Use ref to call latest version of loadCampsites (avoids stale closure)
-        loadCampsitesRef.current?.();
-      }, 250); // Reduced from 500ms to 250ms for faster response
+        loadCampsites();
+      }, 300);
     };
 
     map.on('moveend', handleMoveEnd);
 
-    // Initial load - use ref for consistency
-    loadCampsitesRef.current?.();
+    // Initial load
+    loadCampsites();
 
     return () => {
       map.off('moveend', handleMoveEnd);
-      clearTimeout(window.campsiteDebounceTimer);
+      if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
     };
-  }, [map, isVisible]); // Using ref avoids needing loadCampsites in dependencies
+  }, [map, isVisible, loadCampsites]);
 
   // Load campsites around route when route changes
   useEffect(() => {
     if (calculatedRoute && isVisible) {
-      // Use ref to call latest version (avoids stale closure)
-      loadCampsitesAroundRouteRef.current?.();
+      loadCampsitesAroundRoute();
     }
-  }, [calculatedRoute, isVisible]); // Removed loadCampsitesAroundRoute from dependencies
+  }, [calculatedRoute, isVisible, loadCampsitesAroundRoute]);
 
   // Don't render if not visible
   if (!isVisible || !FeatureFlags.CAMPSITE_DISPLAY) return null;
