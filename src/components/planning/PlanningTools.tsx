@@ -66,7 +66,7 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
     setError(null);
 
     try {
-      const startDateTime = startDate ? new Date(startDate) : undefined;
+      const startDateTime = startDate ? new Date(startDate + 'T00:00:00') : undefined;
 
       // Create trip plan
       const plan = TripPlanningService.createTripPlan(
