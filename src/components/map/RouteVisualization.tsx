@@ -586,23 +586,6 @@ const CalculatedRouteDisplay: React.FC<{ route: RouteResponse; waypoints?: Waypo
                       <span>Duration:</span>
                       <span className="font-medium">{formatDuration(segment.duration)}</span>
                     </div>
-                    {segment.steps && segment.steps.length > 0 && (
-                      <div className="mt-2">
-                        <div className="text-neutral-600 font-medium">Instructions:</div>
-                        <div className="max-h-24 overflow-y-auto">
-                          {segment.steps.slice(0, 3).map((step, stepIndex) => (
-                            <div key={stepIndex} className="text-xs text-neutral-700 mt-1">
-                              • {step.instruction}
-                            </div>
-                          ))}
-                          {segment.steps.length > 3 && (
-                            <div className="text-xs text-neutral-500 mt-1">
-                              ... and {segment.steps.length - 3} more steps
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    )}
                   </div>
                 </div>
               </Popup>
