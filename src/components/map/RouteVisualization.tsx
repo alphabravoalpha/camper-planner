@@ -137,7 +137,7 @@ interface WaypointNumberProps {
 }
 
 const WaypointNumber: React.FC<WaypointNumberProps> = ({ waypoint, index, total }) => {
-  const { updateWaypoint, removeWaypoint } = useRouteStore();
+  const { updateWaypoint, removeWaypoint, insertWaypoint, insertBeforeWaypoint, waypoints } = useRouteStore();
   const { addNotification } = useUIStore();
   const [isEditing, setIsEditing] = useState(false);
   const [editedName, setEditedName] = useState(waypoint.name || '');
@@ -195,6 +195,58 @@ const WaypointNumber: React.FC<WaypointNumberProps> = ({ waypoint, index, total 
       message: `Removed ${waypoint.name || 'waypoint'} from route`
     });
   }, [waypoint.id, waypoint.name, removeWaypoint, addNotification]);
+
+  const handleInsertBefore = useCallback(() => {
+    // Calculate midpoint between previous waypoint and this one (or offset if first)
+    const currentIndex = waypoints.findIndex(wp => wp.id === waypoint.id);
+    let lat: number, lng: number;
+    if (currentIndex > 0) {
+      const prev = waypoints[currentIndex - 1];
+      lat = (prev.lat + waypoint.lat) / 2;
+      lng = (prev.lng + waypoint.lng) / 2;
+    } else {
+      lat = waypoint.lat - 0.5;
+      lng = waypoint.lng - 0.5;
+    }
+    const newWaypoint: Waypoint = {
+      id: `waypoint-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      lat: Number(lat.toFixed(6)),
+      lng: Number(lng.toFixed(6)),
+      type: 'waypoint',
+      name: `Waypoint ${currentIndex + 1}`
+    };
+    insertBeforeWaypoint(newWaypoint, waypoint.id);
+    addNotification({
+      type: 'success',
+      message: `Inserted ${newWaypoint.name} before ${waypoint.name || 'waypoint'}`
+    });
+  }, [waypoint, waypoints, insertBeforeWaypoint, addNotification]);
+
+  const handleInsertAfter = useCallback(() => {
+    // Calculate midpoint between this waypoint and next one (or offset if last)
+    const currentIndex = waypoints.findIndex(wp => wp.id === waypoint.id);
+    let lat: number, lng: number;
+    if (currentIndex < waypoints.length - 1) {
+      const next = waypoints[currentIndex + 1];
+      lat = (waypoint.lat + next.lat) / 2;
+      lng = (waypoint.lng + next.lng) / 2;
+    } else {
+      lat = waypoint.lat + 0.5;
+      lng = waypoint.lng + 0.5;
+    }
+    const newWaypoint: Waypoint = {
+      id: `waypoint-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      lat: Number(lat.toFixed(6)),
+      lng: Number(lng.toFixed(6)),
+      type: 'waypoint',
+      name: `Waypoint ${currentIndex + 2}`
+    };
+    insertWaypoint(newWaypoint, waypoint.id);
+    addNotification({
+      type: 'success',
+      message: `Inserted ${newWaypoint.name} after ${waypoint.name || 'waypoint'}`
+    });
+  }, [waypoint, waypoints, insertWaypoint, addNotification]);
 
   const getWaypointLabel = () => {
     if (waypoint.type === 'start') return 'S';
@@ -438,6 +490,28 @@ const WaypointNumber: React.FC<WaypointNumberProps> = ({ waypoint, index, total 
               )}
 
               <div className="flex space-x-2 pt-2 border-t border-neutral-200">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    handleInsertBefore();
+                  }}
+                  className="flex-1 px-3 py-1 text-xs bg-primary-600 text-white rounded hover:bg-primary-700 transition-colors"
+                  title="Insert a new waypoint before this one"
+                >
+                  + Before
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    handleInsertAfter();
+                  }}
+                  className="flex-1 px-3 py-1 text-xs bg-primary-600 text-white rounded hover:bg-primary-700 transition-colors"
+                  title="Insert a new waypoint after this one"
+                >
+                  + After
+                </button>
                 <button
                   onClick={(e) => {
                     e.stopPropagation();

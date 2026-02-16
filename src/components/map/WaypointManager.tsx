@@ -115,6 +115,7 @@ interface WaypointMarkerProps {
   onDelete: (id: string) => void;
   onUpdate: (id: string, updates: Partial<Waypoint>) => void;
   onInsertAfter: (waypoint: Waypoint, afterId: string) => void;
+  onInsertBefore: (waypoint: Waypoint, beforeId: string) => void;
   onDragEnd: (id: string, newLat: number, newLng: number) => void;
 }
 
@@ -124,6 +125,7 @@ const WaypointMarker: React.FC<WaypointMarkerProps> = ({
   onDelete,
   onUpdate,
   onInsertAfter,
+  onInsertBefore,
   onDragEnd
 }) => {
   const { selectedWaypoint, setSelectedWaypoint } = useMapStore();
@@ -223,8 +225,8 @@ const WaypointMarker: React.FC<WaypointMarkerProps> = ({
       'waypoint',
       index
     );
-    onInsertAfter(newWaypoint, waypoint.id);
-  }, [waypoint, index, onInsertAfter]);
+    onInsertBefore(newWaypoint, waypoint.id);
+  }, [waypoint, index, onInsertBefore]);
 
   const handleInsertAfter = useCallback(() => {
     const newWaypoint = createWaypoint(
@@ -478,6 +480,28 @@ const WaypointMarker: React.FC<WaypointMarkerProps> = ({
                     onClick={(e) => {
                       e.stopPropagation();
                       e.preventDefault();
+                      handleInsertBefore();
+                    }}
+                    className="flex-1 px-3 py-1 text-xs bg-primary-600 text-white rounded hover:bg-primary-700 transition-colors"
+                    title="Insert a new waypoint before this one"
+                  >
+                    + Before
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      handleInsertAfter();
+                    }}
+                    className="flex-1 px-3 py-1 text-xs bg-primary-600 text-white rounded hover:bg-primary-700 transition-colors"
+                    title="Insert a new waypoint after this one"
+                  >
+                    + After
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
                       handleDelete();
                     }}
                     className="flex-1 px-3 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
@@ -532,7 +556,8 @@ const WaypointManager: React.FC = () => {
     addWaypoint,
     removeWaypoint,
     updateWaypoint,
-    insertWaypoint
+    insertWaypoint,
+    insertBeforeWaypoint
     // clearRoute,
     // undo,
     // redo,
@@ -647,6 +672,21 @@ const WaypointManager: React.FC = () => {
     }
   }, [insertWaypoint, addNotification]);
 
+  const handleInsertBeforeWaypoint = useCallback((waypoint: Waypoint, beforeId: string) => {
+    try {
+      insertBeforeWaypoint(waypoint, beforeId);
+      addNotification({
+        type: 'success',
+        message: `Inserted ${waypoint.name} into route`
+      });
+    } catch (error) {
+      addNotification({
+        type: 'error',
+        message: 'Failed to insert waypoint'
+      });
+    }
+  }, [insertBeforeWaypoint, addNotification]);
+
   const handleDragEnd = useCallback((id: string, newLat: number, newLng: number) => {
     try {
       updateWaypoint(id, {
@@ -684,6 +724,7 @@ const WaypointManager: React.FC = () => {
           onDelete={handleDeleteWaypoint}
           onUpdate={handleUpdateWaypoint}
           onInsertAfter={handleInsertWaypoint}
+          onInsertBefore={handleInsertBeforeWaypoint}
           onDragEnd={handleDragEnd}
         />
       ))}

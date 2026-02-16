@@ -64,6 +64,7 @@ interface RouteState {
   updateWaypoint: (id: string, updates: Partial<Waypoint>) => void;
   reorderWaypoints: (waypoints: Waypoint[]) => void;
   insertWaypoint: (waypoint: Waypoint, afterId: string) => void;
+  insertBeforeWaypoint: (waypoint: Waypoint, beforeId: string) => void;
   setCalculatedRoute: (route: RouteResponse | null) => void;
   clearRoute: () => void;
 
@@ -280,6 +281,30 @@ export const useRouteStore = create<RouteState>()(
               type: 'add',
               timestamp: Date.now(),
               data: { waypoint, afterId },
+              previousState: state.waypoints
+            };
+
+            return {
+              ...addToHistory(state, action),
+              waypoints: updatedWaypoints,
+              isOptimized: false
+            };
+          }),
+
+        insertBeforeWaypoint: (waypoint, beforeId) =>
+          set((state) => {
+            const beforeIndex = state.waypoints.findIndex(wp => wp.id === beforeId);
+            const newWaypoints = [
+              ...state.waypoints.slice(0, beforeIndex),
+              waypoint,
+              ...state.waypoints.slice(beforeIndex)
+            ];
+            const updatedWaypoints = updateWaypointTypes(newWaypoints);
+
+            const action: WaypointAction = {
+              type: 'add',
+              timestamp: Date.now(),
+              data: { waypoint, beforeId },
               previousState: state.waypoints
             };
 
