@@ -32,6 +32,7 @@ interface VehicleState {
 type WaypointActionData =
   | Waypoint                                                                     // add (simple)
   | { waypoint: Waypoint; afterId: string }                                      // add (insert after)
+  | { waypoint: Waypoint; beforeId: string }                                     // add (insert before)
   | { id: string; waypoint: Waypoint | undefined }                               // remove
   | { id: string; updates: Partial<Waypoint>; previousWaypoint: Waypoint | undefined } // update
   | Waypoint[]                                                                   // reorder
