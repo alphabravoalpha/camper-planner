@@ -12,6 +12,7 @@ import WaypointManager from './WaypointManager';
 import MapLayerControl from './MapLayerControl';
 import MapControlsPanel from './MapControlsPanel';
 import MobileMapControls from './MobileMapControls';
+import MobileToolbar from './MobileToolbar';
 import VehicleProfileSidebar from '../routing/VehicleProfileSidebar';
 import { RouteCalculator, VehicleRestrictionGuidance, RouteInformation, RouteComparison, CostCalculator } from '../routing';
 import RouteOptimizer from '../routing/RouteOptimizer';
@@ -128,7 +129,7 @@ const MapController: React.FC = () => {
 const MapContainer: React.FC = () => {
   const { center, zoom, setCenter, setZoom } = useMapStore();
   const { waypoints, clearRoute, undo, redo, canUndo, canRedo, isValidForRouting, calculatedRoute } = useRouteStore();
-  const { addNotification } = useUIStore();
+  const { addNotification, openVehicleSidebar } = useUIStore();
   const [isMapReady, setIsMapReady] = useState(false);
   const [showConfirmClear, setShowConfirmClear] = useState(false);
   const [currentLayerId, setCurrentLayerId] = useState('openstreetmap');
@@ -428,7 +429,7 @@ const MapContainer: React.FC = () => {
 
       {/* Unified Search Bar - positioned at top center */}
       {FeatureFlags.CAMPSITE_DISPLAY && (!isTourActive || isSearchVisibleDuringTour) && (
-        <div data-tour-id="search-bar" className="absolute top-4 left-1/2 transform -translate-x-1/2 z-30 w-full max-w-md px-4 hidden md:block">
+        <div data-tour-id="search-bar" className="absolute top-2 md:top-4 left-1/2 transform -translate-x-1/2 z-30 w-full max-w-[calc(100%-1.5rem)] md:max-w-md px-2 md:px-4">
           <ComponentErrorBoundary componentName="UnifiedSearch">
             <UnifiedSearch
               map={mapInstance}
@@ -480,38 +481,88 @@ const MapContainer: React.FC = () => {
         </div>
       )}
 
-      {/* Campsite Controls Panel - right of toolbar */}
+      {/* Campsite Controls Panel - desktop floating + mobile full-width sheet */}
       {FeatureFlags.CAMPSITE_DISPLAY && showCampsiteControls && !showCampsiteFilter && !isTourActive && (
-        <div className="absolute top-4 left-[60px] z-20 w-72 hidden md:block">
-          <ComponentErrorBoundary componentName="CampsiteControls">
-            <CampsiteControls
-              visibleTypes={campsiteFilterState.visibleTypes}
-              onTypesChange={(types) => setCampsiteFilterState({...campsiteFilterState, visibleTypes: types})}
-              maxResults={campsiteFilterState.maxResults}
-              onMaxResultsChange={(max) => setCampsiteFilterState({...campsiteFilterState, maxResults: max})}
-              vehicleCompatibleOnly={campsiteFilterState.vehicleCompatibleOnly}
-              onVehicleCompatibleChange={(compatible) => setCampsiteFilterState({...campsiteFilterState, vehicleCompatibleOnly: compatible})}
-              isVisible={campsitesVisible}
-              onVisibilityChange={setCampsitesVisible}
-              campsiteCount={campsiteCount}
-            />
-          </ComponentErrorBoundary>
-        </div>
+        <>
+          {/* Desktop */}
+          <div className="absolute top-4 left-[60px] z-20 w-72 hidden md:block">
+            <ComponentErrorBoundary componentName="CampsiteControls">
+              <CampsiteControls
+                visibleTypes={campsiteFilterState.visibleTypes}
+                onTypesChange={(types) => setCampsiteFilterState({...campsiteFilterState, visibleTypes: types})}
+                maxResults={campsiteFilterState.maxResults}
+                onMaxResultsChange={(max) => setCampsiteFilterState({...campsiteFilterState, maxResults: max})}
+                vehicleCompatibleOnly={campsiteFilterState.vehicleCompatibleOnly}
+                onVehicleCompatibleChange={(compatible) => setCampsiteFilterState({...campsiteFilterState, vehicleCompatibleOnly: compatible})}
+                isVisible={campsitesVisible}
+                onVisibilityChange={setCampsitesVisible}
+                campsiteCount={campsiteCount}
+              />
+            </ComponentErrorBoundary>
+          </div>
+          {/* Mobile sheet */}
+          <div className="fixed inset-y-0 right-0 z-40 w-full bg-white border-l border-neutral-200 shadow-xl md:hidden overflow-y-auto">
+            <div className="flex items-center justify-between p-4 border-b border-neutral-200 bg-green-50 sticky top-0">
+              <h2 className="text-lg font-semibold text-neutral-900">Campsite Settings</h2>
+              <button onClick={() => setShowCampsiteControls(false)} className="p-1.5 hover:bg-green-200 rounded-lg transition-colors">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+              </button>
+            </div>
+            <div className="p-4">
+              <ComponentErrorBoundary componentName="CampsiteControls">
+                <CampsiteControls
+                  visibleTypes={campsiteFilterState.visibleTypes}
+                  onTypesChange={(types) => setCampsiteFilterState({...campsiteFilterState, visibleTypes: types})}
+                  maxResults={campsiteFilterState.maxResults}
+                  onMaxResultsChange={(max) => setCampsiteFilterState({...campsiteFilterState, maxResults: max})}
+                  vehicleCompatibleOnly={campsiteFilterState.vehicleCompatibleOnly}
+                  onVehicleCompatibleChange={(compatible) => setCampsiteFilterState({...campsiteFilterState, vehicleCompatibleOnly: compatible})}
+                  isVisible={campsitesVisible}
+                  onVisibilityChange={setCampsitesVisible}
+                  campsiteCount={campsiteCount}
+                />
+              </ComponentErrorBoundary>
+            </div>
+          </div>
+        </>
       )}
 
-      {/* Advanced Campsite Filter Panel - right of toolbar */}
+      {/* Advanced Campsite Filter Panel - desktop floating + mobile full-width sheet */}
       {FeatureFlags.CAMPSITE_DISPLAY && showCampsiteFilter && !isTourActive && (
-        <div className="absolute top-4 left-[60px] z-20 w-80 hidden md:block">
-          <ComponentErrorBoundary componentName="CampsiteFilter">
-            <CampsiteFilter
-              filterState={campsiteFilterState}
-              onFilterChange={setCampsiteFilterState}
-              onSearchChange={(query) => setCampsiteFilterState({...campsiteFilterState, searchQuery: query})}
-              onCampsiteSelect={handleCampsiteClick}
-              campsiteCount={campsiteCount}
-            />
-          </ComponentErrorBoundary>
-        </div>
+        <>
+          {/* Desktop */}
+          <div className="absolute top-4 left-[60px] z-20 w-80 hidden md:block">
+            <ComponentErrorBoundary componentName="CampsiteFilter">
+              <CampsiteFilter
+                filterState={campsiteFilterState}
+                onFilterChange={setCampsiteFilterState}
+                onSearchChange={(query) => setCampsiteFilterState({...campsiteFilterState, searchQuery: query})}
+                onCampsiteSelect={handleCampsiteClick}
+                campsiteCount={campsiteCount}
+              />
+            </ComponentErrorBoundary>
+          </div>
+          {/* Mobile sheet */}
+          <div className="fixed inset-y-0 right-0 z-40 w-full bg-white border-l border-neutral-200 shadow-xl md:hidden overflow-y-auto">
+            <div className="flex items-center justify-between p-4 border-b border-neutral-200 bg-green-50 sticky top-0">
+              <h2 className="text-lg font-semibold text-neutral-900">Campsite Filters</h2>
+              <button onClick={() => setShowCampsiteFilter(false)} className="p-1.5 hover:bg-green-200 rounded-lg transition-colors">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+              </button>
+            </div>
+            <div className="p-4">
+              <ComponentErrorBoundary componentName="CampsiteFilter">
+                <CampsiteFilter
+                  filterState={campsiteFilterState}
+                  onFilterChange={setCampsiteFilterState}
+                  onSearchChange={(query) => setCampsiteFilterState({...campsiteFilterState, searchQuery: query})}
+                  onCampsiteSelect={handleCampsiteClick}
+                  campsiteCount={campsiteCount}
+                />
+              </ComponentErrorBoundary>
+            </div>
+          </div>
+        </>
       )}
 
       {/* Vehicle Restriction Guidance - shown when there are restriction violations */}
@@ -732,28 +783,36 @@ const MapContainer: React.FC = () => {
         </div>
       </div>}
 
-      {!isTourActive && <div className="absolute bottom-0 left-0 right-0 z-30 sm:hidden">
-        <div className="bg-white bg-opacity-95 border-t border-neutral-200 px-4 py-2 text-sm">
-          <div className="flex items-center justify-between">
-            <span className="text-neutral-600">
-              {waypoints.length} waypoint{waypoints.length !== 1 ? 's' : ''}
-            </span>
-            {waypoints.length === 0 ? (
-              <span className="text-green-600 text-sm font-medium">
-                Long-press map to add waypoint
-              </span>
-            ) : waypoints.length === 1 ? (
-              <span className="text-orange-600 text-sm font-medium">
-                Add another point
-              </span>
-            ) : (
-              <span className="text-green-600 text-sm font-medium">
-                ✓ Route ready
-              </span>
-            )}
-          </div>
-        </div>
-      </div>}
+      {/* Mobile bottom toolbar */}
+      {!isTourActive && (
+        <MobileToolbar
+          waypointCount={waypoints.length}
+          calculatedRoute={calculatedRoute}
+          campsitesVisible={campsitesVisible}
+          showCampsiteControls={showCampsiteControls}
+          showCampsiteFilter={showCampsiteFilter}
+          showRouteInfo={showRouteInfo}
+          showTripManager={showTripManager}
+          showPlanningTools={showPlanningTools}
+          showCostCalculator={showCostCalculator}
+          onToggleCampsiteControls={() => {
+            if (!showCampsiteControls && !showCampsiteFilter) {
+              setShowCampsiteControls(true);
+            } else if (showCampsiteControls) {
+              setShowCampsiteControls(false);
+              setShowCampsiteFilter(true);
+            } else {
+              setShowCampsiteFilter(false);
+            }
+          }}
+          onToggleRouteInfo={() => setShowRouteInfo(!showRouteInfo)}
+          onToggleTripManager={() => setShowTripManager(!showTripManager)}
+          onTogglePlanningTools={() => setShowPlanningTools(!showPlanningTools)}
+          onToggleCostCalculator={() => setShowCostCalculator(!showCostCalculator)}
+          onOpenVehicleSidebar={openVehicleSidebar}
+          onClearWaypoints={() => setShowConfirmClear(true)}
+        />
+      )}
 
       {/* Route Information Panel */}
       {showRouteInfo && FeatureFlags.BASIC_ROUTING && calculatedRoute && !showCampsiteDetails && !showCampsiteRecommendations && (
