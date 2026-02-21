@@ -4,7 +4,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Route, Heart, MessageSquare } from 'lucide-react';
+import { Route, Heart, MessageSquare, BookOpen } from 'lucide-react';
 import { FeatureFlags } from '../../config';
 import { cn } from '../../utils/cn';
 import { useUIStore, useVehicleStore, useTripWizardStore } from '../../store';
@@ -26,6 +26,7 @@ const Header: React.FC = () => {
 
   const navigationItems = [
     { path: '/', label: t('nav.planner'), key: 'planner' },
+    { path: '/guides', label: 'Guides', key: 'guides', icon: BookOpen },
     { path: '/about', label: t('nav.about'), key: 'about' },
     { path: '/help', label: t('nav.help'), key: 'help' },
     { path: '/feedback', label: 'Feedback', key: 'feedback', icon: MessageSquare },

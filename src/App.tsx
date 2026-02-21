@@ -20,6 +20,8 @@ const PrivacyPolicyPage = React.lazy(() => import('./pages/PrivacyPolicyPage'));
 const TermsPage = React.lazy(() => import('./pages/TermsPage'));
 const AffiliateDisclosurePage = React.lazy(() => import('./pages/AffiliateDisclosurePage'));
 const FeedbackPage = React.lazy(() => import('./pages/FeedbackPage'));
+const BlogListPage = React.lazy(() => import('./pages/BlogListPage'));
+const BlogPostPage = React.lazy(() => import('./pages/BlogPostPage'));
 
 // Debug pages - only loaded in development
 const MapTestPage = import.meta.env.DEV ? React.lazy(() => import('./pages/MapTestPage')) : null;
@@ -171,6 +173,14 @@ const router = createBrowserRouter(
         {
           path: "feedback",
           element: <FeedbackPage />,
+        },
+        {
+          path: "guides",
+          element: <BlogListPage />,
+        },
+        {
+          path: "guides/:slug",
+          element: <BlogPostPage />,
         },
         // Debug routes - only available in development
         ...(import.meta.env.DEV && MapTestPage ? [{
