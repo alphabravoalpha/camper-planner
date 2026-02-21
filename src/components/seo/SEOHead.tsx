@@ -60,7 +60,7 @@ const SEOHead: React.FC<SEOHeadProps> = ({
       setMeta('og:url', url);
 
       // Update canonical
-      let canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
+      const canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
       if (canonical) {
         canonical.href = url;
       }
