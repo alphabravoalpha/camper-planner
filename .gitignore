@@ -54,3 +54,6 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.temp
+
+# Audit screenshots
+audit-screenshots/
