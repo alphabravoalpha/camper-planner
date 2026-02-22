@@ -105,8 +105,9 @@ const HelpPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-neutral-50 animate-fade-in">
       {/* Hero Section */}
-      <div className="bg-gradient-to-br from-primary-700 to-primary-900 text-white">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
+      <div className="relative overflow-hidden bg-gradient-to-br from-primary-700 to-primary-900 text-white">
+        <img src="/images/hero-help.jpg" alt="" className="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-overlay" loading="lazy" />
+        <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
           <div className="text-center">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/15 rounded-full text-sm font-medium mb-6 backdrop-blur-sm">
               <HelpCircle className="w-4 h-4" />

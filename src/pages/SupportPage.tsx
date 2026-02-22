@@ -36,8 +36,9 @@ const SupportPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-neutral-50 animate-fade-in">
       {/* Hero */}
-      <div className="bg-gradient-to-br from-primary-600 to-primary-800 text-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+      <div className="relative overflow-hidden bg-gradient-to-br from-primary-600 to-primary-800 text-white">
+        <img src="/images/hero-support.jpg" alt="" className="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-overlay" loading="lazy" />
+        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
           <Link to="/" className="inline-flex items-center gap-1 text-primary-200 hover:text-white text-sm mb-4 transition-colors">
             <ChevronLeft className="w-4 h-4" />
             Back to planner

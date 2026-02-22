@@ -84,19 +84,7 @@ const Header: React.FC = () => {
               )}
 
               <Link to="/" className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-gradient-to-br from-primary-500 to-primary-700 rounded-full flex items-center justify-center shadow-sm">
-                  <svg
-                    className="w-5 h-5 text-white"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-1.447-.894L15 4m0 13V4m0 0L9 7"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </div>
+                <img src="/logo.png" alt="European Camper Planner" className="w-8 h-8" />
                 <div className="hidden sm:block">
                   <h1 className="text-lg lg:text-xl font-display font-extrabold text-neutral-900">
                     European Camper Planner

@@ -117,11 +117,9 @@ const TourTooltip: React.FC<TourTooltipProps> = ({
       {/* Welcome variant: logo + feature list */}
       {isWelcome ? (
         <>
-          {/* Logo placeholder */}
+          {/* Logo */}
           <div className="flex justify-center mb-3">
-            <div className="w-14 h-14 bg-primary-100 rounded-lg flex items-center justify-center">
-              <Truck className="w-7 h-7 text-primary-600" />
-            </div>
+            <img src="/images/onboarding-welcome.png" alt="European Camper Planner" className="w-14 h-14 rounded-lg object-cover" />
           </div>
 
           {/* Headline */}

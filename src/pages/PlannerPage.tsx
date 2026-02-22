@@ -86,6 +86,13 @@ const PlannerPage: React.FC = () => {
       <div className="flex-1 relative">
         <MapContainer />
 
+        {/* Empty state illustration — subtle hint when no waypoints */}
+        {!hasWaypoints && !showOnboarding && !wizardOpen && (
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-[400] opacity-30">
+            <img src="/images/empty-state.png" alt="" className="w-64 sm:w-80" />
+          </div>
+        )}
+
         {/* "Plan a Trip" floating button — always visible, prominent when no waypoints */}
         {!wizardOpen && !showOnboarding && (
           <button

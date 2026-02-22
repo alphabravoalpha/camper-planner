@@ -68,8 +68,9 @@ const SettingsPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-neutral-50 animate-fade-in">
       {/* Hero Section */}
-      <div className="bg-gradient-to-br from-primary-700 to-primary-900 text-white">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
+      <div className="relative overflow-hidden bg-gradient-to-br from-primary-700 to-primary-900 text-white">
+        <img src="/images/hero-settings.jpg" alt="" className="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-overlay" loading="lazy" />
+        <div className="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
           <div className="flex items-center gap-4">
             <Link to="/" className="p-2 rounded-lg text-white/60 hover:text-white hover:bg-white/10 transition-colors">
               <ArrowLeft className="w-5 h-5" />

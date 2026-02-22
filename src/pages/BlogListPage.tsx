@@ -33,8 +33,9 @@ const BlogListPage: React.FC = () => {
       />
 
       {/* Hero */}
-      <div className="bg-gradient-to-br from-primary-600 via-primary-700 to-primary-800 text-white">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+      <div className="relative overflow-hidden bg-gradient-to-br from-primary-600 via-primary-700 to-primary-800 text-white">
+        <img src="/images/hero-guides.jpg" alt="" className="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-overlay" loading="lazy" />
+        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
           <div className="flex items-center gap-3 mb-4">
             <BookOpen className="w-8 h-8 text-primary-200" />
             <span className="text-primary-200 font-display font-semibold text-sm uppercase tracking-wider">
