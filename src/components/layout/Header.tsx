@@ -129,15 +129,15 @@ const Header: React.FC = () => {
 
             {/* Right side actions */}
             <div className="flex items-center space-x-2 lg:space-x-4 ml-auto">
-              {/* Plan a Trip button — only show on planner page */}
-              {location.pathname === '/' && (
-                <button
-                  onClick={() => { openWizard(); setIsMobileMenuOpen(false); }}
+              {/* Plan a Trip button — show on non-planner pages to navigate back */}
+              {location.pathname !== '/' && (
+                <Link
+                  to="/"
                   className="hidden sm:flex items-center gap-1.5 px-4 py-2 bg-accent-500 text-white rounded-lg hover:bg-accent-600 text-sm font-display font-semibold transition-all duration-200 shadow-sm hover:shadow-medium active:scale-[0.98]"
                 >
                   <Route className="w-4 h-4" />
                   Plan a Trip
-                </button>
+                </Link>
               )}
 
               {/* Language Selector — hidden until multi-language translations are complete */}
@@ -190,14 +190,15 @@ const Header: React.FC = () => {
                     {item.label}
                   </Link>
                 ))}
-                {location.pathname === '/' && (
-                  <button
-                    onClick={() => { openWizard(); setIsMobileMenuOpen(false); }}
+                {location.pathname !== '/' && (
+                  <Link
+                    to="/"
+                    onClick={() => setIsMobileMenuOpen(false)}
                     className="w-full flex items-center gap-2 px-3 py-2.5 rounded-lg text-base font-display font-semibold text-accent-700 bg-accent-50 hover:bg-accent-100 transition-all duration-200"
                   >
                     <Route className="w-4 h-4" />
                     Plan a Trip
-                  </button>
+                  </Link>
                 )}
               </div>
             </div>

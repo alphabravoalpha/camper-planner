@@ -67,20 +67,22 @@ const SettingsPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-neutral-50 animate-fade-in">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Header */}
-        <div className="flex items-center gap-3 mb-8">
-          <Link to="/" className="p-2 rounded-lg text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100 transition-colors">
-            <ArrowLeft className="w-5 h-5" />
-          </Link>
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-primary-50 rounded-lg flex items-center justify-center">
-              <Settings className="w-5 h-5 text-primary-600" />
+      {/* Hero Section */}
+      <div className="bg-gradient-to-br from-primary-700 to-primary-900 text-white">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
+          <div className="flex items-center gap-4">
+            <Link to="/" className="p-2 rounded-lg text-white/60 hover:text-white hover:bg-white/10 transition-colors">
+              <ArrowLeft className="w-5 h-5" />
+            </Link>
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-display font-bold tracking-tight">Settings</h1>
+              <p className="text-primary-200 text-sm mt-1">Manage your data, preferences, and privacy</p>
             </div>
-            <h1 className="text-2xl font-display font-bold text-neutral-900">Settings</h1>
           </div>
         </div>
+      </div>
 
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="space-y-6">
           {/* Data Summary */}
           <div className="bg-white rounded-xl shadow-soft p-6">

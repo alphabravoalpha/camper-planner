@@ -217,14 +217,7 @@ const MobileMapControls: React.FC<MobileMapControlsProps> = ({
         </svg>
       </button>
 
-      {/* Touch Instructions (appears briefly) */}
-      {waypoints.length === 0 && (
-        <div className="bg-primary-600 text-white rounded-lg shadow-lg p-3 max-w-48">
-          <p className="text-xs text-center">
-            Tap map to add waypoints
-          </p>
-        </div>
-      )}
+      {/* Touch Instructions removed — the floating "Plan a Trip" button serves this purpose */}
     </div>
   );
 };
