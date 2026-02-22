@@ -34,9 +34,9 @@ const FeedbackPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-neutral-50 animate-fade-in">
       {/* Hero */}
-      <div className="bg-gradient-to-br from-teal-500 to-teal-700 text-white">
+      <div className="bg-gradient-to-br from-primary-600 to-primary-800 text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
-          <Link to="/" className="inline-flex items-center gap-1 text-teal-200 hover:text-white text-sm mb-4 transition-colors">
+          <Link to="/" className="inline-flex items-center gap-1 text-primary-200 hover:text-white text-sm mb-4 transition-colors">
             <ChevronLeft className="w-4 h-4" />
             Back to planner
           </Link>
@@ -47,7 +47,7 @@ const FeedbackPage: React.FC = () => {
             <h1 className="text-3xl sm:text-4xl font-display font-bold mb-3">
               Share Your Feedback
             </h1>
-            <p className="text-teal-100 text-lg max-w-2xl mx-auto leading-relaxed">
+            <p className="text-primary-100 text-lg max-w-2xl mx-auto leading-relaxed">
               Your suggestions help shape the future of European Camper Trip Planner.
               Every piece of feedback is read and considered.
             </p>
@@ -67,8 +67,8 @@ const FeedbackPage: React.FC = () => {
               const Icon = type.icon;
               return (
                 <div key={type.title} className="text-center">
-                  <div className="w-11 h-11 bg-teal-50 rounded-lg flex items-center justify-center mx-auto mb-3">
-                    <Icon className="w-5 h-5 text-teal-600" />
+                  <div className="w-11 h-11 bg-primary-50 rounded-lg flex items-center justify-center mx-auto mb-3">
+                    <Icon className="w-5 h-5 text-primary-600" />
                   </div>
                   <h3 className="text-sm font-display font-semibold text-neutral-900 mb-1">
                     {type.title}
@@ -94,7 +94,7 @@ const FeedbackPage: React.FC = () => {
                 href={GOOGLE_FORM_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-teal-600 underline hover:text-teal-700 inline-flex items-center gap-1"
+                className="text-primary-600 underline hover:text-primary-700 inline-flex items-center gap-1"
               >
                 open it in a new tab
                 <ExternalLink className="w-3 h-3" />
@@ -113,32 +113,32 @@ const FeedbackPage: React.FC = () => {
         </div>
 
         {/* What happens next */}
-        <div className="bg-gradient-to-br from-teal-50 to-teal-100 rounded-xl p-6 sm:p-8">
-          <h2 className="text-xl font-display font-bold text-teal-900 mb-4 text-center">
+        <div className="bg-gradient-to-br from-primary-50 to-primary-100 rounded-xl p-6 sm:p-8">
+          <h2 className="text-xl font-display font-bold text-primary-900 mb-4 text-center">
             What happens next?
           </h2>
           <div className="space-y-3 max-w-lg mx-auto">
             <div className="flex items-start gap-3">
-              <div className="w-7 h-7 bg-teal-500 text-white rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold">
+              <div className="w-7 h-7 bg-primary-500 text-white rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold">
                 1
               </div>
-              <p className="text-sm text-teal-800 pt-1">
+              <p className="text-sm text-primary-800 pt-1">
                 Your feedback is collected and reviewed regularly.
               </p>
             </div>
             <div className="flex items-start gap-3">
-              <div className="w-7 h-7 bg-teal-500 text-white rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold">
+              <div className="w-7 h-7 bg-primary-500 text-white rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold">
                 2
               </div>
-              <p className="text-sm text-teal-800 pt-1">
+              <p className="text-sm text-primary-800 pt-1">
                 Popular requests and critical bugs are prioritised for development.
               </p>
             </div>
             <div className="flex items-start gap-3">
-              <div className="w-7 h-7 bg-teal-500 text-white rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold">
+              <div className="w-7 h-7 bg-primary-500 text-white rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold">
                 3
               </div>
-              <p className="text-sm text-teal-800 pt-1">
+              <p className="text-sm text-primary-800 pt-1">
                 Updates ship as soon as they're ready — no waiting for release cycles.
               </p>
             </div>
@@ -153,7 +153,7 @@ const FeedbackPage: React.FC = () => {
           </p>
           <Link
             to="/"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-teal-600 text-white rounded-lg font-display font-semibold hover:bg-teal-700 transition-all duration-200 shadow-sm hover:shadow-medium active:scale-[0.97]"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-primary-600 text-white rounded-lg font-display font-semibold hover:bg-primary-700 transition-all duration-200 shadow-sm hover:shadow-medium active:scale-[0.97]"
           >
             Back to Planner
             <ChevronRight className="w-5 h-5" />

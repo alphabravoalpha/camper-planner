@@ -149,7 +149,7 @@ const MapContainer: React.FC = () => {
   // Campsite state
   const [selectedCampsite, setSelectedCampsite] = useState<Campsite | null>(null);
   const [highlightedCampsiteId, setHighlightedCampsiteId] = useState<string | null>(null);
-  const [showCampsiteControls, setShowCampsiteControls] = useState<boolean>(FeatureFlags.CAMPSITE_DISPLAY);
+  const [showCampsiteControls, setShowCampsiteControls] = useState<boolean>(false);
   const [showCampsiteFilter, setShowCampsiteFilter] = useState(false);
   const [showCampsiteDetails, setShowCampsiteDetails] = useState(false);
   const [showCampsiteRecommendations, setShowCampsiteRecommendations] = useState(false);
@@ -447,33 +447,15 @@ const MapContainer: React.FC = () => {
         </div>
       )}
 
-      {/* Waypoint hint for new users - shown when no waypoints exist (hidden during tour) */}
-      {waypoints.length === 0 && isMapReady && !isTourActive && (
-        <div className="absolute bottom-24 left-1/2 transform -translate-x-1/2 z-20 pointer-events-none hidden sm:block animate-fade-in">
-          <div className="bg-white/95 backdrop-blur-sm px-5 py-3 rounded-lg shadow-lg border border-neutral-200">
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center flex-shrink-0">
-                <svg className="w-4 h-4 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-              </div>
-              <div>
-                <p className="text-sm font-medium text-neutral-900">Start your trip</p>
-                <p className="text-xs text-neutral-500">Right-click on the map to add waypoints, or search for a location above</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Waypoint hint removed — "Plan a Trip" floating button and search bar serve this purpose */}
 
       {/* Vehicle Profile Configuration */}
       <ComponentErrorBoundary componentName="VehicleProfileSidebar">
         <VehicleProfileSidebar />
       </ComponentErrorBoundary>
 
-      {/* Route Calculator Panel - positioned to avoid overlap with map controls */}
-      {FeatureFlags.BASIC_ROUTING && !isTourActive && (
+      {/* Route Calculator Panel - only show when user has waypoints to avoid dead space */}
+      {FeatureFlags.BASIC_ROUTING && !isTourActive && waypoints.length >= 1 && (
         <div className="absolute top-4 right-14 z-20 w-64 hidden lg:block">
           <ComponentErrorBoundary componentName="RouteCalculator">
             <RouteCalculator />
@@ -756,27 +738,26 @@ const MapContainer: React.FC = () => {
         )}
       </div>
 
-      {/* Map info overlay - responsive design (hidden during tour) */}
+      {/* Map info overlay - minimal, user-facing (hidden during tour) */}
       {!isTourActive && <div className="absolute bottom-4 left-4 z-30 hidden sm:block">
-        <div className="bg-white bg-opacity-95 rounded-lg shadow-md px-3 py-2 text-xs text-neutral-600 animate-fade-in">
-          <div className="sm:block hidden">
-            Zoom: {zoom} | Center: {center[0].toFixed(4)}, {center[1].toFixed(4)}
-          </div>
-          <div className="flex items-center justify-between mt-1">
+        <div className="bg-white/90 backdrop-blur-sm rounded-lg shadow-sm px-3 py-1.5 text-xs text-neutral-500 animate-fade-in">
+          <div className="flex items-center gap-3">
             <span className="text-primary-600 font-medium">
-              Waypoints: {waypoints.length}
+              {waypoints.length} waypoint{waypoints.length !== 1 ? 's' : ''}
             </span>
-            {waypoints.length === 0 ? (
-              <span className="text-green-600 text-xs">
+            {waypoints.length === 0 && (
+              <span className="text-neutral-400">
                 Right-click map to add
               </span>
-            ) : waypoints.length === 1 ? (
-              <span className="text-orange-600 text-xs">
+            )}
+            {waypoints.length === 1 && (
+              <span className="text-orange-500">
                 Add 1 more for routing
               </span>
-            ) : (
-              <span className="text-green-600 text-xs">
-                ✓ Ready for routing
+            )}
+            {waypoints.length >= 2 && (
+              <span className="text-green-600">
+                ✓ Ready
               </span>
             )}
           </div>

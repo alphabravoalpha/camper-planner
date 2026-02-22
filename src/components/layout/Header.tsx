@@ -4,7 +4,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Route, Heart, MessageSquare, BookOpen } from 'lucide-react';
+import { Route, BookOpen } from 'lucide-react';
 import { FeatureFlags } from '../../config';
 import { cn } from '../../utils/cn';
 import { useUIStore, useVehicleStore, useTripWizardStore } from '../../store';
@@ -29,8 +29,6 @@ const Header: React.FC = () => {
     { path: '/guides', label: 'Guides', key: 'guides', icon: BookOpen },
     { path: '/about', label: t('nav.about'), key: 'about' },
     { path: '/help', label: t('nav.help'), key: 'help' },
-    { path: '/feedback', label: 'Feedback', key: 'feedback', icon: MessageSquare },
-    { path: '/support', label: 'Support', key: 'support', icon: Heart },
   ];
 
   const isActivePath = (path: string) => {
@@ -112,7 +110,7 @@ const Header: React.FC = () => {
             </div>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex space-x-8">
+            <nav className="hidden lg:flex space-x-6">
               {navigationItems.map((item) => (
                 <Link
                   key={item.key}
@@ -142,10 +140,10 @@ const Header: React.FC = () => {
                 </button>
               )}
 
-              {/* Language Selector */}
-              {FeatureFlags.MULTI_LANGUAGE_FRAMEWORK && (
+              {/* Language Selector — hidden until multi-language translations are complete */}
+              {FeatureFlags.MULTI_LANGUAGE_COMPLETE && (
                 <LanguageSelector
-                  variant={FeatureFlags.MULTI_LANGUAGE_COMPLETE ? 'dropdown' : 'button'}
+                  variant="dropdown"
                   size="sm"
                 />
               )}
@@ -154,7 +152,7 @@ const Header: React.FC = () => {
               <button
                 type="button"
                 onClick={toggleMobileMenu}
-                className="md:hidden p-2 rounded-lg text-neutral-500 hover:text-neutral-700 hover:bg-neutral-50"
+                className="lg:hidden p-2 rounded-lg text-neutral-500 hover:text-neutral-700 hover:bg-neutral-50"
                 aria-label="Toggle menu"
               >
                 <svg
@@ -175,7 +173,7 @@ const Header: React.FC = () => {
 
           {/* Mobile Navigation Menu */}
           {isMobileMenuOpen && (
-            <div className="md:hidden bg-white">
+            <div className="lg:hidden bg-white">
               <div className="px-2 pt-2 pb-3 space-y-1">
                 {navigationItems.map((item) => (
                   <Link
@@ -210,7 +208,7 @@ const Header: React.FC = () => {
       {/* Mobile menu overlay */}
       {isMobileMenuOpen && (
         <div
-          className="fixed inset-0 z-30 bg-black/25 backdrop-blur-sm md:hidden"
+          className="fixed inset-0 z-30 bg-black/25 backdrop-blur-sm lg:hidden"
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}

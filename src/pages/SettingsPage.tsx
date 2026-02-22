@@ -93,7 +93,7 @@ const SettingsPage: React.FC = () => {
             </p>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               <div className="bg-neutral-50 rounded-lg p-3 text-center">
-                <div className="text-xl font-bold text-primary-600">{profile ? 1 : 0}</div>
+                <div className="text-xl font-bold text-primary-600">{profile ? '✓' : '—'}</div>
                 <div className="text-xs text-neutral-500 mt-0.5">Vehicle Profile</div>
               </div>
               <div className="bg-neutral-50 rounded-lg p-3 text-center">

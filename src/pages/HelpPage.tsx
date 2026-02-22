@@ -1,89 +1,97 @@
 // Help Page
-// User documentation, getting started guide, and feature overview
+// Practical user guide with step-by-step instructions and FAQ
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useOnboarding } from '../hooks/useOnboarding';
 import { useNavigate } from 'react-router-dom';
 import {
-  PlayCircle, MapPin, Route, Tent, Truck, Download,
-  Calculator, Search, ChevronRight, HelpCircle,
-  Compass, Fuel
+  PlayCircle, ChevronRight, HelpCircle,
+  Compass, ChevronDown, MessageSquare, Heart
 } from 'lucide-react';
-
-const FEATURES = [
-  {
-    icon: MapPin,
-    title: 'Add Waypoints',
-    description: 'Click anywhere on the map to add stops. Drag to reorder your route.',
-  },
-  {
-    icon: Route,
-    title: 'Calculate Routes',
-    description: 'Get camper-safe directions that respect your vehicle dimensions.',
-  },
-  {
-    icon: Tent,
-    title: 'Find Campsites',
-    description: 'Search thousands of campsites, aires, and caravan parks across Europe.',
-  },
-  {
-    icon: Truck,
-    title: 'Vehicle Profile',
-    description: 'Set your height, width, weight, and length for safe routing.',
-  },
-  {
-    icon: Download,
-    title: 'Export Routes',
-    description: 'Download your route as GPX, KML, or JSON for your GPS device.',
-  },
-  {
-    icon: Calculator,
-    title: 'Cost Calculator',
-    description: 'Estimate fuel costs, campsite fees, and total trip budget.',
-  },
-];
-
-const VEHICLES = [
-  {
-    title: 'Motorhomes',
-    description: 'A-Class, C-Class, and integrated motorhomes of all sizes.',
-    emoji: '🏠',
-  },
-  {
-    title: 'Campervans',
-    description: 'VW California, Mercedes Marco Polo, Ford Nugget, and custom conversions.',
-    emoji: '🚐',
-  },
-  {
-    title: 'Caravans',
-    description: 'Touring caravans with tow vehicles — we calculate combined dimensions.',
-    emoji: '🏕️',
-  },
-];
 
 const STEPS = [
   {
     number: '1',
     title: 'Set up your vehicle',
-    description: 'Click the vehicle button and enter your dimensions, or pick from our database of popular models.',
+    description: 'Click the vehicle badge in the header (or the vehicle button on the map) and enter your height, width, weight, and length. This ensures routes avoid low bridges, narrow roads, and weight-restricted areas.',
   },
   {
     number: '2',
     title: 'Plan your route',
-    description: 'Click the map to add waypoints, or use the search bar to find places. Drag waypoints to reorder.',
+    description: 'Right-click on the map to add waypoints, or use the search bar to find cities and landmarks. Drag waypoints to reorder your stops. Routes calculate automatically.',
   },
   {
     number: '3',
-    title: 'Find campsites',
-    description: 'Toggle the campsite layer to discover sites along your route. Filter by amenities, type, or distance.',
+    title: 'Find campsites along the way',
+    description: 'Click the campsite toggle (tent icon) on the map to see nearby campsites, aires, and caravan parks. Use filters to narrow by amenities like electricity, WiFi, or waste disposal.',
   },
   {
     number: '4',
     title: 'Export & go',
-    description: 'Export your route to GPX for your satnav, calculate costs, and hit the road.',
+    description: 'Open the planning tools panel to export your route as GPX for your satnav, estimate fuel costs with the cost calculator, or save your trip for later.',
   },
 ];
+
+const FAQ_ITEMS = [
+  {
+    question: 'How do I add stops to my route?',
+    answer: 'Right-click anywhere on the map to add a waypoint, or use the search bar at the top of the map to find a city, town, or point of interest. You can also click "Plan a Trip" to use the trip planning wizard.',
+  },
+  {
+    question: 'How do I reorder my stops?',
+    answer: 'Open the waypoint list (sidebar on desktop, or the list icon on mobile) and drag waypoints up or down to reorder them. You can also use the route optimizer in the planning tools to find the most efficient order automatically.',
+  },
+  {
+    question: 'Why should I set up a vehicle profile?',
+    answer: 'Your vehicle dimensions (height, width, weight, length) are sent to the routing engine so it can avoid roads with low bridges, weight restrictions, or narrow passages. Without a profile, you get standard car routing which may take you down unsuitable roads.',
+  },
+  {
+    question: 'How do I export my route to a GPS device?',
+    answer: 'Open the planning tools panel (the tools icon on the right side of the map), then click "Export Route". You can download as GPX (for most satnavs), KML (for Google Earth), or JSON (for backup). Transfer the GPX file to your device via USB or Bluetooth.',
+  },
+  {
+    question: 'Is my data safe? Where is it stored?',
+    answer: 'All your data — trips, vehicle profiles, preferences — is stored locally in your browser using localStorage. Nothing is sent to any server. You can export a backup from the Settings page and clear your data at any time.',
+  },
+  {
+    question: 'How accurate are the campsite locations?',
+    answer: 'Campsite data comes from OpenStreetMap, which is community-maintained. Most major campsites are listed with accurate coordinates, but smaller or newer sites may be missing or have limited details. If you find an error, you can contribute to OpenStreetMap directly.',
+  },
+  {
+    question: 'Can I plan trips across multiple countries?',
+    answer: 'Yes — the planner covers 40+ European countries. Add waypoints across borders and the routing engine handles the rest, including ferry crossings where available.',
+  },
+  {
+    question: 'Does it work offline?',
+    answer: 'The app loads in your browser and retains your saved data offline. However, map tiles, routing calculations, and campsite searches require an internet connection. Your saved trips and vehicle profile are always available offline.',
+  },
+];
+
+const FAQItem: React.FC<{ question: string; answer: string }> = ({ question, answer }) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div className="border border-neutral-200 rounded-lg overflow-hidden">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full flex items-center justify-between gap-3 p-4 text-left hover:bg-neutral-50 transition-colors"
+      >
+        <span className="text-sm font-display font-semibold text-neutral-900">{question}</span>
+        <ChevronDown
+          className={`w-4 h-4 text-neutral-400 flex-shrink-0 transition-transform duration-200 ${
+            isOpen ? 'rotate-180' : ''
+          }`}
+        />
+      </button>
+      {isOpen && (
+        <div className="px-4 pb-4 text-sm text-neutral-600 leading-relaxed animate-fade-in">
+          {answer}
+        </div>
+      )}
+    </div>
+  );
+};
 
 const HelpPage: React.FC = () => {
   const { resetOnboarding } = useOnboarding();
@@ -108,8 +116,8 @@ const HelpPage: React.FC = () => {
               How can we help?
             </h1>
             <p className="text-lg sm:text-xl text-primary-100 max-w-2xl mx-auto leading-relaxed">
-              Everything you need to plan your perfect European camper trip,
-              from first click to the open road.
+              Step-by-step guides and answers to common questions
+              about planning your European camper trip.
             </p>
           </div>
         </div>
@@ -166,58 +174,7 @@ const HelpPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Features Grid */}
-        <div className="mb-12">
-          <h2 className="text-2xl font-display font-bold text-neutral-900 mb-6 text-center">
-            What you can do
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {FEATURES.map((feature) => {
-              const Icon = feature.icon;
-              return (
-                <div
-                  key={feature.title}
-                  className="bg-white rounded-xl shadow-soft p-6 hover:shadow-medium hover:-translate-y-1 transition-all duration-200"
-                >
-                  <div className="w-11 h-11 bg-primary-50 rounded-lg flex items-center justify-center mb-4">
-                    <Icon className="w-5 h-5 text-primary-600" />
-                  </div>
-                  <h3 className="text-base font-display font-semibold text-neutral-900 mb-1.5">
-                    {feature.title}
-                  </h3>
-                  <p className="text-sm text-neutral-500 leading-relaxed">
-                    {feature.description}
-                  </p>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Vehicle Compatibility */}
-        <div className="mb-12">
-          <h2 className="text-2xl font-display font-bold text-neutral-900 mb-6 text-center">
-            Built for every camping vehicle
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-            {VEHICLES.map((vehicle) => (
-              <div
-                key={vehicle.title}
-                className="bg-white rounded-xl shadow-soft p-6 hover:shadow-medium hover:-translate-y-0.5 transition-all duration-200 text-center"
-              >
-                <div className="text-3xl mb-3">{vehicle.emoji}</div>
-                <h3 className="text-base font-display font-semibold text-neutral-900 mb-1.5">
-                  {vehicle.title}
-                </h3>
-                <p className="text-sm text-neutral-500 leading-relaxed">
-                  {vehicle.description}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Tips Section */}
+        {/* Pro Tips */}
         <div className="bg-white rounded-xl shadow-soft p-8 mb-12">
           <div className="flex items-start gap-4">
             <div className="w-12 h-12 bg-primary-50 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -253,29 +210,56 @@ const HelpPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Countries Grid */}
+        {/* FAQ Section */}
         <div className="mb-12">
           <h2 className="text-2xl font-display font-bold text-neutral-900 mb-6 text-center">
-            Covering all of Europe
+            Frequently asked questions
           </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-            {[
-              'France', 'Spain', 'Italy', 'Germany',
-              'Portugal', 'Norway', 'Sweden', 'Croatia',
-              'Greece', 'Netherlands', 'Switzerland', 'Austria',
-              'Denmark', 'Finland', 'Poland', 'UK',
-            ].map((country) => (
-              <div
-                key={country}
-                className="bg-white rounded-lg shadow-soft px-4 py-3 text-center text-sm font-medium text-neutral-700 hover:shadow-medium hover:-translate-y-0.5 transition-all duration-200"
-              >
-                {country}
-              </div>
+          <div className="space-y-3 max-w-3xl mx-auto">
+            {FAQ_ITEMS.map((item) => (
+              <FAQItem key={item.question} question={item.question} answer={item.answer} />
             ))}
           </div>
-          <p className="text-center text-sm text-neutral-400 mt-3">
-            ...and many more including Ireland, Czech Republic, Hungary, Romania, Belgium, and beyond.
-          </p>
+        </div>
+
+        {/* Help Links */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-12">
+          <Link
+            to="/feedback"
+            className="bg-white rounded-xl shadow-soft p-6 hover:shadow-medium hover:-translate-y-1 transition-all duration-200 group"
+          >
+            <div className="flex items-start gap-4">
+              <div className="w-11 h-11 bg-primary-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                <MessageSquare className="w-5 h-5 text-primary-600" />
+              </div>
+              <div>
+                <h3 className="text-base font-display font-semibold text-neutral-900 mb-1 group-hover:text-primary-700 transition-colors">
+                  Share feedback
+                </h3>
+                <p className="text-sm text-neutral-500 leading-relaxed">
+                  Report a bug, suggest a feature, or let us know what you think.
+                </p>
+              </div>
+            </div>
+          </Link>
+          <Link
+            to="/support"
+            className="bg-white rounded-xl shadow-soft p-6 hover:shadow-medium hover:-translate-y-1 transition-all duration-200 group"
+          >
+            <div className="flex items-start gap-4">
+              <div className="w-11 h-11 bg-accent-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                <Heart className="w-5 h-5 text-accent-600" />
+              </div>
+              <div>
+                <h3 className="text-base font-display font-semibold text-neutral-900 mb-1 group-hover:text-accent-700 transition-colors">
+                  Support the project
+                </h3>
+                <p className="text-sm text-neutral-500 leading-relaxed">
+                  Help keep the app free by buying us a coffee on Ko-fi.
+                </p>
+              </div>
+            </div>
+          </Link>
         </div>
 
         {/* CTA */}
