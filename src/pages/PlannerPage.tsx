@@ -1,14 +1,14 @@
 // Main Trip Planner Page
 // Phase 1: Basic page structure, Phase 2: Map integration
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import MapContainer from '../components/map/MapContainer';
 import TripWizard from '../components/wizard/TripWizard';
 import { useTripWizardStore, useRouteStore } from '../store';
 import { useOnboarding } from '../hooks/useOnboarding';
 import { Route as RouteIcon, X, MapPin, Tent, Download, BookOpen } from 'lucide-react';
-import { IMAGES } from '../data/images';
+
 
 const HERO_DISMISSED_KEY = 'planner-hero-dismissed';
 
@@ -86,26 +86,40 @@ const PlannerPage: React.FC = () => {
       <div className="flex-1 relative">
         <MapContainer />
 
-        {/* Empty state illustration — subtle hint when no waypoints */}
+        {/* Empty state — illustration + CTA card when no waypoints */}
         {!hasWaypoints && !showOnboarding && !wizardOpen && (
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-[400] opacity-30">
-            <img src="/images/empty-state.png" alt="" className="w-64 sm:w-80" />
+          <div className="absolute inset-0 z-[400] flex items-center justify-center pointer-events-none">
+            <div className="pointer-events-auto flex flex-col items-center gap-4 px-6 py-8 bg-white/90 backdrop-blur-sm rounded-2xl shadow-float max-w-xs text-center">
+              <img src="/images/empty-state.png" alt="" className="w-48 sm:w-56 h-20 sm:h-24 object-cover object-center" />
+              <div>
+                <h3 className="text-lg font-display font-bold text-neutral-800 mb-1">
+                  Where to next?
+                </h3>
+                <p className="text-sm text-neutral-500">
+                  Plan a route with vehicle-safe directions, campsites, and cost estimates.
+                </p>
+              </div>
+              <button
+                data-tour-id="plan-trip-float"
+                onClick={openWizard}
+                className="flex items-center gap-2 px-6 py-3 bg-accent-500 text-white rounded-2xl hover:bg-accent-600 font-semibold text-base shadow-lg active:scale-[0.97] transition-all"
+              >
+                <RouteIcon className="w-5 h-5" />
+                Plan a Trip
+              </button>
+            </div>
           </div>
         )}
 
-        {/* "Plan a Trip" floating button — always visible, prominent when no waypoints */}
-        {!wizardOpen && !showOnboarding && (
+        {/* "Continue Planning" button — only when waypoints exist */}
+        {hasWaypoints && !wizardOpen && !showOnboarding && (
           <button
             data-tour-id="plan-trip-float"
             onClick={openWizard}
-            className={`absolute z-[1000] flex items-center gap-2 shadow-lg transition-all font-semibold ${
-              hasWaypoints
-                ? 'bottom-14 left-4 sm:bottom-4 sm:right-4 sm:left-auto px-4 py-2.5 bg-white text-accent-600 rounded-xl hover:bg-accent-50 text-sm shadow-medium ring-1 ring-black/5'
-                : 'bottom-14 sm:bottom-6 left-1/2 -translate-x-1/2 px-6 py-3.5 bg-accent-500 text-white rounded-2xl hover:bg-accent-600 text-base shadow-float active:scale-[0.97]'
-            }`}
+            className="absolute z-[1000] bottom-14 left-4 sm:bottom-4 sm:right-4 sm:left-auto flex items-center gap-2 px-4 py-2.5 bg-white text-accent-600 rounded-xl hover:bg-accent-50 text-sm font-semibold shadow-medium ring-1 ring-black/5 transition-all"
           >
-            <RouteIcon className={hasWaypoints ? 'w-4 h-4' : 'w-5 h-5'} />
-            {hasWaypoints ? 'Continue Planning' : 'Plan a Trip'}
+            <RouteIcon className="w-4 h-4" />
+            Continue Planning
           </button>
         )}
       </div>
