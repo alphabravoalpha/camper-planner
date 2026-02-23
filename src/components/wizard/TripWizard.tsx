@@ -9,6 +9,7 @@ import {
   Zap, Droplets, ShowerHead, Scale, Rocket, TrainFront, Lightbulb,
 } from 'lucide-react';
 import { useTripWizardStore, useVehicleStore, useRouteStore } from '../../store';
+import { useTripSettingsStore } from '../../store/tripSettingsStore';
 import { TripWizardService, DRIVING_STYLE_LIMITS, type DrivingStyle, type CampsiteOption } from '../../services/TripWizardService';
 import { campsiteService } from '../../services/CampsiteService';
 import { CHANNEL_CROSSINGS, type ChannelCrossing, needsChannelCrossing } from '../../data/channelCrossings';
@@ -143,6 +144,25 @@ const TripWizard: React.FC = () => {
 
     // Add all waypoints to the route store
     waypoints.forEach(wp => routeStore.addWaypoint(wp));
+
+    // Persist wizard settings to the trip settings store
+    const crossing = wizard.crossing;
+    const crossingType: 'ferry' | 'eurotunnel' | undefined = crossing
+      ? (crossing.type === 'tunnel' ? 'eurotunnel' : 'ferry')
+      : undefined;
+
+    useTripSettingsStore.getState().updateSettings({
+      ...(wizard.startDate ? { startDate: wizard.startDate.toISOString().split('T')[0] } : {}),
+      ...(wizard.endDate ? { endDate: wizard.endDate.toISOString().split('T')[0] } : {}),
+      drivingStyle: wizard.drivingStyle,
+      restDayFrequency: wizard.restDayFrequency,
+      ...(crossing && crossingType ? {
+        crossing: {
+          type: crossingType,
+          estimatedCost: Math.round((crossing.estimatedCost.low + crossing.estimatedCost.high) / 2),
+        },
+      } : {}),
+    });
 
     // Close wizard
     wizard.closeWizard();
