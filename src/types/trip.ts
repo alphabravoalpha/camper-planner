@@ -1,6 +1,8 @@
 // Trip Data Types
 // V1 ready, V2 extensible data structures
 
+import { type TripSettings } from './tripSettings';
+
 export interface TripData {
   id: string;
   version: string; // Schema version for migration
@@ -9,6 +11,7 @@ export interface TripData {
   metadata: TripMetadata;
   vehicle: VehicleProfile;
   route: RouteData;
+  settings?: TripSettings; // Trip settings (dates, driving style, budget, fuel)
 
   // V2 Data Structures (optional, added later)
   preferences?: UserPreferences;

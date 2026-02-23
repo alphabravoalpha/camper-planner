@@ -5,6 +5,7 @@ import { type Waypoint } from '../store';
 import { type VehicleProfile } from '../store';
 import { type CostBreakdown, type FuelConsumptionSettings, type FuelPriceSettings } from './CostCalculationService';
 import { type OptimizationResult } from './RouteOptimizationService';
+import { type TripSettings } from '../types/tripSettings';
 
 export interface TripMetadata {
   id: string;
@@ -48,6 +49,7 @@ export interface TripData {
     settings: any;
     appliedAt: Date;
   };
+  settings?: TripSettings; // Trip settings (dates, driving style, budget, fuel)
 }
 
 export interface Trip {

@@ -10,6 +10,7 @@ import {
 import { useRouteStore } from '../../store';
 import { useVehicleStore } from '../../store';
 import { useCostStore } from '../../store/costStore';
+import { useTripSettingsStore } from '../../store/tripSettingsStore';
 import {
   TripStorageService,
   type Trip,
@@ -207,7 +208,8 @@ const TripManager: React.FC<TripManagerProps> = ({
             fuelSettings: fuelConsumptionSettings,
             priceSettings: fuelPriceSettings,
             lastCalculated: new Date()
-          }
+          },
+          settings: useTripSettingsStore.getState().settings,
         }
       };
 
@@ -235,6 +237,10 @@ const TripManager: React.FC<TripManagerProps> = ({
       const trip = await TripStorageService.loadTrip(tripId);
       if (trip && onTripLoad) {
         onTripLoad(trip);
+        // Restore trip settings if they were saved with the trip
+        if (trip.data.settings) {
+          useTripSettingsStore.getState().loadSettings(trip.data.settings);
+        }
         await loadRecentTrips(); // Update recent trips
       }
     } catch (err) {
