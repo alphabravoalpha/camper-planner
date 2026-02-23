@@ -77,10 +77,12 @@ const CostCalculator: React.FC<CostCalculatorProps> = ({
     },
   }), [settings.currency, settings.fuelPricePerLitre]);
 
-  // Calculate route hash for caching
+  // Calculate route hash for caching (includes settings so cache invalidates on budget changes)
   const routeHash = useMemo(() => {
-    return createRouteHash(waypoints, profile);
-  }, [waypoints, profile]);
+    const base = createRouteHash(waypoints, profile);
+    const settingsHash = `${settings.dailyBudget.food}-${settings.dailyBudget.campsite}-${settings.crossing.type}-${settings.crossing.estimatedCost ?? 0}-${settings.fuelPricePerLitre}-${settings.fuelConsumption.value}-${settings.currency}`;
+    return `${base}_${settingsHash}`;
+  }, [waypoints, profile, settings]);
 
   // Auto-calculate costs when route or settings change
   useEffect(() => {
