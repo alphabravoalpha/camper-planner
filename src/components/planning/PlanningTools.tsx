@@ -4,7 +4,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   Calendar, Clock, AlertTriangle, CheckCircle, Info, TrendingUp,
-  Route, Users, Thermometer, Cloud, Car, Bed, Coffee, Camera, Fuel,
+  Route, Users, Thermometer, Cloud, Bed, Coffee, Camera, Fuel,
   Navigation, Target, BarChart3, Settings, ChevronDown, ChevronUp
 } from 'lucide-react';
 import { useRouteStore } from '../../store';
@@ -18,6 +18,8 @@ import {
   type SeasonalFactors,
   type DrivingLimits
 } from '../../services/TripPlanningService';
+import { useTripSettingsStore } from '../../store/tripSettingsStore';
+import { getSeasonFromDate, type Season } from '../../types/tripSettings';
 
 interface PlanningToolsProps {
   className?: string;
@@ -25,7 +27,6 @@ interface PlanningToolsProps {
   isVisible?: boolean;
 }
 
-type Season = 'spring' | 'summer' | 'autumn' | 'winter';
 type ViewMode = 'overview' | 'calendar' | 'recommendations' | 'metrics';
 
 const PlanningTools: React.FC<PlanningToolsProps> = ({
@@ -37,10 +38,13 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
   const { waypoints } = useRouteStore();
   const { profile } = useVehicleStore();
 
+  // Trip settings from shared store
+  const { settings } = useTripSettingsStore();
+  const season = getSeasonFromDate(settings.startDate);
+  const startDate = settings.startDate || '';
+
   // State
   const [viewMode, setViewMode] = useState<ViewMode>('overview');
-  const [season, setSeason] = useState<Season>('summer');
-  const [startDate, setStartDate] = useState<string>('');
   const [tripPlan, setTripPlan] = useState<TripPlan | null>(null);
   const [metrics, setMetrics] = useState<TripMetrics | null>(null);
   const [recommendations, setRecommendations] = useState<PlanningRecommendation[]>([]);
@@ -59,7 +63,7 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
       setMetrics(null);
       setRecommendations([]);
     }
-  }, [waypoints, profile, season, startDate]);
+  }, [waypoints, profile, settings.startDate, settings.drivingStyle, settings.maxDrivingHoursPerDay]);
 
   const calculateTripPlan = async () => {
     setIsCalculating(true);
@@ -188,55 +192,6 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
         </div>
         <div className="flex items-center gap-2">
           <Settings className="w-4 h-4 text-neutral-400" />
-        </div>
-      </div>
-
-      {/* Planning Controls */}
-      <div className="p-4 border-b bg-neutral-50">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-          {/* Season Selection */}
-          <div>
-            <label className="block text-sm font-medium text-neutral-700 mb-1">
-              Travel Season
-            </label>
-            <select
-              value={season}
-              onChange={(e) => setSeason(e.target.value as Season)}
-              className="w-full px-3 py-2 border rounded-lg text-sm"
-            >
-              <option value="spring">Spring (Mar-May)</option>
-              <option value="summer">Summer (Jun-Aug)</option>
-              <option value="autumn">Autumn (Sep-Nov)</option>
-              <option value="winter">Winter (Dec-Feb)</option>
-            </select>
-          </div>
-
-          {/* Start Date */}
-          <div>
-            <label className="block text-sm font-medium text-neutral-700 mb-1">
-              Start Date (Optional)
-            </label>
-            <input
-              type="date"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-              className="w-full px-3 py-2 border rounded-lg text-sm"
-            />
-          </div>
-
-          {/* Vehicle Info */}
-          <div>
-            <label className="block text-sm font-medium text-neutral-700 mb-1">
-              Vehicle Type
-            </label>
-            <div className="flex items-center gap-2 px-3 py-2 bg-white border rounded-lg text-sm">
-              <Car className="w-4 h-4 text-neutral-400" />
-              <span className="capitalize">
-                {profile?.type || 'Default'}
-                {profile?.length && ` (${profile.length}m)`}
-              </span>
-            </div>
-          </div>
         </div>
       </div>
 
