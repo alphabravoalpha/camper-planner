@@ -9,7 +9,7 @@
 // This ensures panels render ABOVE the overlay (z-9997) but BELOW the tooltip (z-9999).
 
 import { useRouteStore, useVehicleStore, useUIStore, useMapStore } from '../../store';
-import { useCostStore } from '../../store/costStore';
+import { useTripSettingsStore } from '../../store/tripSettingsStore';
 
 // =============================================================================
 // Demo Data — London to French Riviera trip narrative
@@ -158,11 +158,13 @@ export const demoActions = {
       clickByAriaLabel('Toggle trip plan');
     }
     useVehicleStore.getState().setProfile(DEMO_VEHICLE);
-    useCostStore.getState().setFuelConsumptionSettings({
-      consumptionType: 'l_per_100km',
-      consumption: 12.5,
-      fuelType: 'diesel',
-      tankCapacity: 80,
+    useTripSettingsStore.getState().updateSettings({
+      fuelConsumption: {
+        value: 12.5,
+        unit: 'l_per_100km',
+        fuelType: 'diesel',
+        tankCapacity: 80,
+      },
     });
     // Open the vehicle sidebar panel so users see it populated
     useUIStore.getState().openVehicleSidebar();

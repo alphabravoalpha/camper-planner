@@ -9,7 +9,6 @@ import {
 } from 'lucide-react';
 import { useRouteStore } from '../../store';
 import { useVehicleStore } from '../../store';
-import { useCostStore } from '../../store/costStore';
 import { useTripSettingsStore } from '../../store/tripSettingsStore';
 import {
   TripStorageService,
@@ -48,7 +47,19 @@ const TripManager: React.FC<TripManagerProps> = ({
   // Store hooks
   const { waypoints } = useRouteStore();
   const { profile: selectedProfile } = useVehicleStore();
-  const { fuelConsumptionSettings, fuelPriceSettings } = useCostStore();
+  const { settings: tripSettings } = useTripSettingsStore();
+  // Derive fuel settings from trip settings store for cost calculations
+  const fuelConsumptionSettings = {
+    consumptionType: tripSettings.fuelConsumption.unit === 'l_per_100km' ? 'l_per_100km' as const
+      : tripSettings.fuelConsumption.unit === 'mpg_imperial' ? 'mpg_imperial' as const : 'mpg_us' as const,
+    consumption: tripSettings.fuelConsumption.value,
+    fuelType: (tripSettings.fuelConsumption.fuelType === 'electric' ? 'electricity' : tripSettings.fuelConsumption.fuelType) as 'petrol' | 'diesel' | 'lpg' | 'electricity',
+    tankCapacity: tripSettings.fuelConsumption.tankCapacity,
+  };
+  const fuelPriceSettings = {
+    priceType: 'manual' as const,
+    currency: tripSettings.currency as 'EUR' | 'GBP' | 'USD',
+  };
 
   // State
   const [viewMode, setViewMode] = useState<ViewMode>('my_trips');
