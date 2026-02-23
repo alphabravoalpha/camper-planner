@@ -16,7 +16,7 @@ import MobileToolbar from './MobileToolbar';
 import VehicleProfileSidebar from '../routing/VehicleProfileSidebar';
 import { RouteCalculator, VehicleRestrictionGuidance, RouteInformation, RouteComparison, CostCalculator } from '../routing';
 import RouteOptimizer from '../routing/RouteOptimizer';
-import { TripManager, PlanningTools } from '../planning';
+import { TripManager, PlanningTools, TripSettingsPanel } from '../planning';
 import SimpleCampsiteLayer from '../campsite/SimpleCampsiteLayer';
 import CampsiteControls from '../campsite/CampsiteControls';
 import CampsiteFilter, { type CampsiteFilterState, getDefaultFilterState } from '../campsite/CampsiteFilter';
@@ -169,6 +169,9 @@ const MapContainer: React.FC = () => {
 
   // Planning tools state
   const [showPlanningTools, setShowPlanningTools] = useState(false);
+
+  // Trip settings state
+  const [showTripSettings, setShowTripSettings] = useState(false);
 
   // Mobile state - must be at top with other useState
   const [isMobile, setIsMobile] = useState(false);
@@ -610,8 +613,23 @@ const MapContainer: React.FC = () => {
           </button>
         </div>
 
-        {/* Trip & Tools: Manager, Planning, Cost */}
+        {/* Trip & Tools: Settings, Manager, Planning, Cost */}
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
+          <button
+            onClick={() => setShowTripSettings(!showTripSettings)}
+            className={cn(
+              "block w-10 h-10 flex items-center justify-center border-b border-neutral-200 transition-colors",
+              showTripSettings ? "bg-sky-50 text-sky-600" : "hover:bg-neutral-50 text-neutral-700"
+            )}
+            title="Trip settings"
+            aria-label="Toggle trip settings"
+            data-tour-id="trip-settings-button"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.573-1.066z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+          </button>
           <button
             onClick={() => setShowTripManager(!showTripManager)}
             className={cn(
@@ -776,6 +794,8 @@ const MapContainer: React.FC = () => {
           showTripManager={showTripManager}
           showPlanningTools={showPlanningTools}
           showCostCalculator={showCostCalculator}
+          showTripSettings={showTripSettings}
+          onToggleTripSettings={() => setShowTripSettings(!showTripSettings)}
           onToggleCampsiteControls={() => {
             if (!showCampsiteControls && !showCampsiteFilter) {
               setShowCampsiteControls(true);
@@ -1023,6 +1043,32 @@ const MapContainer: React.FC = () => {
                   console.log('Trip plan updated:', plan);
                 }}
               />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Trip Settings Panel */}
+      {showTripSettings && (
+        <div className="fixed inset-y-0 right-0 z-40 w-full sm:w-96 bg-white border-l border-neutral-200 shadow-xl transform transition-transform sm:translate-x-0" data-tour-id="trip-settings-panel">
+          <div className="h-full flex flex-col">
+            {/* Panel Header */}
+            <div className="flex items-center justify-between p-4 border-b border-neutral-200 bg-sky-50">
+              <h2 className="text-lg font-display font-semibold text-neutral-900">Trip Settings</h2>
+              <button
+                onClick={() => setShowTripSettings(false)}
+                className="p-1 hover:bg-sky-200 rounded transition-colors"
+                aria-label="Close trip settings"
+              >
+                <svg className="w-5 h-5 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Trip Settings Content */}
+            <div className="flex-1 overflow-y-auto p-4">
+              <TripSettingsPanel />
             </div>
           </div>
         </div>

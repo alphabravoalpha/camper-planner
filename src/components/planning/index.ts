@@ -3,6 +3,7 @@
 
 export { default as TripManager } from './TripManager';
 export { default as PlanningTools } from './PlanningTools';
+export { default as TripSettingsPanel } from './TripSettingsPanel';
 // export { default as TripSharing } from './TripSharing'; // V2 disabled
 
 // Future V2 planning exports (currently disabled via feature flags)

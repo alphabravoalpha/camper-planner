@@ -2,7 +2,7 @@
 // Replaces passive mobile bottom bar with interactive tool buttons
 
 import React, { useState } from 'react';
-import { Truck, MapPin, FileText, Wrench, Trash2, Navigation } from 'lucide-react';
+import { Truck, MapPin, FileText, Wrench, Trash2, Navigation, Settings2 } from 'lucide-react';
 import { cn } from '../../utils/cn';
 import { type RouteResponse } from '../../services/RoutingService';
 
@@ -16,6 +16,8 @@ interface MobileToolbarProps {
   showTripManager: boolean;
   showPlanningTools: boolean;
   showCostCalculator: boolean;
+  showTripSettings: boolean;
+  onToggleTripSettings: () => void;
   onToggleCampsiteControls: () => void;
   onToggleRouteInfo: () => void;
   onToggleTripManager: () => void;
@@ -50,6 +52,8 @@ const MobileToolbar: React.FC<MobileToolbarProps> = ({
   showTripManager,
   showPlanningTools,
   showCostCalculator,
+  showTripSettings,
+  onToggleTripSettings,
   onToggleCampsiteControls,
   onToggleRouteInfo,
   onToggleTripManager,
@@ -65,9 +69,19 @@ const MobileToolbar: React.FC<MobileToolbarProps> = ({
 
   return (
     <div className="absolute bottom-0 left-0 right-0 z-30 sm:hidden">
-      {/* Tools submenu (Trip Manager, Planning, Cost Calculator) */}
+      {/* Tools submenu (Settings, Trip Manager, Planning, Cost Calculator) */}
       {showTools && (
         <div className="bg-white border-t border-neutral-200 px-3 py-2 flex gap-2 animate-fade-in">
+          <button
+            onClick={() => { onToggleTripSettings(); setShowTools(false); }}
+            className={cn(
+              "flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-medium transition-colors",
+              showTripSettings ? "bg-sky-100 text-sky-700" : "bg-neutral-100 text-neutral-700 active:bg-neutral-200"
+            )}
+          >
+            <Settings2 className="w-4 h-4" />
+            Settings
+          </button>
           <button
             onClick={() => { onToggleTripManager(); setShowTools(false); }}
             className={cn(
@@ -172,7 +186,7 @@ const MobileToolbar: React.FC<MobileToolbarProps> = ({
               onClick={() => setShowTools(!showTools)}
               className={cn(
                 "w-10 h-10 flex items-center justify-center rounded-lg transition-colors",
-                (showTools || showTripManager || showPlanningTools || showCostCalculator)
+                (showTools || showTripSettings || showTripManager || showPlanningTools || showCostCalculator)
                   ? "bg-violet-100 text-violet-700"
                   : "text-neutral-600 active:bg-neutral-100"
               )}
