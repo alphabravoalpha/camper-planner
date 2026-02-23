@@ -89,7 +89,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className: _className }) => {
     },
     {
       key: 'planning',
-      title: 'Planning Tools',
+      title: 'Trip Plan',
       description: 'Phase 5+: Duration estimation and itinerary planning',
       featureFlag: 'PLANNING_TOOLS' as keyof typeof FeatureFlags,
       icon: (

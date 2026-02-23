@@ -651,8 +651,8 @@ const MapContainer: React.FC = () => {
                   "block w-10 h-10 flex items-center justify-center border-b border-neutral-200 transition-colors",
                   showPlanningTools ? "bg-violet-50 text-violet-600" : "hover:bg-neutral-50 text-neutral-700"
                 )}
-                title="Trip planning tools"
-                aria-label="Toggle planning tools"
+                title="Trip plan"
+                aria-label="Toggle trip plan"
                 data-tour-id="planning-tools-button"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1022,11 +1022,11 @@ const MapContainer: React.FC = () => {
           <div className="h-full flex flex-col">
             {/* Panel Header */}
             <div className="flex items-center justify-between p-4 border-b border-neutral-200 bg-violet-50">
-              <h2 className="text-lg font-display font-semibold text-neutral-900">Planning Tools</h2>
+              <h2 className="text-lg font-display font-semibold text-neutral-900">Trip Plan</h2>
               <button
                 onClick={() => setShowPlanningTools(false)}
                 className="p-1 hover:bg-violet-200 rounded transition-colors"
-                aria-label="Close planning tools"
+                aria-label="Close trip plan"
               >
                 <svg className="w-5 h-5 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

@@ -154,8 +154,8 @@ export const demoActions = {
     if (isButtonActive('[aria-label="Toggle cost calculator"]')) {
       clickByAriaLabel('Toggle cost calculator');
     }
-    if (isButtonActive('[aria-label="Toggle planning tools"]')) {
-      clickByAriaLabel('Toggle planning tools');
+    if (isButtonActive('[aria-label="Toggle trip plan"]')) {
+      clickByAriaLabel('Toggle trip plan');
     }
     useVehicleStore.getState().setProfile(DEMO_VEHICLE);
     useCostStore.getState().setFuelConsumptionSettings({
@@ -181,7 +181,7 @@ export const demoActions = {
     // Delay to let sidebar close animation finish
     setTimeout(() => {
       // Only open planning tools if not already open
-      if (!isButtonActive('[aria-label="Toggle planning tools"]')) {
+      if (!isButtonActive('[aria-label="Toggle trip plan"]')) {
         clickByTourId('planning-tools-button');
       }
     }, 250);
@@ -193,8 +193,8 @@ export const demoActions = {
    */
   showCostCalculator: () => {
     // Close planning tools if open
-    if (isButtonActive('[aria-label="Toggle planning tools"]')) {
-      clickByAriaLabel('Toggle planning tools');
+    if (isButtonActive('[aria-label="Toggle trip plan"]')) {
+      clickByAriaLabel('Toggle trip plan');
     }
     // Close vehicle sidebar if still open
     useUIStore.getState().closeVehicleSidebar();
@@ -216,8 +216,8 @@ export const demoActions = {
       clickByAriaLabel('Toggle cost calculator');
     }
     // Close planning tools if open
-    if (isButtonActive('[aria-label="Toggle planning tools"]')) {
-      clickByAriaLabel('Toggle planning tools');
+    if (isButtonActive('[aria-label="Toggle trip plan"]')) {
+      clickByAriaLabel('Toggle trip plan');
     }
     // Close vehicle sidebar if still open
     useUIStore.getState().closeVehicleSidebar();
@@ -243,8 +243,8 @@ export const demoActions = {
       clickByAriaLabel('Toggle cost calculator');
     }
     // Close planning tools if open
-    if (isButtonActive('[aria-label="Toggle planning tools"]')) {
-      clickByAriaLabel('Toggle planning tools');
+    if (isButtonActive('[aria-label="Toggle trip plan"]')) {
+      clickByAriaLabel('Toggle trip plan');
     }
     // Close vehicle sidebar if still open
     useUIStore.getState().closeVehicleSidebar();

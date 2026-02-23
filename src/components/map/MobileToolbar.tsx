@@ -190,7 +190,7 @@ const MobileToolbar: React.FC<MobileToolbarProps> = ({
                   ? "bg-violet-100 text-violet-700"
                   : "text-neutral-600 active:bg-neutral-100"
               )}
-              aria-label="Planning tools"
+              aria-label="Trip plan"
             >
               <Wrench className="w-5 h-5" />
             </button>

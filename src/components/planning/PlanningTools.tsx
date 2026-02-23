@@ -44,7 +44,7 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
   const startDate = settings.startDate || '';
 
   // State
-  const [viewMode, setViewMode] = useState<ViewMode>('overview');
+  const [viewMode, setViewMode] = useState<ViewMode>('calendar');
   const [tripPlan, setTripPlan] = useState<TripPlan | null>(null);
   const [metrics, setMetrics] = useState<TripMetrics | null>(null);
   const [recommendations, setRecommendations] = useState<PlanningRecommendation[]>([]);
@@ -188,7 +188,7 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
       <div className="flex items-center justify-between p-4 border-b bg-gradient-to-r from-purple-50 to-primary-50">
         <div className="flex items-center gap-2">
           <Target className="w-5 h-5 text-purple-600" />
-          <h3 className="text-lg font-semibold text-neutral-800">Trip Planning Tools</h3>
+          <h3 className="text-lg font-semibold text-neutral-800">Trip Plan</h3>
         </div>
         <div className="flex items-center gap-2">
           <Settings className="w-4 h-4 text-neutral-400" />
