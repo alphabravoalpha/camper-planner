@@ -197,6 +197,8 @@ const TripManager: React.FC<TripManagerProps> = ({
               fuelCost: estimatedCost * 0.6,
               tollCost: 0,
               accommodationCost: estimatedCost * 0.4,
+              foodCost: 0,
+              ferryCost: 0,
               otherCosts: 0,
               currency: 'EUR',
               segments: [],

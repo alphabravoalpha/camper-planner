@@ -39,6 +39,8 @@ export interface CostBreakdown {
   fuelCost: number;
   tollCost: number;
   accommodationCost: number;
+  foodCost: number;
+  ferryCost: number;
   otherCosts: number;
   currency: string;
   segments: RouteSegment[];
@@ -47,6 +49,7 @@ export interface CostBreakdown {
     distance: number;
     fuelCost: number;
     accommodationCost: number;
+    foodCost: number;
     totalDailyCost: number;
   }>;
 }
@@ -176,6 +179,8 @@ export class CostCalculationService {
       fuelCost: totalFuelCost,
       tollCost: totalTollCost,
       accommodationCost: totalAccommodationCost,
+      foodCost: 0,
+      ferryCost: 0,
       otherCosts: 0,
       currency: priceSettings.currency,
       segments,
@@ -364,6 +369,7 @@ export class CostCalculationService {
           distance: dailyDistance,
           fuelCost: dailyFuelCost,
           accommodationCost: dailyAccommodationCost,
+          foodCost: 0,
           totalDailyCost: dailyFuelCost + dailyAccommodationCost
         });
 
@@ -387,6 +393,8 @@ export class CostCalculationService {
       fuelCost: 0,
       tollCost: 0,
       accommodationCost: 0,
+      foodCost: 0,
+      ferryCost: 0,
       otherCosts: 0,
       currency: 'EUR',
       segments: [],
