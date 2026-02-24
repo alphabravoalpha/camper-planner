@@ -22,7 +22,6 @@ import CampsiteControls from '../campsite/CampsiteControls';
 import CampsiteFilter, { type CampsiteFilterState, getDefaultFilterState } from '../campsite/CampsiteFilter';
 import CampsiteDetails from '../campsite/CampsiteDetails';
 // import CampsiteRecommendations from '../campsite/CampsiteRecommendations'; // V2 disabled
-import UserGuidance from '../ui/UserGuidance';
 import ConfirmDialog from '../ui/ConfirmDialog';
 import ComponentErrorBoundary from '../ui/ComponentErrorBoundary';
 import { UnifiedSearch } from '../search';
@@ -1088,9 +1087,6 @@ const MapContainer: React.FC = () => {
           </div>
         </div>
       )}
-
-      {/* User guidance and help system (hidden during tour) */}
-      {!isTourActive && <UserGuidance />}
 
       {/* Clear confirmation dialog */}
       <ConfirmDialog
