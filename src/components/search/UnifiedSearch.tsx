@@ -536,7 +536,8 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
                           handleResultSelect(result);
                         }}
                         onMouseDown={(e) => e.stopPropagation()}
-                        className="px-2 py-1 text-xs text-primary-600 hover:bg-primary-50 rounded font-medium transition-colors"
+                        className="px-2 py-1 text-xs text-neutral-500 hover:text-neutral-700 hover:bg-neutral-50 rounded transition-colors"
+                        title="View on map without adding to route"
                       >
                         Go
                       </button>
@@ -547,7 +548,8 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
                       ) : (
                         <button
                           onClick={(e) => handleAddLocationToRoute(result, e)}
-                          className="px-2 py-1 text-xs bg-primary-100 text-primary-700 rounded font-medium hover:bg-primary-200 transition-colors"
+                          className="px-2.5 py-1 text-xs bg-primary-600 text-white rounded font-medium hover:bg-primary-700 transition-colors"
+                          title="Add this location to your route"
                         >
                           + Add
                         </button>
@@ -625,7 +627,8 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
                       ) : (
                         <button
                           onClick={(e) => handleAddToRoute(result, e)}
-                          className="px-2 py-1 text-xs bg-primary-100 text-primary-700 rounded font-medium hover:bg-primary-200 transition-colors"
+                          className="px-2.5 py-1 text-xs bg-primary-600 text-white rounded font-medium hover:bg-primary-700 transition-colors"
+                          title="Add this location to your route"
                         >
                           + Add
                         </button>
