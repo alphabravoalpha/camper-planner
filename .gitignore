@@ -57,3 +57,6 @@ Thumbs.db
 
 # Audit screenshots
 audit-screenshots/
+
+# Git worktrees
+.worktrees/
