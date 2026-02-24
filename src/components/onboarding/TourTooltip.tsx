@@ -12,6 +12,7 @@ import {
   CheckCircle,
   Search,
   Navigation,
+  Wrench,
   ArrowRight,
   X,
 } from 'lucide-react';
@@ -30,6 +31,7 @@ const ICON_MAP: Record<SpotlightStep['iconKey'], React.FC<{ className?: string }
   CheckCircle,
   Search,
   Navigation,
+  Wrench,
 };
 
 // =============================================================================
@@ -174,6 +176,21 @@ const TourTooltip: React.FC<TourTooltipProps> = ({
           >
             {step.body}
           </p>
+
+          {/* Tools list (optional — used by toolkit step) */}
+          {step.tools && step.tools.length > 0 && (
+            <ul className="mt-3 space-y-1.5">
+              {step.tools.map((tool, i) => (
+                <li key={i} className="flex items-start gap-2 text-sm text-neutral-700">
+                  <span className="flex-shrink-0">{tool.emoji}</span>
+                  <span>
+                    <span className="font-medium">{tool.label}</span>
+                    <span className="text-neutral-500"> — {tool.description}</span>
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
 
           {/* Tip (optional) */}
           {step.tip && (
