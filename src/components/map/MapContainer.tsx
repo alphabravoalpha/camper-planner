@@ -26,6 +26,9 @@ import UserGuidance from '../ui/UserGuidance';
 import ConfirmDialog from '../ui/ConfirmDialog';
 import ComponentErrorBoundary from '../ui/ComponentErrorBoundary';
 import { UnifiedSearch } from '../search';
+import ToolsMenu from './ToolsMenu';
+import EmptyStateCard from './EmptyStateCard';
+import ContextualNudge from '../ui/ContextualNudge';
 import { type Campsite } from '../../services/CampsiteService';
 import 'leaflet/dist/leaflet.css';
 import '../../styles/animations.css';
@@ -613,146 +616,79 @@ const MapContainer: React.FC = () => {
           </button>
         </div>
 
-        {/* Trip & Tools: Settings, Manager, Planning, Cost */}
-        <div className="bg-white rounded-lg shadow-md overflow-hidden">
-          <button
-            onClick={() => setShowTripSettings(!showTripSettings)}
-            className={cn(
-              "block w-10 h-10 flex items-center justify-center border-b border-neutral-200 transition-colors",
-              showTripSettings ? "bg-sky-50 text-sky-600" : "hover:bg-neutral-50 text-neutral-700"
-            )}
-            title="Trip settings"
-            aria-label="Toggle trip settings"
-            data-tour-id="trip-settings-button"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.573-1.066z" />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-          </button>
-          <button
-            onClick={() => setShowTripManager(!showTripManager)}
-            className={cn(
-              "block w-10 h-10 flex items-center justify-center border-b border-neutral-200 transition-colors",
-              showTripManager ? "bg-indigo-50 text-indigo-600" : "hover:bg-neutral-50 text-neutral-700"
-            )}
-            title="Trip manager"
-            aria-label="Toggle trip manager"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-            </svg>
-          </button>
-          {waypoints.length >= 2 && (
-            <>
-              <button
-                onClick={() => setShowPlanningTools(!showPlanningTools)}
-                className={cn(
-                  "block w-10 h-10 flex items-center justify-center border-b border-neutral-200 transition-colors",
-                  showPlanningTools ? "bg-violet-50 text-violet-600" : "hover:bg-neutral-50 text-neutral-700"
-                )}
-                title="Trip plan"
-                aria-label="Toggle trip plan"
-                data-tour-id="planning-tools-button"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-              </button>
-              <button
-                onClick={() => setShowCostCalculator(!showCostCalculator)}
-                className={cn(
-                  "block w-10 h-10 flex items-center justify-center transition-colors",
-                  showCostCalculator ? "bg-emerald-50 text-emerald-600" : "hover:bg-neutral-50 text-neutral-700"
-                )}
-                title="Trip cost calculator"
-                aria-label="Toggle cost calculator"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </button>
-            </>
-          )}
-        </div>
+        {/* Tools Menu — replaces individual tool buttons */}
+        <ToolsMenu
+          waypointCount={waypoints.length}
+          hasCalculatedRoute={!!calculatedRoute}
+          hasRouteOptimization={FeatureFlags.ROUTE_OPTIMIZATION}
+          onToggleTripSettings={() => setShowTripSettings(!showTripSettings)}
+          onToggleTripManager={() => setShowTripManager(!showTripManager)}
+          onToggleVehicle={() => openVehicleSidebar()}
+          onToggleRouteInfo={() => setShowRouteInfo(!showRouteInfo)}
+          onTogglePlanningTools={() => setShowPlanningTools(!showPlanningTools)}
+          onToggleCostCalculator={() => setShowCostCalculator(!showCostCalculator)}
+          onToggleRouteOptimizer={() => setShowRouteOptimizer(!showRouteOptimizer)}
+          onExportRoute={() => setShowTripManager(true)}
+          onClearRoute={() => setShowConfirmClear(true)}
+          activePanels={{
+            tripSettings: showTripSettings,
+            tripManager: showTripManager,
+            routeInfo: showRouteInfo,
+            planningTools: showPlanningTools,
+            costCalculator: showCostCalculator,
+            routeOptimizer: showRouteOptimizer,
+          }}
+        />
 
-        {/* Route actions: Info, Optimize */}
-        {FeatureFlags.BASIC_ROUTING && calculatedRoute && (
-          <div className="bg-white rounded-lg shadow-md overflow-hidden">
+        {/* Campsite Toggle — simple on/off */}
+        {FeatureFlags.CAMPSITE_DISPLAY && (
+          <div className="flex flex-col items-center gap-1">
             <button
-              onClick={() => setShowRouteInfo(!showRouteInfo)}
+              data-tour-id="campsite-toggle"
+              onClick={() => {
+                if (showCampsiteControls || showCampsiteFilter) {
+                  // Currently on — turn off
+                  setShowCampsiteControls(false);
+                  setShowCampsiteFilter(false);
+                } else {
+                  // Currently off — turn on (show controls)
+                  setShowCampsiteControls(true);
+                }
+              }}
               className={cn(
-                "block w-10 h-10 flex items-center justify-center transition-colors",
-                showRouteInfo ? "bg-primary-50 text-primary-600" : "hover:bg-neutral-50 text-neutral-700",
-                FeatureFlags.ROUTE_OPTIMIZATION && waypoints.length >= 3 && "border-b border-neutral-200"
+                "w-10 h-10 flex items-center justify-center rounded-lg shadow-md transition-colors",
+                (showCampsiteControls || showCampsiteFilter)
+                  ? "bg-green-600 text-white hover:bg-green-700"
+                  : "bg-white text-neutral-700 hover:bg-neutral-50"
               )}
-              title="Route information"
-              aria-label="Toggle route information"
+              title={(showCampsiteControls || showCampsiteFilter) ? "Hide campsites" : "Show campsites"}
+              aria-label="Toggle campsites"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
             </button>
-            {FeatureFlags.ROUTE_OPTIMIZATION && waypoints.length >= 3 && (
+            {/* Gear icon for filters — shows when campsites are on */}
+            {(showCampsiteControls || showCampsiteFilter) && (
               <button
-                onClick={() => setShowRouteOptimizer(!showRouteOptimizer)}
+                onClick={() => setShowCampsiteFilter(!showCampsiteFilter)}
                 className={cn(
-                  "block w-10 h-10 flex items-center justify-center transition-colors",
-                  showRouteOptimizer ? "bg-orange-50 text-orange-600" : "hover:bg-neutral-50 text-neutral-700"
+                  "w-7 h-7 flex items-center justify-center rounded-md shadow-sm transition-colors",
+                  showCampsiteFilter
+                    ? "bg-green-100 text-green-700"
+                    : "bg-white text-neutral-500 hover:text-neutral-700"
                 )}
-                title="Optimize route order"
-                aria-label="Toggle route optimizer"
+                title="Campsite filters"
+                aria-label="Toggle campsite filters"
               >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.573-1.066z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
               </button>
             )}
           </div>
-        )}
-
-        {/* Campsite toggle */}
-        {FeatureFlags.CAMPSITE_DISPLAY && (
-          <button
-            data-tour-id="campsite-toggle"
-            onClick={() => {
-              if (!showCampsiteControls && !showCampsiteFilter) {
-                setShowCampsiteControls(true);
-              } else if (showCampsiteControls) {
-                setShowCampsiteControls(false);
-                setShowCampsiteFilter(true);
-              } else {
-                setShowCampsiteFilter(false);
-              }
-            }}
-            className={cn(
-              "w-10 h-10 flex items-center justify-center rounded-lg shadow-md transition-colors",
-              (showCampsiteControls || showCampsiteFilter)
-                ? "bg-green-600 text-white hover:bg-green-700"
-                : "bg-white text-neutral-700 hover:bg-neutral-50"
-            )}
-            title={showCampsiteFilter ? "Hide filters" : showCampsiteControls ? "Advanced filters" : "Show campsites"}
-            aria-label="Toggle campsite controls"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-          </button>
-        )}
-
-        {/* Clear waypoints - danger action, separate */}
-        {waypoints.length > 0 && (
-          <button
-            onClick={() => setShowConfirmClear(true)}
-            className="w-10 h-10 flex items-center justify-center bg-white text-red-600 rounded-lg shadow-md hover:bg-red-50 transition-colors"
-            title="Clear all waypoints"
-            aria-label="Clear all waypoints"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-            </svg>
-          </button>
         )}
       </div>
 
@@ -781,6 +717,37 @@ const MapContainer: React.FC = () => {
           </div>
         </div>
       </div>}
+
+      {/* Empty State Card — shown when no waypoints and tour not active */}
+      {!isTourActive && waypoints.length === 0 && (
+        <EmptyStateCard
+          onOpenWizard={() => {
+            // If there's a trip wizard state/handler, use it. Otherwise, open trip settings.
+            setShowTripSettings(true);
+          }}
+          onSearchFocus={() => {
+            const searchInput = document.querySelector('[data-tour-id="search-bar"] input') as HTMLInputElement;
+            searchInput?.focus();
+          }}
+        />
+      )}
+
+      {/* Contextual Nudges — progressive discovery toasts */}
+      <ContextualNudge
+        nudgeId="first-waypoint"
+        message="Add a second stop to calculate your route — search above or toggle campsites to browse."
+        show={!isTourActive && waypoints.length === 1}
+      />
+      <ContextualNudge
+        nudgeId="route-ready"
+        message="Your route is ready! Open the Tools menu for vehicle setup, cost estimates, and daily stages."
+        show={!isTourActive && waypoints.length >= 2 && !!calculatedRoute}
+      />
+      <ContextualNudge
+        nudgeId="campsites-on"
+        message="Zoom in to see individual campsites. Click any marker for details."
+        show={!isTourActive && (showCampsiteControls || showCampsiteFilter)}
+      />
 
       {/* Mobile bottom toolbar */}
       {!isTourActive && (
