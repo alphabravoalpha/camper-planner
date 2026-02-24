@@ -295,6 +295,14 @@ const MapContainer: React.FC = () => {
     return () => clearTimeout(timer);
   }, [isMapReady]);
 
+  // Must be before early return to satisfy React hooks rules
+  const handleCampsitesLoaded = useCallback((count: number, campsites?: Campsite[]) => {
+    setCampsiteCount(count);
+    if (campsites) {
+      setAllCampsites(campsites);
+    }
+  }, []);
+
   if (!FeatureFlags.BASIC_MAP_DISPLAY) {
     return (
       <div className="h-full flex items-center justify-center bg-neutral-100">
@@ -385,13 +393,6 @@ const MapContainer: React.FC = () => {
       message: `Selected ${campsite.name || campsite.type}`
     });
   };
-
-  const handleCampsitesLoaded = useCallback((count: number, campsites?: Campsite[]) => {
-    setCampsiteCount(count);
-    if (campsites) {
-      setAllCampsites(campsites);
-    }
-  }, []);
 
   const handleCampsiteDetailsClose = () => {
     setShowCampsiteDetails(false);
