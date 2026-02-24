@@ -239,6 +239,50 @@ const MapContainer: React.FC = () => {
   const SEARCH_VISIBLE_STEPS = ['add-start', 'search-destination'];
   const isSearchVisibleDuringTour = currentTourStep !== null && SEARCH_VISIBLE_STEPS.includes(currentTourStep);
 
+  // Panel mutual exclusion — only one right-side panel open at a time
+  const closeAllPanels = useCallback(() => {
+    setShowTripSettings(false);
+    setShowTripManager(false);
+    setShowPlanningTools(false);
+    setShowCostCalculator(false);
+    setShowRouteInfo(false);
+    setShowRouteOptimizer(false);
+    setShowCampsiteDetails(false);
+    setShowCampsiteFilter(false);
+    setShowCampsiteControls(false);
+  }, []);
+
+  const togglePanel = useCallback((panel: string, currentState: boolean) => {
+    if (currentState) {
+      // Closing the current panel
+      switch (panel) {
+        case 'tripSettings': setShowTripSettings(false); break;
+        case 'tripManager': setShowTripManager(false); break;
+        case 'planningTools': setShowPlanningTools(false); break;
+        case 'costCalculator': setShowCostCalculator(false); break;
+        case 'routeInfo': setShowRouteInfo(false); break;
+        case 'routeOptimizer': setShowRouteOptimizer(false); break;
+        case 'campsiteControls': setShowCampsiteControls(false); break;
+        case 'campsiteFilter': setShowCampsiteFilter(false); break;
+        case 'campsiteDetails': setShowCampsiteDetails(false); break;
+      }
+    } else {
+      // Close all, then open the requested one
+      closeAllPanels();
+      switch (panel) {
+        case 'tripSettings': setShowTripSettings(true); break;
+        case 'tripManager': setShowTripManager(true); break;
+        case 'planningTools': setShowPlanningTools(true); break;
+        case 'costCalculator': setShowCostCalculator(true); break;
+        case 'routeInfo': setShowRouteInfo(true); break;
+        case 'routeOptimizer': setShowRouteOptimizer(true); break;
+        case 'campsiteControls': setShowCampsiteControls(true); break;
+        case 'campsiteFilter': setShowCampsiteFilter(true); break;
+        case 'campsiteDetails': setShowCampsiteDetails(true); break;
+      }
+    }
+  }, [closeAllPanels]);
+
   // Fallback: ensure map becomes visible after 2 seconds even if whenReady doesn't fire
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -334,6 +378,7 @@ const MapContainer: React.FC = () => {
   // Campsite handlers
   const handleCampsiteClick = (campsite: Campsite) => {
     setSelectedCampsite(campsite);
+    closeAllPanels();
     setShowCampsiteDetails(true);
     setShowCampsiteRecommendations(false);
     addNotification({
@@ -621,14 +666,14 @@ const MapContainer: React.FC = () => {
           waypointCount={waypoints.length}
           hasCalculatedRoute={!!calculatedRoute}
           hasRouteOptimization={FeatureFlags.ROUTE_OPTIMIZATION}
-          onToggleTripSettings={() => setShowTripSettings(!showTripSettings)}
-          onToggleTripManager={() => setShowTripManager(!showTripManager)}
-          onToggleVehicle={() => openVehicleSidebar()}
-          onToggleRouteInfo={() => setShowRouteInfo(!showRouteInfo)}
-          onTogglePlanningTools={() => setShowPlanningTools(!showPlanningTools)}
-          onToggleCostCalculator={() => setShowCostCalculator(!showCostCalculator)}
-          onToggleRouteOptimizer={() => setShowRouteOptimizer(!showRouteOptimizer)}
-          onExportRoute={() => setShowTripManager(true)}
+          onToggleTripSettings={() => togglePanel('tripSettings', showTripSettings)}
+          onToggleTripManager={() => togglePanel('tripManager', showTripManager)}
+          onToggleVehicle={() => { closeAllPanels(); openVehicleSidebar(); }}
+          onToggleRouteInfo={() => togglePanel('routeInfo', showRouteInfo)}
+          onTogglePlanningTools={() => togglePanel('planningTools', showPlanningTools)}
+          onToggleCostCalculator={() => togglePanel('costCalculator', showCostCalculator)}
+          onToggleRouteOptimizer={() => togglePanel('routeOptimizer', showRouteOptimizer)}
+          onExportRoute={() => { closeAllPanels(); setShowTripManager(true); }}
           onClearRoute={() => setShowConfirmClear(true)}
           activePanels={{
             tripSettings: showTripSettings,
@@ -651,7 +696,8 @@ const MapContainer: React.FC = () => {
                   setShowCampsiteControls(false);
                   setShowCampsiteFilter(false);
                 } else {
-                  // Currently off — turn on (show controls)
+                  // Currently off — close other panels, then turn on (show controls)
+                  closeAllPanels();
                   setShowCampsiteControls(true);
                 }
               }}
@@ -723,6 +769,7 @@ const MapContainer: React.FC = () => {
         <EmptyStateCard
           onOpenWizard={() => {
             // If there's a trip wizard state/handler, use it. Otherwise, open trip settings.
+            closeAllPanels();
             setShowTripSettings(true);
           }}
           onSearchFocus={() => {
@@ -762,9 +809,10 @@ const MapContainer: React.FC = () => {
           showPlanningTools={showPlanningTools}
           showCostCalculator={showCostCalculator}
           showTripSettings={showTripSettings}
-          onToggleTripSettings={() => setShowTripSettings(!showTripSettings)}
+          onToggleTripSettings={() => togglePanel('tripSettings', showTripSettings)}
           onToggleCampsiteControls={() => {
             if (!showCampsiteControls && !showCampsiteFilter) {
+              closeAllPanels();
               setShowCampsiteControls(true);
             } else if (showCampsiteControls) {
               setShowCampsiteControls(false);
@@ -773,11 +821,11 @@ const MapContainer: React.FC = () => {
               setShowCampsiteFilter(false);
             }
           }}
-          onToggleRouteInfo={() => setShowRouteInfo(!showRouteInfo)}
-          onToggleTripManager={() => setShowTripManager(!showTripManager)}
-          onTogglePlanningTools={() => setShowPlanningTools(!showPlanningTools)}
-          onToggleCostCalculator={() => setShowCostCalculator(!showCostCalculator)}
-          onOpenVehicleSidebar={openVehicleSidebar}
+          onToggleRouteInfo={() => togglePanel('routeInfo', showRouteInfo)}
+          onToggleTripManager={() => togglePanel('tripManager', showTripManager)}
+          onTogglePlanningTools={() => togglePanel('planningTools', showPlanningTools)}
+          onToggleCostCalculator={() => togglePanel('costCalculator', showCostCalculator)}
+          onOpenVehicleSidebar={() => { closeAllPanels(); openVehicleSidebar(); }}
           onClearWaypoints={() => setShowConfirmClear(true)}
         />
       )}
