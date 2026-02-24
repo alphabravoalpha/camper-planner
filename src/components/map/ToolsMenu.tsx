@@ -30,6 +30,7 @@ interface ToolsMenuProps {
   onToggleRouteOptimizer: () => void;
   onExportRoute: () => void;
   onClearRoute: () => void;
+  onMenuOpen?: () => void;
   activePanels: {
     tripSettings: boolean;
     tripManager: boolean;
@@ -65,6 +66,7 @@ const ToolsMenu: React.FC<ToolsMenuProps> = ({
   onToggleRouteOptimizer,
   onExportRoute,
   onClearRoute,
+  onMenuOpen,
   activePanels,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -74,8 +76,14 @@ const ToolsMenu: React.FC<ToolsMenuProps> = ({
   const hasAnyActivePanel = Object.values(activePanels).some(Boolean);
 
   const toggleMenu = useCallback(() => {
-    setIsOpen((prev) => !prev);
-  }, []);
+    setIsOpen((prev) => {
+      const willOpen = !prev;
+      if (willOpen && onMenuOpen) {
+        onMenuOpen();
+      }
+      return willOpen;
+    });
+  }, [onMenuOpen]);
 
   const closeMenu = useCallback(() => {
     setIsOpen(false);

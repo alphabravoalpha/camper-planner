@@ -5,7 +5,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { MapContainer as LeafletMapContainer, useMap, useMapEvents } from 'react-leaflet';
 import * as L from 'leaflet';
 import { FeatureFlags } from '../../config';
-import { useMapStore, useRouteStore, useUIStore } from '../../store';
+import { useMapStore, useRouteStore, useUIStore, useTripWizardStore } from '../../store';
 import { mapStorage } from '../../utils/mapStorage';
 import { cn } from '../../utils/cn';
 import WaypointManager from './WaypointManager';
@@ -132,6 +132,7 @@ const MapContainer: React.FC = () => {
   const { center, zoom, setCenter, setZoom } = useMapStore();
   const { waypoints, clearRoute, undo, redo, canUndo, canRedo, isValidForRouting, calculatedRoute } = useRouteStore();
   const { addNotification, openVehicleSidebar } = useUIStore();
+  const { openWizard } = useTripWizardStore();
   const [isMapReady, setIsMapReady] = useState(false);
   const [showConfirmClear, setShowConfirmClear] = useState(false);
   const [currentLayerId, setCurrentLayerId] = useState('openstreetmap');
@@ -155,7 +156,7 @@ const MapContainer: React.FC = () => {
   const [showCampsiteFilter, setShowCampsiteFilter] = useState(false);
   const [showCampsiteDetails, setShowCampsiteDetails] = useState(false);
   const [showCampsiteRecommendations, setShowCampsiteRecommendations] = useState(false);
-  const [campsitesVisible, setCampsitesVisible] = useState<boolean>(FeatureFlags.CAMPSITE_DISPLAY);
+  const [campsitesVisible, setCampsitesVisible] = useState<boolean>(false);
   const [campsiteCount, setCampsiteCount] = useState(0);
   const [campsiteFilterState, setCampsiteFilterState] = useState<CampsiteFilterState>(getDefaultFilterState);
   const [allCampsites, setAllCampsites] = useState<Campsite[]>([]);
@@ -675,6 +676,10 @@ const MapContainer: React.FC = () => {
           onToggleRouteOptimizer={() => togglePanel('routeOptimizer', showRouteOptimizer)}
           onExportRoute={() => { closeAllPanels(); setShowTripManager(true); }}
           onClearRoute={() => setShowConfirmClear(true)}
+          onMenuOpen={() => {
+            setShowCampsiteControls(false);
+            setShowCampsiteFilter(false);
+          }}
           activePanels={{
             tripSettings: showTripSettings,
             tripManager: showTripManager,
@@ -691,23 +696,25 @@ const MapContainer: React.FC = () => {
             <button
               data-tour-id="campsite-toggle"
               onClick={() => {
-                if (showCampsiteControls || showCampsiteFilter) {
-                  // Currently on — turn off
+                if (campsitesVisible) {
+                  // Currently on — turn off (hide markers + close panels)
                   setShowCampsiteControls(false);
                   setShowCampsiteFilter(false);
+                  setCampsitesVisible(false);
                 } else {
-                  // Currently off — close other panels, then turn on (show controls)
+                  // Currently off — close other panels, then turn on (show controls + markers)
                   closeAllPanels();
                   setShowCampsiteControls(true);
+                  setCampsitesVisible(true);
                 }
               }}
               className={cn(
                 "w-10 h-10 flex items-center justify-center rounded-lg shadow-md transition-colors",
-                (showCampsiteControls || showCampsiteFilter)
+                campsitesVisible
                   ? "bg-green-600 text-white hover:bg-green-700"
                   : "bg-white text-neutral-700 hover:bg-neutral-50"
               )}
-              title={(showCampsiteControls || showCampsiteFilter) ? "Hide campsites" : "Show campsites"}
+              title={campsitesVisible ? "Hide campsites" : "Show campsites"}
               aria-label="Toggle campsites"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -716,7 +723,7 @@ const MapContainer: React.FC = () => {
               </svg>
             </button>
             {/* Gear icon for filters — shows when campsites are on */}
-            {(showCampsiteControls || showCampsiteFilter) && (
+            {campsitesVisible && (
               <button
                 onClick={() => setShowCampsiteFilter(!showCampsiteFilter)}
                 className={cn(
@@ -768,9 +775,8 @@ const MapContainer: React.FC = () => {
       {!isTourActive && waypoints.length === 0 && (
         <EmptyStateCard
           onOpenWizard={() => {
-            // If there's a trip wizard state/handler, use it. Otherwise, open trip settings.
             closeAllPanels();
-            setShowTripSettings(true);
+            openWizard();
           }}
           onSearchFocus={() => {
             const searchInput = document.querySelector('[data-tour-id="search-bar"] input') as HTMLInputElement;

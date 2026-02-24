@@ -86,31 +86,6 @@ const PlannerPage: React.FC = () => {
       <div className="flex-1 relative">
         <MapContainer />
 
-        {/* Empty state — illustration + CTA card when no waypoints */}
-        {!hasWaypoints && !showOnboarding && !wizardOpen && (
-          <div className="absolute inset-0 z-[400] flex items-center justify-center pointer-events-none">
-            <div className="pointer-events-auto flex flex-col items-center gap-4 px-6 py-8 bg-white/90 backdrop-blur-sm rounded-2xl shadow-float max-w-xs text-center">
-              <img src="/images/empty-state.png" alt="" className="w-48 sm:w-56 h-20 sm:h-24 object-cover object-center" />
-              <div>
-                <h3 className="text-lg font-display font-bold text-neutral-800 mb-1">
-                  Where to next?
-                </h3>
-                <p className="text-sm text-neutral-500">
-                  Plan a route with vehicle-safe directions, campsites, and cost estimates.
-                </p>
-              </div>
-              <button
-                data-tour-id="plan-trip-float"
-                onClick={openWizard}
-                className="flex items-center gap-2 px-6 py-3 bg-accent-500 text-white rounded-2xl hover:bg-accent-600 font-semibold text-base shadow-lg active:scale-[0.97] transition-all"
-              >
-                <RouteIcon className="w-5 h-5" />
-                Plan a Trip
-              </button>
-            </div>
-          </div>
-        )}
-
         {/* "Continue Planning" button — only when waypoints exist */}
         {hasWaypoints && !wizardOpen && !showOnboarding && (
           <button
