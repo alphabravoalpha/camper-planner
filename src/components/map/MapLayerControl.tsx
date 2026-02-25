@@ -20,51 +20,56 @@ export interface TileLayerConfig {
   icon: React.FC<{ className?: string }>;
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const TILE_LAYERS: TileLayerConfig[] = [
   {
     id: 'openstreetmap',
     name: 'OpenStreetMap',
     description: 'Standard street map',
     url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    attribution:
+      '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     maxZoom: 19,
     subdomains: ['a', 'b', 'c'],
     category: 'standard',
-    icon: Map
+    icon: Map,
   },
   {
     id: 'opentopomap',
     name: 'OpenTopoMap',
     description: 'Topographic map with contours',
     url: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
-    attribution: 'Map data: © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: © <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)',
+    attribution:
+      'Map data: © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: © <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)',
     maxZoom: 15,
     subdomains: ['a', 'b', 'c'],
     category: 'topographic',
-    icon: Mountain
+    icon: Mountain,
   },
   {
     id: 'cyclosm',
     name: 'CyclOSM',
     description: 'Cycling-focused map',
     url: 'https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png',
-    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors. Tiles style by <a href="https://www.cyclosm.org">CyclOSM</a> hosted by <a href="https://openstreetmap.fr">OpenStreetMap France</a>',
+    attribution:
+      '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors. Tiles style by <a href="https://www.cyclosm.org">CyclOSM</a> hosted by <a href="https://openstreetmap.fr">OpenStreetMap France</a>',
     maxZoom: 19,
     subdomains: ['a', 'b', 'c'],
     category: 'outdoor',
-    icon: Bike
+    icon: Bike,
   },
   {
     id: 'humanitarian',
     name: 'Humanitarian',
     description: 'Clear, humanitarian mapping style',
     url: 'https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png',
-    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors. Tiles style by <a href="https://www.hotosm.org">Humanitarian OpenStreetMap Team</a> hosted by <a href="https://openstreetmap.fr">OpenStreetMap France</a>',
+    attribution:
+      '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors. Tiles style by <a href="https://www.hotosm.org">Humanitarian OpenStreetMap Team</a> hosted by <a href="https://openstreetmap.fr">OpenStreetMap France</a>',
     maxZoom: 19,
     subdomains: ['a', 'b'],
     category: 'standard',
-    icon: Cross
-  }
+    icon: Cross,
+  },
 ];
 
 interface MapLayerControlProps {
@@ -78,54 +83,57 @@ const MapLayerControl: React.FC<MapLayerControlProps> = ({
   currentLayerId,
   onLayerChange,
   collapsed = false,
-  onToggleCollapse
+  onToggleCollapse,
 }) => {
   const { addNotification } = useUIStore();
   const [isLoading, setIsLoading] = useState<string | null>(null);
 
-  const handleLayerChange = useCallback(async (layerId: string) => {
-    if (layerId === currentLayerId) return;
+  const handleLayerChange = useCallback(
+    async (layerId: string) => {
+      if (layerId === currentLayerId) return;
 
-    setIsLoading(layerId);
+      setIsLoading(layerId);
 
-    try {
-      // Test tile load before switching
-      const layer = TILE_LAYERS.find(l => l.id === layerId);
-      if (!layer) throw new Error('Layer not found');
+      try {
+        // Test tile load before switching
+        const layer = TILE_LAYERS.find(l => l.id === layerId);
+        if (!layer) throw new Error('Layer not found');
 
-      // Create a test tile to verify the layer works
-      const testTileUrl = layer.url
-        .replace('{s}', layer.subdomains?.[0] || '')
-        .replace('{z}', '5')
-        .replace('{x}', '16')
-        .replace('{y}', '10');
+        // Create a test tile to verify the layer works
+        const testTileUrl = layer.url
+          .replace('{s}', layer.subdomains?.[0] || '')
+          .replace('{z}', '5')
+          .replace('{x}', '16')
+          .replace('{y}', '10');
 
-      const img = new Image();
+        const img = new Image();
 
-      await new Promise((resolve, reject) => {
-        img.onload = resolve;
-        img.onerror = reject;
-        img.src = testTileUrl;
+        await new Promise((resolve, reject) => {
+          img.onload = resolve;
+          img.onerror = reject;
+          img.src = testTileUrl;
 
-        // Timeout after 5 seconds
-        setTimeout(() => reject(new Error('Tile load timeout')), 5000);
-      });
+          // Timeout after 5 seconds
+          setTimeout(() => reject(new Error('Tile load timeout')), 5000);
+        });
 
-      onLayerChange(layerId);
+        onLayerChange(layerId);
 
-      addNotification({
-        type: 'success',
-        message: `Switched to ${layer.name} map layer`
-      });
-    } catch (error) {
-      addNotification({
-        type: 'error',
-        message: `Failed to load ${TILE_LAYERS.find(l => l.id === layerId)?.name} layer`
-      });
-    } finally {
-      setIsLoading(null);
-    }
-  }, [currentLayerId, onLayerChange, addNotification]);
+        addNotification({
+          type: 'success',
+          message: `Switched to ${layer.name} map layer`,
+        });
+      } catch {
+        addNotification({
+          type: 'error',
+          message: `Failed to load ${TILE_LAYERS.find(l => l.id === layerId)?.name} layer`,
+        });
+      } finally {
+        setIsLoading(null);
+      }
+    },
+    [currentLayerId, onLayerChange, addNotification]
+  );
 
   const currentLayer = TILE_LAYERS.find(l => l.id === currentLayerId);
 
@@ -137,8 +145,7 @@ const MapLayerControl: React.FC<MapLayerControlProps> = ({
           <TileLayer
             key={currentLayer.id}
             url={currentLayer.url}
-            // @ts-ignore - React-Leaflet v4 prop compatibility
-            // @ts-ignore - React-Leaflet v4 prop compatibility
+            // @ts-expect-error - React-Leaflet v4 prop compatibility
             attribution={currentLayer.attribution}
             subdomains={currentLayer.subdomains}
             maxZoom={currentLayer.maxZoom}
@@ -171,8 +178,8 @@ const MapLayerControl: React.FC<MapLayerControlProps> = ({
         <TileLayer
           key={currentLayer.id}
           url={currentLayer.url}
-          // @ts-ignore - React-Leaflet v4 prop compatibility
-            attribution={currentLayer.attribution}
+          // @ts-expect-error - React-Leaflet v4 prop compatibility
+          attribution={currentLayer.attribution}
           subdomains={currentLayer.subdomains}
           maxZoom={currentLayer.maxZoom}
           detectRetina={true}
@@ -184,81 +191,94 @@ const MapLayerControl: React.FC<MapLayerControlProps> = ({
 
       {/* Expanded Control */}
       <div className="absolute top-4 left-4 z-30 bg-white rounded-lg shadow-md overflow-hidden min-w-64">
-      {/* Header */}
-      <div className="flex items-center justify-between p-3 border-b border-neutral-200">
-        <h3 className="font-medium text-neutral-900 text-sm">Map Layers</h3>
-        {onToggleCollapse && (
-          <button
-            onClick={onToggleCollapse}
-            className="text-neutral-400 hover:text-neutral-600 p-1 rounded transition-colors"
-            aria-label="Collapse layer control"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        )}
-      </div>
-
-      {/* Layer Options */}
-      <div className="p-2 space-y-1">
-        {TILE_LAYERS.map((layer) => {
-          const isActive = layer.id === currentLayerId;
-          const isLoadingThis = isLoading === layer.id;
-
-          return (
+        {/* Header */}
+        <div className="flex items-center justify-between p-3 border-b border-neutral-200">
+          <h3 className="font-medium text-neutral-900 text-sm">Map Layers</h3>
+          {onToggleCollapse && (
             <button
-              key={layer.id}
-              onClick={() => handleLayerChange(layer.id)}
-              disabled={isLoadingThis}
-              className={cn(
-                'w-full flex items-center space-x-3 p-2 rounded-lg text-left transition-all',
-                isActive
-                  ? 'bg-primary-50 text-primary-900 border border-primary-200'
-                  : 'hover:bg-neutral-50 text-neutral-700',
-                isLoadingThis && 'opacity-50 cursor-wait'
-              )}
+              onClick={onToggleCollapse}
+              className="text-neutral-400 hover:text-neutral-600 p-1 rounded transition-colors"
+              aria-label="Collapse layer control"
             >
-              <div className="flex-shrink-0">
-                {isLoadingThis ? (
-                  <div className="w-6 h-6 flex items-center justify-center">
-                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-primary-600 border-t-transparent"></div>
-                  </div>
-                ) : (
-                  <layer.icon className="w-5 h-5" />
-                )}
-              </div>
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          )}
+        </div>
 
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center space-x-2">
-                  <span className="font-medium text-sm">{layer.name}</span>
-                  {isActive && (
-                    <svg className="w-4 h-4 text-primary-600" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
+        {/* Layer Options */}
+        <div className="p-2 space-y-1">
+          {TILE_LAYERS.map(layer => {
+            const isActive = layer.id === currentLayerId;
+            const isLoadingThis = isLoading === layer.id;
+
+            return (
+              <button
+                key={layer.id}
+                onClick={() => handleLayerChange(layer.id)}
+                disabled={isLoadingThis}
+                className={cn(
+                  'w-full flex items-center space-x-3 p-2 rounded-lg text-left transition-all',
+                  isActive
+                    ? 'bg-primary-50 text-primary-900 border border-primary-200'
+                    : 'hover:bg-neutral-50 text-neutral-700',
+                  isLoadingThis && 'opacity-50 cursor-wait'
+                )}
+              >
+                <div className="flex-shrink-0">
+                  {isLoadingThis ? (
+                    <div className="w-6 h-6 flex items-center justify-center">
+                      <div className="animate-spin rounded-full h-4 w-4 border-2 border-primary-600 border-t-transparent"></div>
+                    </div>
+                  ) : (
+                    <layer.icon className="w-5 h-5" />
                   )}
                 </div>
-                <p className="text-xs text-neutral-500 truncate">{layer.description}</p>
-              </div>
-            </button>
-          );
-        })}
-      </div>
 
-      {/* Current Layer Info */}
-      {currentLayer && (
-        <div className="p-3 border-t border-neutral-200 bg-neutral-50">
-          <div className="text-xs text-neutral-600">
-            <div className="flex items-center justify-between mb-1">
-              <span className="font-medium">Current Layer</span>
-              <span className="text-primary-600">{currentLayer.name}</span>
-            </div>
-            <div className="text-neutral-500">
-              Max Zoom: {currentLayer.maxZoom}x • Category: {currentLayer.category}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center space-x-2">
+                    <span className="font-medium text-sm">{layer.name}</span>
+                    {isActive && (
+                      <svg
+                        className="w-4 h-4 text-primary-600"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    )}
+                  </div>
+                  <p className="text-xs text-neutral-500 truncate">{layer.description}</p>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Current Layer Info */}
+        {currentLayer && (
+          <div className="p-3 border-t border-neutral-200 bg-neutral-50">
+            <div className="text-xs text-neutral-600">
+              <div className="flex items-center justify-between mb-1">
+                <span className="font-medium">Current Layer</span>
+                <span className="text-primary-600">{currentLayer.name}</span>
+              </div>
+              <div className="text-neutral-500">
+                Max Zoom: {currentLayer.maxZoom}x • Category: {currentLayer.category}
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
       </div>
     </>
   );

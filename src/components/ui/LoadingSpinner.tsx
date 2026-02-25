@@ -17,20 +17,20 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
   variant = 'primary',
   className,
   label,
-  fullScreen = false
+  fullScreen = false,
 }) => {
   const sizeClasses = {
     xs: 'w-3 h-3',
     sm: 'w-4 h-4',
     md: 'w-6 h-6',
     lg: 'w-8 h-8',
-    xl: 'w-12 h-12'
+    xl: 'w-12 h-12',
   };
 
   const variantClasses = {
     primary: 'border-neutral-300 border-t-primary-600',
     white: 'border-neutral-400 border-t-white',
-    gray: 'border-neutral-200 border-t-neutral-600'
+    gray: 'border-neutral-200 border-t-neutral-600',
   };
 
   const textSizeClasses = {
@@ -38,27 +38,31 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
     sm: 'text-sm',
     md: 'text-sm',
     lg: 'text-base',
-    xl: 'text-lg'
+    xl: 'text-lg',
   };
 
   const spinner = (
-    <div className={cn(
-      'animate-spin rounded-full border-2',
-      sizeClasses[size],
-      variantClasses[variant],
-      className
-    )} />
+    <div
+      className={cn(
+        'animate-spin rounded-full border-2',
+        sizeClasses[size],
+        variantClasses[variant],
+        className
+      )}
+    />
   );
 
   if (fullScreen) {
     return (
       <div className="fixed inset-0 bg-white bg-opacity-90 flex items-center justify-center z-50">
         <div className="flex flex-col items-center space-y-4">
-          <div className={cn(
-            'animate-spin rounded-full border-2',
-            'w-12 h-12',
-            variantClasses[variant]
-          )} />
+          <div
+            className={cn(
+              'animate-spin rounded-full border-2',
+              'w-12 h-12',
+              variantClasses[variant]
+            )}
+          />
           {label && (
             <div className="text-center">
               <p className="text-lg font-medium text-neutral-900">{label}</p>
@@ -74,9 +78,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
     return (
       <div className="flex items-center space-x-3">
         {spinner}
-        <span className={cn('text-neutral-600', textSizeClasses[size])}>
-          {label}
-        </span>
+        <span className={cn('text-neutral-600', textSizeClasses[size])}>{label}</span>
       </div>
     );
   }
@@ -90,13 +92,16 @@ export const LoadingSkeleton: React.FC<{
   lines?: number;
   variant?: 'text' | 'card' | 'avatar' | 'button';
 }> = ({ className, lines = 3, variant = 'text' }) => {
-  const __skeletonLine = (
-    <div className="animate-pulse bg-neutral-200 rounded h-4 w-full" />
-  );
+  const __skeletonLine = <div className="animate-pulse bg-neutral-200 rounded h-4 w-full" />;
 
   if (variant === 'card') {
     return (
-      <div className={cn('animate-pulse space-y-4 p-6 bg-white border border-neutral-200 rounded-lg', className)}>
+      <div
+        className={cn(
+          'animate-pulse space-y-4 p-6 bg-white border border-neutral-200 rounded-lg',
+          className
+        )}
+      >
         <div className="h-4 bg-neutral-200 rounded w-3/4" />
         <div className="space-y-2">
           <div className="h-4 bg-neutral-200 rounded" />
@@ -120,9 +125,7 @@ export const LoadingSkeleton: React.FC<{
   }
 
   if (variant === 'button') {
-    return (
-      <div className={cn('animate-pulse bg-neutral-200 rounded h-10 w-24', className)} />
-    );
+    return <div className={cn('animate-pulse bg-neutral-200 rounded h-10 w-24', className)} />;
   }
 
   return (

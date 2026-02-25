@@ -4,7 +4,7 @@
 import React, { useState } from 'react';
 import { Tent, Truck, ParkingCircle } from 'lucide-react';
 import { FeatureFlags } from '../../config';
-import { type CampsiteType, type Campsite } from '../../services/CampsiteService';
+import { type CampsiteType } from '../../services/CampsiteService';
 import { cn } from '../../utils/cn';
 
 interface CampsiteControlsProps {
@@ -22,25 +22,30 @@ interface CampsiteControlsProps {
   campsiteCount?: number;
 }
 
-const CAMPSITE_TYPES: { type: CampsiteType; label: string; icon: React.FC<{ className?: string }>; description: string }[] = [
+const CAMPSITE_TYPES: {
+  type: CampsiteType;
+  label: string;
+  icon: React.FC<{ className?: string }>;
+  description: string;
+}[] = [
   {
     type: 'campsite',
     label: 'Campsites',
     icon: Tent,
-    description: 'Traditional camping with tents/caravans'
+    description: 'Traditional camping with tents/caravans',
   },
   {
     type: 'caravan_site',
     label: 'Caravan Sites',
     icon: Truck,
-    description: 'Sites specifically for caravans/motorhomes'
+    description: 'Sites specifically for caravans/motorhomes',
   },
   {
     type: 'aire',
     label: 'Aires de Service',
     icon: ParkingCircle,
-    description: 'Motorhome service areas with facilities'
-  }
+    description: 'Motorhome service areas with facilities',
+  },
 ];
 
 const MAX_RESULTS_OPTIONS = [25, 50, 100, 200, 500];
@@ -57,7 +62,7 @@ const CampsiteControls: React.FC<CampsiteControlsProps> = ({
   onVisibilityChange,
   onRefresh,
   isLoading = false,
-  campsiteCount = 0
+  campsiteCount = 0,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -146,7 +151,12 @@ const CampsiteControls: React.FC<CampsiteControlsProps> = ({
               stroke="currentColor"
               viewBox="0 0 24 24"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 9l-7 7-7-7"
+              />
             </svg>
           </button>
         </div>
@@ -189,7 +199,7 @@ const CampsiteControls: React.FC<CampsiteControlsProps> = ({
           {/* Campsite type filters */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="text-xs font-medium text-neutral-700">Campsite Types</label>
+              <span className="text-xs font-medium text-neutral-700">Campsite Types</span>
               <button
                 onClick={toggleAll}
                 className="text-xs text-primary-600 hover:text-primary-800 font-medium"
@@ -200,20 +210,23 @@ const CampsiteControls: React.FC<CampsiteControlsProps> = ({
 
             <div className="space-y-2">
               {CAMPSITE_TYPES.map(({ type, label, icon: Icon, description }) => (
-                <label key={type} className="flex items-start space-x-3 cursor-pointer">
+                <label
+                  key={type}
+                  htmlFor={`controls-type-${type}`}
+                  className="flex items-start space-x-3 cursor-pointer"
+                >
                   <input
+                    id={`controls-type-${type}`}
                     type="checkbox"
                     checked={visibleTypes.includes(type)}
                     onChange={() => handleTypeToggle(type)}
                     className="mt-1 h-4 w-4 text-green-600 rounded border-neutral-300 focus:ring-green-500"
                   />
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center space-x-2">
-                      <Icon className="w-4 h-4" />
-                      <span className="text-sm font-medium text-neutral-900">{label}</span>
-                    </div>
+                  <Icon className="w-4 h-4 mt-1" />
+                  <span className="flex-1 min-w-0">
+                    <span className="text-sm font-medium text-neutral-900">{label}</span>
                     <p className="text-xs text-neutral-500 mt-0.5">{description}</p>
-                  </div>
+                  </span>
                 </label>
               ))}
             </div>
@@ -221,19 +234,23 @@ const CampsiteControls: React.FC<CampsiteControlsProps> = ({
 
           {/* Vehicle compatibility filter */}
           <div>
-            <label className="flex items-start space-x-3 cursor-pointer">
+            <label
+              htmlFor="controls-vehicle-compatible"
+              className="flex items-start space-x-3 cursor-pointer"
+            >
               <input
+                id="controls-vehicle-compatible"
                 type="checkbox"
                 checked={vehicleCompatibleOnly}
-                onChange={(e) => onVehicleCompatibleChange(e.target.checked)}
+                onChange={e => onVehicleCompatibleChange(e.target.checked)}
                 className="mt-1 h-4 w-4 text-green-600 rounded border-neutral-300 focus:ring-green-500"
               />
-              <div className="flex-1">
-                <div className="text-sm font-medium text-neutral-900">Vehicle Compatible Only</div>
+              <span className="flex-1">
+                Vehicle Compatible Only
                 <p className="text-xs text-neutral-500 mt-0.5">
                   Show only campsites that can accommodate your vehicle dimensions
                 </p>
-              </div>
+              </span>
             </label>
           </div>
 
@@ -249,16 +266,18 @@ const CampsiteControls: React.FC<CampsiteControlsProps> = ({
                 max={500}
                 step={25}
                 value={maxResults}
-                onChange={(e) => onMaxResultsChange(parseInt(e.target.value))}
+                onChange={e => onMaxResultsChange(parseInt(e.target.value))}
                 className="flex-1 h-2 bg-neutral-200 rounded-lg appearance-none cursor-pointer slider"
               />
               <select
                 value={maxResults}
-                onChange={(e) => onMaxResultsChange(parseInt(e.target.value))}
+                onChange={e => onMaxResultsChange(parseInt(e.target.value))}
                 className="text-xs border border-neutral-300 rounded px-2 py-1 bg-white"
               >
                 {MAX_RESULTS_OPTIONS.map(option => (
-                  <option key={option} value={option}>{option}</option>
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
                 ))}
               </select>
             </div>
@@ -276,7 +295,12 @@ const CampsiteControls: React.FC<CampsiteControlsProps> = ({
               <div className="flex items-center space-x-2">
                 <div className="w-5 h-6 flex-shrink-0">
                   <svg viewBox="0 0 20 28" className="w-full h-full">
-                    <path d="M10 0C4.5 0 0 4.5 0 10c0 7.5 10 18 10 18s10-10.5 10-18C20 4.5 15.5 0 10 0z" fill="#27ae60" stroke="#1a8a4b" strokeWidth="1.5"/>
+                    <path
+                      d="M10 0C4.5 0 0 4.5 0 10c0 7.5 10 18 10 18s10-10.5 10-18C20 4.5 15.5 0 10 0z"
+                      fill="#27ae60"
+                      stroke="#1a8a4b"
+                      strokeWidth="1.5"
+                    />
                   </svg>
                 </div>
                 <span className="text-xs text-neutral-700">Campsite (tent/caravan)</span>
@@ -284,7 +308,12 @@ const CampsiteControls: React.FC<CampsiteControlsProps> = ({
               <div className="flex items-center space-x-2">
                 <div className="w-5 h-6 flex-shrink-0">
                   <svg viewBox="0 0 20 28" className="w-full h-full">
-                    <path d="M10 0C4.5 0 0 4.5 0 10c0 7.5 10 18 10 18s10-10.5 10-18C20 4.5 15.5 0 10 0z" fill="#2794a8" stroke="#1e7a8d" strokeWidth="1.5"/>
+                    <path
+                      d="M10 0C4.5 0 0 4.5 0 10c0 7.5 10 18 10 18s10-10.5 10-18C20 4.5 15.5 0 10 0z"
+                      fill="#2794a8"
+                      stroke="#1e7a8d"
+                      strokeWidth="1.5"
+                    />
                   </svg>
                 </div>
                 <span className="text-xs text-neutral-700">Caravan/Motorhome site</span>
@@ -292,7 +321,12 @@ const CampsiteControls: React.FC<CampsiteControlsProps> = ({
               <div className="flex items-center space-x-2">
                 <div className="w-5 h-6 flex-shrink-0">
                   <svg viewBox="0 0 20 28" className="w-full h-full">
-                    <path d="M10 0C4.5 0 0 4.5 0 10c0 7.5 10 18 10 18s10-10.5 10-18C20 4.5 15.5 0 10 0z" fill="#7c5cbf" stroke="#6b47b0" strokeWidth="1.5"/>
+                    <path
+                      d="M10 0C4.5 0 0 4.5 0 10c0 7.5 10 18 10 18s10-10.5 10-18C20 4.5 15.5 0 10 0z"
+                      fill="#7c5cbf"
+                      stroke="#6b47b0"
+                      strokeWidth="1.5"
+                    />
                   </svg>
                 </div>
                 <span className="text-xs text-neutral-700">Aire de Service</span>
@@ -303,14 +337,21 @@ const CampsiteControls: React.FC<CampsiteControlsProps> = ({
                 <div className="flex items-center space-x-2">
                   <div className="w-5 h-6 flex-shrink-0">
                     <svg viewBox="0 0 20 28" className="w-full h-full">
-                      <path d="M10 0C4.5 0 0 4.5 0 10c0 7.5 10 18 10 18s10-10.5 10-18C20 4.5 15.5 0 10 0z" fill="#e63946" stroke="#d32535" strokeWidth="1.5"/>
+                      <path
+                        d="M10 0C4.5 0 0 4.5 0 10c0 7.5 10 18 10 18s10-10.5 10-18C20 4.5 15.5 0 10 0z"
+                        fill="#e63946"
+                        stroke="#d32535"
+                        strokeWidth="1.5"
+                      />
                     </svg>
                   </div>
                   <span className="text-xs text-neutral-700">May not fit your vehicle</span>
                 </div>
                 <div className="flex items-center space-x-2 mt-1">
                   <div className="w-5 h-5 flex-shrink-0 flex items-center justify-center">
-                    <div className="w-4 h-4 rounded-full bg-green-500 text-white text-[8px] font-bold flex items-center justify-center border-2 border-white shadow">3</div>
+                    <div className="w-4 h-4 rounded-full bg-green-500 text-white text-[8px] font-bold flex items-center justify-center border-2 border-white shadow">
+                      3
+                    </div>
                   </div>
                   <span className="text-xs text-neutral-700">Clustered markers (zoom in)</span>
                 </div>

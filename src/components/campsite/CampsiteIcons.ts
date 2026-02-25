@@ -19,7 +19,7 @@ const SVG_ICONS = {
   caravan_site: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 7h-3V6a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v6h2a3 3 0 0 0 6 0h6a3 3 0 0 0 6 0h2V10a3 3 0 0 0-3-3zM6 14a1 1 0 1 1 0-2 1 1 0 0 1 0 2zm12 0a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/></svg>`,
   aire: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 15c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 2.5c-.3 0-.5-.2-.5-.5s.2-.5.5-.5.5.2.5.5-.2.5-.5.5zm12-2.5c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 2.5c-.3 0-.5-.2-.5-.5s.2-.5.5-.5.5.2.5.5-.2.5-.5.5zm-4.5-12H11V3H9v2.5H6.5l1.38 1.38C8.51 7.45 9.2 8 10 8h4c.8 0 1.49-.55 1.88-1.38L17.26 5.5H15V3h-2v2.5z"/></svg>`,
   parking: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.5 2h11A1.5 1.5 0 0 1 19 3.5v17a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 5 20.5v-17A1.5 1.5 0 0 1 6.5 2zM8 8v8h2v-3h2.5a2.5 2.5 0 0 0 0-5H8zm2 2h2.5a.5.5 0 0 1 0 1H10v-1z"/></svg>`,
-  unknown: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg>`
+  unknown: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg>`,
 };
 
 // Icon configurations for different campsite types
@@ -30,7 +30,7 @@ export const CAMPSITE_ICON_CONFIGS: Record<CampsiteType | 'unknown', CampsiteIco
     backgroundColor: '#27ae60',
     borderColor: '#1a8a4b',
     size: 32,
-    description: 'Traditional campsite with tent/caravan pitches'
+    description: 'Traditional campsite with tent/caravan pitches',
   },
   caravan_site: {
     icon: SVG_ICONS.caravan_site,
@@ -38,7 +38,7 @@ export const CAMPSITE_ICON_CONFIGS: Record<CampsiteType | 'unknown', CampsiteIco
     backgroundColor: '#2794a8',
     borderColor: '#1e7a8d',
     size: 32,
-    description: 'Caravan and motorhome specific site'
+    description: 'Caravan and motorhome specific site',
   },
   aire: {
     icon: SVG_ICONS.aire,
@@ -46,7 +46,7 @@ export const CAMPSITE_ICON_CONFIGS: Record<CampsiteType | 'unknown', CampsiteIco
     backgroundColor: '#7c5cbf',
     borderColor: '#6b47b0',
     size: 32,
-    description: 'Aire de service for motorhomes'
+    description: 'Aire de service for motorhomes',
   },
   parking: {
     icon: SVG_ICONS.parking,
@@ -54,7 +54,7 @@ export const CAMPSITE_ICON_CONFIGS: Record<CampsiteType | 'unknown', CampsiteIco
     backgroundColor: '#e9a100',
     borderColor: '#cc7d00',
     size: 32,
-    description: 'Parking area with overnight stays allowed'
+    description: 'Parking area with overnight stays allowed',
   },
   unknown: {
     icon: SVG_ICONS.unknown,
@@ -62,39 +62,39 @@ export const CAMPSITE_ICON_CONFIGS: Record<CampsiteType | 'unknown', CampsiteIco
     backgroundColor: '#6b7785',
     borderColor: '#556170',
     size: 28,
-    description: 'Unknown campsite type'
-  }
+    description: 'Unknown campsite type',
+  },
 };
 
 // Enhanced icon configs based on specific amenities
 export const AMENITY_ENHANCED_CONFIGS: Record<string, Partial<CampsiteIconConfig>> = {
-  'electricity': {
+  electricity: {
     borderColor: '#cc7d00',
-    backgroundColor: '#e9a100'
+    backgroundColor: '#e9a100',
   },
-  'wifi': {
+  wifi: {
     borderColor: '#1e7a8d',
-    backgroundColor: '#2794a8'
+    backgroundColor: '#2794a8',
   },
-  'shower': {
+  shower: {
     borderColor: '#1a8a4b',
-    backgroundColor: '#27ae60'
+    backgroundColor: '#27ae60',
   },
-  'toilets': {
+  toilets: {
     borderColor: '#6b47b0',
-    backgroundColor: '#7c5cbf'
+    backgroundColor: '#7c5cbf',
   },
-  'drinking_water': {
+  drinking_water: {
     borderColor: '#1e7a8d',
-    backgroundColor: '#3eaec2'
-  }
+    backgroundColor: '#3eaec2',
+  },
 };
 
 // Mobile-friendly sizes
 export const MOBILE_ICON_CONFIGS = {
   small: 24,
   medium: 32,
-  large: 40
+  large: 40,
 };
 
 export interface CampsiteMarkerOptions {
@@ -117,16 +117,14 @@ export function createCampsiteIcon(options: CampsiteMarkerOptions): L.DivIcon {
     isInRoute = false,
     isMobile = false,
     size = 'medium',
-    showTooltip = false
+    showTooltip = false,
   } = options;
 
   // Get base config for campsite type
   const baseConfig = CAMPSITE_ICON_CONFIGS[campsite.type] || CAMPSITE_ICON_CONFIGS.unknown;
 
   // Determine size - larger for selected/highlighted
-  let iconSize = isMobile ?
-    MOBILE_ICON_CONFIGS[size] :
-    baseConfig.size;
+  let iconSize = isMobile ? MOBILE_ICON_CONFIGS[size] : baseConfig.size;
 
   if (isSelected || isHighlighted) {
     iconSize = Math.floor(iconSize * 1.2);
@@ -162,17 +160,23 @@ export function createCampsiteIcon(options: CampsiteMarkerOptions): L.DivIcon {
   }
 
   // Animation class for selected/highlighted markers
-  const animationStyle = isSelected ? `
+  const animationStyle = isSelected
+    ? `
     animation: campsite-pulse 1.5s ease-in-out infinite;
-  ` : isHighlighted ? `
+  `
+    : isHighlighted
+      ? `
     animation: campsite-glow 1s ease-in-out infinite;
-  ` : '';
+  `
+      : '';
 
   // Create icon HTML with SVG support
   const svgSize = Math.floor(iconSize * 0.6);
 
   // Tooltip HTML (campsite name shown on hover via CSS)
-  const tooltipHtml = showTooltip && campsite.name ? `
+  const tooltipHtml =
+    showTooltip && campsite.name
+      ? `
     <div class="campsite-tooltip" style="
       position: absolute;
       bottom: 100%;
@@ -192,10 +196,12 @@ export function createCampsiteIcon(options: CampsiteMarkerOptions): L.DivIcon {
       margin-bottom: 4px;
       z-index: 1000;
     ">${campsite.name.substring(0, 30)}${campsite.name.length > 30 ? '...' : ''}</div>
-  ` : '';
+  `
+      : '';
 
   // "In Route" checkmark badge
-  const inRouteBadge = isInRoute ? `
+  const inRouteBadge = isInRoute
+    ? `
     <div style="
       position: absolute;
       top: -4px;
@@ -214,10 +220,13 @@ export function createCampsiteIcon(options: CampsiteMarkerOptions): L.DivIcon {
         <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
       </svg>
     </div>
-  ` : '';
+  `
+    : '';
 
   // Warning badge for vehicle incompatibility (only show if not in route)
-  const warningBadge = !vehicleCompatible && !isInRoute ? `
+  const warningBadge =
+    !vehicleCompatible && !isInRoute
+      ? `
     <div style="
       position: absolute;
       top: -2px;
@@ -234,13 +243,12 @@ export function createCampsiteIcon(options: CampsiteMarkerOptions): L.DivIcon {
       font-weight: bold;
       color: #d32535;
     ">!</div>
-  ` : '';
+  `
+      : '';
 
   // Pin/teardrop shape dimensions - taller than wide with point at bottom
   const pinWidth = iconSize;
   const pinHeight = Math.floor(iconSize * 1.4);
-  const circleSize = Math.floor(iconSize * 0.85);
-
   const iconHtml = `
     <div class="campsite-marker-wrapper" style="
       position: relative;
@@ -292,12 +300,12 @@ export function createCampsiteIcon(options: CampsiteMarkerOptions): L.DivIcon {
     html: iconHtml,
     iconSize: [pinWidth, pinHeight],
     iconAnchor: [pinWidth / 2, pinHeight], // Anchor at the bottom point
-    popupAnchor: [0, -pinHeight + 10]
+    popupAnchor: [0, -pinHeight + 10],
   });
 }
 
 // Cluster icon creation for marker clustering
-export function createClusterIcon(cluster: any): L.DivIcon {
+export function createClusterIcon(cluster: { getChildCount: () => number }): L.DivIcon {
   const childCount = cluster.getChildCount();
   const size = childCount < 10 ? 30 : childCount < 100 ? 40 : 50;
 
@@ -323,7 +331,7 @@ export function createClusterIcon(cluster: any): L.DivIcon {
     `,
     className: 'campsite-cluster-icon',
     iconSize: [size, size],
-    iconAnchor: [size / 2, size / 2]
+    iconAnchor: [size / 2, size / 2],
   });
 }
 

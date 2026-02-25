@@ -26,7 +26,16 @@ export interface SpotlightStep {
   body: string;
   tip?: string;
   /** Lucide icon name for the tooltip header */
-  iconKey: 'Truck' | 'MapPin' | 'Tent' | 'Calculator' | 'Briefcase' | 'CheckCircle' | 'Search' | 'Navigation' | 'Wrench';
+  iconKey:
+    | 'Truck'
+    | 'MapPin'
+    | 'Tent'
+    | 'Calculator'
+    | 'Briefcase'
+    | 'CheckCircle'
+    | 'Search'
+    | 'Navigation'
+    | 'Wrench';
   /** Extra padding around the spotlight cutout in px (default 12) */
   spotlightPadding?: number;
   /** Overlay darkness 0-1 (default 0.6). Lower = more see-through so live changes are visible. */

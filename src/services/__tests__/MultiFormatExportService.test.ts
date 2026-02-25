@@ -170,7 +170,13 @@ describe('MultiFormatExportService', () => {
 
     it('should escape XML special characters in KML', async () => {
       const specialWaypoints = [
-        { id: '1', name: 'Route with <special> & "chars"', lat: 48.8566, lng: 2.3522, type: 'start' as const },
+        {
+          id: '1',
+          name: 'Route with <special> & "chars"',
+          lat: 48.8566,
+          lng: 2.3522,
+          type: 'start' as const,
+        },
       ];
 
       const result = await MultiFormatExportService.exportRoute(
@@ -288,7 +294,13 @@ describe('MultiFormatExportService', () => {
 
     it('should handle CSV special characters', async () => {
       const specialWaypoints = [
-        { id: '1', name: 'Location, with "comma"', lat: 48.8566, lng: 2.3522, type: 'start' as const },
+        {
+          id: '1',
+          name: 'Location, with "comma"',
+          lat: 48.8566,
+          lng: 2.3522,
+          type: 'start' as const,
+        },
       ];
 
       const result = await MultiFormatExportService.exportRoute(

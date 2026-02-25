@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 // Test Utilities
 // Helper functions for testing React components
 
@@ -16,17 +17,12 @@ interface CustomRenderOptions extends Omit<RenderOptions, 'wrapper'> {
 const AllTheProviders: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
     <BrowserRouter>
-      <I18nextProvider i18n={i18n}>
-        {children}
-      </I18nextProvider>
+      <I18nextProvider i18n={i18n}>{children}</I18nextProvider>
     </BrowserRouter>
   );
 };
 
-const customRender = (
-  ui: React.ReactElement,
-  options?: CustomRenderOptions
-) => {
+const customRender = (ui: React.ReactElement, options?: CustomRenderOptions) => {
   return render(ui, { wrapper: AllTheProviders, ...options });
 };
 

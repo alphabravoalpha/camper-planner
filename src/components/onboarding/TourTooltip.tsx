@@ -121,7 +121,13 @@ const TourTooltip: React.FC<TourTooltipProps> = ({
         <>
           {/* Logo */}
           <div className="flex justify-center mb-3">
-            <img src="/images/onboarding-welcome.png" alt="European Camper Planner" className="w-14 h-14 rounded-lg object-cover" width={56} height={56} />
+            <img
+              src="/images/onboarding-welcome.png"
+              alt="European Camper Planner"
+              className="w-14 h-14 rounded-lg object-cover"
+              width={56}
+              height={56}
+            />
           </div>
 
           {/* Headline */}
@@ -170,10 +176,7 @@ const TourTooltip: React.FC<TourTooltipProps> = ({
           </div>
 
           {/* Body */}
-          <p
-            id={`tour-desc-${step.id}`}
-            className="text-sm text-neutral-600 leading-relaxed mb-3"
-          >
+          <p id={`tour-desc-${step.id}`} className="text-sm text-neutral-600 leading-relaxed mb-3">
             {step.body}
           </p>
 

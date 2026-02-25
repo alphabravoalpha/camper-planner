@@ -155,20 +155,29 @@ const TripSettingsPanel: React.FC<TripSettingsPanelProps> = ({ className = '' })
       <Section title="Dates & Duration" defaultOpen>
         <div className="grid grid-cols-2 gap-2">
           <div>
-            <label className="block text-xs text-neutral-500 mb-1">Start date</label>
+            <label
+              htmlFor="trip-settings-start-date"
+              className="block text-xs text-neutral-500 mb-1"
+            >
+              Start date
+            </label>
             <input
+              id="trip-settings-start-date"
               type="date"
               value={settings.startDate ?? ''}
-              onChange={(e) => setStartDate(e.target.value || undefined)}
+              onChange={e => setStartDate(e.target.value || undefined)}
               className={INPUT_CLASS}
             />
           </div>
           <div>
-            <label className="block text-xs text-neutral-500 mb-1">End date</label>
+            <label htmlFor="trip-settings-end-date" className="block text-xs text-neutral-500 mb-1">
+              End date
+            </label>
             <input
+              id="trip-settings-end-date"
               type="date"
               value={settings.endDate ?? ''}
-              onChange={(e) => setEndDate(e.target.value || undefined)}
+              onChange={e => setEndDate(e.target.value || undefined)}
               className={INPUT_CLASS}
             />
           </div>
@@ -193,7 +202,7 @@ const TripSettingsPanel: React.FC<TripSettingsPanelProps> = ({ className = '' })
       {/* Section 2: Driving Style */}
       <Section title="Driving Style">
         <div className="space-y-1.5">
-          {DRIVING_STYLE_OPTIONS.map((option) => {
+          {DRIVING_STYLE_OPTIONS.map(option => {
             const limits = getDrivingLimitsForStyle(option.value);
             return (
               <label
@@ -220,13 +229,16 @@ const TripSettingsPanel: React.FC<TripSettingsPanelProps> = ({ className = '' })
         </div>
 
         <div>
-          <label className="block text-xs text-neutral-500 mb-1">Rest days</label>
+          <label htmlFor="trip-settings-rest-days" className="block text-xs text-neutral-500 mb-1">
+            Rest days
+          </label>
           <select
+            id="trip-settings-rest-days"
             value={settings.restDayFrequency}
-            onChange={(e) => setRestDayFrequency(Number(e.target.value))}
+            onChange={e => setRestDayFrequency(Number(e.target.value))}
             className={SELECT_CLASS}
           >
-            {REST_DAY_OPTIONS.map((option) => (
+            {REST_DAY_OPTIONS.map(option => (
               <option key={option.value} value={option.value}>
                 {option.label}
               </option>
@@ -238,7 +250,7 @@ const TripSettingsPanel: React.FC<TripSettingsPanelProps> = ({ className = '' })
       {/* Section 3: Channel Crossing */}
       <Section title="Channel Crossing">
         <div className="space-y-1.5">
-          {CROSSING_OPTIONS.map((option) => (
+          {CROSSING_OPTIONS.map(option => (
             <label
               key={option.value}
               className="flex items-center gap-2 text-xs cursor-pointer group"
@@ -251,9 +263,7 @@ const TripSettingsPanel: React.FC<TripSettingsPanelProps> = ({ className = '' })
                 onChange={() => setCrossingType(option.value)}
                 className="text-sky-600 focus:ring-sky-400"
               />
-              <span className="text-neutral-700 group-hover:text-neutral-900">
-                {option.label}
-              </span>
+              <span className="text-neutral-700 group-hover:text-neutral-900">{option.label}</span>
             </label>
           ))}
         </div>
@@ -272,7 +282,7 @@ const TripSettingsPanel: React.FC<TripSettingsPanelProps> = ({ className = '' })
                 min={0}
                 step={5}
                 value={settings.crossing.estimatedCost ?? ''}
-                onChange={(e) => {
+                onChange={e => {
                   const val = e.target.value;
                   setCrossingCost(val === '' ? undefined : Number(val));
                 }}
@@ -287,13 +297,16 @@ const TripSettingsPanel: React.FC<TripSettingsPanelProps> = ({ className = '' })
       {/* Section 4: Daily Budget */}
       <Section title="Daily Budget">
         <div>
-          <label className="block text-xs text-neutral-500 mb-1">Currency</label>
+          <label htmlFor="trip-settings-currency" className="block text-xs text-neutral-500 mb-1">
+            Currency
+          </label>
           <select
+            id="trip-settings-currency"
             value={settings.currency}
-            onChange={(e) => setCurrency(e.target.value as Currency)}
+            onChange={e => setCurrency(e.target.value as Currency)}
             className={SELECT_CLASS}
           >
-            {CURRENCY_OPTIONS.map((option) => (
+            {CURRENCY_OPTIONS.map(option => (
               <option key={option.value} value={option.value}>
                 {option.value} ({CURRENCY_SYMBOLS[option.value]})
               </option>
@@ -302,25 +315,29 @@ const TripSettingsPanel: React.FC<TripSettingsPanelProps> = ({ className = '' })
         </div>
 
         <div className="space-y-2">
-          {([
+          {[
             { key: 'campsite' as const, label: 'Campsite (per night)' },
             { key: 'food' as const, label: 'Food (per day)' },
             { key: 'activities' as const, label: 'Activities (per day)' },
-          ]).map((field) => (
+          ].map(field => (
             <div key={field.key}>
-              <label className="block text-xs text-neutral-500 mb-1">{field.label}</label>
+              <label
+                htmlFor={`trip-settings-budget-${field.key}`}
+                className="block text-xs text-neutral-500 mb-1"
+              >
+                {field.label}
+              </label>
               <div className="relative">
                 <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs text-neutral-400">
                   {currencySymbol}
                 </span>
                 <input
+                  id={`trip-settings-budget-${field.key}`}
                   type="number"
                   min={0}
                   step={5}
                   value={settings.dailyBudget[field.key]}
-                  onChange={(e) =>
-                    setDailyBudget({ [field.key]: Number(e.target.value) })
-                  }
+                  onChange={e => setDailyBudget({ [field.key]: Number(e.target.value) })}
                   className={`${INPUT_CLASS} pl-5`}
                 />
               </div>
@@ -333,13 +350,19 @@ const TripSettingsPanel: React.FC<TripSettingsPanelProps> = ({ className = '' })
       <Section title="Fuel Settings">
         <div className="grid grid-cols-2 gap-2">
           <div>
-            <label className="block text-xs text-neutral-500 mb-1">Fuel type</label>
+            <label
+              htmlFor="trip-settings-fuel-type"
+              className="block text-xs text-neutral-500 mb-1"
+            >
+              Fuel type
+            </label>
             <select
+              id="trip-settings-fuel-type"
               value={settings.fuelConsumption.fuelType}
-              onChange={(e) => setFuelType(e.target.value as FuelType)}
+              onChange={e => setFuelType(e.target.value as FuelType)}
               className={SELECT_CLASS}
             >
-              {FUEL_TYPE_OPTIONS.map((option) => (
+              {FUEL_TYPE_OPTIONS.map(option => (
                 <option key={option.value} value={option.value}>
                   {option.label}
                 </option>
@@ -347,15 +370,19 @@ const TripSettingsPanel: React.FC<TripSettingsPanelProps> = ({ className = '' })
             </select>
           </div>
           <div>
-            <label className="block text-xs text-neutral-500 mb-1">Unit</label>
+            <label
+              htmlFor="trip-settings-fuel-unit"
+              className="block text-xs text-neutral-500 mb-1"
+            >
+              Unit
+            </label>
             <select
+              id="trip-settings-fuel-unit"
               value={settings.fuelConsumption.unit}
-              onChange={(e) =>
-                setFuelConsumptionUnit(e.target.value as ConsumptionUnit)
-              }
+              onChange={e => setFuelConsumptionUnit(e.target.value as ConsumptionUnit)}
               className={SELECT_CLASS}
             >
-              {CONSUMPTION_UNIT_OPTIONS.map((option) => (
+              {CONSUMPTION_UNIT_OPTIONS.map(option => (
                 <option key={option.value} value={option.value}>
                   {option.label}
                 </option>
@@ -366,13 +393,19 @@ const TripSettingsPanel: React.FC<TripSettingsPanelProps> = ({ className = '' })
 
         <div className="grid grid-cols-2 gap-2">
           <div>
-            <label className="block text-xs text-neutral-500 mb-1">Consumption</label>
+            <label
+              htmlFor="trip-settings-fuel-consumption"
+              className="block text-xs text-neutral-500 mb-1"
+            >
+              Consumption
+            </label>
             <input
+              id="trip-settings-fuel-consumption"
               type="number"
               min={0}
               step={0.5}
               value={settings.fuelConsumption.value}
-              onChange={(e) => setFuelConsumption(Number(e.target.value))}
+              onChange={e => setFuelConsumption(Number(e.target.value))}
               className={INPUT_CLASS}
             />
           </div>
@@ -389,7 +422,7 @@ const TripSettingsPanel: React.FC<TripSettingsPanelProps> = ({ className = '' })
                 min={0}
                 step={0.05}
                 value={settings.fuelPricePerLitre}
-                onChange={(e) => setFuelPrice(Number(e.target.value))}
+                onChange={e => setFuelPrice(Number(e.target.value))}
                 className={`${INPUT_CLASS} pl-5`}
               />
             </div>
@@ -397,13 +430,16 @@ const TripSettingsPanel: React.FC<TripSettingsPanelProps> = ({ className = '' })
         </div>
 
         <div>
-          <label className="block text-xs text-neutral-500 mb-1">Tank capacity (litres)</label>
+          <label htmlFor="tank-capacity" className="block text-xs text-neutral-500 mb-1">
+            Tank capacity (litres)
+          </label>
           <input
+            id="tank-capacity"
             type="number"
             min={0}
             step={5}
             value={settings.fuelConsumption.tankCapacity}
-            onChange={(e) => setTankCapacity(Number(e.target.value))}
+            onChange={e => setTankCapacity(Number(e.target.value))}
             className={INPUT_CLASS}
           />
         </div>

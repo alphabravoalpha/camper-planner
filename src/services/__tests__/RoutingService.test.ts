@@ -6,17 +6,17 @@ import { type Waypoint, type VehicleProfile } from '../../types';
 vi.mock('../DataService', () => {
   return {
     DataService: class MockDataService {
-      protected config: any;
-      protected rateLimit: any;
+      protected config: unknown;
+      protected rateLimit: unknown;
       protected cache = new Map();
       protected rateLimitState = new Map();
 
-      constructor(config: any, rateLimit: any) {
+      constructor(config: unknown, rateLimit: unknown) {
         this.config = config;
         this.rateLimit = rateLimit;
       }
 
-      protected async request<T>(context: any): Promise<T> {
+      protected async request<T>(_context: unknown): Promise<T> {
         // Mock implementation - will be overridden in tests
         return {} as T;
       }
@@ -88,10 +88,7 @@ describe('RoutingService', () => {
     });
 
     it('should reject invalid latitude', async () => {
-      const invalidWaypoints = [
-        { ...mockWaypoints[0], lat: 91 },
-        mockWaypoints[1],
-      ];
+      const invalidWaypoints = [{ ...mockWaypoints[0], lat: 91 }, mockWaypoints[1]];
 
       const request: RouteRequest = {
         waypoints: invalidWaypoints,
@@ -102,10 +99,7 @@ describe('RoutingService', () => {
     });
 
     it('should reject invalid longitude', async () => {
-      const invalidWaypoints = [
-        mockWaypoints[0],
-        { ...mockWaypoints[1], lng: -181 },
-      ];
+      const invalidWaypoints = [mockWaypoints[0], { ...mockWaypoints[1], lng: -181 }];
 
       const request: RouteRequest = {
         waypoints: invalidWaypoints,
@@ -124,7 +118,9 @@ describe('RoutingService', () => {
       };
 
       await expect(routingService.calculateRoute(request)).rejects.toThrow(RoutingError);
-      await expect(routingService.calculateRoute(request)).rejects.toThrow('height must be between');
+      await expect(routingService.calculateRoute(request)).rejects.toThrow(
+        'height must be between'
+      );
     });
 
     it('should reject vehicle width exceeding limits', async () => {
@@ -148,7 +144,9 @@ describe('RoutingService', () => {
       };
 
       await expect(routingService.calculateRoute(request)).rejects.toThrow(RoutingError);
-      await expect(routingService.calculateRoute(request)).rejects.toThrow('weight must be between');
+      await expect(routingService.calculateRoute(request)).rejects.toThrow(
+        'weight must be between'
+      );
     });
 
     it('should reject vehicle length exceeding limits', async () => {
@@ -160,16 +158,24 @@ describe('RoutingService', () => {
       };
 
       await expect(routingService.calculateRoute(request)).rejects.toThrow(RoutingError);
-      await expect(routingService.calculateRoute(request)).rejects.toThrow('length must be between');
+      await expect(routingService.calculateRoute(request)).rejects.toThrow(
+        'length must be between'
+      );
     });
 
     it('should accept valid route request', async () => {
       // Mock the request method to return a valid response
-      vi.spyOn(routingService as any, 'request').mockResolvedValue({
+      vi.spyOn(
+        routingService as unknown as { request: (...args: unknown[]) => unknown },
+        'request'
+      ).mockResolvedValue({
         features: [
           {
             geometry: {
-              coordinates: [[2.3522, 48.8566], [4.8357, 45.764]],
+              coordinates: [
+                [2.3522, 48.8566],
+                [4.8357, 45.764],
+              ],
               type: 'LineString',
             },
             properties: {
@@ -198,11 +204,16 @@ describe('RoutingService', () => {
     it('should detect vehicle height exceeding EU limits', async () => {
       const oversizedVehicle = { ...mockVehicleProfile, height: 4.5 };
 
-      vi.spyOn(routingService as any, 'request').mockResolvedValue({
-        features: [{
-          geometry: { coordinates: [], type: 'LineString' },
-          properties: { summary: { distance: 0, duration: 0 }, segments: [], way_points: [] },
-        }],
+      vi.spyOn(
+        routingService as unknown as { request: (...args: unknown[]) => unknown },
+        'request'
+      ).mockResolvedValue({
+        features: [
+          {
+            geometry: { coordinates: [], type: 'LineString' },
+            properties: { summary: { distance: 0, duration: 0 }, segments: [], way_points: [] },
+          },
+        ],
       });
 
       const request: RouteRequest = {
@@ -221,11 +232,16 @@ describe('RoutingService', () => {
     it('should detect vehicle width exceeding EU limits', async () => {
       const oversizedVehicle = { ...mockVehicleProfile, width: 2.6 };
 
-      vi.spyOn(routingService as any, 'request').mockResolvedValue({
-        features: [{
-          geometry: { coordinates: [], type: 'LineString' },
-          properties: { summary: { distance: 0, duration: 0 }, segments: [], way_points: [] },
-        }],
+      vi.spyOn(
+        routingService as unknown as { request: (...args: unknown[]) => unknown },
+        'request'
+      ).mockResolvedValue({
+        features: [
+          {
+            geometry: { coordinates: [], type: 'LineString' },
+            properties: { summary: { distance: 0, duration: 0 }, segments: [], way_points: [] },
+          },
+        ],
       });
 
       const request: RouteRequest = {
@@ -252,11 +268,16 @@ describe('RoutingService', () => {
     it('should detect vehicle length exceeding EU limits', async () => {
       const oversizedVehicle = { ...mockVehicleProfile, length: 19 };
 
-      vi.spyOn(routingService as any, 'request').mockResolvedValue({
-        features: [{
-          geometry: { coordinates: [], type: 'LineString' },
-          properties: { summary: { distance: 0, duration: 0 }, segments: [], way_points: [] },
-        }],
+      vi.spyOn(
+        routingService as unknown as { request: (...args: unknown[]) => unknown },
+        'request'
+      ).mockResolvedValue({
+        features: [
+          {
+            geometry: { coordinates: [], type: 'LineString' },
+            properties: { summary: { distance: 0, duration: 0 }, segments: [], way_points: [] },
+          },
+        ],
       });
 
       const request: RouteRequest = {
@@ -285,18 +306,26 @@ describe('RoutingService', () => {
     it('should allow normal-sized vehicle without restrictions', async () => {
       const normalVehicle = { height: 2.5, width: 2.0, length: 6.0, weight: 3.0 };
 
-      vi.spyOn(routingService as any, 'request').mockResolvedValue({
-        features: [{
-          geometry: {
-            coordinates: [[2.3522, 48.8566], [4.8357, 45.764]],
-            type: 'LineString',
+      vi.spyOn(
+        routingService as unknown as { request: (...args: unknown[]) => unknown },
+        'request'
+      ).mockResolvedValue({
+        features: [
+          {
+            geometry: {
+              coordinates: [
+                [2.3522, 48.8566],
+                [4.8357, 45.764],
+              ],
+              type: 'LineString',
+            },
+            properties: {
+              summary: { distance: 460000, duration: 14400 },
+              segments: [],
+              way_points: [0, 1],
+            },
           },
-          properties: {
-            summary: { distance: 460000, duration: 14400 },
-            segments: [],
-            way_points: [0, 1],
-          },
-        }],
+        ],
       });
 
       const request: RouteRequest = {
@@ -314,11 +343,20 @@ describe('RoutingService', () => {
     it('should use driving-car for small vehicles', async () => {
       const smallVehicle = { height: 2.0, width: 1.8, length: 5.0, weight: 2.0 };
 
-      vi.spyOn(routingService as any, 'request').mockResolvedValue({
-        features: [{
-          geometry: { coordinates: [[2.3522, 48.8566]], type: 'LineString' },
-          properties: { summary: { distance: 460000, duration: 14400 }, segments: [], way_points: [0] },
-        }],
+      vi.spyOn(
+        routingService as unknown as { request: (...args: unknown[]) => unknown },
+        'request'
+      ).mockResolvedValue({
+        features: [
+          {
+            geometry: { coordinates: [[2.3522, 48.8566]], type: 'LineString' },
+            properties: {
+              summary: { distance: 460000, duration: 14400 },
+              segments: [],
+              way_points: [0],
+            },
+          },
+        ],
       });
 
       const request: RouteRequest = {
@@ -333,11 +371,20 @@ describe('RoutingService', () => {
     it('should use driving-hgv for large vehicles (height)', async () => {
       const largeVehicle = { height: 3.0, width: 2.0, length: 6.0, weight: 3.0 };
 
-      vi.spyOn(routingService as any, 'request').mockResolvedValue({
-        features: [{
-          geometry: { coordinates: [[2.3522, 48.8566]], type: 'LineString' },
-          properties: { summary: { distance: 460000, duration: 14400 }, segments: [], way_points: [0] },
-        }],
+      vi.spyOn(
+        routingService as unknown as { request: (...args: unknown[]) => unknown },
+        'request'
+      ).mockResolvedValue({
+        features: [
+          {
+            geometry: { coordinates: [[2.3522, 48.8566]], type: 'LineString' },
+            properties: {
+              summary: { distance: 460000, duration: 14400 },
+              segments: [],
+              way_points: [0],
+            },
+          },
+        ],
       });
 
       const request: RouteRequest = {
@@ -352,11 +399,20 @@ describe('RoutingService', () => {
     it('should use driving-hgv for large vehicles (weight)', async () => {
       const heavyVehicle = { height: 2.0, width: 2.0, length: 6.0, weight: 4.0 };
 
-      vi.spyOn(routingService as any, 'request').mockResolvedValue({
-        features: [{
-          geometry: { coordinates: [[2.3522, 48.8566]], type: 'LineString' },
-          properties: { summary: { distance: 460000, duration: 14400 }, segments: [], way_points: [0] },
-        }],
+      vi.spyOn(
+        routingService as unknown as { request: (...args: unknown[]) => unknown },
+        'request'
+      ).mockResolvedValue({
+        features: [
+          {
+            geometry: { coordinates: [[2.3522, 48.8566]], type: 'LineString' },
+            properties: {
+              summary: { distance: 460000, duration: 14400 },
+              segments: [],
+              way_points: [0],
+            },
+          },
+        ],
       });
 
       const request: RouteRequest = {
@@ -369,11 +425,20 @@ describe('RoutingService', () => {
     });
 
     it('should use requested profile when provided', async () => {
-      vi.spyOn(routingService as any, 'request').mockResolvedValue({
-        features: [{
-          geometry: { coordinates: [[2.3522, 48.8566]], type: 'LineString' },
-          properties: { summary: { distance: 460000, duration: 14400 }, segments: [], way_points: [0] },
-        }],
+      vi.spyOn(
+        routingService as unknown as { request: (...args: unknown[]) => unknown },
+        'request'
+      ).mockResolvedValue({
+        features: [
+          {
+            geometry: { coordinates: [[2.3522, 48.8566]], type: 'LineString' },
+            properties: {
+              summary: { distance: 460000, duration: 14400 },
+              segments: [],
+              way_points: [0],
+            },
+          },
+        ],
       });
 
       const request: RouteRequest = {
@@ -386,11 +451,20 @@ describe('RoutingService', () => {
     });
 
     it('should default to driving-car when no vehicle profile', async () => {
-      vi.spyOn(routingService as any, 'request').mockResolvedValue({
-        features: [{
-          geometry: { coordinates: [[2.3522, 48.8566]], type: 'LineString' },
-          properties: { summary: { distance: 460000, duration: 14400 }, segments: [], way_points: [0] },
-        }],
+      vi.spyOn(
+        routingService as unknown as { request: (...args: unknown[]) => unknown },
+        'request'
+      ).mockResolvedValue({
+        features: [
+          {
+            geometry: { coordinates: [[2.3522, 48.8566]], type: 'LineString' },
+            properties: {
+              summary: { distance: 460000, duration: 14400 },
+              segments: [],
+              way_points: [0],
+            },
+          },
+        ],
       });
 
       const request: RouteRequest = {
@@ -408,7 +482,11 @@ describe('RoutingService', () => {
         features: [
           {
             geometry: {
-              coordinates: [[2.3522, 48.8566], [3.5, 47.0], [4.8357, 45.764]],
+              coordinates: [
+                [2.3522, 48.8566],
+                [3.5, 47.0],
+                [4.8357, 45.764],
+              ],
               type: 'LineString',
             },
             properties: {
@@ -426,7 +504,10 @@ describe('RoutingService', () => {
         ],
       };
 
-      vi.spyOn(routingService as any, 'request').mockResolvedValue(orsResponse);
+      vi.spyOn(
+        routingService as unknown as { request: (...args: unknown[]) => unknown },
+        'request'
+      ).mockResolvedValue(orsResponse);
 
       const request: RouteRequest = {
         waypoints: mockWaypoints,
@@ -464,7 +545,10 @@ describe('RoutingService', () => {
         ],
       };
 
-      vi.spyOn(routingService as any, 'request').mockResolvedValue(orsResponse);
+      vi.spyOn(
+        routingService as unknown as { request: (...args: unknown[]) => unknown },
+        'request'
+      ).mockResolvedValue(orsResponse);
 
       const request: RouteRequest = {
         waypoints: mockWaypoints,
@@ -499,7 +583,10 @@ describe('RoutingService', () => {
         ],
       };
 
-      vi.spyOn(routingService as any, 'request').mockResolvedValue(orsResponse);
+      vi.spyOn(
+        routingService as unknown as { request: (...args: unknown[]) => unknown },
+        'request'
+      ).mockResolvedValue(orsResponse);
 
       const request: RouteRequest = {
         waypoints: mockWaypoints,
@@ -515,9 +602,9 @@ describe('RoutingService', () => {
     it('should throw error when no route found from both services', async () => {
       // ORS returns no routes - this is recoverable, so tries fallback
       // OSRM also returns no routes
-      vi.spyOn(routingService as any, 'request')
-        .mockResolvedValueOnce({ features: [] })  // ORS fails
-        .mockResolvedValueOnce({ routes: [] });    // OSRM also fails
+      vi.spyOn(routingService as unknown as { request: (...args: unknown[]) => unknown }, 'request')
+        .mockResolvedValueOnce({ features: [] }) // ORS fails
+        .mockResolvedValueOnce({ routes: [] }); // OSRM also fails
 
       const request: RouteRequest = {
         waypoints: mockWaypoints,
@@ -533,13 +620,16 @@ describe('RoutingService', () => {
     it('should fallback to OSRM when ORS fails', async () => {
       // First call (ORS) fails
       // Second call (OSRM) succeeds
-      vi.spyOn(routingService as any, 'request')
+      vi.spyOn(routingService as unknown as { request: (...args: unknown[]) => unknown }, 'request')
         .mockRejectedValueOnce(new Error('ORS unavailable'))
         .mockResolvedValueOnce({
           routes: [
             {
               geometry: {
-                coordinates: [[2.3522, 48.8566], [4.8357, 45.764]],
+                coordinates: [
+                  [2.3522, 48.8566],
+                  [4.8357, 45.764],
+                ],
                 type: 'LineString',
               },
               distance: 460000,
@@ -562,15 +652,17 @@ describe('RoutingService', () => {
     });
 
     it('should warn about vehicle restrictions when using OSRM', async () => {
-      vi.spyOn(routingService as any, 'request')
+      vi.spyOn(routingService as unknown as { request: (...args: unknown[]) => unknown }, 'request')
         .mockRejectedValueOnce(new Error('ORS unavailable'))
         .mockResolvedValueOnce({
-          routes: [{
-            geometry: { coordinates: [[2.3522, 48.8566]], type: 'LineString' },
-            distance: 460000,
-            duration: 14400,
-            legs: [],
-          }],
+          routes: [
+            {
+              geometry: { coordinates: [[2.3522, 48.8566]], type: 'LineString' },
+              distance: 460000,
+              duration: 14400,
+              legs: [],
+            },
+          ],
           waypoints: [{}],
         });
 
@@ -582,11 +674,13 @@ describe('RoutingService', () => {
       const result = await routingService.calculateRoute(request);
 
       expect(result.warnings).toBeDefined();
-      expect(result.warnings?.some(w => w.includes('Vehicle restrictions not supported'))).toBe(true);
+      expect(result.warnings?.some(w => w.includes('Vehicle restrictions not supported'))).toBe(
+        true
+      );
     });
 
     it('should throw error when both services fail', async () => {
-      vi.spyOn(routingService as any, 'request')
+      vi.spyOn(routingService as unknown as { request: (...args: unknown[]) => unknown }, 'request')
         .mockRejectedValueOnce(new Error('ORS unavailable'))
         .mockRejectedValueOnce(new Error('OSRM unavailable'));
 
@@ -619,14 +713,20 @@ describe('RoutingService', () => {
 
   describe('Health Check', () => {
     it('should return true when service is healthy', async () => {
-      vi.spyOn(routingService as any, 'request').mockResolvedValue({});
+      vi.spyOn(
+        routingService as unknown as { request: (...args: unknown[]) => unknown },
+        'request'
+      ).mockResolvedValue({});
 
       const isHealthy = await routingService.healthCheck();
       expect(isHealthy).toBe(true);
     });
 
     it('should return false when service is unhealthy', async () => {
-      vi.spyOn(routingService as any, 'request').mockRejectedValue(new Error('Service down'));
+      vi.spyOn(
+        routingService as unknown as { request: (...args: unknown[]) => unknown },
+        'request'
+      ).mockRejectedValue(new Error('Service down'));
 
       const isHealthy = await routingService.healthCheck();
       expect(isHealthy).toBe(false);
@@ -635,12 +735,20 @@ describe('RoutingService', () => {
 
   describe('Route Options', () => {
     it('should request elevation data', async () => {
-      const requestSpy = vi.spyOn(routingService as any, 'request').mockResolvedValue({
-        features: [{
-          geometry: { coordinates: [[2.3522, 48.8566]], type: 'LineString' },
-          properties: { summary: { distance: 460000, duration: 14400 }, segments: [], way_points: [0] },
-        }],
-      });
+      const requestSpy = vi
+        .spyOn(routingService as unknown as { request: (...args: unknown[]) => unknown }, 'request')
+        .mockResolvedValue({
+          features: [
+            {
+              geometry: { coordinates: [[2.3522, 48.8566]], type: 'LineString' },
+              properties: {
+                summary: { distance: 460000, duration: 14400 },
+                segments: [],
+                way_points: [0],
+              },
+            },
+          ],
+        });
 
       const request: RouteRequest = {
         waypoints: mockWaypoints,
@@ -654,11 +762,20 @@ describe('RoutingService', () => {
     });
 
     it('should request alternative routes', async () => {
-      vi.spyOn(routingService as any, 'request').mockResolvedValue({
-        features: [{
-          geometry: { coordinates: [[2.3522, 48.8566]], type: 'LineString' },
-          properties: { summary: { distance: 460000, duration: 14400 }, segments: [], way_points: [0] },
-        }],
+      vi.spyOn(
+        routingService as unknown as { request: (...args: unknown[]) => unknown },
+        'request'
+      ).mockResolvedValue({
+        features: [
+          {
+            geometry: { coordinates: [[2.3522, 48.8566]], type: 'LineString' },
+            properties: {
+              summary: { distance: 460000, duration: 14400 },
+              segments: [],
+              way_points: [0],
+            },
+          },
+        ],
       });
 
       const request: RouteRequest = {

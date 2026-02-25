@@ -20,13 +20,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({
   fullHeight = true,
 }) => {
   return (
-    <div
-      className={cn(
-        'flex',
-        fullHeight ? 'h-full' : 'min-h-screen',
-        className
-      )}
-    >
+    <div className={cn('flex', fullHeight ? 'h-full' : 'min-h-screen', className)}>
       {/* Sidebar */}
       {sidebar && (
         <>
@@ -38,9 +32,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({
               'z-30'
             )}
           >
-            <div className="flex-1 overflow-y-auto">
-              {sidebar}
-            </div>
+            <div className="flex-1 overflow-y-auto">{sidebar}</div>
           </aside>
 
           {/* Mobile Sidebar */}
@@ -64,14 +56,17 @@ const MainLayout: React.FC<MainLayoutProps> = ({
                       viewBox="0 0 24 24"
                       stroke="currentColor"
                     >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
                     </svg>
                   </button>
                 </div>
 
-                <div className="flex-1 h-0 pt-5 pb-4 overflow-y-auto">
-                  {sidebar}
-                </div>
+                <div className="flex-1 h-0 pt-5 pb-4 overflow-y-auto">{sidebar}</div>
               </aside>
             </div>
           )}

@@ -15,4 +15,9 @@ export { default as LocationSearch } from './LocationSearch';
 export { default as ContextualNudge } from './ContextualNudge';
 
 // Loading components (Phase 6.3)
-export { default as LoadingSpinner, LoadingSkeleton, LoadingOverlay, InlineLoading } from './LoadingSpinner';
+export {
+  default as LoadingSpinner,
+  LoadingSkeleton,
+  LoadingOverlay,
+  InlineLoading,
+} from './LoadingSpinner';

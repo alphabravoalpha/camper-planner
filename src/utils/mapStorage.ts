@@ -32,7 +32,7 @@ class MapStorage {
 
       // Check version compatibility
       if (data.version !== STORAGE_VERSION) {
-        console.warn('Map storage version mismatch, clearing stored state');
+        // Map storage version mismatch — clear stored state
         this.clearMapState();
         return null;
       }
@@ -61,13 +61,13 @@ class MapStorage {
     try {
       // Validate coordinates
       if (!this.validateCoordinates(state.center[0], state.center[1])) {
-        console.warn('Invalid coordinates, not saving map state:', state.center);
+        // Invalid coordinates — skip saving map state
         return;
       }
 
       // Validate zoom level
       if (state.zoom < 1 || state.zoom > 20) {
-        console.warn('Invalid zoom level, not saving map state:', state.zoom);
+        // Invalid zoom level — skip saving map state
         return;
       }
 
@@ -75,12 +75,12 @@ class MapStorage {
         mapState: {
           center: [
             Number(state.center[0].toFixed(6)), // Limit precision
-            Number(state.center[1].toFixed(6))
+            Number(state.center[1].toFixed(6)),
           ],
           zoom: Math.round(state.zoom), // Round zoom to integer
-          timestamp: Date.now()
+          timestamp: Date.now(),
         },
-        version: STORAGE_VERSION
+        version: STORAGE_VERSION,
       };
 
       localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
@@ -113,7 +113,7 @@ class MapStorage {
       const data: MapStorageData = JSON.parse(stored);
       return {
         size: new Blob([stored]).size,
-        lastUpdated: data.mapState?.timestamp || null
+        lastUpdated: data.mapState?.timestamp || null,
       };
     } catch (error) {
       console.error('Error getting storage info:', error);
@@ -128,9 +128,12 @@ class MapStorage {
     return (
       typeof lat === 'number' &&
       typeof lng === 'number' &&
-      lat >= -90 && lat <= 90 &&
-      lng >= -180 && lng <= 180 &&
-      !isNaN(lat) && !isNaN(lng)
+      lat >= -90 &&
+      lat <= 90 &&
+      lng >= -180 &&
+      lng <= 180 &&
+      !isNaN(lat) &&
+      !isNaN(lng)
     );
   }
 

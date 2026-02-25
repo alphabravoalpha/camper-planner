@@ -61,37 +61,29 @@ interface TripSettingsState {
 export const useTripSettingsStore = create<TripSettingsState>()(
   persist(
     devtools(
-      (set) => ({
+      set => ({
         settings: { ...DEFAULT_TRIP_SETTINGS },
 
         // ---- Date setters ----
 
-        setStartDate: (date) =>
+        setStartDate: date =>
           set(
-            (state) => ({ settings: { ...state.settings, startDate: date } }),
+            state => ({ settings: { ...state.settings, startDate: date } }),
             false,
             'setStartDate'
           ),
 
-        setEndDate: (date) =>
-          set(
-            (state) => ({ settings: { ...state.settings, endDate: date } }),
-            false,
-            'setEndDate'
-          ),
+        setEndDate: date =>
+          set(state => ({ settings: { ...state.settings, endDate: date } }), false, 'setEndDate'),
 
-        setDuration: (days) =>
-          set(
-            (state) => ({ settings: { ...state.settings, duration: days } }),
-            false,
-            'setDuration'
-          ),
+        setDuration: days =>
+          set(state => ({ settings: { ...state.settings, duration: days } }), false, 'setDuration'),
 
         // ---- Driving setters ----
 
-        setDrivingStyle: (style) =>
+        setDrivingStyle: style =>
           set(
-            (state) => ({
+            state => ({
               settings: {
                 ...state.settings,
                 drivingStyle: style,
@@ -102,18 +94,18 @@ export const useTripSettingsStore = create<TripSettingsState>()(
             'setDrivingStyle'
           ),
 
-        setMaxDrivingHours: (hours) =>
+        setMaxDrivingHours: hours =>
           set(
-            (state) => ({
+            state => ({
               settings: { ...state.settings, maxDrivingHoursPerDay: hours },
             }),
             false,
             'setMaxDrivingHours'
           ),
 
-        setRestDayFrequency: (frequency) =>
+        setRestDayFrequency: frequency =>
           set(
-            (state) => ({
+            state => ({
               settings: { ...state.settings, restDayFrequency: frequency },
             }),
             false,
@@ -122,9 +114,9 @@ export const useTripSettingsStore = create<TripSettingsState>()(
 
         // ---- Crossing setters ----
 
-        setCrossingType: (type) =>
+        setCrossingType: type =>
           set(
-            (state) => ({
+            state => ({
               settings: {
                 ...state.settings,
                 crossing: { ...state.settings.crossing, type },
@@ -134,9 +126,9 @@ export const useTripSettingsStore = create<TripSettingsState>()(
             'setCrossingType'
           ),
 
-        setCrossingCost: (cost) =>
+        setCrossingCost: cost =>
           set(
-            (state) => ({
+            state => ({
               settings: {
                 ...state.settings,
                 crossing: { ...state.settings.crossing, estimatedCost: cost },
@@ -148,9 +140,9 @@ export const useTripSettingsStore = create<TripSettingsState>()(
 
         // ---- Budget setters ----
 
-        setCurrency: (currency) =>
+        setCurrency: currency =>
           set(
-            (state) => {
+            state => {
               const fuelType = state.settings.fuelConsumption.fuelType;
               return {
                 settings: {
@@ -164,9 +156,9 @@ export const useTripSettingsStore = create<TripSettingsState>()(
             'setCurrency'
           ),
 
-        setDailyBudget: (budget) =>
+        setDailyBudget: budget =>
           set(
-            (state) => ({
+            state => ({
               settings: {
                 ...state.settings,
                 dailyBudget: { ...state.settings.dailyBudget, ...budget },
@@ -178,9 +170,9 @@ export const useTripSettingsStore = create<TripSettingsState>()(
 
         // ---- Fuel setters ----
 
-        setFuelConsumption: (value) =>
+        setFuelConsumption: value =>
           set(
-            (state) => ({
+            state => ({
               settings: {
                 ...state.settings,
                 fuelConsumption: { ...state.settings.fuelConsumption, value },
@@ -190,9 +182,9 @@ export const useTripSettingsStore = create<TripSettingsState>()(
             'setFuelConsumption'
           ),
 
-        setFuelConsumptionUnit: (unit) =>
+        setFuelConsumptionUnit: unit =>
           set(
-            (state) => ({
+            state => ({
               settings: {
                 ...state.settings,
                 fuelConsumption: { ...state.settings.fuelConsumption, unit },
@@ -202,9 +194,9 @@ export const useTripSettingsStore = create<TripSettingsState>()(
             'setFuelConsumptionUnit'
           ),
 
-        setFuelType: (fuelType) =>
+        setFuelType: fuelType =>
           set(
-            (state) => {
+            state => {
               const { currency } = state.settings;
               return {
                 settings: {
@@ -218,9 +210,9 @@ export const useTripSettingsStore = create<TripSettingsState>()(
             'setFuelType'
           ),
 
-        setTankCapacity: (capacity) =>
+        setTankCapacity: capacity =>
           set(
-            (state) => ({
+            state => ({
               settings: {
                 ...state.settings,
                 fuelConsumption: {
@@ -233,9 +225,9 @@ export const useTripSettingsStore = create<TripSettingsState>()(
             'setTankCapacity'
           ),
 
-        setFuelPrice: (pricePerLitre) =>
+        setFuelPrice: pricePerLitre =>
           set(
-            (state) => ({
+            state => ({
               settings: { ...state.settings, fuelPricePerLitre: pricePerLitre },
             }),
             false,
@@ -244,31 +236,26 @@ export const useTripSettingsStore = create<TripSettingsState>()(
 
         // ---- Bulk operations ----
 
-        updateSettings: (partial) =>
+        updateSettings: partial =>
           set(
-            (state) => ({
+            state => ({
               settings: { ...state.settings, ...partial },
             }),
             false,
             'updateSettings'
           ),
 
-        loadSettings: (settings) =>
-          set({ settings }, false, 'loadSettings'),
+        loadSettings: settings => set({ settings }, false, 'loadSettings'),
 
         resetSettings: () =>
-          set(
-            { settings: { ...DEFAULT_TRIP_SETTINGS } },
-            false,
-            'resetSettings'
-          ),
+          set({ settings: { ...DEFAULT_TRIP_SETTINGS } }, false, 'resetSettings'),
       }),
       { name: 'trip-settings-store' }
     ),
     {
       name: 'camper-planner-trip-settings',
       version: 1,
-      partialize: (state) => ({ settings: state.settings }),
+      partialize: state => ({ settings: state.settings }),
     }
   )
 );

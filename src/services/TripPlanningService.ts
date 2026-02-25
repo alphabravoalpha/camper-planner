@@ -90,29 +90,29 @@ const VEHICLE_DRIVING_LIMITS: Record<string, DrivingLimits> = {
     maxDailyDrivingTime: 6,
     recommendedBreakInterval: 2,
     breakDuration: 20,
-    averageSpeed: 65
+    averageSpeed: 65,
   },
   caravan: {
     maxDailyDistance: 350,
     maxDailyDrivingTime: 7,
     recommendedBreakInterval: 2.5,
     breakDuration: 15,
-    averageSpeed: 70
+    averageSpeed: 70,
   },
   campervan: {
     maxDailyDistance: 400,
     maxDailyDrivingTime: 8,
     recommendedBreakInterval: 3,
     breakDuration: 15,
-    averageSpeed: 75
+    averageSpeed: 75,
   },
   default: {
     maxDailyDistance: 350,
     maxDailyDrivingTime: 7,
     recommendedBreakInterval: 2.5,
     breakDuration: 15,
-    averageSpeed: 70
-  }
+    averageSpeed: 70,
+  },
 };
 
 // Seasonal driving adjustments
@@ -120,7 +120,7 @@ const SEASONAL_ADJUSTMENTS = {
   winter: { speedMultiplier: 0.8, distanceMultiplier: 0.7, difficultyIncrease: 30 },
   spring: { speedMultiplier: 0.95, distanceMultiplier: 0.9, difficultyIncrease: 0 },
   summer: { speedMultiplier: 1.0, distanceMultiplier: 1.0, difficultyIncrease: 0 },
-  autumn: { speedMultiplier: 0.9, distanceMultiplier: 0.85, difficultyIncrease: 10 }
+  autumn: { speedMultiplier: 0.9, distanceMultiplier: 0.85, difficultyIncrease: 10 },
 };
 
 export class TripPlanningService {
@@ -151,23 +151,30 @@ export class TripPlanningService {
       totalDistance,
       totalDrivingTime,
       startDate,
-      endDate: startDate ? new Date(startDate.getTime() + (dailyStages.length + restDays - 1) * 24 * 60 * 60 * 1000) : undefined,
+      endDate: startDate
+        ? new Date(startDate.getTime() + (dailyStages.length + restDays - 1) * 24 * 60 * 60 * 1000)
+        : undefined,
       dailyStages,
       restDays,
       feasibilityScore: feasibilityAnalysis.score,
       overallFeasibility: feasibilityAnalysis.overall,
       warnings: feasibilityAnalysis.warnings,
-      recommendations: feasibilityAnalysis.recommendations
+      recommendations: feasibilityAnalysis.recommendations,
     };
   }
 
   /**
    * Get driving limits adjusted for vehicle and season
    */
-  static getDrivingLimits(vehicleProfile?: VehicleProfile, season: string = 'summer'): DrivingLimits {
+  static getDrivingLimits(
+    vehicleProfile?: VehicleProfile,
+    season: string = 'summer'
+  ): DrivingLimits {
     const baseType = vehicleProfile?.type || 'default';
     const baseLimits = VEHICLE_DRIVING_LIMITS[baseType] || VEHICLE_DRIVING_LIMITS.default;
-    const seasonalAdj = SEASONAL_ADJUSTMENTS[season as keyof typeof SEASONAL_ADJUSTMENTS] || SEASONAL_ADJUSTMENTS.summer;
+    const seasonalAdj =
+      SEASONAL_ADJUSTMENTS[season as keyof typeof SEASONAL_ADJUSTMENTS] ||
+      SEASONAL_ADJUSTMENTS.summer;
 
     // Adjust for vehicle size/weight
     let sizeMultiplier = 1.0;
@@ -175,16 +182,22 @@ export class TripPlanningService {
       const length = vehicleProfile.length || 6;
       const weight = vehicleProfile.weight || 3000;
 
-      if (length > 8 || weight > 4000) sizeMultiplier = 0.8; // Large vehicles
+      if (length > 8 || weight > 4000)
+        sizeMultiplier = 0.8; // Large vehicles
       else if (length > 7 || weight > 3500) sizeMultiplier = 0.9; // Medium vehicles
     }
 
     return {
-      maxDailyDistance: Math.round(baseLimits.maxDailyDistance * seasonalAdj.distanceMultiplier * sizeMultiplier),
-      maxDailyDrivingTime: Math.round(baseLimits.maxDailyDrivingTime * seasonalAdj.speedMultiplier * sizeMultiplier * 10) / 10,
+      maxDailyDistance: Math.round(
+        baseLimits.maxDailyDistance * seasonalAdj.distanceMultiplier * sizeMultiplier
+      ),
+      maxDailyDrivingTime:
+        Math.round(
+          baseLimits.maxDailyDrivingTime * seasonalAdj.speedMultiplier * sizeMultiplier * 10
+        ) / 10,
       recommendedBreakInterval: baseLimits.recommendedBreakInterval,
       breakDuration: baseLimits.breakDuration,
-      averageSpeed: Math.round(baseLimits.averageSpeed * seasonalAdj.speedMultiplier)
+      averageSpeed: Math.round(baseLimits.averageSpeed * seasonalAdj.speedMultiplier),
     };
   }
 
@@ -209,7 +222,7 @@ export class TripPlanningService {
         startWaypoint: start,
         endWaypoint: end,
         distance,
-        drivingTime
+        drivingTime,
       });
     }
 
@@ -220,7 +233,12 @@ export class TripPlanningService {
    * Plan daily stages with intelligent stop allocation
    */
   static planDailyStages(
-    segments: Array<{ startWaypoint: Waypoint; endWaypoint: Waypoint; distance: number; drivingTime: number }>,
+    segments: Array<{
+      startWaypoint: Waypoint;
+      endWaypoint: Waypoint;
+      distance: number;
+      drivingTime: number;
+    }>,
     limits: DrivingLimits,
     startDate?: Date,
     season: string = 'summer'
@@ -234,20 +252,23 @@ export class TripPlanningService {
 
     segments.forEach((segment, index) => {
       // Check if adding this segment would exceed daily limits
-      if (dailyDistance + segment.distance > limits.maxDailyDistance ||
-          dailyTime + segment.drivingTime > limits.maxDailyDrivingTime) {
-
+      if (
+        dailyDistance + segment.distance > limits.maxDailyDistance ||
+        dailyTime + segment.drivingTime > limits.maxDailyDrivingTime
+      ) {
         // Finish current day if we have segments
         if (currentStageSegments.length > 0) {
-          stages.push(this.createDailyStage(
-            currentDay,
-            currentDate,
-            currentStageSegments,
-            dailyDistance,
-            dailyTime,
-            limits,
-            season
-          ));
+          stages.push(
+            this.createDailyStage(
+              currentDay,
+              currentDate,
+              currentStageSegments,
+              dailyDistance,
+              dailyTime,
+              limits,
+              season
+            )
+          );
 
           currentDay++;
           currentDate = new Date(currentDate.getTime() + 24 * 60 * 60 * 1000);
@@ -264,15 +285,17 @@ export class TripPlanningService {
 
       // If this is the last segment, finish the day
       if (index === segments.length - 1 && currentStageSegments.length > 0) {
-        stages.push(this.createDailyStage(
-          currentDay,
-          currentDate,
-          currentStageSegments,
-          dailyDistance,
-          dailyTime,
-          limits,
-          season
-        ));
+        stages.push(
+          this.createDailyStage(
+            currentDay,
+            currentDate,
+            currentStageSegments,
+            dailyDistance,
+            dailyTime,
+            limits,
+            season
+          )
+        );
       }
     });
 
@@ -285,7 +308,12 @@ export class TripPlanningService {
   static createDailyStage(
     day: number,
     date: Date,
-    segments: Array<{ startWaypoint: Waypoint; endWaypoint: Waypoint; distance: number; drivingTime: number }>,
+    segments: Array<{
+      startWaypoint: Waypoint;
+      endWaypoint: Waypoint;
+      distance: number;
+      drivingTime: number;
+    }>,
     totalDistance: number,
     totalTime: number,
     limits: DrivingLimits,
@@ -305,7 +333,12 @@ export class TripPlanningService {
 
     // Generate warnings and recommendations
     const warnings = this.generateDayWarnings(totalDistance, totalTime, limits, season);
-    const recommendations = this.generateDayRecommendations(totalDistance, totalTime, limits, season);
+    const recommendations = this.generateDayRecommendations(
+      totalDistance,
+      totalTime,
+      limits,
+      season
+    );
 
     return {
       day,
@@ -318,7 +351,7 @@ export class TripPlanningService {
       accommodationType,
       feasibility,
       warnings,
-      recommendations
+      recommendations,
     };
   }
 
@@ -326,7 +359,12 @@ export class TripPlanningService {
    * Plan stops for a day's driving
    */
   static planStopsForDay(
-    segments: Array<{ startWaypoint: Waypoint; endWaypoint: Waypoint; distance: number; drivingTime: number }>,
+    segments: Array<{
+      startWaypoint: Waypoint;
+      endWaypoint: Waypoint;
+      distance: number;
+      drivingTime: number;
+    }>,
     totalTime: number,
     limits: DrivingLimits
   ): StopDuration[] {
@@ -341,7 +379,7 @@ export class TripPlanningService {
         minDuration: limits.breakDuration / 60,
         recommendedDuration: limits.breakDuration / 60,
         maxDuration: 1,
-        reasoning: `Mandatory rest break after ${limits.recommendedBreakInterval} hours of driving`
+        reasoning: `Mandatory rest break after ${limits.recommendedBreakInterval} hours of driving`,
       });
     }
 
@@ -354,7 +392,7 @@ export class TripPlanningService {
           minDuration: 1,
           recommendedDuration: 2,
           maxDuration: 4,
-          reasoning: 'Recommended sightseeing stop at point of interest'
+          reasoning: 'Recommended sightseeing stop at point of interest',
         });
       }
     });
@@ -367,7 +405,7 @@ export class TripPlanningService {
         minDuration: 0.5,
         recommendedDuration: 1,
         maxDuration: 2,
-        reasoning: 'Lunch break for long driving day'
+        reasoning: 'Lunch break for long driving day',
       });
     }
 
@@ -377,7 +415,10 @@ export class TripPlanningService {
   /**
    * Determine accommodation type for waypoint
    */
-  static determineAccommodationType(waypoint: Waypoint, season: string): DailyStage['accommodationType'] {
+  static determineAccommodationType(
+    waypoint: Waypoint,
+    season: string
+  ): DailyStage['accommodationType'] {
     if (!waypoint) return 'campsite';
     if (waypoint.type === 'campsite') return 'campsite';
     if (waypoint.type === 'accommodation') return 'hotel';
@@ -418,11 +459,15 @@ export class TripPlanningService {
     const warnings: string[] = [];
 
     if (distance > limits.maxDailyDistance) {
-      warnings.push(`Daily distance of ${distance.toFixed(0)}km exceeds recommended limit of ${limits.maxDailyDistance}km`);
+      warnings.push(
+        `Daily distance of ${distance.toFixed(0)}km exceeds recommended limit of ${limits.maxDailyDistance}km`
+      );
     }
 
     if (drivingTime > limits.maxDailyDrivingTime) {
-      warnings.push(`Driving time of ${drivingTime.toFixed(1)}h exceeds recommended limit of ${limits.maxDailyDrivingTime}h`);
+      warnings.push(
+        `Driving time of ${drivingTime.toFixed(1)}h exceeds recommended limit of ${limits.maxDailyDrivingTime}h`
+      );
     }
 
     if (distance > limits.maxDailyDistance * 1.2) {
@@ -469,7 +514,10 @@ export class TripPlanningService {
   /**
    * Analyze overall trip feasibility
    */
-  static analyzeFeasibility(stages: DailyStage[], limits: DrivingLimits): {
+  static analyzeFeasibility(
+    stages: DailyStage[],
+    limits: DrivingLimits
+  ): {
     score: number;
     overall: TripPlan['overallFeasibility'];
     warnings: string[];
@@ -528,7 +576,7 @@ export class TripPlanningService {
       score: Math.round(finalScore),
       overall,
       warnings,
-      recommendations
+      recommendations,
     };
   }
 
@@ -550,12 +598,12 @@ export class TripPlanningService {
         recommendations: [
           'Perfect weather for touring, but pack layers',
           'Some mountain passes may still be closed',
-          'Booking campsite in advance recommended'
+          'Booking campsite in advance recommended',
         ],
         warnings: [
           'Variable weather conditions possible',
-          'Some seasonal businesses may not be open yet'
-        ]
+          'Some seasonal businesses may not be open yet',
+        ],
       },
       summer: {
         season: 'summer' as const,
@@ -567,12 +615,12 @@ export class TripPlanningService {
         recommendations: [
           'Book accommodations well in advance',
           'Start driving early to avoid heat and traffic',
-          'Stay hydrated and use sun protection'
+          'Stay hydrated and use sun protection',
         ],
         warnings: [
           'Peak tourist season - expect crowds and higher prices',
-          'Extreme heat possible in southern regions'
-        ]
+          'Extreme heat possible in southern regions',
+        ],
       },
       autumn: {
         season: 'autumn' as const,
@@ -584,12 +632,9 @@ export class TripPlanningService {
         recommendations: [
           'Beautiful fall colors and fewer crowds',
           'Pack warm clothing for cooler evenings',
-          'Great time for wine regions'
+          'Great time for wine regions',
         ],
-        warnings: [
-          'Some campsites may close for winter',
-          'Daylight hours are decreasing'
-        ]
+        warnings: ['Some campsites may close for winter', 'Daylight hours are decreasing'],
       },
       winter: {
         season: 'winter' as const,
@@ -601,14 +646,14 @@ export class TripPlanningService {
         recommendations: [
           'Focus on southern routes and cities',
           'Book heated accommodations',
-          'Carry winter driving equipment'
+          'Carry winter driving equipment',
         ],
         warnings: [
           'Many campsites closed in northern regions',
           'Snow and ice possible - check road conditions',
-          'Shorter daylight hours limit driving time'
-        ]
-      }
+          'Shorter daylight hours limit driving time',
+        ],
+      },
     };
 
     const factors = baseFactors[season];
@@ -620,7 +665,7 @@ export class TripPlanningService {
           ...factors,
           temperature: { min: -15, max: 0 },
           drivingConditions: 'challenging' as const,
-          warnings: [...factors.warnings, 'Arctic conditions possible', 'Winter tires mandatory']
+          warnings: [...factors.warnings, 'Arctic conditions possible', 'Winter tires mandatory'],
         } as typeof factors;
       }
     }
@@ -630,7 +675,11 @@ export class TripPlanningService {
         return {
           ...factors,
           temperature: { min: 20, max: 40 },
-          warnings: [...factors.warnings, 'Extreme heat in inland areas', 'Air conditioning essential']
+          warnings: [
+            ...factors.warnings,
+            'Extreme heat in inland areas',
+            'Air conditioning essential',
+          ],
         } as typeof factors;
       }
     }
@@ -641,18 +690,25 @@ export class TripPlanningService {
   /**
    * Calculate trip metrics for analysis
    */
-  static calculateTripMetrics(plan: TripPlan, vehicleProfile?: VehicleProfile): TripMetrics {
+  static calculateTripMetrics(plan: TripPlan, _vehicleProfile?: VehicleProfile): TripMetrics {
     const avgDailyDistance = plan.totalDistance / plan.totalDays;
     const restRatio = plan.restDays / plan.totalDays;
 
     // Calculate variety score based on countries and waypoint types
-    const countries = new Set(plan.dailyStages.map(s => this.getCountryFromWaypoint(s.endWaypoint)));
+    const countries = new Set(
+      plan.dailyStages.map(s => this.getCountryFromWaypoint(s.endWaypoint))
+    );
     const waypointTypes = new Set(plan.dailyStages.map(s => s.endWaypoint.type));
-    const varietyScore = Math.min(100, (countries.size * 20) + (waypointTypes.size * 10));
+    const varietyScore = Math.min(100, countries.size * 20 + waypointTypes.size * 10);
 
     // Calculate difficulty score
-    const intensiveDays = plan.dailyStages.filter(s => s.feasibility === 'challenging' || s.feasibility === 'unrealistic').length;
-    const difficultyScore = Math.min(100, (intensiveDays / plan.dailyStages.length * 100) + (avgDailyDistance / 500 * 50));
+    const intensiveDays = plan.dailyStages.filter(
+      s => s.feasibility === 'challenging' || s.feasibility === 'unrealistic'
+    ).length;
+    const difficultyScore = Math.min(
+      100,
+      (intensiveDays / plan.dailyStages.length) * 100 + (avgDailyDistance / 500) * 50
+    );
 
     // Determine comfort level
     let comfortLevel: TripMetrics['comfortLevel'];
@@ -671,8 +727,8 @@ export class TripPlanningService {
         beginners: comfortLevel === 'relaxed' && difficultyScore < 30,
         families: comfortLevel !== 'extreme' && difficultyScore < 50,
         experienced: true,
-        seniors: comfortLevel === 'relaxed' && plan.feasibilityScore > 70
-      }
+        seniors: comfortLevel === 'relaxed' && plan.feasibilityScore > 70,
+      },
     };
   }
 
@@ -695,7 +751,7 @@ export class TripPlanningService {
         title: 'High Difficulty Trip',
         description: 'This trip has challenging daily stages that may be tiring',
         action: 'Add rest days between intensive driving periods',
-        impact: 'Improved safety and enjoyment'
+        impact: 'Improved safety and enjoyment',
       });
     }
 
@@ -707,7 +763,7 @@ export class TripPlanningService {
         title: 'Intensive Driving Schedule',
         description: 'Multiple long driving days may be exhausting',
         action: 'Consider reducing daily distances or adding overnight stops',
-        impact: 'More relaxed and enjoyable travel experience'
+        impact: 'More relaxed and enjoyable travel experience',
       });
     }
 
@@ -719,19 +775,24 @@ export class TripPlanningService {
         title: 'Winter Travel Considerations',
         description: 'Winter conditions require special preparation',
         action: 'Pack winter gear, check road conditions, reduce daily distances',
-        impact: 'Safe winter travel'
+        impact: 'Safe winter travel',
       });
     }
 
     // Vehicle-specific recommendations
-    if (vehicleProfile && vehicleProfile.type === 'motorhome' && vehicleProfile.length && vehicleProfile.length > 8) {
+    if (
+      vehicleProfile &&
+      vehicleProfile.type === 'motorhome' &&
+      vehicleProfile.length &&
+      vehicleProfile.length > 8
+    ) {
       recommendations.push({
         type: 'route',
         priority: 'medium',
         title: 'Large Vehicle Considerations',
         description: 'Your large motorhome may face restrictions on some routes',
         action: 'Check height and length restrictions, avoid narrow mountain roads',
-        impact: 'Avoid routing problems and damage'
+        impact: 'Avoid routing problems and damage',
       });
     }
 
@@ -743,7 +804,7 @@ export class TripPlanningService {
         title: 'Accommodation Cost Optimization',
         description: 'Hotel stays increase trip costs significantly',
         action: 'Consider campsites or wild camping where legal',
-        impact: 'Reduced accommodation costs'
+        impact: 'Reduced accommodation costs',
       });
     }
 
@@ -755,7 +816,7 @@ export class TripPlanningService {
         title: 'Extended Trip Duration',
         description: 'Long trips require careful planning and preparation',
         action: 'Plan for vehicle maintenance, ensure adequate supplies',
-        impact: 'Smooth extended travel experience'
+        impact: 'Smooth extended travel experience',
       });
     }
 
@@ -795,27 +856,32 @@ export class TripPlanningService {
 
     // Simple heuristic - in real implementation, would check against POI database
     const poiKeywords = ['castle', 'museum', 'cathedral', 'palace', 'historic', 'scenic'];
-    return poiKeywords.some(keyword =>
-      waypoint.name.toLowerCase().includes(keyword)
-    );
+    return poiKeywords.some(keyword => waypoint.name.toLowerCase().includes(keyword));
   }
 
   static getCountryFromWaypoint(waypoint: Waypoint): string {
     // Simplified country detection - in real implementation would use reverse geocoding
-    if (waypoint.lat >= 46 && waypoint.lat <= 51 && waypoint.lng >= -5 && waypoint.lng <= 10) return 'France';
-    if (waypoint.lat >= 47 && waypoint.lat <= 55 && waypoint.lng >= 5 && waypoint.lng <= 15) return 'Germany';
-    if (waypoint.lat >= 36 && waypoint.lat <= 47 && waypoint.lng >= 6 && waypoint.lng <= 19) return 'Italy';
-    if (waypoint.lat >= 36 && waypoint.lat <= 44 && waypoint.lng >= -10 && waypoint.lng <= 5) return 'Spain';
+    if (waypoint.lat >= 46 && waypoint.lat <= 51 && waypoint.lng >= -5 && waypoint.lng <= 10)
+      return 'France';
+    if (waypoint.lat >= 47 && waypoint.lat <= 55 && waypoint.lng >= 5 && waypoint.lng <= 15)
+      return 'Germany';
+    if (waypoint.lat >= 36 && waypoint.lat <= 47 && waypoint.lng >= 6 && waypoint.lng <= 19)
+      return 'Italy';
+    if (waypoint.lat >= 36 && waypoint.lat <= 44 && waypoint.lng >= -10 && waypoint.lng <= 5)
+      return 'Spain';
     return 'Europe';
   }
 
   static calculateDistance(waypoint1: Waypoint, waypoint2: Waypoint): number {
     const R = 6371; // Earth's radius in km
-    const dLat = (waypoint2.lat - waypoint1.lat) * Math.PI / 180;
-    const dLng = (waypoint2.lng - waypoint1.lng) * Math.PI / 180;
-    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(waypoint1.lat * Math.PI / 180) * Math.cos(waypoint2.lat * Math.PI / 180) *
-      Math.sin(dLng / 2) * Math.sin(dLng / 2);
+    const dLat = ((waypoint2.lat - waypoint1.lat) * Math.PI) / 180;
+    const dLng = ((waypoint2.lng - waypoint1.lng) * Math.PI) / 180;
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos((waypoint1.lat * Math.PI) / 180) *
+        Math.cos((waypoint2.lat * Math.PI) / 180) *
+        Math.sin(dLng / 2) *
+        Math.sin(dLng / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
   }

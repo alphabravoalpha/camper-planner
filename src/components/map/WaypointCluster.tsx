@@ -27,7 +27,7 @@ const createClusterIcon = (count: number, size: 'small' | 'medium' | 'large'): D
   const sizeClasses = {
     small: 'w-8 h-8 text-xs',
     medium: 'w-10 h-10 text-sm',
-    large: 'w-12 h-12 text-base'
+    large: 'w-12 h-12 text-base',
   };
 
   const bgColor = count < 5 ? 'bg-primary-500' : count < 10 ? 'bg-orange-500' : 'bg-red-500';
@@ -46,16 +46,12 @@ const createClusterIcon = (count: number, size: 'small' | 'medium' | 'large'): D
     `,
     className: 'waypoint-cluster',
     iconSize: size === 'small' ? [32, 32] : size === 'medium' ? [40, 40] : [48, 48],
-    iconAnchor: size === 'small' ? [16, 16] : size === 'medium' ? [20, 20] : [24, 24]
+    iconAnchor: size === 'small' ? [16, 16] : size === 'medium' ? [20, 20] : [24, 24],
   });
 };
 
 // Calculate distance between two points in pixels
-const pixelDistance = (
-  map: L.Map,
-  point1: [number, number],
-  point2: [number, number]
-): number => {
+const pixelDistance = (map: L.Map, point1: [number, number], point2: [number, number]): number => {
   const p1 = map.latLngToContainerPoint(point1);
   const p2 = map.latLngToContainerPoint(point2);
   return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
@@ -72,20 +68,20 @@ const clusterWaypoints = (
   const clusters: ClusterGroup[] = [];
   const processed = new Set<string>();
 
-  waypoints.forEach((waypoint) => {
+  waypoints.forEach(waypoint => {
     if (processed.has(waypoint.id)) return;
 
     const cluster: ClusterGroup = {
       id: `cluster-${waypoint.id}`,
       center: [waypoint.lat, waypoint.lng],
       waypoints: [waypoint],
-      bounds: L.latLngBounds([waypoint.lat, waypoint.lng], [waypoint.lat, waypoint.lng])
+      bounds: L.latLngBounds([waypoint.lat, waypoint.lng], [waypoint.lat, waypoint.lng]),
     };
 
     processed.add(waypoint.id);
 
     // Find nearby waypoints to add to this cluster
-    waypoints.forEach((otherWaypoint) => {
+    waypoints.forEach(otherWaypoint => {
       if (processed.has(otherWaypoint.id)) return;
 
       const distance = pixelDistance(
@@ -103,8 +99,10 @@ const clusterWaypoints = (
 
     // Update cluster center to be the centroid
     if (cluster.waypoints.length > 1) {
-      const centerLat = cluster.waypoints.reduce((sum, wp) => sum + wp.lat, 0) / cluster.waypoints.length;
-      const centerLng = cluster.waypoints.reduce((sum, wp) => sum + wp.lng, 0) / cluster.waypoints.length;
+      const centerLat =
+        cluster.waypoints.reduce((sum, wp) => sum + wp.lat, 0) / cluster.waypoints.length;
+      const centerLng =
+        cluster.waypoints.reduce((sum, wp) => sum + wp.lng, 0) / cluster.waypoints.length;
       cluster.center = [centerLat, centerLng];
     }
 
@@ -119,7 +117,7 @@ const WaypointCluster: React.FC<WaypointClusterProps> = ({
   maxDistance = 50,
   minZoom = 8,
   onWaypointClick,
-  renderWaypoint
+  renderWaypoint,
 }) => {
   const map = useMap();
   const [zoom, setZoom] = useState(map.getZoom());
@@ -145,7 +143,7 @@ const WaypointCluster: React.FC<WaypointClusterProps> = ({
         id: `single-${waypoint.id}`,
         center: [waypoint.lat, waypoint.lng] as [number, number],
         waypoints: [waypoint],
-        bounds: L.latLngBounds([waypoint.lat, waypoint.lng], [waypoint.lat, waypoint.lng])
+        bounds: L.latLngBounds([waypoint.lat, waypoint.lng], [waypoint.lat, waypoint.lng]),
       }));
     }
 
@@ -153,24 +151,27 @@ const WaypointCluster: React.FC<WaypointClusterProps> = ({
   }, [waypoints, map, maxDistance, zoom, minZoom]);
 
   // Handle cluster click
-  const handleClusterClick = useCallback((cluster: ClusterGroup) => {
-    if (cluster.waypoints.length === 1) {
-      // Single waypoint - call the waypoint click handler
-      if (onWaypointClick) {
-        onWaypointClick(cluster.waypoints[0]);
-      }
-    } else {
-      // Multiple waypoints - zoom to fit the cluster or show details
-      if (selectedCluster === cluster.id) {
-        // If already selected, zoom to fit
-        map.fitBounds(cluster.bounds, { padding: [20, 20] });
-        setSelectedCluster(null);
+  const handleClusterClick = useCallback(
+    (cluster: ClusterGroup) => {
+      if (cluster.waypoints.length === 1) {
+        // Single waypoint - call the waypoint click handler
+        if (onWaypointClick) {
+          onWaypointClick(cluster.waypoints[0]);
+        }
       } else {
-        // Select cluster to show details
-        setSelectedCluster(cluster.id);
+        // Multiple waypoints - zoom to fit the cluster or show details
+        if (selectedCluster === cluster.id) {
+          // If already selected, zoom to fit
+          map.fitBounds(cluster.bounds, { padding: [20, 20] });
+          setSelectedCluster(null);
+        } else {
+          // Select cluster to show details
+          setSelectedCluster(cluster.id);
+        }
       }
-    }
-  }, [map, onWaypointClick, selectedCluster]);
+    },
+    [map, onWaypointClick, selectedCluster]
+  );
 
   // Get cluster size category
   const getClusterSize = (count: number): 'small' | 'medium' | 'large' => {
@@ -182,15 +183,14 @@ const WaypointCluster: React.FC<WaypointClusterProps> = ({
   // Render performance optimization: only render visible clusters
   const visibleClusters = useMemo(() => {
     const bounds = map.getBounds();
-    return clusters.filter(cluster =>
-      bounds.contains(cluster.center) ||
-      bounds.intersects(cluster.bounds)
+    return clusters.filter(
+      cluster => bounds.contains(cluster.center) || bounds.intersects(cluster.bounds)
     );
   }, [clusters, map]);
 
   return (
     <>
-      {visibleClusters.map((cluster) => {
+      {visibleClusters.map(cluster => {
         const isSelected = selectedCluster === cluster.id;
         const waypointCount = cluster.waypoints.length;
 
@@ -207,7 +207,7 @@ const WaypointCluster: React.FC<WaypointClusterProps> = ({
               key={`waypoint-${waypoint.id}`}
               position={[waypoint.lat, waypoint.lng]}
               eventHandlers={{
-                click: () => handleClusterClick(cluster)
+                click: () => handleClusterClick(cluster),
               }}
             />
           );
@@ -225,10 +225,10 @@ const WaypointCluster: React.FC<WaypointClusterProps> = ({
           <Marker
             key={cluster.id}
             position={cluster.center}
-            // @ts-ignore - React-Leaflet v4 prop compatibility
-          icon={clusterIcon}
+            // @ts-expect-error - React-Leaflet v4 prop compatibility
+            icon={clusterIcon}
             eventHandlers={{
-              click: () => handleClusterClick(cluster)
+              click: () => handleClusterClick(cluster),
             }}
           />
         );
@@ -252,7 +252,12 @@ const WaypointCluster: React.FC<WaypointClusterProps> = ({
                     className="text-neutral-400 hover:text-neutral-600 p-1 rounded transition-colors"
                   >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
                     </svg>
                   </button>
                 </div>
@@ -266,6 +271,14 @@ const WaypointCluster: React.FC<WaypointClusterProps> = ({
                         if (onWaypointClick) onWaypointClick(waypoint);
                         setSelectedCluster(null);
                       }}
+                      onKeyDown={e => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          if (onWaypointClick) onWaypointClick(waypoint);
+                          setSelectedCluster(null);
+                        }
+                      }}
+                      role="button"
+                      tabIndex={0}
                     >
                       <div className="flex items-center space-x-2">
                         <span className="w-6 h-6 bg-primary-500 text-white rounded-full flex items-center justify-center text-xs font-bold">
@@ -273,8 +286,18 @@ const WaypointCluster: React.FC<WaypointClusterProps> = ({
                         </span>
                         <span className="text-sm text-neutral-900">{waypoint.name}</span>
                       </div>
-                      <svg className="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      <svg
+                        className="w-4 h-4 text-neutral-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 5l7 7-7 7"
+                        />
                       </svg>
                     </div>
                   ))}

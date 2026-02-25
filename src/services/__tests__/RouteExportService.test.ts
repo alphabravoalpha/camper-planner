@@ -92,10 +92,7 @@ describe('RouteExportService', () => {
 
   describe('Export Validation', () => {
     it('should validate export data successfully', () => {
-      const result = RouteExportService.validateExportData(
-        mockWaypoints,
-        defaultExportOptions
-      );
+      const result = RouteExportService.validateExportData(mockWaypoints, defaultExportOptions);
 
       expect(result.errors).toHaveLength(0);
     });
@@ -122,14 +119,9 @@ describe('RouteExportService', () => {
     });
 
     it('should validate coordinates', () => {
-      const invalidWaypoints = [
-        { id: '1', name: 'Test', lat: 91, lng: 0, type: 'start' as const },
-      ];
+      const invalidWaypoints = [{ id: '1', name: 'Test', lat: 91, lng: 0, type: 'start' as const }];
 
-      const result = RouteExportService.validateExportData(
-        invalidWaypoints,
-        defaultExportOptions
-      );
+      const result = RouteExportService.validateExportData(invalidWaypoints, defaultExportOptions);
 
       expect(result.errors.length).toBeGreaterThan(0);
     });
@@ -494,10 +486,7 @@ describe('RouteExportService', () => {
     });
 
     it('should calculate distance between two points', () => {
-      const distance = RouteExportService.calculateDistance(
-        mockWaypoints[0],
-        mockWaypoints[1]
-      );
+      const distance = RouteExportService.calculateDistance(mockWaypoints[0], mockWaypoints[1]);
 
       expect(distance).toBeGreaterThan(0);
     });
@@ -656,10 +645,7 @@ describe('RouteExportService', () => {
         format: 'json',
       };
 
-      const result = await RouteExportService.exportRoute(
-        waypointsWithCampsites,
-        options
-      );
+      const result = await RouteExportService.exportRoute(waypointsWithCampsites, options);
 
       expect(result.exportInfo.campsites).toBe(2);
       expect(result.exportInfo.waypoints).toBe(1); // Only Lyon is type='waypoint'
@@ -691,10 +677,7 @@ describe('RouteExportService', () => {
         format: 'gpx',
       };
 
-      const result = await RouteExportService.exportRoute(
-        waypointsWithoutNames,
-        options
-      );
+      const result = await RouteExportService.exportRoute(waypointsWithoutNames, options);
 
       expect(result.warnings.length).toBeGreaterThan(0);
     });

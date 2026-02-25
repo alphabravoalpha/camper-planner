@@ -1,7 +1,13 @@
 // Multi-Format Export Service
 // Phase 2.1: Complete export functionality for KML, JSON, and CSV formats
 
-import { type ExportableRoute, prepareRouteForExport, validateExportableRoute, type ExportFormat, EXPORT_FORMATS } from '../utils/routeExport';
+import {
+  type ExportableRoute,
+  prepareRouteForExport,
+  validateExportableRoute,
+  type ExportFormat,
+  EXPORT_FORMATS,
+} from '../utils/routeExport';
 import { type RouteResponse } from './RoutingService';
 import { type Waypoint } from '../types';
 import GPXExportService, { type ExportResult } from './GPXExportService';
@@ -36,13 +42,18 @@ class MultiFormatExportService {
       includeMetadata: true,
       creator: 'European Camper Trip Planner',
       format,
-      ...options
+      ...options,
     };
 
     try {
       switch (format) {
         case 'gpx':
-          return await GPXExportService.exportToGPX(routeResponse, waypoints, routeName, exportOptions);
+          return await GPXExportService.exportToGPX(
+            routeResponse,
+            waypoints,
+            routeName,
+            exportOptions
+          );
         case 'kml':
           return await this.exportToKML(routeResponse, waypoints, routeName, exportOptions);
         case 'json':
@@ -53,7 +64,7 @@ class MultiFormatExportService {
           return {
             success: false,
             error: `Unsupported format: ${format}`,
-            format
+            format,
           };
       }
     } catch (error) {
@@ -61,7 +72,7 @@ class MultiFormatExportService {
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown export error',
-        format
+        format,
       };
     }
   }
@@ -81,7 +92,7 @@ class MultiFormatExportService {
       return {
         success: false,
         error: 'Invalid route data for KML export',
-        format: 'kml'
+        format: 'kml',
       };
     }
 
@@ -93,7 +104,7 @@ class MultiFormatExportService {
       data: kmlContent,
       filename,
       format: 'kml',
-      size: new Blob([kmlContent]).size
+      size: new Blob([kmlContent]).size,
     };
   }
 
@@ -266,7 +277,7 @@ class MultiFormatExportService {
       return {
         success: false,
         error: 'Invalid route data for JSON export',
-        format: 'json'
+        format: 'json',
       };
     }
 
@@ -283,20 +294,25 @@ class MultiFormatExportService {
           includeTrackPoints: options.includeTrackPoints,
           includeInstructions: options.includeInstructions,
           includeElevation: options.includeElevation,
-          includeMetadata: options.includeMetadata
-        }
+          includeMetadata: options.includeMetadata,
+        },
       },
       statistics: {
         totalWaypoints: exportableRoute.waypoints.length,
-        totalTrackPoints: exportableRoute.track.segments.reduce((sum, segment) => sum + segment.points.length, 0),
+        totalTrackPoints: exportableRoute.track.segments.reduce(
+          (sum, segment) => sum + segment.points.length,
+          0
+        ),
         totalSegments: exportableRoute.track.segments.length,
-        totalInstructions: exportableRoute.track.segments.reduce((sum, segment) =>
-          sum + (segment.instructions?.length || 0), 0),
+        totalInstructions: exportableRoute.track.segments.reduce(
+          (sum, segment) => sum + (segment.instructions?.length || 0),
+          0
+        ),
         hasElevation: exportableRoute.track.segments.some(segment =>
           segment.points.some(point => point.elevation !== undefined)
         ),
-        bounds: exportableRoute.track.bounds
-      }
+        bounds: exportableRoute.track.bounds,
+      },
     };
 
     const jsonContent = JSON.stringify(jsonData, null, 2);
@@ -307,7 +323,7 @@ class MultiFormatExportService {
       data: jsonContent,
       filename,
       format: 'json',
-      size: new Blob([jsonContent]).size
+      size: new Blob([jsonContent]).size,
     };
   }
 
@@ -326,7 +342,7 @@ class MultiFormatExportService {
       return {
         success: false,
         error: 'Invalid route data for CSV export',
-        format: 'csv'
+        format: 'csv',
       };
     }
 
@@ -361,7 +377,8 @@ class MultiFormatExportService {
     // Instructions CSV
     if (options.includeInstructions) {
       csvContent += '# Instructions\n';
-      csvContent += 'Segment,Instruction_Index,Instruction,Distance,Duration,Direction,Street_Name,Latitude,Longitude\n';
+      csvContent +=
+        'Segment,Instruction_Index,Instruction,Distance,Duration,Direction,Street_Name,Latitude,Longitude\n';
 
       exportableRoute.track.segments.forEach((segment, segmentIndex) => {
         if (segment.instructions) {
@@ -394,7 +411,7 @@ class MultiFormatExportService {
       data: csvContent,
       filename,
       format: 'csv',
-      size: new Blob([csvContent]).size
+      size: new Blob([csvContent]).size,
     };
   }
 
@@ -444,8 +461,8 @@ class MultiFormatExportService {
         ...(format.supportsElevation ? ['Elevation'] : []),
         ...(format.supportsInstructions ? ['Turn Instructions'] : []),
         'Track Points',
-        'Metadata'
-      ]
+        'Metadata',
+      ],
     }));
   }
 

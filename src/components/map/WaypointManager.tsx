@@ -15,19 +15,26 @@ import RouteVisualization from './RouteVisualization';
 import { useKeyboardShortcuts } from '../../hooks/useKeyboardShortcuts';
 
 // Enhanced waypoint icon creation with improved visual feedback and touch optimization
-const createWaypointIcon = (type: 'start' | 'waypoint' | 'end', index: number, isSelected = false, isDragging = false, isMobile = false): DivIcon => {
+const createWaypointIcon = (
+  type: 'start' | 'waypoint' | 'end',
+  index: number,
+  isSelected = false,
+  isDragging = false,
+  isMobile = false
+): DivIcon => {
   const iconColors = {
     start: 'bg-green-500 border-green-600 text-white shadow-green-200',
     waypoint: 'bg-primary-500 border-primary-600 text-white shadow-primary-200',
-    end: 'bg-red-500 border-red-600 text-white shadow-red-200'
+    end: 'bg-red-500 border-red-600 text-white shadow-red-200',
   };
 
   // Inline SVG icons for Leaflet HTML strings
-  const flagSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>';
+  const flagSvg =
+    '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>';
   const iconSymbols = {
     start: flagSvg,
     waypoint: index.toString(),
-    end: flagSvg
+    end: flagSvg,
   };
 
   // Larger icons on mobile for better touch targets
@@ -52,9 +59,11 @@ const createWaypointIcon = (type: 'start' | 'waypoint' | 'end', index: number, i
   );
 
   // Add extra touch padding on mobile
-  const touchPadding = isMobile ? `
+  const touchPadding = isMobile
+    ? `
     <div class="absolute -inset-2 rounded-full" style="touch-action: none;"></div>
-  ` : '';
+  `
+    : '';
 
   return L.divIcon({
     html: `
@@ -64,25 +73,37 @@ const createWaypointIcon = (type: 'start' | 'waypoint' | 'end', index: number, i
         <span class="relative z-10">${iconSymbols[type]}</span>
 
         <!-- Pulse effect for start/end points -->
-        ${(type === 'start' || type === 'end') ? `
+        ${
+          type === 'start' || type === 'end'
+            ? `
           <div class="absolute inset-0 rounded-full ${iconColors[type].split(' ')[0]} opacity-20 animate-ping"></div>
-        ` : ''}
+        `
+            : ''
+        }
 
         <!-- Selection indicator -->
-        ${isSelected ? `
+        ${
+          isSelected
+            ? `
           <div class="absolute -inset-1 rounded-full border-2 border-white animate-pulse"></div>
-        ` : ''}
+        `
+            : ''
+        }
 
         <!-- Drag drop zone indicator -->
-        ${isDragging ? `
+        ${
+          isDragging
+            ? `
           <div class="absolute -inset-3 rounded-full border-2 border-dashed border-yellow-400 bg-yellow-100 bg-opacity-20"></div>
-        ` : ''}
+        `
+            : ''
+        }
       </div>
     `,
     className: cn('waypoint-marker', isDragging && 'dragging', isMobile && 'touch-target'),
     iconSize: [iconSize, iconSize],
     iconAnchor: [iconSize / 2, iconSize / 2],
-    popupAnchor: [0, -iconSize / 2]
+    popupAnchor: [0, -iconSize / 2],
   });
 };
 
@@ -101,12 +122,17 @@ const generateWaypointName = (type: 'start' | 'waypoint' | 'end', index: number)
 };
 
 // Helper function to create waypoint
-const createWaypoint = (lat: number, lng: number, type: 'start' | 'waypoint' | 'end', index: number): Waypoint => ({
+const createWaypoint = (
+  lat: number,
+  lng: number,
+  type: 'start' | 'waypoint' | 'end',
+  index: number
+): Waypoint => ({
   id: `waypoint-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
   lat: Number(lat.toFixed(6)),
   lng: Number(lng.toFixed(6)),
   type,
-  name: generateWaypointName(type, index)
+  name: generateWaypointName(type, index),
 });
 
 interface WaypointMarkerProps {
@@ -126,7 +152,7 @@ const WaypointMarker: React.FC<WaypointMarkerProps> = ({
   onUpdate,
   onInsertAfter,
   onInsertBefore,
-  onDragEnd
+  onDragEnd,
 }) => {
   const { selectedWaypoint, setSelectedWaypoint } = useMapStore();
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number } | null>(null);
@@ -135,7 +161,11 @@ const WaypointMarker: React.FC<WaypointMarkerProps> = ({
   const [editedNotes, setEditedNotes] = useState(waypoint.notes || '');
   const [isDragging, setIsDragging] = useState(false);
   const [, setIsHovered] = useState(false);
-  const [stagedLocation, setStagedLocation] = useState<{ lat: number; lng: number; name: string } | null>(null);
+  const [stagedLocation, setStagedLocation] = useState<{
+    lat: number;
+    lng: number;
+    name: string;
+  } | null>(null);
   const [showLocationSearch, setShowLocationSearch] = useState(false);
 
   // Detect if on mobile/touch device
@@ -147,10 +177,13 @@ const WaypointMarker: React.FC<WaypointMarkerProps> = ({
     setSelectedWaypoint(waypoint.id);
   }, [waypoint.id, setSelectedWaypoint]);
 
-  const handleDelete = useCallback((e?: React.MouseEvent) => {
-    e?.stopPropagation();
-    onDelete(waypoint.id);
-  }, [waypoint.id, onDelete]);
+  const handleDelete = useCallback(
+    (e?: React.MouseEvent) => {
+      e?.stopPropagation();
+      onDelete(waypoint.id);
+    },
+    [waypoint.id, onDelete]
+  );
 
   const handleDragStart = useCallback(() => {
     setIsDragging(true);
@@ -160,16 +193,19 @@ const WaypointMarker: React.FC<WaypointMarkerProps> = ({
     }
   }, []);
 
-  const handleDragEnd = useCallback((e: any) => {
-    setIsDragging(false);
-    const newLat = e.target.getLatLng().lat;
-    const newLng = e.target.getLatLng().lng;
-    onDragEnd(waypoint.id, newLat, newLng);
-    // Haptic feedback for successful drop
-    if ('vibrate' in navigator) {
-      navigator.vibrate([50, 100, 50]);
-    }
-  }, [waypoint.id, onDragEnd]);
+  const handleDragEnd = useCallback(
+    (e: L.DragEndEvent) => {
+      setIsDragging(false);
+      const newLat = (e.target as L.Marker).getLatLng().lat;
+      const newLng = (e.target as L.Marker).getLatLng().lng;
+      onDragEnd(waypoint.id, newLat, newLng);
+      // Haptic feedback for successful drop
+      if ('vibrate' in navigator) {
+        navigator.vibrate([50, 100, 50]);
+      }
+    },
+    [waypoint.id, onDragEnd]
+  );
 
   const handleMouseOver = useCallback(() => {
     setIsHovered(true);
@@ -179,7 +215,7 @@ const WaypointMarker: React.FC<WaypointMarkerProps> = ({
     setIsHovered(false);
   }, []);
 
-  const handleRightClick = useCallback((e: any) => {
+  const handleRightClick = useCallback((e: L.LeafletMouseEvent) => {
     e.originalEvent.preventDefault();
     const { clientX, clientY } = e.originalEvent;
     setContextMenu({ x: clientX, y: clientY });
@@ -208,7 +244,15 @@ const WaypointMarker: React.FC<WaypointMarkerProps> = ({
     setIsEditing(false);
     setStagedLocation(null);
     setShowLocationSearch(false);
-  }, [waypoint.id, waypoint.name, waypoint.notes, editedName, editedNotes, stagedLocation, onUpdate]);
+  }, [
+    waypoint.id,
+    waypoint.name,
+    waypoint.notes,
+    editedName,
+    editedNotes,
+    stagedLocation,
+    onUpdate,
+  ]);
 
   const handleCancelEdit = useCallback(() => {
     setEditedName(waypoint.name);
@@ -219,12 +263,7 @@ const WaypointMarker: React.FC<WaypointMarkerProps> = ({
   }, [waypoint.name, waypoint.notes]);
 
   const handleInsertBefore = useCallback(() => {
-    const newWaypoint = createWaypoint(
-      waypoint.lat - 0.01,
-      waypoint.lng - 0.01,
-      'waypoint',
-      index
-    );
+    const newWaypoint = createWaypoint(waypoint.lat - 0.01, waypoint.lng - 0.01, 'waypoint', index);
     onInsertBefore(newWaypoint, waypoint.id);
   }, [waypoint, index, onInsertBefore]);
 
@@ -245,46 +284,66 @@ const WaypointMarker: React.FC<WaypointMarkerProps> = ({
       label: 'Edit Waypoint',
       icon: (
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+          />
         </svg>
       ),
       onClick: () => setIsEditing(true),
-      shortcut: 'E'
+      shortcut: 'E',
     },
     {
       id: 'insert-before',
       label: 'Insert Before',
       icon: (
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+          />
         </svg>
       ),
       onClick: handleInsertBefore,
-      shortcut: 'Shift+↑'
+      shortcut: 'Shift+↑',
     },
     {
       id: 'insert-after',
       label: 'Insert After',
       icon: (
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+          />
         </svg>
       ),
       onClick: handleInsertAfter,
-      shortcut: 'Shift+↓'
+      shortcut: 'Shift+↓',
     },
     {
       id: 'delete',
       label: 'Delete Waypoint',
       icon: (
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+          />
         </svg>
       ),
       onClick: handleDelete,
       variant: 'danger' as const,
-      shortcut: 'Del'
-    }
+      shortcut: 'Del',
+    },
   ];
 
   // Normalize waypoint type for icon creation
@@ -296,7 +355,7 @@ const WaypointMarker: React.FC<WaypointMarkerProps> = ({
     <>
       <Marker
         position={[waypoint.lat, waypoint.lng]}
-        // @ts-ignore - React-Leaflet v4 prop compatibility
+        // @ts-expect-error - React-Leaflet v4 prop compatibility
         icon={icon}
         draggable={true}
         eventHandlers={{
@@ -305,15 +364,21 @@ const WaypointMarker: React.FC<WaypointMarkerProps> = ({
           dragstart: handleDragStart,
           dragend: handleDragEnd,
           mouseover: handleMouseOver,
-          mouseout: handleMouseOut
+          mouseout: handleMouseOut,
         }}
       >
         <Popup
           eventHandlers={{
-            click: (e: any) => e.originalEvent?.stopPropagation()
+            click: (e: L.LeafletEvent) =>
+              (e as L.LeafletMouseEvent).originalEvent?.stopPropagation(),
           }}
         >
-          <div className="min-w-72 p-2" onClick={(e) => e.stopPropagation()}>
+          <div
+            className="min-w-72 p-2"
+            onClick={e => e.stopPropagation()}
+            onKeyDown={e => e.stopPropagation()}
+            role="presentation"
+          >
             {/* Waypoint Header */}
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center space-x-2">
@@ -325,16 +390,16 @@ const WaypointMarker: React.FC<WaypointMarkerProps> = ({
                     waypoint.type === 'end' && 'bg-red-100 text-red-800'
                   )}
                 >
-                  {waypoint.type === 'start' ? 'START' :
-                   waypoint.type === 'end' ? 'END' :
-                   `WAYPOINT ${index + 1}`}
+                  {waypoint.type === 'start'
+                    ? 'START'
+                    : waypoint.type === 'end'
+                      ? 'END'
+                      : `WAYPOINT ${index + 1}`}
                 </span>
-                <span className="text-xs text-neutral-500">
-                  Drag to move
-                </span>
+                <span className="text-xs text-neutral-500">Drag to move</span>
               </div>
               <button
-                onClick={(e) => {
+                onClick={e => {
                   e.stopPropagation();
                   e.preventDefault();
                   setIsEditing(!isEditing);
@@ -345,7 +410,12 @@ const WaypointMarker: React.FC<WaypointMarkerProps> = ({
                 style={{ minWidth: '80px', zIndex: 1000 }}
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                  />
                 </svg>
                 <span>EDIT</span>
               </button>
@@ -355,30 +425,39 @@ const WaypointMarker: React.FC<WaypointMarkerProps> = ({
               /* Edit Mode */
               <>
                 <div className="mb-3">
-                  <label className="block text-xs font-medium text-neutral-700 mb-1">
+                  <label
+                    htmlFor={`waypoint-name-${waypoint.id}`}
+                    className="block text-xs font-medium text-neutral-700 mb-1"
+                  >
                     Name
                   </label>
                   <input
+                    id={`waypoint-name-${waypoint.id}`}
                     type="text"
                     value={editedName}
-                    onChange={(e) => setEditedName(e.target.value)}
-                    onClick={(e) => e.stopPropagation()}
-                    onFocus={(e) => e.stopPropagation()}
+                    onChange={e => setEditedName(e.target.value)}
+                    onClick={e => e.stopPropagation()}
+                    onFocus={e => e.stopPropagation()}
                     className="w-full px-2 py-1 text-sm border border-neutral-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
                     placeholder="Enter waypoint name"
+                    // eslint-disable-next-line jsx-a11y/no-autofocus -- autoFocus needed for UX when editing waypoint names
                     autoFocus
                   />
                 </div>
 
                 <div className="mb-3">
-                  <label className="block text-xs font-medium text-neutral-700 mb-1">
+                  <label
+                    htmlFor={`waypoint-notes-${waypoint.id}`}
+                    className="block text-xs font-medium text-neutral-700 mb-1"
+                  >
                     Notes
                   </label>
                   <textarea
+                    id={`waypoint-notes-${waypoint.id}`}
                     value={editedNotes}
-                    onChange={(e) => setEditedNotes(e.target.value)}
-                    onClick={(e) => e.stopPropagation()}
-                    onFocus={(e) => e.stopPropagation()}
+                    onChange={e => setEditedNotes(e.target.value)}
+                    onClick={e => e.stopPropagation()}
+                    onFocus={e => e.stopPropagation()}
                     className="w-full px-2 py-1 text-sm border border-neutral-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-500 resize-none"
                     rows={3}
                     placeholder="Add notes about this waypoint..."
@@ -388,7 +467,7 @@ const WaypointMarker: React.FC<WaypointMarkerProps> = ({
                 {/* Change Location Section */}
                 <div className="mb-3">
                   <button
-                    onClick={(e) => {
+                    onClick={e => {
                       e.stopPropagation();
                       e.preventDefault();
                       setShowLocationSearch(!showLocationSearch);
@@ -396,8 +475,18 @@ const WaypointMarker: React.FC<WaypointMarkerProps> = ({
                     className="text-xs text-primary-600 hover:text-primary-700 font-medium flex items-center gap-1"
                   >
                     <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                      />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                      />
                     </svg>
                     <span>{showLocationSearch ? 'Hide location search' : 'Change location'}</span>
                   </button>
@@ -405,12 +494,12 @@ const WaypointMarker: React.FC<WaypointMarkerProps> = ({
                   {showLocationSearch && (
                     <div className="mt-2">
                       <LocationSearch
-                        onLocationSelect={(result) => {
+                        onLocationSelect={result => {
                           const name = result.name || result.display_name.split(',')[0].trim();
                           setStagedLocation({
                             lat: result.lat,
                             lng: result.lng,
-                            name
+                            name,
                           });
                           setEditedName(name);
                           setShowLocationSearch(false);
@@ -430,7 +519,7 @@ const WaypointMarker: React.FC<WaypointMarkerProps> = ({
 
                 <div className="flex space-x-2 pt-2 border-t border-neutral-200">
                   <button
-                    onClick={(e) => {
+                    onClick={e => {
                       e.stopPropagation();
                       e.preventDefault();
                       handleSaveEdit();
@@ -440,7 +529,7 @@ const WaypointMarker: React.FC<WaypointMarkerProps> = ({
                     Save
                   </button>
                   <button
-                    onClick={(e) => {
+                    onClick={e => {
                       e.stopPropagation();
                       e.preventDefault();
                       handleCancelEdit();
@@ -455,9 +544,7 @@ const WaypointMarker: React.FC<WaypointMarkerProps> = ({
               /* View Mode */
               <>
                 <div className="mb-3">
-                  <div className="text-sm font-medium text-neutral-900 mb-1">
-                    {waypoint.name}
-                  </div>
+                  <div className="text-sm font-medium text-neutral-900 mb-1">{waypoint.name}</div>
                   {waypoint.notes && (
                     <div className="text-xs text-neutral-600 bg-neutral-50 rounded p-2">
                       {waypoint.notes}
@@ -466,9 +553,9 @@ const WaypointMarker: React.FC<WaypointMarkerProps> = ({
                 </div>
 
                 <div className="mb-3">
-                  <label className="block text-xs font-medium text-neutral-700 mb-1">
+                  <span className="block text-xs font-medium text-neutral-700 mb-1">
                     Coordinates
-                  </label>
+                  </span>
                   <div className="text-xs text-neutral-600 font-mono">
                     <div>Lat: {waypoint.lat.toFixed(6)}</div>
                     <div>Lng: {waypoint.lng.toFixed(6)}</div>
@@ -477,7 +564,7 @@ const WaypointMarker: React.FC<WaypointMarkerProps> = ({
 
                 <div className="flex space-x-2 pt-2 border-t border-neutral-200">
                   <button
-                    onClick={(e) => {
+                    onClick={e => {
                       e.stopPropagation();
                       e.preventDefault();
                       handleInsertBefore();
@@ -488,7 +575,7 @@ const WaypointMarker: React.FC<WaypointMarkerProps> = ({
                     + Before
                   </button>
                   <button
-                    onClick={(e) => {
+                    onClick={e => {
                       e.stopPropagation();
                       e.preventDefault();
                       handleInsertAfter();
@@ -499,7 +586,7 @@ const WaypointMarker: React.FC<WaypointMarkerProps> = ({
                     + After
                   </button>
                   <button
-                    onClick={(e) => {
+                    onClick={e => {
                       e.stopPropagation();
                       e.preventDefault();
                       handleDelete();
@@ -532,19 +619,17 @@ interface MapClickHandlerProps {
 
 const MapClickHandler: React.FC<MapClickHandlerProps> = ({ onMapRightClick }) => {
   useMapEvents({
-    contextmenu: (e: any) => {
-      // @ts-ignore - LeafletMouseEvent type compatibility
+    contextmenu: (e: L.LeafletMouseEvent) => {
       e.originalEvent.preventDefault();
       const { lat, lng } = e.latlng;
       const { clientX, clientY } = e.originalEvent;
       onMapRightClick(lat, lng, clientX, clientY);
     },
-    dblclick: (e: any) => {
-      // @ts-ignore - LeafletMouseEvent type compatibility - Double-click as backup
+    dblclick: (e: L.LeafletMouseEvent) => {
       const { lat, lng } = e.latlng;
       const { clientX, clientY } = e.originalEvent;
       onMapRightClick(lat, lng, clientX, clientY);
-    }
+    },
   });
 
   return null;
@@ -557,7 +642,7 @@ const WaypointManager: React.FC = () => {
     removeWaypoint,
     updateWaypoint,
     insertWaypoint,
-    insertBeforeWaypoint
+    insertBeforeWaypoint,
     // clearRoute,
     // undo,
     // redo,
@@ -577,7 +662,7 @@ const WaypointManager: React.FC = () => {
     isOpen: false,
     title: '',
     message: '',
-    onConfirm: () => {}
+    onConfirm: () => {},
   });
 
   // State for map context menu
@@ -588,7 +673,7 @@ const WaypointManager: React.FC = () => {
   }>({
     isOpen: false,
     position: { x: 0, y: 0 },
-    coordinates: { lat: 0, lng: 0 }
+    coordinates: { lat: 0, lng: 0 },
   });
 
   // Initialize keyboard shortcuts
@@ -599,113 +684,130 @@ const WaypointManager: React.FC = () => {
     setMapContextMenu({
       isOpen: true,
       position: { x, y },
-      coordinates: { lat, lng }
+      coordinates: { lat, lng },
     });
   }, []);
 
-  const handleAddWaypoint = useCallback((lat: number, lng: number) => {
-    // Create waypoint with temporary type (will be updated by store)
-    const newWaypoint = createWaypoint(lat, lng, 'waypoint', waypoints.length);
+  const handleAddWaypoint = useCallback(
+    (lat: number, lng: number) => {
+      // Create waypoint with temporary type (will be updated by store)
+      const newWaypoint = createWaypoint(lat, lng, 'waypoint', waypoints.length);
 
-    try {
-      addWaypoint(newWaypoint);
-      addNotification({
-        type: 'success',
-        message: `Added ${newWaypoint.name} to route`
-      });
-    } catch (error) {
-      addNotification({
-        type: 'error',
-        message: 'Failed to add waypoint'
-      });
-    }
-  }, [waypoints.length, addWaypoint, addNotification]);
-
-  const handleDeleteWaypoint = useCallback((id: string) => {
-    const waypoint = waypoints.find(wp => wp.id === id);
-
-    try {
-      removeWaypoint(id);
-      addNotification({
-        type: 'success',
-        message: `Removed ${waypoint?.name || 'waypoint'} from route`
-      });
-    } catch (error) {
-      addNotification({
-        type: 'error',
-        message: 'Failed to remove waypoint'
-      });
-    }
-  }, [waypoints, removeWaypoint, addNotification]);
-
-  const handleUpdateWaypoint = useCallback((id: string, updates: Partial<Waypoint>) => {
-    try {
-      updateWaypoint(id, updates);
-
-      // Show notification for significant updates
-      if (updates.name || updates.notes) {
+      try {
+        addWaypoint(newWaypoint);
         addNotification({
           type: 'success',
-          message: 'Waypoint updated successfully'
+          message: `Added ${newWaypoint.name} to route`,
+        });
+      } catch {
+        addNotification({
+          type: 'error',
+          message: 'Failed to add waypoint',
         });
       }
-    } catch (error) {
-      addNotification({
-        type: 'error',
-        message: 'Failed to update waypoint'
-      });
-    }
-  }, [updateWaypoint, addNotification]);
+    },
+    [waypoints.length, addWaypoint, addNotification]
+  );
 
-  const handleInsertWaypoint = useCallback((waypoint: Waypoint, afterId: string) => {
-    try {
-      insertWaypoint(waypoint, afterId);
-      addNotification({
-        type: 'success',
-        message: `Inserted ${waypoint.name} into route`
-      });
-    } catch (error) {
-      addNotification({
-        type: 'error',
-        message: 'Failed to insert waypoint'
-      });
-    }
-  }, [insertWaypoint, addNotification]);
+  const handleDeleteWaypoint = useCallback(
+    (id: string) => {
+      const waypoint = waypoints.find(wp => wp.id === id);
 
-  const handleInsertBeforeWaypoint = useCallback((waypoint: Waypoint, beforeId: string) => {
-    try {
-      insertBeforeWaypoint(waypoint, beforeId);
-      addNotification({
-        type: 'success',
-        message: `Inserted ${waypoint.name} into route`
-      });
-    } catch (error) {
-      addNotification({
-        type: 'error',
-        message: 'Failed to insert waypoint'
-      });
-    }
-  }, [insertBeforeWaypoint, addNotification]);
+      try {
+        removeWaypoint(id);
+        addNotification({
+          type: 'success',
+          message: `Removed ${waypoint?.name || 'waypoint'} from route`,
+        });
+      } catch {
+        addNotification({
+          type: 'error',
+          message: 'Failed to remove waypoint',
+        });
+      }
+    },
+    [waypoints, removeWaypoint, addNotification]
+  );
 
-  const handleDragEnd = useCallback((id: string, newLat: number, newLng: number) => {
-    try {
-      updateWaypoint(id, {
-        lat: Number(newLat.toFixed(6)),
-        lng: Number(newLng.toFixed(6))
-      });
+  const handleUpdateWaypoint = useCallback(
+    (id: string, updates: Partial<Waypoint>) => {
+      try {
+        updateWaypoint(id, updates);
 
-      addNotification({
-        type: 'success',
-        message: 'Waypoint position updated'
-      });
-    } catch (error) {
-      addNotification({
-        type: 'error',
-        message: 'Failed to update waypoint position'
-      });
-    }
-  }, [updateWaypoint, addNotification]);
+        // Show notification for significant updates
+        if (updates.name || updates.notes) {
+          addNotification({
+            type: 'success',
+            message: 'Waypoint updated successfully',
+          });
+        }
+      } catch {
+        addNotification({
+          type: 'error',
+          message: 'Failed to update waypoint',
+        });
+      }
+    },
+    [updateWaypoint, addNotification]
+  );
 
+  const handleInsertWaypoint = useCallback(
+    (waypoint: Waypoint, afterId: string) => {
+      try {
+        insertWaypoint(waypoint, afterId);
+        addNotification({
+          type: 'success',
+          message: `Inserted ${waypoint.name} into route`,
+        });
+      } catch {
+        addNotification({
+          type: 'error',
+          message: 'Failed to insert waypoint',
+        });
+      }
+    },
+    [insertWaypoint, addNotification]
+  );
+
+  const handleInsertBeforeWaypoint = useCallback(
+    (waypoint: Waypoint, beforeId: string) => {
+      try {
+        insertBeforeWaypoint(waypoint, beforeId);
+        addNotification({
+          type: 'success',
+          message: `Inserted ${waypoint.name} into route`,
+        });
+      } catch {
+        addNotification({
+          type: 'error',
+          message: 'Failed to insert waypoint',
+        });
+      }
+    },
+    [insertBeforeWaypoint, addNotification]
+  );
+
+  const handleDragEnd = useCallback(
+    (id: string, newLat: number, newLng: number) => {
+      try {
+        updateWaypoint(id, {
+          lat: Number(newLat.toFixed(6)),
+          lng: Number(newLng.toFixed(6)),
+        });
+
+        addNotification({
+          type: 'success',
+          message: 'Waypoint position updated',
+        });
+      } catch {
+        addNotification({
+          type: 'error',
+          message: 'Failed to update waypoint position',
+        });
+      }
+    },
+    [updateWaypoint, addNotification]
+  );
 
   return (
     <>
@@ -749,6 +851,8 @@ const WaypointManager: React.FC = () => {
             top: mapContextMenu.position.y,
           }}
           onMouseLeave={() => setMapContextMenu(prev => ({ ...prev, isOpen: false }))}
+          role="menu"
+          tabIndex={-1}
         >
           <button
             onClick={() => {
@@ -758,8 +862,18 @@ const WaypointManager: React.FC = () => {
             className="w-full px-3 py-2 text-left text-sm hover:bg-neutral-100 flex items-center space-x-2"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+              />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+              />
             </svg>
             <span>Add Waypoint</span>
           </button>
@@ -771,6 +885,10 @@ const WaypointManager: React.FC = () => {
         <div
           className="fixed inset-0 z-[9999]"
           onClick={() => setMapContextMenu(prev => ({ ...prev, isOpen: false }))}
+          onKeyDown={e => {
+            if (e.key === 'Escape') setMapContextMenu(prev => ({ ...prev, isOpen: false }));
+          }}
+          role="presentation"
         />
       )}
     </>

@@ -17,13 +17,13 @@ interface CacheOptions {
 
 // Base DataService class - Foundation for all API services
 export abstract class DataService {
-  protected config: any;
-  protected cache: Map<string, { data: any; timestamp: number }>;
+  protected config: Record<string, unknown>;
+  protected cache: Map<string, { data: unknown; timestamp: number }>;
   protected rateLimiter: Map<string, { count: number; resetTime: number }>;
   protected readonly rateLimit: RateLimit;
   protected readonly cacheOptions: CacheOptions;
 
-  constructor(config: any, rateLimit: RateLimit, cacheOptions: CacheOptions) {
+  constructor(config: Record<string, unknown>, rateLimit: RateLimit, cacheOptions: CacheOptions) {
     this.config = config;
     this.cache = new Map();
     this.rateLimiter = new Map();
@@ -33,7 +33,10 @@ export abstract class DataService {
 
   // Rate limiting check
   protected async checkRateLimit(service: string): Promise<boolean> {
-    const usage = this.rateLimiter.get(service) || { count: 0, resetTime: Date.now() + this.rateLimit.period };
+    const usage = this.rateLimiter.get(service) || {
+      count: 0,
+      resetTime: Date.now() + this.rateLimit.period,
+    };
 
     if (Date.now() > usage.resetTime) {
       usage.count = 0;
@@ -73,45 +76,47 @@ export abstract class DataService {
 
     this.cache.set(key, {
       data,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
   }
 
   // Abstract methods to be implemented by concrete services
-  abstract get<T>(params: any): Promise<T>;
+  abstract get<T>(params: unknown): Promise<T>;
 
   // V2: Enhanced methods (will be implemented later)
-  protected async getWithCache<T>(_params: any): Promise<T> {
+  protected async getWithCache<T>(_params: unknown): Promise<T> {
     // Implementation for V2
     throw new Error('getWithCache not implemented - V2 feature');
   }
 
-  protected async getOffline<T>(_params: any): Promise<T> {
+  protected async getOffline<T>(_params: unknown): Promise<T> {
     // Implementation for V2
     throw new Error('getOffline not implemented - V2 feature');
   }
 
   // Error handling
-  protected handleError(error: any, context: string): never {
+  protected handleError(error: unknown, context: string): never {
     console.error(`${context} error:`, error);
 
-    if (error.name === 'NetworkError') {
+    const err = error as { name?: string; status?: number; message?: string };
+
+    if (err.name === 'NetworkError') {
       throw new Error('Network connection failed. Please check your internet connection.');
     }
 
-    if (error.status === 401) {
+    if (err.status === 401) {
       throw new Error('API key invalid or missing.');
     }
 
-    if (error.status === 403) {
+    if (err.status === 403) {
       throw new Error('API rate limit exceeded. Please try again later.');
     }
 
-    if (error.status === 404) {
+    if (err.status === 404) {
       throw new Error('Requested data not found.');
     }
 
-    throw new Error(`Service error: ${error.message || 'Unknown error'}`);
+    throw new Error(`Service error: ${err.message || 'Unknown error'}`);
   }
 }
 
@@ -125,19 +130,25 @@ export class RoutingService extends DataService {
     );
   }
 
-  async get<T>(_params: any): Promise<T> {
+  async get<T>(_params: unknown): Promise<T> {
     // Phase 3: Implement OpenRouteService integration
     throw new Error('RoutingService.get not implemented - Phase 3 feature');
   }
 
   // V1: Basic route calculation
-  async calculateRoute(_waypoints: Array<[number, number]>, _vehicleProfile: any): Promise<any> {
+  async calculateRoute(
+    _waypoints: Array<[number, number]>,
+    _vehicleProfile: unknown
+  ): Promise<unknown> {
     // Phase 3: Implementation
     throw new Error('calculateRoute not implemented - Phase 3 feature');
   }
 
   // V2: Multiple provider support
-  async calculateRouteWithFallback(_waypoints: Array<[number, number]>, _vehicleProfile: any): Promise<any> {
+  async calculateRouteWithFallback(
+    _waypoints: Array<[number, number]>,
+    _vehicleProfile: unknown
+  ): Promise<unknown> {
     // V2: Implementation with OSRM fallback
     throw new Error('calculateRouteWithFallback not implemented - V2 feature');
   }
@@ -153,19 +164,19 @@ export class CampsiteService extends DataService {
     );
   }
 
-  async get<T>(_params: any): Promise<T> {
+  async get<T>(_params: unknown): Promise<T> {
     // Phase 4: Implement Overpass API integration
     throw new Error('CampsiteService.get not implemented - Phase 4 feature');
   }
 
   // V1: Basic campsite data
-  async getCampsites(_bbox: [number, number, number, number]): Promise<any[]> {
+  async getCampsites(_bbox: [number, number, number, number]): Promise<unknown[]> {
     // Phase 4: Implementation
     throw new Error('getCampsites not implemented - Phase 4 feature');
   }
 
   // V2: Multiple data sources
-  async getCampsitesWithFallback(_bbox: [number, number, number, number]): Promise<any[]> {
+  async getCampsitesWithFallback(_bbox: [number, number, number, number]): Promise<unknown[]> {
     // V2: Implementation with multiple sources
     throw new Error('getCampsitesWithFallback not implemented - V2 feature');
   }
@@ -181,19 +192,19 @@ export class ExportService extends DataService {
     );
   }
 
-  async get<T>(_params: any): Promise<T> {
+  async get<T>(_params: unknown): Promise<T> {
     // Phase 6: Implement export functionality
     throw new Error('ExportService.get not implemented - Phase 6 feature');
   }
 
   // V1: GPX export
-  async exportToGPX(_waypoints: any[], _route: any): Promise<string> {
+  async exportToGPX(_waypoints: unknown[], _route: unknown): Promise<string> {
     // Phase 6: Implementation
     throw new Error('exportToGPX not implemented - Phase 6 feature');
   }
 
   // V1: JSON export
-  async exportToJSON(_tripData: any): Promise<string> {
+  async exportToJSON(_tripData: unknown): Promise<string> {
     // Phase 6: Implementation
     throw new Error('exportToJSON not implemented - Phase 6 feature');
   }

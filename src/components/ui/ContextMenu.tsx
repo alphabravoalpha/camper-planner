@@ -21,12 +21,7 @@ interface ContextMenuProps {
   onClose: () => void;
 }
 
-const ContextMenu: React.FC<ContextMenuProps> = ({
-  isOpen,
-  position,
-  items,
-  onClose
-}) => {
+const ContextMenu: React.FC<ContextMenuProps> = ({ isOpen, position, items, onClose }) => {
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -61,7 +56,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
     const rect = menu.getBoundingClientRect();
     const viewport = {
       width: window.innerWidth,
-      height: window.innerHeight
+      height: window.innerHeight,
     };
 
     let { x, y } = position;
@@ -88,7 +83,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
       className="fixed z-50 min-w-48 bg-white border border-neutral-200 rounded-lg shadow-lg py-2 animate-fade-in"
       style={{ left: position.x, top: position.y }}
     >
-      {items.map((item) => {
+      {items.map(item => {
         const itemClass = cn(
           'flex items-center justify-between px-4 py-2 text-sm cursor-pointer transition-colors',
           {
@@ -112,17 +107,11 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
             disabled={item.disabled}
           >
             <div className="flex items-center space-x-3">
-              {item.icon && (
-                <span className="flex-shrink-0">
-                  {item.icon}
-                </span>
-              )}
+              {item.icon && <span className="flex-shrink-0">{item.icon}</span>}
               <span>{item.label}</span>
             </div>
             {item.shortcut && (
-              <span className="text-xs text-neutral-400 ml-4">
-                {item.shortcut}
-              </span>
+              <span className="text-xs text-neutral-400 ml-4">{item.shortcut}</span>
             )}
           </button>
         );

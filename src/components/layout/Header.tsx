@@ -16,13 +16,15 @@ const Header: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { toggleSidebar, openVehicleSidebar } = useUIStore();
   const { profile } = useVehicleStore();
-  const { openWizard } = useTripWizardStore();
+  const { openWizard: _openWizard } = useTripWizardStore();
 
   // Vehicle summary for badge
-  const vehicleSummary = profile ? {
-    name: profile.name || 'Custom Vehicle',
-    dims: `${profile.height}×${profile.width}×${profile.length}m`,
-  } : null;
+  const vehicleSummary = profile
+    ? {
+        name: profile.name || 'Custom Vehicle',
+        dims: `${profile.height}×${profile.width}×${profile.length}m`,
+      }
+    : null;
 
   const navigationItems = [
     { path: '/', label: t('nav.planner'), key: 'planner' },
@@ -61,7 +63,19 @@ const Header: React.FC = () => {
                 )}
                 title={vehicleSummary ? 'Edit vehicle profile' : 'Set up your vehicle profile'}
               >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M8 17h8M8 17v-4h8v4M8 17H5a2 2 0 01-2-2v-3a2 2 0 012-2h1l2-4h8l2 4h1a2 2 0 012 2v3a2 2 0 01-2 2h-3M7 17a1 1 0 11-2 0 1 1 0 012 0zm12 0a1 1 0 11-2 0 1 1 0 012 0z" /></svg>
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M8 17h8M8 17v-4h8v4M8 17H5a2 2 0 01-2-2v-3a2 2 0 012-2h1l2-4h8l2 4h1a2 2 0 012 2v3a2 2 0 01-2 2h-3M7 17a1 1 0 11-2 0 1 1 0 012 0zm12 0a1 1 0 11-2 0 1 1 0 012 0z"
+                  />
+                </svg>
                 <span className="max-w-[120px] truncate">
                   {vehicleSummary ? vehicleSummary.name : 'Setup Vehicle'}
                 </span>
@@ -78,28 +92,43 @@ const Header: React.FC = () => {
                   aria-label="Toggle sidebar"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4 6h16M4 12h16M4 18h16"
+                    />
                   </svg>
                 </button>
               )}
 
               <Link to="/" className="flex items-center space-x-3">
-                <img src="/logo.png" alt="European Camper Planner" className="w-8 h-8" width={32} height={32} />
+                <img
+                  src="/logo.png"
+                  alt="European Camper Planner"
+                  className="w-8 h-8"
+                  width={32}
+                  height={32}
+                />
                 <div className="hidden sm:block">
                   <h1 className="text-lg lg:text-xl font-display font-extrabold text-neutral-900">
                     European Camper Planner
                   </h1>
-                  <p className="text-xs text-primary-600 font-display font-semibold tracking-wider uppercase hidden lg:block">Free trip planning for Europe</p>
+                  <p className="text-xs text-primary-600 font-display font-semibold tracking-wider uppercase hidden lg:block">
+                    Free trip planning for Europe
+                  </p>
                 </div>
                 <div className="sm:hidden">
-                  <h1 className="text-lg font-display font-extrabold text-neutral-900">Camper Planner</h1>
+                  <h1 className="text-lg font-display font-extrabold text-neutral-900">
+                    Camper Planner
+                  </h1>
                 </div>
               </Link>
             </div>
 
             {/* Desktop Navigation */}
             <nav className="hidden lg:flex space-x-6">
-              {navigationItems.map((item) => (
+              {navigationItems.map(item => (
                 <Link
                   key={item.key}
                   to={item.path}
@@ -130,10 +159,7 @@ const Header: React.FC = () => {
 
               {/* Language Selector — hidden until multi-language translations are complete */}
               {FeatureFlags.MULTI_LANGUAGE_COMPLETE && (
-                <LanguageSelector
-                  variant="dropdown"
-                  size="sm"
-                />
+                <LanguageSelector variant="dropdown" size="sm" />
               )}
 
               {/* Mobile menu button */}
@@ -150,9 +176,19 @@ const Header: React.FC = () => {
                   viewBox="0 0 24 24"
                 >
                   {isMobileMenuOpen ? (
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
                   ) : (
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4 6h16M4 12h16M4 18h16"
+                    />
                   )}
                 </svg>
               </button>
@@ -163,7 +199,7 @@ const Header: React.FC = () => {
           {isMobileMenuOpen && (
             <div className="lg:hidden bg-white">
               <div className="px-2 pt-2 pb-3 space-y-1">
-                {navigationItems.map((item) => (
+                {navigationItems.map(item => (
                   <Link
                     key={item.key}
                     to={item.path}
@@ -199,6 +235,10 @@ const Header: React.FC = () => {
         <div
           className="fixed inset-0 z-30 bg-black/25 backdrop-blur-sm lg:hidden"
           onClick={() => setIsMobileMenuOpen(false)}
+          onKeyDown={e => e.key === 'Escape' && setIsMobileMenuOpen(false)}
+          role="button"
+          tabIndex={0}
+          aria-label="Close menu"
         />
       )}
     </>

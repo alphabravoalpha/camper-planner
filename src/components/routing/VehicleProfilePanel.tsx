@@ -13,9 +13,6 @@ import {
   MOTORHOME_PRESETS,
   getModelsForMake,
   getVariantsForModel,
-  type VehicleMake,
-  type VehicleModel,
-  type VehicleVariant,
 } from '../../data/vehicleDatabase';
 
 // Selection mode types
@@ -35,29 +32,30 @@ interface UnitConversion {
 const UNIT_CONVERSIONS: Record<VehicleDimensionKeys, UnitConversion> = {
   height: {
     metric: { label: 'm', factor: 1 },
-    imperial: { label: 'ft', factor: 3.28084 }
+    imperial: { label: 'ft', factor: 3.28084 },
   },
   width: {
     metric: { label: 'm', factor: 1 },
-    imperial: { label: 'ft', factor: 3.28084 }
+    imperial: { label: 'ft', factor: 3.28084 },
   },
   length: {
     metric: { label: 'm', factor: 1 },
-    imperial: { label: 'ft', factor: 3.28084 }
+    imperial: { label: 'ft', factor: 3.28084 },
   },
   weight: {
     metric: { label: 't', factor: 1 },
-    imperial: { label: 'lbs', factor: 2204.62 }
-  }
+    imperial: { label: 'lbs', factor: 2204.62 },
+  },
 };
 
 // Validation ranges (in metric units)
-const VALIDATION_RANGES: Record<VehicleDimensionKeys, { min: number; max: number; step: number }> = {
-  height: { min: 1.5, max: 4.5, step: 0.1 },
-  width: { min: 1.5, max: 3.0, step: 0.1 },
-  weight: { min: 1.0, max: 40.0, step: 0.1 },
-  length: { min: 3.0, max: 20.0, step: 0.1 }
-};
+const VALIDATION_RANGES: Record<VehicleDimensionKeys, { min: number; max: number; step: number }> =
+  {
+    height: { min: 1.5, max: 4.5, step: 0.1 },
+    width: { min: 1.5, max: 3.0, step: 0.1 },
+    weight: { min: 1.0, max: 40.0, step: 0.1 },
+    length: { min: 3.0, max: 20.0, step: 0.1 },
+  };
 
 interface VehicleProfilePanelProps {
   className?: string;
@@ -68,7 +66,7 @@ interface VehicleProfilePanelProps {
 const VehicleProfilePanel: React.FC<VehicleProfilePanelProps> = ({
   className,
   onClose,
-  compact = false
+  compact = false,
 }) => {
   const { profile, setProfile, clearProfile } = useVehicleStore();
   const { addNotification } = useUIStore();
@@ -140,52 +138,69 @@ const VehicleProfilePanel: React.FC<VehicleProfilePanelProps> = ({
   }, []);
 
   // Validate all fields
-  const validateForm = useCallback((data: VehicleProfile): Record<string, string> => {
-    const newErrors: Record<string, string> = {};
+  const validateForm = useCallback(
+    (data: VehicleProfile): Record<string, string> => {
+      const newErrors: Record<string, string> = {};
 
-    const dimensionKeys: VehicleDimensionKeys[] = ['height', 'width', 'weight', 'length'];
-    dimensionKeys.forEach(field => {
-      const error = validateField(field, data[field]);
-      if (error) {
-        newErrors[field] = error;
-      }
-    });
+      const dimensionKeys: VehicleDimensionKeys[] = ['height', 'width', 'weight', 'length'];
+      dimensionKeys.forEach(field => {
+        const error = validateField(field, data[field]);
+        if (error) {
+          newErrors[field] = error;
+        }
+      });
 
-    return newErrors;
-  }, [validateField]);
+      return newErrors;
+    },
+    [validateField]
+  );
 
   // Convert value between units
-  const convertValue = useCallback((value: number, field: VehicleDimensionKeys, fromUnit: UnitSystem, toUnit: UnitSystem): number => {
-    if (fromUnit === toUnit) return value;
+  const convertValue = useCallback(
+    (
+      value: number,
+      field: VehicleDimensionKeys,
+      fromUnit: UnitSystem,
+      toUnit: UnitSystem
+    ): number => {
+      if (fromUnit === toUnit) return value;
 
-    const conversion = UNIT_CONVERSIONS[field];
+      const conversion = UNIT_CONVERSIONS[field];
 
-    if (fromUnit === 'metric' && toUnit === 'imperial') {
-      return value * conversion.imperial.factor;
-    } else if (fromUnit === 'imperial' && toUnit === 'metric') {
-      return value / conversion.imperial.factor;
-    }
+      if (fromUnit === 'metric' && toUnit === 'imperial') {
+        return value * conversion.imperial.factor;
+      } else if (fromUnit === 'imperial' && toUnit === 'metric') {
+        return value / conversion.imperial.factor;
+      }
 
-    return value;
-  }, []);
+      return value;
+    },
+    []
+  );
 
   // Get display value with unit conversion
-  const getDisplayValue = useCallback((field: VehicleDimensionKeys): number => {
-    return convertValue(formData[field], field, 'metric', unitSystem);
-  }, [formData, unitSystem, convertValue]);
+  const getDisplayValue = useCallback(
+    (field: VehicleDimensionKeys): number => {
+      return convertValue(formData[field], field, 'metric', unitSystem);
+    },
+    [formData, unitSystem, convertValue]
+  );
 
   // Handle input change
-  const handleInputChange = useCallback((field: VehicleDimensionKeys, displayValue: number) => {
-    // Convert from display units to metric for storage
-    const metricValue = convertValue(displayValue, field, unitSystem, 'metric');
+  const handleInputChange = useCallback(
+    (field: VehicleDimensionKeys, displayValue: number) => {
+      // Convert from display units to metric for storage
+      const metricValue = convertValue(displayValue, field, unitSystem, 'metric');
 
-    setFormData(prev => ({ ...prev, [field]: metricValue }));
-    setIsDirty(true);
+      setFormData(prev => ({ ...prev, [field]: metricValue }));
+      setIsDirty(true);
 
-    // Clear field error if valid
-    const error = validateField(field, metricValue);
-    setErrors(prev => ({ ...prev, [field]: error }));
-  }, [unitSystem, convertValue, validateField]);
+      // Clear field error if valid
+      const error = validateField(field, metricValue);
+      setErrors(prev => ({ ...prev, [field]: error }));
+    },
+    [unitSystem, convertValue, validateField]
+  );
 
   // Handle make selection
   const handleMakeChange = useCallback((makeId: string) => {
@@ -201,56 +216,62 @@ const VehicleProfilePanel: React.FC<VehicleProfilePanelProps> = ({
   }, []);
 
   // Handle variant selection - auto-populate form
-  const handleVariantChange = useCallback((variantId: string) => {
-    setSelectedVariantId(variantId);
+  const handleVariantChange = useCallback(
+    (variantId: string) => {
+      setSelectedVariantId(variantId);
 
-    const variant = availableVariants.find(v => v.id === variantId);
-    if (variant) {
-      // Find make and model names for the profile name
-      const make = VEHICLE_DATABASE.find(m => m.id === selectedMakeId);
-      const model = make?.models.find(m => m.id === selectedModelId);
+      const variant = availableVariants.find(v => v.id === variantId);
+      if (variant) {
+        // Find make and model names for the profile name
+        const make = VEHICLE_DATABASE.find(m => m.id === selectedMakeId);
+        const model = make?.models.find(m => m.id === selectedModelId);
 
-      const newProfile: VehicleProfile = {
-        name: `${make?.name} ${model?.name} ${variant.name}`,
-        height: variant.height,
-        width: variant.width,
-        weight: variant.weight,
-        length: variant.length
-      };
-      setFormData(newProfile);
-      setIsDirty(true);
-      setErrors({});
+        const newProfile: VehicleProfile = {
+          name: `${make?.name} ${model?.name} ${variant.name}`,
+          height: variant.height,
+          width: variant.width,
+          weight: variant.weight,
+          length: variant.length,
+        };
+        setFormData(newProfile);
+        setIsDirty(true);
+        setErrors({});
 
-      addNotification({
-        type: 'info',
-        message: `Applied ${make?.name} ${model?.name} ${variant.name} dimensions`
-      });
-    }
-  }, [availableVariants, selectedMakeId, selectedModelId, addNotification]);
+        addNotification({
+          type: 'info',
+          message: `Applied ${make?.name} ${model?.name} ${variant.name} dimensions`,
+        });
+      }
+    },
+    [availableVariants, selectedMakeId, selectedModelId, addNotification]
+  );
 
   // Handle motorhome preset selection
-  const handleMotorhomeChange = useCallback((motorhomeId: string) => {
-    setSelectedMotorhomeId(motorhomeId);
+  const handleMotorhomeChange = useCallback(
+    (motorhomeId: string) => {
+      setSelectedMotorhomeId(motorhomeId);
 
-    const preset = MOTORHOME_PRESETS.find(m => m.id === motorhomeId);
-    if (preset) {
-      const newProfile: VehicleProfile = {
-        name: preset.name,
-        height: preset.height,
-        width: preset.width,
-        weight: preset.weight,
-        length: preset.length
-      };
-      setFormData(newProfile);
-      setIsDirty(true);
-      setErrors({});
+      const preset = MOTORHOME_PRESETS.find(m => m.id === motorhomeId);
+      if (preset) {
+        const newProfile: VehicleProfile = {
+          name: preset.name,
+          height: preset.height,
+          width: preset.width,
+          weight: preset.weight,
+          length: preset.length,
+        };
+        setFormData(newProfile);
+        setIsDirty(true);
+        setErrors({});
 
-      addNotification({
-        type: 'info',
-        message: `Applied ${preset.name} dimensions`
-      });
-    }
-  }, [addNotification]);
+        addNotification({
+          type: 'info',
+          message: `Applied ${preset.name} dimensions`,
+        });
+      }
+    },
+    [addNotification]
+  );
 
   // Handle form save
   const handleSave = useCallback(async () => {
@@ -269,14 +290,14 @@ const VehicleProfilePanel: React.FC<VehicleProfilePanelProps> = ({
 
         addNotification({
           type: 'success',
-          message: 'Vehicle profile saved successfully'
+          message: 'Vehicle profile saved successfully',
         });
 
         if (onClose) onClose();
       } catch {
         addNotification({
           type: 'error',
-          message: 'Failed to save vehicle profile'
+          message: 'Failed to save vehicle profile',
         });
       } finally {
         setIsSaving(false);
@@ -284,7 +305,7 @@ const VehicleProfilePanel: React.FC<VehicleProfilePanelProps> = ({
     } else {
       addNotification({
         type: 'error',
-        message: 'Please fix validation errors before saving'
+        message: 'Please fix validation errors before saving',
       });
     }
   }, [formData, validateForm, setProfile, addNotification, onClose]);
@@ -317,13 +338,13 @@ const VehicleProfilePanel: React.FC<VehicleProfilePanelProps> = ({
 
     addNotification({
       type: 'info',
-      message: 'Vehicle profile cleared'
+      message: 'Vehicle profile cleared',
     });
   }, [clearProfile, addNotification]);
 
   // Handle unit system toggle
   const handleUnitToggle = useCallback(() => {
-    setUnitSystem(prev => prev === 'metric' ? 'imperial' : 'metric');
+    setUnitSystem(prev => (prev === 'metric' ? 'imperial' : 'metric'));
   }, []);
 
   // Input field component
@@ -346,8 +367,18 @@ const VehicleProfilePanel: React.FC<VehicleProfilePanelProps> = ({
           </label>
           {helpText && (
             <Tooltip content={helpText} size="sm">
-              <svg className="w-3.5 h-3.5 text-neutral-400 cursor-help" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <svg
+                className="w-3.5 h-3.5 text-neutral-400 cursor-help"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
               </svg>
             </Tooltip>
           )}
@@ -358,7 +389,7 @@ const VehicleProfilePanel: React.FC<VehicleProfilePanelProps> = ({
             id={field}
             type="number"
             value={displayValue.toFixed(1)}
-            onChange={(e) => handleInputChange(field, parseFloat(e.target.value) || 0)}
+            onChange={e => handleInputChange(field, parseFloat(e.target.value) || 0)}
             step={VALIDATION_RANGES[field].step}
             min={convertValue(VALIDATION_RANGES[field].min, field, 'metric', unitSystem)}
             max={convertValue(VALIDATION_RANGES[field].max, field, 'metric', unitSystem)}
@@ -375,9 +406,7 @@ const VehicleProfilePanel: React.FC<VehicleProfilePanelProps> = ({
           </div>
         </div>
 
-        {hasError && (
-          <p className="text-red-600 text-xs">{errors[field]}</p>
-        )}
+        {hasError && <p className="text-red-600 text-xs">{errors[field]}</p>}
       </div>
     );
   };
@@ -388,11 +417,13 @@ const VehicleProfilePanel: React.FC<VehicleProfilePanelProps> = ({
   }
 
   return (
-    <div className={cn(
-      'bg-white rounded-lg',
-      compact ? '' : 'shadow-lg border border-neutral-200 p-6',
-      className
-    )}>
+    <div
+      className={cn(
+        'bg-white rounded-lg',
+        compact ? '' : 'shadow-lg border border-neutral-200 p-6',
+        className
+      )}
+    >
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div>
@@ -468,16 +499,20 @@ const VehicleProfilePanel: React.FC<VehicleProfilePanelProps> = ({
 
           {/* Make Dropdown */}
           <div>
-            <label className="block text-xs font-medium text-neutral-700 mb-1">
+            <label
+              htmlFor="vehicle-make-select"
+              className="block text-xs font-medium text-neutral-700 mb-1"
+            >
               Make
             </label>
             <select
+              id="vehicle-make-select"
               value={selectedMakeId}
-              onChange={(e) => handleMakeChange(e.target.value)}
+              onChange={e => handleMakeChange(e.target.value)}
               className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
             >
               <option value="">Select make...</option>
-              {VEHICLE_DATABASE.map((make) => (
+              {VEHICLE_DATABASE.map(make => (
                 <option key={make.id} value={make.id}>
                   {make.name} ({make.country})
                 </option>
@@ -488,16 +523,20 @@ const VehicleProfilePanel: React.FC<VehicleProfilePanelProps> = ({
           {/* Model Dropdown */}
           {selectedMakeId && (
             <div>
-              <label className="block text-xs font-medium text-neutral-700 mb-1">
+              <label
+                htmlFor="vehicle-model-select"
+                className="block text-xs font-medium text-neutral-700 mb-1"
+              >
                 Model
               </label>
               <select
+                id="vehicle-model-select"
                 value={selectedModelId}
-                onChange={(e) => handleModelChange(e.target.value)}
+                onChange={e => handleModelChange(e.target.value)}
                 className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
               >
                 <option value="">Select model...</option>
-                {availableModels.map((model) => (
+                {availableModels.map(model => (
                   <option key={model.id} value={model.id}>
                     {model.name}
                   </option>
@@ -509,16 +548,20 @@ const VehicleProfilePanel: React.FC<VehicleProfilePanelProps> = ({
           {/* Variant Dropdown */}
           {selectedModelId && (
             <div>
-              <label className="block text-xs font-medium text-neutral-700 mb-1">
+              <label
+                htmlFor="vehicle-variant-select"
+                className="block text-xs font-medium text-neutral-700 mb-1"
+              >
                 Size / Variant
               </label>
               <select
+                id="vehicle-variant-select"
                 value={selectedVariantId}
-                onChange={(e) => handleVariantChange(e.target.value)}
+                onChange={e => handleVariantChange(e.target.value)}
                 className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
               >
                 <option value="">Select variant...</option>
-                {availableVariants.map((variant) => (
+                {availableVariants.map(variant => (
                   <option key={variant.id} value={variant.id}>
                     {variant.name} ({variant.length}m × {variant.height}m)
                   </option>
@@ -544,39 +587,37 @@ const VehicleProfilePanel: React.FC<VehicleProfilePanelProps> = ({
       {/* Motorhome Presets */}
       {selectionMode === 'motorhome' && (
         <div className="space-y-3 mb-4">
-          <p className="text-xs text-neutral-500">
-            Select a popular motorhome model
-          </p>
+          <p className="text-xs text-neutral-500">Select a popular motorhome model</p>
 
           <select
             value={selectedMotorhomeId}
-            onChange={(e) => handleMotorhomeChange(e.target.value)}
+            onChange={e => handleMotorhomeChange(e.target.value)}
             className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
           >
             <option value="">Select motorhome...</option>
             <optgroup label="Compact Campervans">
-              {MOTORHOME_PRESETS.filter(m => m.length < 5.5).map((preset) => (
+              {MOTORHOME_PRESETS.filter(m => m.length < 5.5).map(preset => (
                 <option key={preset.id} value={preset.id}>
                   {preset.name} ({preset.length}m)
                 </option>
               ))}
             </optgroup>
             <optgroup label="Medium Motorhomes">
-              {MOTORHOME_PRESETS.filter(m => m.length >= 5.5 && m.length < 7).map((preset) => (
+              {MOTORHOME_PRESETS.filter(m => m.length >= 5.5 && m.length < 7).map(preset => (
                 <option key={preset.id} value={preset.id}>
                   {preset.name} ({preset.length}m)
                 </option>
               ))}
             </optgroup>
             <optgroup label="Large Motorhomes">
-              {MOTORHOME_PRESETS.filter(m => m.length >= 7 && m.length < 10).map((preset) => (
+              {MOTORHOME_PRESETS.filter(m => m.length >= 7 && m.length < 10).map(preset => (
                 <option key={preset.id} value={preset.id}>
                   {preset.name} ({preset.length}m)
                 </option>
               ))}
             </optgroup>
             <optgroup label="Car + Caravan">
-              {MOTORHOME_PRESETS.filter(m => m.length >= 10).map((preset) => (
+              {MOTORHOME_PRESETS.filter(m => m.length >= 10).map(preset => (
                 <option key={preset.id} value={preset.id}>
                   {preset.name} ({preset.length}m)
                 </option>
@@ -607,7 +648,8 @@ const VehicleProfilePanel: React.FC<VehicleProfilePanelProps> = ({
       {selectionMode === 'custom' && (
         <div className="mb-4 p-3 bg-neutral-50 border border-neutral-200 rounded-lg">
           <p className="text-xs text-neutral-600">
-            Enter your vehicle dimensions manually below. Measure your vehicle including any roof equipment (AC, antenna, solar panels).
+            Enter your vehicle dimensions manually below. Measure your vehicle including any roof
+            equipment (AC, antenna, solar panels).
           </p>
         </div>
       )}
@@ -620,18 +662,8 @@ const VehicleProfilePanel: React.FC<VehicleProfilePanelProps> = ({
           icon="📏"
           helpText="Max height including roof equipment"
         />
-        <InputField
-          field="width"
-          label="Width"
-          icon="↔️"
-          helpText="Max width including mirrors"
-        />
-        <InputField
-          field="length"
-          label="Length"
-          icon="📐"
-          helpText="Total length front to back"
-        />
+        <InputField field="width" label="Width" icon="↔️" helpText="Max width including mirrors" />
+        <InputField field="length" label="Length" icon="📐" helpText="Total length front to back" />
         <InputField
           field="weight"
           label="Weight"
@@ -666,14 +698,28 @@ const VehicleProfilePanel: React.FC<VehicleProfilePanelProps> = ({
           )}
         >
           {isSaving && (
-            <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            <svg
+              className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              ></circle>
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              ></path>
             </svg>
           )}
-          <span>
-            {isSaving ? 'Saving...' : profile ? 'Update' : 'Save'}
-          </span>
+          <span>{isSaving ? 'Saving...' : profile ? 'Update' : 'Save'}</span>
         </button>
 
         <button
@@ -702,7 +748,8 @@ const VehicleProfilePanel: React.FC<VehicleProfilePanelProps> = ({
       {/* Help Text */}
       <div className="mt-4 p-2 bg-amber-50 border border-amber-200 rounded-lg">
         <p className="text-xs text-amber-700">
-          💡 <strong>Tip:</strong> Routes will avoid roads with height/weight restrictions your vehicle cannot handle.
+          💡 <strong>Tip:</strong> Routes will avoid roads with height/weight restrictions your
+          vehicle cannot handle.
         </p>
       </div>
     </div>

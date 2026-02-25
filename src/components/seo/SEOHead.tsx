@@ -23,7 +23,11 @@ const setMeta = (property: string, content: string) => {
     el.setAttribute('content', content);
   } else {
     el = document.createElement('meta');
-    if (property.startsWith('og:') || property.startsWith('twitter:') || property.startsWith('article:')) {
+    if (
+      property.startsWith('og:') ||
+      property.startsWith('twitter:') ||
+      property.startsWith('article:')
+    ) {
       el.setAttribute('property', property);
     } else {
       el.setAttribute('name', property);

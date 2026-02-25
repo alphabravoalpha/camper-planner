@@ -1,7 +1,7 @@
 // Route Optimization Service
 // Phase 5.1: Multi-stop optimization with TSP solver and intelligent waypoint management
 
-import { RoutingService, type RouteRequest, } from './RoutingService';
+import { RoutingService, type RouteRequest } from './RoutingService';
 import { type VehicleProfile } from '../store';
 import { type Waypoint } from '../store';
 
@@ -102,10 +102,17 @@ export class RouteOptimizationService {
     const tspResult = await this.solveTSP(distanceMatrix, criteria, waypoints);
 
     // Reorder waypoints based on optimization
-    const optimizedWaypoints = this.reorderWaypoints(waypoints, tspResult.order, criteria.lockedWaypoints);
+    const optimizedWaypoints = this.reorderWaypoints(
+      waypoints,
+      tspResult.order,
+      criteria.lockedWaypoints
+    );
 
     // Calculate optimized route metrics
-    const optimizedMetrics = await this.calculateRouteMetrics(optimizedWaypoints, criteria.vehicleProfile);
+    const optimizedMetrics = await this.calculateRouteMetrics(
+      optimizedWaypoints,
+      criteria.vehicleProfile
+    );
 
     // Calculate improvements
     const improvements = this.calculateImprovements(originalMetrics, optimizedMetrics);
@@ -115,22 +122,29 @@ export class RouteOptimizationService {
         waypoints,
         totalDistance: originalMetrics.distance,
         totalTime: originalMetrics.duration,
-        estimatedCost: originalMetrics.cost
+        estimatedCost: originalMetrics.cost,
       },
       optimizedRoute: {
         waypoints: optimizedWaypoints,
         totalDistance: optimizedMetrics.distance,
         totalTime: optimizedMetrics.duration,
         estimatedCost: optimizedMetrics.cost,
-        reorderingApplied: JSON.stringify(waypoints.map(w => w.id)) !== JSON.stringify(optimizedWaypoints.map(w => w.id))
+        reorderingApplied:
+          JSON.stringify(waypoints.map(w => w.id)) !==
+          JSON.stringify(optimizedWaypoints.map(w => w.id)),
       },
       improvements,
       optimizationMetadata: {
-        algorithm: criteria.objective === 'shortest' ? 'Distance-TSP' : criteria.objective === 'fastest' ? 'Time-TSP' : 'Balanced-TSP',
+        algorithm:
+          criteria.objective === 'shortest'
+            ? 'Distance-TSP'
+            : criteria.objective === 'fastest'
+              ? 'Time-TSP'
+              : 'Balanced-TSP',
         iterations: tspResult.iterations,
         executionTime: Date.now() - startTime,
-        convergenceReached: tspResult.converged
-      }
+        convergenceReached: tspResult.converged,
+      },
     };
   }
 
@@ -146,7 +160,7 @@ export class RouteOptimizationService {
       return {
         suggestedPosition: 0,
         routeImpact: { distanceAdded: 0, timeAdded: 0, efficiency: 1 },
-        alternatives: []
+        alternatives: [],
       };
     }
 
@@ -158,7 +172,10 @@ export class RouteOptimizationService {
     }> = [];
 
     // Calculate current route metrics
-    const baseMetrics = await this.calculateRouteMetrics(existingWaypoints, criteria.vehicleProfile);
+    const baseMetrics = await this.calculateRouteMetrics(
+      existingWaypoints,
+      criteria.vehicleProfile
+    );
 
     // Try inserting at each possible position
     for (let position = 0; position <= existingWaypoints.length; position++) {
@@ -177,7 +194,7 @@ export class RouteOptimizationService {
         position,
         distanceAdded,
         timeAdded,
-        efficiency
+        efficiency,
       });
     }
 
@@ -190,9 +207,9 @@ export class RouteOptimizationService {
       routeImpact: {
         distanceAdded: best.distanceAdded,
         timeAdded: best.timeAdded,
-        efficiency: best.efficiency
+        efficiency: best.efficiency,
       },
-      alternatives: alternatives.slice(1, 4) // Return top 3 alternatives
+      alternatives: alternatives.slice(1, 4), // Return top 3 alternatives
     };
   }
 
@@ -204,9 +221,15 @@ export class RouteOptimizationService {
     vehicleProfile?: VehicleProfile
   ): Promise<DistanceMatrix> {
     const n = waypoints.length;
-    const distances: number[][] = Array(n).fill(null).map(() => Array(n).fill(0));
-    const durations: number[][] = Array(n).fill(null).map(() => Array(n).fill(0));
-    const costs: number[][] = Array(n).fill(null).map(() => Array(n).fill(0));
+    const distances: number[][] = Array(n)
+      .fill(null)
+      .map(() => Array(n).fill(0));
+    const durations: number[][] = Array(n)
+      .fill(null)
+      .map(() => Array(n).fill(0));
+    const costs: number[][] = Array(n)
+      .fill(null)
+      .map(() => Array(n).fill(0));
 
     // Generate cache key
     const cacheKey = this.generateMatrixCacheKey(waypoints, vehicleProfile);
@@ -230,8 +253,8 @@ export class RouteOptimizationService {
             options: {
               alternatives: false,
               steps: false,
-              geometries: 'geojson'
-            }
+              geometries: 'geojson',
+            },
           };
 
           const routeResponse = await this.routingService.calculateRoute(routeRequest);
@@ -240,7 +263,11 @@ export class RouteOptimizationService {
             const route = routeResponse.routes[0];
             distances[i][j] = route.summary.distance / 1000; // Convert to km
             durations[i][j] = route.summary.duration / 60; // Convert to minutes
-            costs[i][j] = this.estimateRouteCost(route.summary.distance, route.summary.duration, vehicleProfile);
+            costs[i][j] = this.estimateRouteCost(
+              route.summary.distance,
+              route.summary.duration,
+              vehicleProfile
+            );
           } else {
             // Fallback to straight-line distance
             distances[i][j] = this.calculateHaversineDistance(waypoints[i], waypoints[j]);
@@ -248,7 +275,7 @@ export class RouteOptimizationService {
             costs[i][j] = distances[i][j] * 0.5; // Rough fuel cost estimate
           }
         } catch (error) {
-          console.warn(`Failed to calculate route from ${i} to ${j}:`, error);
+          console.error(`Failed to calculate route from ${i} to ${j}:`, error);
           // Fallback to straight-line distance
           distances[i][j] = this.calculateHaversineDistance(waypoints[i], waypoints[j]);
           durations[i][j] = distances[i][j] * 1.2;
@@ -285,11 +312,12 @@ export class RouteOptimizationService {
           return matrix.distances[i][j];
         case 'fastest':
           return matrix.durations[i][j];
-        case 'balanced':
+        case 'balanced': {
           // Balanced: 60% time + 40% distance (normalized)
           const normalizedTime = matrix.durations[i][j] / Math.max(...matrix.durations.flat());
           const normalizedDist = matrix.distances[i][j] / Math.max(...matrix.distances.flat());
           return 0.6 * normalizedTime + 0.4 * normalizedDist;
+        }
         default:
           return matrix.distances[i][j];
       }
@@ -329,7 +357,7 @@ export class RouteOptimizationService {
     return {
       order: bestOrder,
       iterations,
-      converged: !improved
+      converged: !improved,
     };
   }
 
@@ -339,7 +367,7 @@ export class RouteOptimizationService {
   private nearestNeighborTSP(
     matrix: DistanceMatrix,
     getDistance: (i: number, j: number) => number,
-    lockedPositions: Set<number>
+    _lockedPositions: Set<number>
   ): number[] {
     const n = matrix.distances.length;
     const visited = new Set<number>();
@@ -393,10 +421,7 @@ export class RouteOptimizationService {
   /**
    * Calculate total cost of a tour
    */
-  private calculateTourCost(
-    tour: number[],
-    getDistance: (i: number, j: number) => number
-  ): number {
+  private calculateTourCost(tour: number[], getDistance: (i: number, j: number) => number): number {
     let totalCost = 0;
 
     for (let i = 0; i < tour.length - 1; i++) {
@@ -457,8 +482,8 @@ export class RouteOptimizationService {
         options: {
           alternatives: false,
           steps: false,
-          geometries: 'geojson'
-        }
+          geometries: 'geojson',
+        },
       };
 
       const routeResponse = await this.routingService.calculateRoute(routeRequest);
@@ -468,11 +493,15 @@ export class RouteOptimizationService {
         return {
           distance: route.summary.distance / 1000, // Convert to km
           duration: route.summary.duration / 60, // Convert to minutes
-          cost: this.estimateRouteCost(route.summary.distance, route.summary.duration, vehicleProfile)
+          cost: this.estimateRouteCost(
+            route.summary.distance,
+            route.summary.duration,
+            vehicleProfile
+          ),
         };
       }
     } catch (error) {
-      console.warn('Failed to calculate route metrics:', error);
+      console.error('Failed to calculate route metrics:', error);
     }
 
     // Fallback calculation
@@ -484,7 +513,7 @@ export class RouteOptimizationService {
     return {
       distance: totalDistance,
       duration: totalDistance * 1.2, // Estimate ~50km/h average
-      cost: totalDistance * 0.5 // Rough fuel cost estimate
+      cost: totalDistance * 0.5, // Rough fuel cost estimate
     };
   }
 
@@ -497,17 +526,17 @@ export class RouteOptimizationService {
   ) {
     const distanceSaved = Math.max(0, original.distance - optimized.distance);
     const timeSaved = Math.max(0, original.duration - optimized.duration);
-    const costSaved = original.cost && optimized.cost ? Math.max(0, original.cost - optimized.cost) : undefined;
+    const costSaved =
+      original.cost && optimized.cost ? Math.max(0, original.cost - optimized.cost) : undefined;
 
-    const percentageImprovement = original.distance > 0
-      ? (distanceSaved / original.distance) * 100
-      : 0;
+    const percentageImprovement =
+      original.distance > 0 ? (distanceSaved / original.distance) * 100 : 0;
 
     return {
       distanceSaved,
       timeSaved,
       costSaved,
-      percentageImprovement
+      percentageImprovement,
     };
   }
 
@@ -523,8 +552,8 @@ export class RouteOptimizationService {
     const maxReasonableDetour = 50; // km
     const maxReasonableTime = 60; // minutes
 
-    const distanceScore = Math.max(0, 1 - (distanceAdded / maxReasonableDetour));
-    const timeScore = Math.max(0, 1 - (timeAdded / maxReasonableTime));
+    const distanceScore = Math.max(0, 1 - distanceAdded / maxReasonableDetour);
+    const timeScore = Math.max(0, 1 - timeAdded / maxReasonableTime);
 
     // Weight based on optimization criteria
     switch (criteria.objective) {
@@ -559,7 +588,9 @@ export class RouteOptimizationService {
    */
   private generateMatrixCacheKey(waypoints: Waypoint[], vehicleProfile?: VehicleProfile): string {
     const waypointKey = waypoints.map(w => `${w.lat.toFixed(4)},${w.lng.toFixed(4)}`).join('|');
-    const vehicleKey = vehicleProfile ? `${vehicleProfile.type}-${vehicleProfile.height}-${vehicleProfile.weight}` : 'default';
+    const vehicleKey = vehicleProfile
+      ? `${vehicleProfile.type}-${vehicleProfile.height}-${vehicleProfile.weight}`
+      : 'default';
     return `${waypointKey}::${vehicleKey}`;
   }
 
@@ -568,11 +599,14 @@ export class RouteOptimizationService {
    */
   private calculateHaversineDistance(waypoint1: Waypoint, waypoint2: Waypoint): number {
     const R = 6371; // Earth's radius in km
-    const dLat = (waypoint2.lat - waypoint1.lat) * Math.PI / 180;
-    const dLng = (waypoint2.lng - waypoint1.lng) * Math.PI / 180;
-    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(waypoint1.lat * Math.PI / 180) * Math.cos(waypoint2.lat * Math.PI / 180) *
-      Math.sin(dLng / 2) * Math.sin(dLng / 2);
+    const dLat = ((waypoint2.lat - waypoint1.lat) * Math.PI) / 180;
+    const dLng = ((waypoint2.lng - waypoint1.lng) * Math.PI) / 180;
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos((waypoint1.lat * Math.PI) / 180) *
+        Math.cos((waypoint2.lat * Math.PI) / 180) *
+        Math.sin(dLng / 2) *
+        Math.sin(dLng / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
   }
@@ -580,7 +614,11 @@ export class RouteOptimizationService {
   /**
    * Estimate route cost based on distance, time, and vehicle profile
    */
-  private estimateRouteCost(distance: number, _duration: number, vehicleProfile?: VehicleProfile): number {
+  private estimateRouteCost(
+    distance: number,
+    _duration: number,
+    vehicleProfile?: VehicleProfile
+  ): number {
     const distanceKm = distance / 1000;
 
     // Base fuel consumption (L/100km)
@@ -607,7 +645,7 @@ export class RouteOptimizationService {
     const fuelPrice = 1.5; // €/L approximate European average
     const tollEstimate = distanceKm * 0.1; // Rough toll estimate
 
-    return (distanceKm * fuelConsumption / 100 * fuelPrice) + tollEstimate;
+    return ((distanceKm * fuelConsumption) / 100) * fuelPrice + tollEstimate;
   }
 
   /**
@@ -623,7 +661,7 @@ export class RouteOptimizationService {
   getCacheStats(): { size: number; keys: string[] } {
     return {
       size: this.distanceCache.size,
-      keys: Array.from(this.distanceCache.keys())
+      keys: Array.from(this.distanceCache.keys()),
     };
   }
 }

@@ -48,8 +48,8 @@ describe('RouteOptimizationService', () => {
       {
         id: '3',
         name: 'Berlin',
-        lat: 52.5200,
-        lng: 13.4050,
+        lat: 52.52,
+        lng: 13.405,
         type: 'waypoint',
       },
       {
@@ -87,9 +87,9 @@ describe('RouteOptimizationService', () => {
     it('should throw error with less than 3 waypoints', async () => {
       const twoWaypoints = testWaypoints.slice(0, 2);
 
-      await expect(
-        service.optimizeRoute(twoWaypoints, testCriteria)
-      ).rejects.toThrow('Route optimization requires at least 3 waypoints');
+      await expect(service.optimizeRoute(twoWaypoints, testCriteria)).rejects.toThrow(
+        'Route optimization requires at least 3 waypoints'
+      );
     });
 
     it('should accept exactly 3 waypoints (minimum)', async () => {

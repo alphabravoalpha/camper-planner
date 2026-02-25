@@ -5,7 +5,7 @@ import React, { useState, useCallback, useRef, useEffect } from 'react';
 import * as L from 'leaflet';
 import { cn } from '../../utils/cn';
 import { useRouteStore, useUIStore } from '../../store';
-import { zoomToFitWaypoints, calculateRouteDistance, formatDistance } from '../../utils/mapUtils';
+import { zoomToFitWaypoints } from '../../utils/mapUtils';
 import { useMapKeyboardShortcuts } from '../../hooks/useMapKeyboardShortcuts';
 
 interface MapControlsPanelProps {
@@ -23,7 +23,7 @@ const MapControlsPanel: React.FC<MapControlsPanelProps> = ({
   onToggleFullscreen,
   onResetView,
   onToggleLayerControl,
-  layerControlCollapsed
+  layerControlCollapsed,
 }) => {
   const { waypoints } = useRouteStore();
   const { addNotification } = useUIStore();
@@ -48,14 +48,14 @@ const MapControlsPanel: React.FC<MapControlsPanelProps> = ({
     map,
     onToggleFullscreen,
     onToggleLayerControl,
-    onResetView
+    onResetView,
   });
 
   const handleZoomToFit = useCallback(() => {
     if (!map || waypoints.length === 0) {
       addNotification({
         type: 'warning',
-        message: 'Add waypoints to use zoom to fit'
+        message: 'Add waypoints to use zoom to fit',
       });
       return;
     }
@@ -64,18 +64,18 @@ const MapControlsPanel: React.FC<MapControlsPanelProps> = ({
       padding: [50, 50],
       maxZoom: 15,
       animate: true,
-      duration: 1000
+      duration: 1000,
     });
 
     if (success) {
       addNotification({
         type: 'success',
-        message: 'Zoomed to fit all waypoints'
+        message: 'Zoomed to fit all waypoints',
       });
     } else {
       addNotification({
         type: 'error',
-        message: 'Failed to zoom to waypoints'
+        message: 'Failed to zoom to waypoints',
       });
     }
   }, [map, waypoints, addNotification]);
@@ -92,8 +92,6 @@ const MapControlsPanel: React.FC<MapControlsPanelProps> = ({
     }
   }, [map, actions]);
 
-  const routeDistance = calculateRouteDistance(waypoints);
-
   return (
     <div className="absolute top-4 right-3 z-40 flex flex-col space-y-2 hidden sm:flex">
       {/* Main Controls */}
@@ -106,7 +104,12 @@ const MapControlsPanel: React.FC<MapControlsPanelProps> = ({
           aria-label="Zoom in"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+            />
           </svg>
         </button>
         <button
@@ -128,16 +131,21 @@ const MapControlsPanel: React.FC<MapControlsPanelProps> = ({
           onClick={handleZoomToFit}
           disabled={waypoints.length === 0}
           className={cn(
-            "block w-10 h-10 flex items-center justify-center border-b border-neutral-200 transition-colors",
+            'block w-10 h-10 flex items-center justify-center border-b border-neutral-200 transition-colors',
             waypoints.length > 0
-              ? "hover:bg-neutral-50 text-neutral-700"
-              : "text-neutral-300 cursor-not-allowed"
+              ? 'hover:bg-neutral-50 text-neutral-700'
+              : 'text-neutral-300 cursor-not-allowed'
           )}
           title={`Zoom to fit waypoints (Ctrl+F)${waypoints.length === 0 ? ' - Add waypoints first' : ''}`}
           aria-label="Zoom to fit all waypoints"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"
+            />
           </svg>
         </button>
 
@@ -146,8 +154,8 @@ const MapControlsPanel: React.FC<MapControlsPanelProps> = ({
           <button
             onClick={() => setShowOverflow(!showOverflow)}
             className={cn(
-              "block w-10 h-10 flex items-center justify-center hover:bg-neutral-50 transition-colors",
-              showOverflow && "bg-neutral-100"
+              'block w-10 h-10 flex items-center justify-center hover:bg-neutral-50 transition-colors',
+              showOverflow && 'bg-neutral-100'
             )}
             title="More options"
             aria-label="More map options"
@@ -162,10 +170,16 @@ const MapControlsPanel: React.FC<MapControlsPanelProps> = ({
           </button>
 
           {showOverflow && (
-            <div className="absolute right-12 top-0 bg-white rounded-lg shadow-lg border border-neutral-200 py-1 min-w-[180px] z-50" role="menu">
+            <div
+              className="absolute right-12 top-0 bg-white rounded-lg shadow-lg border border-neutral-200 py-1 min-w-[180px] z-50"
+              role="menu"
+            >
               {/* Reset View */}
               <button
-                onClick={() => { onResetView(); setShowOverflow(false); }}
+                onClick={() => {
+                  onResetView();
+                  setShowOverflow(false);
+                }}
                 className="flex items-center gap-3 px-3 py-2 text-sm text-neutral-700 hover:bg-neutral-50 w-full"
                 role="menuitem"
               >
@@ -173,10 +187,13 @@ const MapControlsPanel: React.FC<MapControlsPanelProps> = ({
               </button>
               {/* Layer Control */}
               <button
-                onClick={() => { onToggleLayerControl(); setShowOverflow(false); }}
+                onClick={() => {
+                  onToggleLayerControl();
+                  setShowOverflow(false);
+                }}
                 className={cn(
-                  "flex items-center gap-3 px-3 py-2 text-sm hover:bg-neutral-50 w-full",
-                  !layerControlCollapsed ? "text-primary-600" : "text-neutral-700"
+                  'flex items-center gap-3 px-3 py-2 text-sm hover:bg-neutral-50 w-full',
+                  !layerControlCollapsed ? 'text-primary-600' : 'text-neutral-700'
                 )}
                 role="menuitem"
               >
@@ -184,10 +201,13 @@ const MapControlsPanel: React.FC<MapControlsPanelProps> = ({
               </button>
               {/* Fullscreen */}
               <button
-                onClick={() => { onToggleFullscreen(); setShowOverflow(false); }}
+                onClick={() => {
+                  onToggleFullscreen();
+                  setShowOverflow(false);
+                }}
                 className={cn(
-                  "flex items-center gap-3 px-3 py-2 text-sm hover:bg-neutral-50 w-full",
-                  isFullscreen ? "text-primary-600" : "text-neutral-700"
+                  'flex items-center gap-3 px-3 py-2 text-sm hover:bg-neutral-50 w-full',
+                  isFullscreen ? 'text-primary-600' : 'text-neutral-700'
                 )}
                 role="menuitem"
               >
@@ -196,7 +216,10 @@ const MapControlsPanel: React.FC<MapControlsPanelProps> = ({
               <div className="border-t border-neutral-100 my-1" role="separator" />
               {/* Keyboard Shortcuts */}
               <button
-                onClick={() => { setShowShortcuts(!showShortcuts); setShowOverflow(false); }}
+                onClick={() => {
+                  setShowShortcuts(!showShortcuts);
+                  setShowOverflow(false);
+                }}
                 className="flex items-center gap-3 px-3 py-2 text-sm text-neutral-700 hover:bg-neutral-50 w-full"
                 role="menuitem"
               >
@@ -210,7 +233,9 @@ const MapControlsPanel: React.FC<MapControlsPanelProps> = ({
       {/* Keyboard Shortcuts Panel */}
       {showShortcuts && (
         <div className="bg-white rounded-lg shadow-lg p-4 min-w-64 max-w-sm">
-          <h3 className="font-display font-semibold text-neutral-900 mb-3 text-sm">Keyboard Shortcuts</h3>
+          <h3 className="font-display font-semibold text-neutral-900 mb-3 text-sm">
+            Keyboard Shortcuts
+          </h3>
           <div className="space-y-2">
             {shortcuts.map((shortcut, index) => (
               <div key={index} className="flex items-center justify-between text-xs">

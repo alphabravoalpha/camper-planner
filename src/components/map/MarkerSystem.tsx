@@ -47,20 +47,28 @@ export interface CurrentLocationMarker extends BaseMarker {
   accuracy?: number;
 }
 
-export type AnyMarker = WaypointMarker | CampsiteMarker | AireMarker | POIMarker | CurrentLocationMarker;
+export type AnyMarker =
+  | WaypointMarker
+  | CampsiteMarker
+  | AireMarker
+  | POIMarker
+  | CurrentLocationMarker;
 
 // Custom marker icons
-const createCustomIcon = (type: MarkerType, options: {
-  color?: string;
-  text?: string | number;
-  size?: 'sm' | 'md' | 'lg';
-}): DivIcon => {
+const createCustomIcon = (
+  type: MarkerType,
+  options: {
+    color?: string;
+    text?: string | number;
+    size?: 'sm' | 'md' | 'lg';
+  }
+): DivIcon => {
   const { color, text, size = 'md' } = options;
 
   const sizeClasses = {
     sm: 'w-6 h-6 text-xs',
     md: 'w-8 h-8 text-sm',
-    lg: 'w-10 h-10 text-base'
+    lg: 'w-10 h-10 text-base',
   };
 
   const iconColors = {
@@ -68,7 +76,7 @@ const createCustomIcon = (type: MarkerType, options: {
     campsite: 'bg-green-600 border-green-700',
     aire: 'bg-orange-600 border-orange-700',
     poi: 'bg-purple-600 border-purple-700',
-    'current-location': 'bg-red-600 border-red-700'
+    'current-location': 'bg-red-600 border-red-700',
   };
 
   const iconClass = cn(
@@ -82,7 +90,7 @@ const createCustomIcon = (type: MarkerType, options: {
     className: 'custom-marker',
     iconSize: size === 'sm' ? [24, 24] : size === 'lg' ? [40, 40] : [32, 32],
     iconAnchor: size === 'sm' ? [12, 12] : size === 'lg' ? [20, 20] : [16, 16],
-    popupAnchor: [0, size === 'sm' ? -12 : size === 'lg' ? -20 : -16]
+    popupAnchor: [0, size === 'sm' ? -12 : size === 'lg' ? -20 : -16],
   });
 };
 
@@ -91,12 +99,20 @@ const svgIcon = (path: string, size = 14) =>
 
 const getMarkerSymbol = (type: MarkerType): string => {
   switch (type) {
-    case 'waypoint': return '●';
-    case 'campsite': return svgIcon('<path d="M3 20 12 4l9 16Z"/><path d="M12 4v16"/>');
-    case 'aire': return 'P';
-    case 'poi': return svgIcon('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>');
-    case 'current-location': return svgIcon('<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>');
-    default: return '●';
+    case 'waypoint':
+      return '●';
+    case 'campsite':
+      return svgIcon('<path d="M3 20 12 4l9 16Z"/><path d="M12 4v16"/>');
+    case 'aire':
+      return 'P';
+    case 'poi':
+      return svgIcon('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>');
+    case 'current-location':
+      return svgIcon(
+        '<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>'
+      );
+    default:
+      return '●';
   }
 };
 
@@ -111,7 +127,7 @@ const MarkerComponent: React.FC<MarkerComponentProps> = ({
   marker,
   onClick,
   isDraggable = false,
-  onDragEnd
+  onDragEnd,
 }) => {
   const icon = useMemo(() => {
     const options: { color?: string; text?: string | number; size?: 'sm' | 'md' | 'lg' } = {};
@@ -126,10 +142,10 @@ const MarkerComponent: React.FC<MarkerComponentProps> = ({
     return createCustomIcon(marker.type, options);
   }, [marker]);
 
-  const handleDragEnd = (e: any) => {
+  const handleDragEnd = (e: L.DragEndEvent) => {
     if (onDragEnd) {
-      const newLat = e.target.getLatLng().lat;
-      const newLng = e.target.getLatLng().lng;
+      const newLat = (e.target as L.Marker).getLatLng().lat;
+      const newLng = (e.target as L.Marker).getLatLng().lng;
       onDragEnd(marker, newLat, newLng);
     }
   };
@@ -149,23 +165,26 @@ const MarkerComponent: React.FC<MarkerComponentProps> = ({
 
     // Add type-specific content
     switch (marker.type) {
-      case 'waypoint':
+      case 'waypoint': {
         const waypoint = marker as WaypointMarker;
         return (
           <div>
             {baseContent}
             <div className="mt-2 text-xs">
-              <span className={cn(
-                'px-2 py-1 rounded text-white',
-                waypoint.isDestination ? 'bg-red-600' : 'bg-primary-600'
-              )}>
+              <span
+                className={cn(
+                  'px-2 py-1 rounded text-white',
+                  waypoint.isDestination ? 'bg-red-600' : 'bg-primary-600'
+                )}
+              >
                 {waypoint.isDestination ? 'Destination' : `Waypoint ${waypoint.order}`}
               </span>
             </div>
           </div>
         );
+      }
 
-      case 'campsite':
+      case 'campsite': {
         const campsite = marker as CampsiteMarker;
         return (
           <div>
@@ -175,7 +194,10 @@ const MarkerComponent: React.FC<MarkerComponentProps> = ({
                 <div className="text-xs text-neutral-500 mb-1">Amenities:</div>
                 <div className="flex flex-wrap gap-1">
                   {campsite.amenities.slice(0, 3).map((amenity, index) => (
-                    <span key={index} className="px-1 py-0.5 bg-green-100 text-green-700 text-xs rounded">
+                    <span
+                      key={index}
+                      className="px-1 py-0.5 bg-green-100 text-green-700 text-xs rounded"
+                    >
                       {amenity}
                     </span>
                   ))}
@@ -189,40 +211,44 @@ const MarkerComponent: React.FC<MarkerComponentProps> = ({
             )}
             {campsite.rating && (
               <div className="mt-2 text-xs">
-                Rating: {'★'.repeat(campsite.rating)}{'☆'.repeat(5 - campsite.rating)}
+                Rating: {'★'.repeat(campsite.rating)}
+                {'☆'.repeat(5 - campsite.rating)}
               </div>
             )}
           </div>
         );
+      }
 
-      case 'aire':
+      case 'aire': {
         const aire = marker as AireMarker;
         return (
           <div>
             {baseContent}
             <div className="mt-2 text-xs">
-              <span className={cn(
-                'px-2 py-1 rounded text-white',
-                aire.cost === 'free' ? 'bg-green-600' : 'bg-orange-600'
-              )}>
+              <span
+                className={cn(
+                  'px-2 py-1 rounded text-white',
+                  aire.cost === 'free' ? 'bg-green-600' : 'bg-orange-600'
+                )}
+              >
                 {aire.cost === 'free' ? 'Free' : 'Paid'} Aire
               </span>
             </div>
           </div>
         );
+      }
 
-      case 'current-location':
+      case 'current-location': {
         const location = marker as CurrentLocationMarker;
         return (
           <div>
             {baseContent}
             {location.accuracy && (
-              <div className="mt-2 text-xs text-neutral-500">
-                Accuracy: ±{location.accuracy}m
-              </div>
+              <div className="mt-2 text-xs text-neutral-500">Accuracy: ±{location.accuracy}m</div>
             )}
           </div>
         );
+      }
 
       default:
         return baseContent;
@@ -232,17 +258,15 @@ const MarkerComponent: React.FC<MarkerComponentProps> = ({
   return (
     <Marker
       position={[marker.lat, marker.lng]}
-      // @ts-ignore - React-Leaflet v4 prop compatibility
-          icon={icon}
+      // @ts-expect-error - React-Leaflet v4 prop compatibility
+      icon={icon}
       draggable={isDraggable}
       eventHandlers={{
         click: () => onClick?.(marker),
-        dragend: handleDragEnd
+        dragend: handleDragEnd,
       }}
     >
-      <Popup>
-        {renderPopupContent()}
-      </Popup>
+      <Popup>{renderPopupContent()}</Popup>
     </Marker>
   );
 };
@@ -258,11 +282,11 @@ const MarkerSystem: React.FC<MarkerSystemProps> = ({
   markers,
   onMarkerClick,
   draggableTypes = [],
-  onMarkerDragEnd
+  onMarkerDragEnd,
 }) => {
   return (
     <>
-      {markers.map((marker) => (
+      {markers.map(marker => (
         <MarkerComponent
           key={marker.id}
           marker={marker}
@@ -278,6 +302,7 @@ const MarkerSystem: React.FC<MarkerSystemProps> = ({
 export default MarkerSystem;
 
 // Helper functions for creating markers
+// eslint-disable-next-line react-refresh/only-export-components
 export const createWaypointMarker = (
   lat: number,
   lng: number,
@@ -290,9 +315,10 @@ export const createWaypointMarker = (
   type: 'waypoint',
   title: title || `Waypoint ${order}`,
   order,
-  isDestination: false
+  isDestination: false,
 });
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const createCampsiteMarker = (
   lat: number,
   lng: number,
@@ -304,9 +330,10 @@ export const createCampsiteMarker = (
   lng,
   type: 'campsite',
   title,
-  ...data
+  ...data,
 });
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const createCurrentLocationMarker = (
   lat: number,
   lng: number,
@@ -317,5 +344,5 @@ export const createCurrentLocationMarker = (
   lng,
   type: 'current-location',
   title: 'Your Location',
-  accuracy
+  accuracy,
 });

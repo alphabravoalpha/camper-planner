@@ -3,7 +3,11 @@
 
 import React, { useState, useCallback } from 'react';
 // import { useTranslation } from 'react-i18next';
-import { routeOptimizationService, type OptimizationCriteria, type OptimizationResult } from '@/services/RouteOptimizationService';
+import {
+  routeOptimizationService,
+  type OptimizationCriteria,
+  type OptimizationResult,
+} from '@/services/RouteOptimizationService';
 import { useRouteStore, useVehicleStore } from '@/store';
 import { cn } from '@/utils/cn';
 
@@ -26,13 +30,13 @@ const RouteOptimization: React.FC<RouteOptimizationProps> = ({ className }) => {
     timeConstraints: {
       maxDrivingTime: 8,
       preferredStartTime: 9,
-      avoidNightDriving: true
+      avoidNightDriving: true,
     },
     campsitePreferences: {
       maxDistanceBetweenStops: 300,
       preferredStopDuration: 12,
-      requireCampsiteOvernight: true
-    }
+      requireCampsiteOvernight: true,
+    },
   });
   const [error, setError] = useState<string | null>(null);
 
@@ -46,10 +50,10 @@ const RouteOptimization: React.FC<RouteOptimizationProps> = ({ className }) => {
     setError(null);
 
     try {
-      const optimizationResult = await routeOptimizationService.optimizeRoute(
-        waypoints,
-        { ...criteria, vehicleProfile: vehicleProfile || undefined }
-      );
+      const optimizationResult = await routeOptimizationService.optimizeRoute(waypoints, {
+        ...criteria,
+        vehicleProfile: vehicleProfile || undefined,
+      });
 
       setResult(optimizationResult);
       setStatus('completed');
@@ -85,22 +89,21 @@ const RouteOptimization: React.FC<RouteOptimizationProps> = ({ className }) => {
       {/* Optimization Controls */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <h3 className="text-sm font-display font-medium text-neutral-900">
-Route Optimization
-          </h3>
-          <div className="text-xs text-neutral-500">
-            {waypoints.length} waypoints
-          </div>
+          <h3 className="text-sm font-display font-medium text-neutral-900">Route Optimization</h3>
+          <div className="text-xs text-neutral-500">{waypoints.length} waypoints</div>
         </div>
 
         {/* Optimization Criteria */}
         <div className="space-y-2">
-          <label className="text-xs font-medium text-neutral-700">
-Optimization Goal
+          <label htmlFor="optimization-goal" className="text-xs font-medium text-neutral-700">
+            Optimization Goal
           </label>
           <select
+            id="optimization-goal"
             value={criteria.objective}
-            onChange={(e) => updateCriteria({ objective: e.target.value as 'shortest' | 'fastest' | 'balanced' })}
+            onChange={e =>
+              updateCriteria({ objective: e.target.value as 'shortest' | 'fastest' | 'balanced' })
+            }
             className="w-full text-xs border border-neutral-300 rounded px-2 py-1"
           >
             <option value="balanced">Balanced</option>
@@ -111,22 +114,25 @@ Optimization Goal
 
         {/* Time Constraints */}
         <div className="space-y-2">
-          <label className="text-xs font-medium text-neutral-700">
-Max Driving Time per Day
+          <label htmlFor="max-driving-time" className="text-xs font-medium text-neutral-700">
+            Max Driving Time per Day
           </label>
           <div className="flex items-center space-x-2">
             <input
+              id="max-driving-time"
               type="range"
               min="4"
               max="12"
               step="1"
               value={criteria.timeConstraints?.maxDrivingTime || 8}
-              onChange={(e) => updateCriteria({
-                timeConstraints: {
-                  ...criteria.timeConstraints!,
-                  maxDrivingTime: parseInt(e.target.value)
-                }
-              })}
+              onChange={e =>
+                updateCriteria({
+                  timeConstraints: {
+                    ...criteria.timeConstraints!,
+                    maxDrivingTime: parseInt(e.target.value),
+                  },
+                })
+              }
               className="flex-1"
             />
             <span className="text-xs text-neutral-600 w-8">
@@ -152,7 +158,7 @@ Max Driving Time per Day
               <span>Optimizing...</span>
             </div>
           ) : (
-'Optimize Route'
+            'Optimize Route'
           )}
         </button>
       </div>
@@ -162,7 +168,11 @@ Max Driving Time per Day
         <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
           <div className="flex items-center space-x-2">
             <svg className="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+              <path
+                fillRule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                clipRule="evenodd"
+              />
             </svg>
             <span className="text-xs text-red-700">{error}</span>
           </div>
@@ -173,9 +183,7 @@ Max Driving Time per Day
       {hasResult && (
         <div className="space-y-3">
           <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
-            <h4 className="text-sm font-medium text-green-900 mb-2">
-Optimization Results
-            </h4>
+            <h4 className="text-sm font-medium text-green-900 mb-2">Optimization Results</h4>
 
             {/* Improvements Summary */}
             <div className="space-y-2 text-xs">
@@ -210,7 +218,8 @@ Optimization Results
             {/* Algorithm Info */}
             <div className="mt-2 pt-2 border-t border-green-200">
               <div className="text-xs text-green-600">
-                {result.optimizationMetadata.algorithm} • {result.optimizationMetadata.iterations} iterations • {result.optimizationMetadata.executionTime}ms
+                {result.optimizationMetadata.algorithm} • {result.optimizationMetadata.iterations}{' '}
+                iterations • {result.optimizationMetadata.executionTime}ms
               </div>
             </div>
           </div>
@@ -243,13 +252,13 @@ Optimization Results
               onClick={handleApplyOptimization}
               className="flex-1 px-3 py-2 bg-green-600 text-white text-xs font-medium rounded hover:bg-green-700 transition-colors"
             >
-Apply Optimization
+              Apply Optimization
             </button>
             <button
               onClick={handleRejectOptimization}
               className="flex-1 px-3 py-2 bg-neutral-300 text-neutral-700 text-xs font-medium rounded hover:bg-neutral-400 transition-colors"
             >
-Cancel
+              Cancel
             </button>
           </div>
         </div>
@@ -259,7 +268,8 @@ Cancel
       {waypoints.length < 3 && (
         <div className="p-3 bg-primary-50 border border-primary-200 rounded-lg">
           <div className="text-xs text-primary-700">
-Add at least 3 waypoints to optimize your route automatically using our intelligent routing algorithm.
+            Add at least 3 waypoints to optimize your route automatically using our intelligent
+            routing algorithm.
           </div>
         </div>
       )}

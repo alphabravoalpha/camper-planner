@@ -75,19 +75,22 @@ export const DRIVING_STYLE_LIMITS: Record<DrivingStyle, DrivingLimits> = {
   relaxed: {
     maxDailyHours: 4,
     maxDailyDistance: 250,
-    description: 'Take it easy. Short drives with plenty of time to explore, arrive early and enjoy your campsite.',
+    description:
+      'Take it easy. Short drives with plenty of time to explore, arrive early and enjoy your campsite.',
     shortDescription: '~4 hours / ~250 km per day',
   },
   moderate: {
     maxDailyHours: 6,
     maxDailyDistance: 350,
-    description: 'A good balance. Enough driving to make progress, with time to stop and explore along the way.',
+    description:
+      'A good balance. Enough driving to make progress, with time to stop and explore along the way.',
     shortDescription: '~6 hours / ~350 km per day',
   },
   intensive: {
     maxDailyHours: 8,
     maxDailyDistance: 450,
-    description: 'Cover ground efficiently. Longer driving days for experienced road-trippers who want to reach their destination faster.',
+    description:
+      'Cover ground efficiently. Longer driving days for experienced road-trippers who want to reach their destination faster.',
     shortDescription: '~8 hours / ~450 km per day',
   },
 };
@@ -102,9 +105,7 @@ function haversine(lat1: number, lng1: number, lat2: number, lng2: number): numb
   const dLng = ((lng2 - lng1) * Math.PI) / 180;
   const a =
     Math.sin(dLat / 2) ** 2 +
-    Math.cos((lat1 * Math.PI) / 180) *
-      Math.cos((lat2 * Math.PI) / 180) *
-      Math.sin(dLng / 2) ** 2;
+    Math.cos((lat1 * Math.PI) / 180) * Math.cos((lat2 * Math.PI) / 180) * Math.sin(dLng / 2) ** 2;
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
@@ -135,8 +136,10 @@ async function reverseGeocode(lat: number, lng: number): Promise<string> {
       if (country) return country;
     }
 
-    return data.display_name?.split(',').slice(0, 2).join(',').trim() ||
-      `${lat.toFixed(2)}°N, ${lng.toFixed(2)}°E`;
+    return (
+      data.display_name?.split(',').slice(0, 2).join(',').trim() ||
+      `${lat.toFixed(2)}°N, ${lng.toFixed(2)}°E`
+    );
   } catch {
     return `${lat.toFixed(2)}°N, ${lng.toFixed(2)}°E`;
   }
@@ -168,9 +171,7 @@ export class TripWizardService {
     });
 
     if (routeResponse.status === 'error' || routeResponse.routes.length === 0) {
-      throw new Error(
-        routeResponse.errors?.join(', ') || 'Failed to calculate route'
-      );
+      throw new Error(routeResponse.errors?.join(', ') || 'Failed to calculate route');
     }
 
     const route = routeResponse.routes[0];
@@ -187,7 +188,12 @@ export class TripWizardService {
 
     // Step 4: Reverse geocode split points to get place names
     // Rate-limit Nominatim calls (1 per second)
-    const namedSplitPoints: Array<{ lat: number; lng: number; name: string; distanceFromStart: number }> = [];
+    const namedSplitPoints: Array<{
+      lat: number;
+      lng: number;
+      name: string;
+      distanceFromStart: number;
+    }> = [];
 
     // Add start point
     const startCoord = routeGeometry[0];
@@ -230,8 +236,9 @@ export class TripWizardService {
       const segmentTime = segmentDistance * (totalDurationHrs / totalDistanceKm);
 
       // Check if this day involves a channel crossing (only tag one day)
-      const isCrossingDay = !crossingAssigned && !!(input.crossing &&
-        this.isPointNearCrossing(dayStart, dayEnd, input.crossing));
+      const isCrossingDay =
+        !crossingAssigned &&
+        !!(input.crossing && this.isPointNearCrossing(dayStart, dayEnd, input.crossing));
       if (isCrossingDay) crossingAssigned = true;
 
       // Find campsite options for this overnight stop (not for the final destination)
@@ -240,7 +247,9 @@ export class TripWizardService {
 
       if (!isLastDay) {
         overnightOptions = await this.findCampsitesNearPoint(
-          dayEnd.lat, dayEnd.lng, input.vehicleProfile
+          dayEnd.lat,
+          dayEnd.lng,
+          input.vehicleProfile
         );
       }
 
@@ -255,7 +264,13 @@ export class TripWizardService {
         overnightOptions,
         selectedOvernight: overnightOptions[0] || undefined,
         crossing: isCrossingDay ? input.crossing : undefined,
-        notes: this.generateDayNotes(segmentDistance, segmentTime, limits, isCrossingDay, isLastDay),
+        notes: this.generateDayNotes(
+          segmentDistance,
+          segmentTime,
+          limits,
+          isCrossingDay,
+          isLastDay
+        ),
       };
 
       days.push(day);
@@ -264,7 +279,11 @@ export class TripWizardService {
       drivingDaysSinceRest++;
 
       // Insert rest day if needed
-      if (input.restDayFrequency > 0 && drivingDaysSinceRest >= input.restDayFrequency && !isLastDay) {
+      if (
+        input.restDayFrequency > 0 &&
+        drivingDaysSinceRest >= input.restDayFrequency &&
+        !isLastDay
+      ) {
         days.push({
           dayNumber,
           date: new Date(currentDate),
@@ -289,7 +308,9 @@ export class TripWizardService {
     }
 
     if (input.crossing?.overnightCrossing) {
-      warnings.push(`The ${input.crossing.name} is an overnight crossing — you'll sleep on the ferry.`);
+      warnings.push(
+        `The ${input.crossing.name} is an overnight crossing — you'll sleep on the ferry.`
+      );
     }
 
     return {
@@ -425,8 +446,8 @@ export class TripWizardService {
     const bounds: BoundingBox = {
       south: lat - searchRadiusKm * degreesPerKm,
       north: lat + searchRadiusKm * degreesPerKm,
-      west: lng - searchRadiusKm * degreesPerKm / Math.cos((lat * Math.PI) / 180),
-      east: lng + searchRadiusKm * degreesPerKm / Math.cos((lat * Math.PI) / 180),
+      west: lng - (searchRadiusKm * degreesPerKm) / Math.cos((lat * Math.PI) / 180),
+      east: lng + (searchRadiusKm * degreesPerKm) / Math.cos((lat * Math.PI) / 180),
     };
 
     try {
@@ -460,7 +481,7 @@ export class TripWizardService {
       // Return top 3
       return scored.slice(0, 3);
     } catch (error) {
-      console.warn('Failed to find campsites near point:', error);
+      console.error('Failed to find campsites near point:', error);
       return [];
     }
   }
@@ -471,7 +492,7 @@ export class TripWizardService {
   private static scoreCampsite(
     campsite: Campsite,
     distanceKm: number,
-    vehicleProfile?: VehicleProfile
+    _vehicleProfile?: VehicleProfile
   ): number {
     let score = 50; // Base score
 
@@ -533,11 +554,13 @@ export class TripWizardService {
     const notes: string[] = [];
 
     if (isCrossing) {
-      notes.push('This day includes a channel crossing — allow extra time for check-in and boarding.');
+      notes.push(
+        'This day includes a channel crossing — allow extra time for check-in and boarding.'
+      );
     }
 
     if (isLastDay) {
-      notes.push('Arrival day! You\'ve made it to your destination.');
+      notes.push("Arrival day! You've made it to your destination.");
     }
 
     if (drivingTime > limits.maxDailyHours * 0.9) {
@@ -566,21 +589,13 @@ export class TripWizardService {
     dayEnd: { lat: number; lng: number },
     crossing: ChannelCrossing
   ): boolean {
-    const nearDeparture = haversine(
-      dayStart.lat, dayStart.lng,
-      crossing.departure.lat, crossing.departure.lng
-    ) < 50 || haversine(
-      dayEnd.lat, dayEnd.lng,
-      crossing.departure.lat, crossing.departure.lng
-    ) < 50;
+    const nearDeparture =
+      haversine(dayStart.lat, dayStart.lng, crossing.departure.lat, crossing.departure.lng) < 50 ||
+      haversine(dayEnd.lat, dayEnd.lng, crossing.departure.lat, crossing.departure.lng) < 50;
 
-    const nearArrival = haversine(
-      dayStart.lat, dayStart.lng,
-      crossing.arrival.lat, crossing.arrival.lng
-    ) < 50 || haversine(
-      dayEnd.lat, dayEnd.lng,
-      crossing.arrival.lat, crossing.arrival.lng
-    ) < 50;
+    const nearArrival =
+      haversine(dayStart.lat, dayStart.lng, crossing.arrival.lat, crossing.arrival.lng) < 50 ||
+      haversine(dayEnd.lat, dayEnd.lng, crossing.arrival.lat, crossing.arrival.lng) < 50;
 
     return nearDeparture || nearArrival;
   }
@@ -589,8 +604,10 @@ export class TripWizardService {
    * Check if a channel crossing is needed between two locations
    */
   static needsCrossing(
-    startLat: number, startLng: number,
-    endLat: number, endLng: number
+    startLat: number,
+    startLng: number,
+    endLat: number,
+    endLng: number
   ): boolean {
     return needsChannelCrossing(startLat, startLng, endLat, endLng);
   }
@@ -599,8 +616,10 @@ export class TripWizardService {
    * Get recommended crossings for a given journey
    */
   static getRecommendedCrossings(
-    startLat: number, startLng: number,
-    endLat: number, endLng: number
+    startLat: number,
+    startLng: number,
+    endLat: number,
+    endLng: number
   ): ChannelCrossing[] {
     return getRecommendedCrossings(startLat, startLng, endLat, endLng);
   }

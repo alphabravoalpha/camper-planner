@@ -19,7 +19,7 @@ class ErrorBoundary extends Component<Props, State> {
     this.state = {
       hasError: false,
       error: null,
-      errorInfo: null
+      errorInfo: null,
     };
   }
 
@@ -27,14 +27,14 @@ class ErrorBoundary extends Component<Props, State> {
     return {
       hasError: true,
       error,
-      errorInfo: null
+      errorInfo: null,
     };
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     this.setState({
       error,
-      errorInfo
+      errorInfo,
     });
 
     // Log error to console in development
@@ -54,7 +54,7 @@ class ErrorBoundary extends Component<Props, State> {
     this.setState({
       hasError: false,
       error: null,
-      errorInfo: null
+      errorInfo: null,
     });
   };
 
@@ -81,11 +81,10 @@ class ErrorBoundary extends Component<Props, State> {
                     />
                   </svg>
                 </div>
-                <h2 className="mt-6 text-lg font-medium text-neutral-900">
-                  Something went wrong
-                </h2>
+                <h2 className="mt-6 text-lg font-medium text-neutral-900">Something went wrong</h2>
                 <p className="mt-2 text-sm text-neutral-600">
-                  We're sorry, but something unexpected happened. Please try refreshing the page.
+                  We&apos;re sorry, but something unexpected happened. Please try refreshing the
+                  page.
                 </p>
 
                 {import.meta.env.DEV && this.state.error && (

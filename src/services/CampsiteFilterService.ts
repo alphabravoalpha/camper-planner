@@ -3,7 +3,12 @@
 
 import { type Campsite, type CampsiteRequest } from './CampsiteService';
 import { type CampsiteFilterState } from '../components/campsite/CampsiteFilter';
-import { type RouteGeometry, filterCampsitesByRoute, calculateRouteRelevance, haversineDistance } from '../utils/routeDistance';
+import {
+  type RouteGeometry,
+  filterCampsitesByRoute,
+  calculateRouteRelevance,
+  haversineDistance,
+} from '../utils/routeDistance';
 
 export interface EnhancedCampsiteRequest extends CampsiteRequest {
   filterState?: CampsiteFilterState;
@@ -28,7 +33,7 @@ export class CampsiteFilterService {
     routeGeometry?: RouteGeometry,
     currentLocation?: [number, number]
   ): FilteredCampsite[] {
-    let filtered = campsites.map(campsite => ({ ...campsite } as FilteredCampsite));
+    let filtered = campsites.map(campsite => ({ ...campsite }) as FilteredCampsite);
 
     // 1. Type filtering
     filtered = this.filterByTypes(filtered, filterState.visibleTypes);
@@ -43,11 +48,7 @@ export class CampsiteFilterService {
 
     // 4. Route-based filtering
     if (filterState.routeOnlyMode && routeGeometry) {
-      filtered = filterCampsitesByRoute(
-        filtered,
-        routeGeometry,
-        filterState.maxDistanceFromRoute
-      );
+      filtered = filterCampsitesByRoute(filtered, routeGeometry, filterState.maxDistanceFromRoute);
     }
 
     // 5. Advanced filtering
@@ -59,12 +60,7 @@ export class CampsiteFilterService {
     }
 
     // 7. Calculate relevance scores
-    filtered = this.calculateRelevanceScores(
-      filtered,
-      filterState,
-      routeGeometry,
-      currentLocation
-    );
+    filtered = this.calculateRelevanceScores(filtered, filterState, routeGeometry, currentLocation);
 
     // 8. Sort results
     filtered = this.sortCampsites(filtered, filterState.sortBy);
@@ -113,18 +109,18 @@ export class CampsiteFilterService {
    */
   private static mapAmenityKey(filterKey: string): string {
     const mapping: Record<string, string> = {
-      'electricity': 'electricity',
-      'wifi': 'wifi',
-      'shower': 'shower',
-      'toilets': 'toilets',
-      'drinking_water': 'drinking_water',
-      'waste_disposal': 'waste_disposal',
-      'laundry': 'laundry',
-      'restaurant': 'restaurant',
-      'shop': 'shop',
-      'playground': 'playground',
-      'swimming_pool': 'swimming_pool',
-      'pet_allowed': 'pet_allowed'
+      electricity: 'electricity',
+      wifi: 'wifi',
+      shower: 'shower',
+      toilets: 'toilets',
+      drinking_water: 'drinking_water',
+      waste_disposal: 'waste_disposal',
+      laundry: 'laundry',
+      restaurant: 'restaurant',
+      shop: 'shop',
+      playground: 'playground',
+      swimming_pool: 'swimming_pool',
+      pet_allowed: 'pet_allowed',
     };
 
     return mapping[filterKey] || filterKey;
@@ -240,33 +236,37 @@ export class CampsiteFilterService {
 
     if (!nameQuery && !locationQuery) return campsites;
 
-    return campsites.filter(campsite => {
-      let matches = true;
+    return campsites
+      .filter(campsite => {
+        let matches = true;
 
-      // Name search
-      if (nameQuery) {
-        const name = campsite.name?.toLowerCase() || '';
-        const type = campsite.type.toLowerCase();
-        const amenityKeys = Object.keys(campsite.amenities || {}).join(' ').toLowerCase();
+        // Name search
+        if (nameQuery) {
+          const name = campsite.name?.toLowerCase() || '';
+          const type = campsite.type.toLowerCase();
+          const amenityKeys = Object.keys(campsite.amenities || {})
+            .join(' ')
+            .toLowerCase();
 
-        matches = matches && (
-          name.includes(nameQuery) ||
-          type.includes(nameQuery) ||
-          amenityKeys.includes(nameQuery)
-        );
-      }
+          matches =
+            matches &&
+            (name.includes(nameQuery) ||
+              type.includes(nameQuery) ||
+              amenityKeys.includes(nameQuery));
+        }
 
-      // Location search
-      if (locationQuery && matches) {
-        const address = campsite.address?.toLowerCase() || '';
-        matches = matches && address.includes(locationQuery);
-      }
+        // Location search
+        if (locationQuery && matches) {
+          const address = campsite.address?.toLowerCase() || '';
+          matches = matches && address.includes(locationQuery);
+        }
 
-      return matches;
-    }).map(campsite => ({
-      ...campsite,
-      searchScore: this.calculateSearchScore(campsite, nameQuery, locationQuery)
-    }));
+        return matches;
+      })
+      .map(campsite => ({
+        ...campsite,
+        searchScore: this.calculateSearchScore(campsite, nameQuery, locationQuery),
+      }));
   }
 
   /**
@@ -333,15 +333,17 @@ export class CampsiteFilterService {
       // Calculate distance from center (map center or current location)
       if (currentLocation) {
         const distance = haversineDistance(
-          currentLocation[0], currentLocation[1],
-          campsite.lat, campsite.lng
+          currentLocation[0],
+          currentLocation[1],
+          campsite.lat,
+          campsite.lng
         );
         campsite.distanceFromCenter = distance;
       }
 
       return {
         ...campsite,
-        relevanceScore
+        relevanceScore,
       };
     });
   }
@@ -355,15 +357,17 @@ export class CampsiteFilterService {
   ): FilteredCampsite[] {
     return [...campsites].sort((a, b) => {
       switch (sortBy) {
-        case 'distance':
+        case 'distance': {
           const aDistance = a.routeDistance ?? a.distanceFromCenter ?? 0;
           const bDistance = b.routeDistance ?? b.distanceFromCenter ?? 0;
           return aDistance - bDistance;
+        }
 
-        case 'name':
+        case 'name': {
           const aName = a.name || a.type;
           const bName = b.name || b.type;
           return aName.localeCompare(bName);
+        }
 
         case 'rating':
           // Placeholder for future rating system

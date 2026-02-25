@@ -1,10 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import {
-  TripPlanningService,
-  type DailyStage,
-  type TripPlan,
-  type DrivingLimits,
-} from '../TripPlanningService';
+import { TripPlanningService, type DrivingLimits } from '../TripPlanningService';
 import { type Waypoint, type VehicleProfile } from '../../store';
 
 describe('TripPlanningService', () => {
@@ -48,10 +43,7 @@ describe('TripPlanningService', () => {
     });
 
     it('should calculate realistic total distance', () => {
-      const plan = TripPlanningService.createTripPlan(
-        testWaypoints,
-        testVehicleProfile
-      );
+      const plan = TripPlanningService.createTripPlan(testWaypoints, testVehicleProfile);
 
       expect(plan.totalDistance).toBeGreaterThan(0);
       expect(plan.totalDistance).toBeLessThan(10000); // Reasonable for European trip
@@ -59,11 +51,7 @@ describe('TripPlanningService', () => {
 
     it('should set start and end dates when provided', () => {
       const startDate = new Date('2024-06-01');
-      const plan = TripPlanningService.createTripPlan(
-        testWaypoints,
-        testVehicleProfile,
-        startDate
-      );
+      const plan = TripPlanningService.createTripPlan(testWaypoints, testVehicleProfile, startDate);
 
       expect(plan.startDate).toBeDefined();
       expect(plan.endDate).toBeDefined();
@@ -71,10 +59,7 @@ describe('TripPlanningService', () => {
     });
 
     it('should create daily stages for route', () => {
-      const plan = TripPlanningService.createTripPlan(
-        testWaypoints,
-        testVehicleProfile
-      );
+      const plan = TripPlanningService.createTripPlan(testWaypoints, testVehicleProfile);
 
       expect(plan.dailyStages).toBeDefined();
       expect(Array.isArray(plan.dailyStages)).toBe(true);
@@ -111,18 +96,10 @@ describe('TripPlanningService', () => {
     });
 
     it('should adjust limits for winter season', () => {
-      const summerLimits = TripPlanningService.getDrivingLimits(
-        testVehicleProfile,
-        'summer'
-      );
-      const winterLimits = TripPlanningService.getDrivingLimits(
-        testVehicleProfile,
-        'winter'
-      );
+      const summerLimits = TripPlanningService.getDrivingLimits(testVehicleProfile, 'summer');
+      const winterLimits = TripPlanningService.getDrivingLimits(testVehicleProfile, 'winter');
 
-      expect(winterLimits.maxDailyDistance).toBeLessThan(
-        summerLimits.maxDailyDistance
-      );
+      expect(winterLimits.maxDailyDistance).toBeLessThan(summerLimits.maxDailyDistance);
     });
   });
 
@@ -222,12 +199,7 @@ describe('TripPlanningService', () => {
       const startDate = new Date('2024-06-01');
       const limits = TripPlanningService.getDrivingLimits(testVehicleProfile);
       const segments = TripPlanningService.calculateRouteSegments(testWaypoints);
-      const stages = TripPlanningService.planDailyStages(
-        segments,
-        limits,
-        startDate,
-        'summer'
-      );
+      const stages = TripPlanningService.planDailyStages(segments, limits, startDate, 'summer');
 
       stages.forEach((stage, index) => {
         expect(stage.date).toBeInstanceOf(Date);
@@ -244,9 +216,7 @@ describe('TripPlanningService', () => {
       const feasibility = TripPlanningService.assessDayFeasibility(300, 5, limits);
 
       expect(feasibility).toBeDefined();
-      expect(['excellent', 'good', 'challenging', 'unrealistic']).toContain(
-        feasibility
-      );
+      expect(['excellent', 'good', 'challenging', 'unrealistic']).toContain(feasibility);
     });
 
     it('should flag excessive distance as unrealistic', () => {
@@ -278,15 +248,9 @@ describe('TripPlanningService', () => {
 
   describe('Trip Metrics', () => {
     it('should calculate trip metrics', () => {
-      const plan = TripPlanningService.createTripPlan(
-        testWaypoints,
-        testVehicleProfile
-      );
+      const plan = TripPlanningService.createTripPlan(testWaypoints, testVehicleProfile);
 
-      const metrics = TripPlanningService.calculateTripMetrics(
-        plan,
-        testVehicleProfile
-      );
+      const metrics = TripPlanningService.calculateTripMetrics(plan, testVehicleProfile);
 
       expect(metrics).toBeDefined();
       expect(metrics).toHaveProperty('drivingIntensity');
@@ -296,49 +260,26 @@ describe('TripPlanningService', () => {
     });
 
     it('should calculate driving intensity', () => {
-      const plan = TripPlanningService.createTripPlan(
-        testWaypoints,
-        testVehicleProfile
-      );
+      const plan = TripPlanningService.createTripPlan(testWaypoints, testVehicleProfile);
 
-      const metrics = TripPlanningService.calculateTripMetrics(
-        plan,
-        testVehicleProfile
-      );
+      const metrics = TripPlanningService.calculateTripMetrics(plan, testVehicleProfile);
 
       expect(metrics.drivingIntensity).toBeGreaterThan(0);
-      expect(metrics.drivingIntensity).toBeCloseTo(
-        plan.totalDistance / plan.totalDays,
-        0
-      );
+      expect(metrics.drivingIntensity).toBeCloseTo(plan.totalDistance / plan.totalDays, 0);
     });
 
     it('should determine comfort level', () => {
-      const plan = TripPlanningService.createTripPlan(
-        testWaypoints,
-        testVehicleProfile
-      );
+      const plan = TripPlanningService.createTripPlan(testWaypoints, testVehicleProfile);
 
-      const metrics = TripPlanningService.calculateTripMetrics(
-        plan,
-        testVehicleProfile
-      );
+      const metrics = TripPlanningService.calculateTripMetrics(plan, testVehicleProfile);
 
-      expect(['relaxed', 'moderate', 'intensive', 'extreme']).toContain(
-        metrics.comfortLevel
-      );
+      expect(['relaxed', 'moderate', 'intensive', 'extreme']).toContain(metrics.comfortLevel);
     });
 
     it('should assess suitability for different groups', () => {
-      const plan = TripPlanningService.createTripPlan(
-        testWaypoints,
-        testVehicleProfile
-      );
+      const plan = TripPlanningService.createTripPlan(testWaypoints, testVehicleProfile);
 
-      const metrics = TripPlanningService.calculateTripMetrics(
-        plan,
-        testVehicleProfile
-      );
+      const metrics = TripPlanningService.calculateTripMetrics(plan, testVehicleProfile);
 
       expect(metrics.suitability).toBeDefined();
       expect(metrics.suitability).toHaveProperty('beginners');
@@ -383,15 +324,9 @@ describe('TripPlanningService', () => {
 
   describe('Planning Recommendations', () => {
     it('should generate planning recommendations', () => {
-      const plan = TripPlanningService.createTripPlan(
-        testWaypoints,
-        testVehicleProfile
-      );
+      const plan = TripPlanningService.createTripPlan(testWaypoints, testVehicleProfile);
 
-      const metrics = TripPlanningService.calculateTripMetrics(
-        plan,
-        testVehicleProfile
-      );
+      const metrics = TripPlanningService.calculateTripMetrics(plan, testVehicleProfile);
 
       const recommendations = TripPlanningService.generatePlanningRecommendations(
         plan,
@@ -415,20 +350,14 @@ describe('TripPlanningService', () => {
 
   describe('Utility Methods', () => {
     it('should calculate distance between waypoints', () => {
-      const distance = TripPlanningService.calculateDistance(
-        testWaypoints[0],
-        testWaypoints[1]
-      );
+      const distance = TripPlanningService.calculateDistance(testWaypoints[0], testWaypoints[1]);
 
       expect(distance).toBeGreaterThan(0);
       expect(distance).toBeLessThan(1000); // Reasonable for Paris to Lyon
     });
 
     it('should calculate rest days', () => {
-      const plan = TripPlanningService.createTripPlan(
-        testWaypoints,
-        testVehicleProfile
-      );
+      const plan = TripPlanningService.createTripPlan(testWaypoints, testVehicleProfile);
 
       const restDays = TripPlanningService.calculateRestDays(plan.dailyStages);
 
@@ -474,10 +403,7 @@ describe('TripPlanningService', () => {
         { id: '5', name: 'Madrid', lat: 40.4168, lng: -3.7038, type: 'end' },
       ];
 
-      const plan = TripPlanningService.createTripPlan(
-        longRoute,
-        testVehicleProfile
-      );
+      const plan = TripPlanningService.createTripPlan(longRoute, testVehicleProfile);
 
       expect(plan.totalDays).toBeGreaterThan(3);
       expect(plan.dailyStages.length).toBeGreaterThan(3);
@@ -489,10 +415,7 @@ describe('TripPlanningService', () => {
         { id: '2', name: 'Point B', lat: 48.8606, lng: 2.3376, type: 'end' },
       ];
 
-      const plan = TripPlanningService.createTripPlan(
-        shortRoute,
-        testVehicleProfile
-      );
+      const plan = TripPlanningService.createTripPlan(shortRoute, testVehicleProfile);
 
       expect(plan).toBeDefined();
       expect(plan.totalDistance).toBeLessThan(10);
@@ -501,10 +424,7 @@ describe('TripPlanningService', () => {
 
   describe('Feasibility Analysis', () => {
     it('should analyze overall trip feasibility', () => {
-      const plan = TripPlanningService.createTripPlan(
-        testWaypoints,
-        testVehicleProfile
-      );
+      const plan = TripPlanningService.createTripPlan(testWaypoints, testVehicleProfile);
 
       expect(plan.feasibilityScore).toBeGreaterThanOrEqual(0);
       expect(plan.feasibilityScore).toBeLessThanOrEqual(100);
@@ -536,10 +456,7 @@ describe('TripPlanningService', () => {
         { id: '2', name: 'Lyon', lat: 45.764, lng: 4.8357, type: 'end' },
       ];
 
-      const plan = TripPlanningService.createTripPlan(
-        realisticRoute,
-        testVehicleProfile
-      );
+      const plan = TripPlanningService.createTripPlan(realisticRoute, testVehicleProfile);
 
       // Plan should have a feasibility score
       expect(plan.feasibilityScore).toBeGreaterThanOrEqual(0);

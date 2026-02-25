@@ -7,7 +7,7 @@ export const LocalStorageKeys = {
   TRIPS: 'camper-planner-trips',
   VEHICLE_PROFILE: 'camper-planner-vehicle',
   SETTINGS: 'camper-planner-settings',
-  APP_VERSION: 'camper-planner-version'
+  APP_VERSION: 'camper-planner-version',
 } as const;
 
 // Current schema version
@@ -15,7 +15,7 @@ export const CURRENT_SCHEMA_VERSION = '1.0';
 
 // Data migration functions
 export class DataMigration {
-  static migrate(data: any, fromVersion: string, toVersion: string): any {
+  static migrate(data: TripData, fromVersion: string, toVersion: string): TripData {
     if (fromVersion === toVersion) {
       return data;
     }
@@ -29,14 +29,17 @@ export class DataMigration {
     return data;
   }
 
-  private static migrateV1toV2(v1Data: any): any {
+  private static migrateV1toV2(
+    v1Data: TripData
+  ): TripData & { preferences: Record<string, unknown>; community: Record<string, unknown> } {
     // V2 migration implementation (future)
     return {
       ...v1Data,
       version: '2.0',
       // Add V2 structures while preserving V1 data
-      preferences: v1Data.preferences || {},
-      community: v1Data.community || {}
+      preferences:
+        (v1Data as TripData & { preferences?: Record<string, unknown> }).preferences || {},
+      community: (v1Data as TripData & { community?: Record<string, unknown> }).community || {},
     };
   }
 }
@@ -50,20 +53,20 @@ export const tripDataUtils = {
     metadata: {
       name,
       created: Date.now(),
-      modified: Date.now()
+      modified: Date.now(),
     },
     vehicle: {
       height: 0,
       width: 0,
       weight: 0,
-      length: 0
+      length: 0,
     },
     route: {
       waypoints: [],
       optimized: false,
       totalDistance: 0,
-      estimatedTime: 0
-    }
+      estimatedTime: 0,
+    },
   }),
 
   // Save trip to localStorage with version tracking
@@ -75,8 +78,8 @@ export const tripDataUtils = {
         ...trip,
         metadata: {
           ...trip.metadata,
-          modified: Date.now()
-        }
+          modified: Date.now(),
+        },
       });
 
       localStorage.setItem(LocalStorageKeys.TRIPS, JSON.stringify(updatedTrips));
@@ -109,7 +112,7 @@ export const tripDataUtils = {
 
       // Migrate if necessary
       if (storedVersion !== CURRENT_SCHEMA_VERSION) {
-        const migratedTrips = trips.map((trip: any) =>
+        const migratedTrips = trips.map((trip: TripData) =>
           DataMigration.migrate(trip, storedVersion, CURRENT_SCHEMA_VERSION)
         );
 
@@ -164,7 +167,7 @@ export const tripDataUtils = {
       console.error('Failed to import trip:', error);
       throw new Error('Invalid trip data format');
     }
-  }
+  },
 };
 
 // Vehicle profile utilities
@@ -193,7 +196,7 @@ export const vehicleProfileUtils = {
   // Clear vehicle profile
   clearProfile: (): void => {
     localStorage.removeItem(LocalStorageKeys.VEHICLE_PROFILE);
-  }
+  },
 };
 
 // Basic local storage utilities - Phase 1 foundation
@@ -211,6 +214,7 @@ export const localStorageUtils = {
     try {
       localStorage.setItem(key, JSON.stringify(value));
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.warn('Failed to save to localStorage:', error);
     }
   },
@@ -229,7 +233,7 @@ export const localStorageUtils = {
     let itemCount = 0;
 
     for (const key in localStorage) {
-      if (localStorage.hasOwnProperty(key)) {
+      if (Object.prototype.hasOwnProperty.call(localStorage, key)) {
         const itemSize = localStorage.getItem(key)?.length || 0;
         totalSize += itemSize;
         itemCount++;
@@ -240,7 +244,7 @@ export const localStorageUtils = {
       itemCount,
       totalSize,
       totalSizeKB: Math.round(totalSize / 1024),
-      availableSpace: 5 * 1024 * 1024 - totalSize // Assume 5MB limit
+      availableSpace: 5 * 1024 * 1024 - totalSize, // Assume 5MB limit
     };
-  }
+  },
 };

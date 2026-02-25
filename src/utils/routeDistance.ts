@@ -40,11 +40,7 @@ export function calculateDistanceToRoute(
     const startPoint: [number, number] = [start[1], start[0]];
     const endPoint: [number, number] = [end[1], end[0]];
 
-    const result = distanceToLineSegment(
-      [campsiteLat, campsiteLng],
-      startPoint,
-      endPoint
-    );
+    const result = distanceToLineSegment([campsiteLat, campsiteLng], startPoint, endPoint);
 
     if (result.distance < minDistance) {
       minDistance = result.distance;
@@ -56,7 +52,7 @@ export function calculateDistanceToRoute(
   return {
     distance: minDistance,
     nearestPoint,
-    segmentIndex: nearestSegmentIndex
+    segmentIndex: nearestSegmentIndex,
   };
 }
 
@@ -80,14 +76,15 @@ function distanceToLineSegment(
   if (dx === 0 && dy === 0) {
     return {
       distance: haversineDistance(pointLat, pointLng, startLat, startLng),
-      nearestPoint: [startLat, startLng]
+      nearestPoint: [startLat, startLng],
     };
   }
 
   // Parameter t that represents position along the line segment
-  const t = Math.max(0, Math.min(1,
-    ((pointLng - startLng) * dx + (pointLat - startLat) * dy) / (dx * dx + dy * dy)
-  ));
+  const t = Math.max(
+    0,
+    Math.min(1, ((pointLng - startLng) * dx + (pointLat - startLat) * dy) / (dx * dx + dy * dy))
+  );
 
   // Nearest point on the line segment
   const nearestLat = startLat + t * dy;
@@ -95,26 +92,21 @@ function distanceToLineSegment(
 
   return {
     distance: haversineDistance(pointLat, pointLng, nearestLat, nearestLng),
-    nearestPoint: [nearestLat, nearestLng]
+    nearestPoint: [nearestLat, nearestLng],
   };
 }
 
 /**
  * Calculate haversine distance between two points in kilometers
  */
-export function haversineDistance(
-  lat1: number,
-  lng1: number,
-  lat2: number,
-  lng2: number
-): number {
+export function haversineDistance(lat1: number, lng1: number, lat2: number, lng2: number): number {
   const R = 6371; // Earth's radius in kilometers
   const dLat = toRadians(lat2 - lat1);
   const dLng = toRadians(lng2 - lng1);
 
-  const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) *
-    Math.sin(dLng / 2) * Math.sin(dLng / 2);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
 
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
@@ -141,7 +133,7 @@ export function filterCampsitesByRoute(
       const distanceResult = calculateDistanceToRoute(campsite, routeGeometry);
       return {
         ...campsite,
-        routeDistance: distanceResult?.distance || Infinity
+        routeDistance: distanceResult?.distance || Infinity,
       };
     })
     .filter(campsite => (campsite.routeDistance || Infinity) <= maxDistance)
@@ -183,7 +175,7 @@ export function getRouteBounds(
     north: maxLat + bufferDegrees,
     south: minLat - bufferDegrees,
     east: maxLng + bufferDegrees,
-    west: minLng - bufferDegrees
+    west: minLng - bufferDegrees,
   };
 }
 
@@ -237,5 +229,5 @@ export function calculateRouteRelevance(
   const distance = distanceResult.distance;
   if (distance >= 50) return 0;
 
-  return Math.max(0, 100 - (distance * 2));
+  return Math.max(0, 100 - distance * 2);
 }

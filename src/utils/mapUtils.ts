@@ -57,9 +57,9 @@ export const zoomToFitWaypoints = (
   const {
     padding = [50, 50],
     maxZoom = 15,
-    minZoom = 3,
+    _minZoom = 3,
     animate = true,
-    duration = 1000
+    duration = 1000,
   } = options;
 
   try {
@@ -68,7 +68,7 @@ export const zoomToFitWaypoints = (
       const waypoint = waypoints[0];
       map.setView([waypoint.lat, waypoint.lng], 10, {
         animate,
-        duration: duration / 1000
+        duration: duration / 1000,
       });
     } else {
       // Multiple waypoints - fit bounds
@@ -84,7 +84,7 @@ export const zoomToFitWaypoints = (
         padding: padding,
         maxZoom: maxZoom,
         animate: animate,
-        duration: duration / 1000
+        duration: duration / 1000,
       });
     }
 
@@ -110,10 +110,7 @@ export const calculateDistance = (
 
   const a =
     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(toRadians(lat1)) *
-      Math.cos(toRadians(lat2)) *
-      Math.sin(dLng / 2) *
-      Math.sin(dLng / 2);
+    Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
 
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   return R * c; // Distance in kilometers
@@ -182,14 +179,16 @@ export const normalizeCoordinates = (
 ): { lat: number; lng: number } => {
   return {
     lat: Number(lat.toFixed(precision)),
-    lng: Number(lng.toFixed(precision))
+    lng: Number(lng.toFixed(precision)),
   };
 };
 
 /**
  * Calculate map center from waypoints
  */
-export const calculateCenterPoint = (waypoints: Waypoint[]): { lat: number; lng: number } | null => {
+export const calculateCenterPoint = (
+  waypoints: Waypoint[]
+): { lat: number; lng: number } | null => {
   if (waypoints.length === 0) return null;
 
   const bounds = calculateWaypointBounds(waypoints);
@@ -197,7 +196,7 @@ export const calculateCenterPoint = (waypoints: Waypoint[]): { lat: number; lng:
 
   return {
     lat: (bounds.north + bounds.south) / 2,
-    lng: (bounds.east + bounds.west) / 2
+    lng: (bounds.east + bounds.west) / 2,
   };
 };
 

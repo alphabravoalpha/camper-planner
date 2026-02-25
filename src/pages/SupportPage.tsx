@@ -3,9 +3,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import {
-  Heart, Coffee, ChevronLeft, Code, Globe, Shield, Zap, ExternalLink
-} from 'lucide-react';
+import { Heart, Coffee, ChevronLeft, Code, Globe, Shield, Zap, ExternalLink } from 'lucide-react';
 
 const KOFI_URL = 'https://ko-fi.com/camperplanning';
 
@@ -13,17 +11,20 @@ const SUPPORT_REASONS = [
   {
     icon: Globe,
     title: 'Keep it free for everyone',
-    description: 'Your support helps us keep the app completely free with no subscriptions or paywalls.',
+    description:
+      'Your support helps us keep the app completely free with no subscriptions or paywalls.',
   },
   {
     icon: Zap,
     title: 'New features and improvements',
-    description: 'Fund development of weather integration, toll calculations, trip sharing, and more.',
+    description:
+      'Fund development of weather integration, toll calculations, trip sharing, and more.',
   },
   {
     icon: Shield,
     title: 'Privacy-first development',
-    description: 'We choose not to run ads or sell data. Your donations help sustain this approach.',
+    description:
+      'We choose not to run ads or sell data. Your donations help sustain this approach.',
   },
   {
     icon: Code,
@@ -37,9 +38,17 @@ const SupportPage: React.FC = () => {
     <div className="min-h-screen bg-neutral-50 animate-fade-in">
       {/* Hero */}
       <div className="relative overflow-hidden bg-gradient-to-br from-primary-600 to-primary-800 text-white">
-        <img src="/images/hero-support.jpg" alt="" className="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-overlay" loading="lazy" />
+        <img
+          src="/images/hero-support.jpg"
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-overlay"
+          loading="lazy"
+        />
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
-          <Link to="/" className="inline-flex items-center gap-1 text-primary-200 hover:text-white text-sm mb-4 transition-colors">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-1 text-primary-200 hover:text-white text-sm mb-4 transition-colors"
+          >
             <ChevronLeft className="w-4 h-4" />
             Back to planner
           </Link>
@@ -51,15 +60,14 @@ const SupportPage: React.FC = () => {
               Support This Project
             </h1>
             <p className="text-primary-100 text-lg max-w-2xl mx-auto leading-relaxed">
-              European Camper Trip Planner is free and always will be. If it helps you plan
-              your adventures, consider supporting its development.
+              European Camper Trip Planner is free and always will be. If it helps you plan your
+              adventures, consider supporting its development.
             </p>
           </div>
         </div>
       </div>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
-
         {/* Ko-fi Embedded Donation Card */}
         <div className="bg-white rounded-xl shadow-soft p-6 sm:p-8 -mt-8 relative z-10">
           <div className="text-center">
@@ -104,7 +112,7 @@ const SupportPage: React.FC = () => {
             What your support funds
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            {SUPPORT_REASONS.map((reason) => {
+            {SUPPORT_REASONS.map(reason => {
               const Icon = reason.icon;
               return (
                 <div
@@ -117,9 +125,7 @@ const SupportPage: React.FC = () => {
                   <h3 className="text-base font-display font-semibold text-neutral-900 mb-1.5">
                     {reason.title}
                   </h3>
-                  <p className="text-sm text-neutral-500 leading-relaxed">
-                    {reason.description}
-                  </p>
+                  <p className="text-sm text-neutral-500 leading-relaxed">{reason.description}</p>
                 </div>
               );
             })}
@@ -128,16 +134,20 @@ const SupportPage: React.FC = () => {
 
         {/* Other Ways to Help */}
         <div className="bg-white rounded-xl shadow-soft p-6 sm:p-8">
-          <h2 className="text-xl font-display font-bold text-neutral-900 mb-4">Other ways to help</h2>
+          <h2 className="text-xl font-display font-bold text-neutral-900 mb-4">
+            Other ways to help
+          </h2>
           <div className="space-y-4">
             <div className="flex items-start gap-4">
               <div className="w-10 h-10 bg-primary-50 rounded-lg flex items-center justify-center flex-shrink-0">
                 <svg className="w-5 h-5 text-primary-600" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0012 2z"/>
+                  <path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0012 2z" />
                 </svg>
               </div>
               <div>
-                <h3 className="font-display font-semibold text-neutral-900 text-sm">Star us on GitHub</h3>
+                <h3 className="font-display font-semibold text-neutral-900 text-sm">
+                  Star us on GitHub
+                </h3>
                 <p className="text-neutral-500 text-sm mt-0.5">
                   Stars help others discover the project.{' '}
                   <a
@@ -154,27 +164,51 @@ const SupportPage: React.FC = () => {
 
             <div className="flex items-start gap-4">
               <div className="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center flex-shrink-0">
-                <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
+                <svg
+                  className="w-5 h-5 text-green-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"
+                  />
                 </svg>
               </div>
               <div>
-                <h3 className="font-display font-semibold text-neutral-900 text-sm">Spread the word</h3>
+                <h3 className="font-display font-semibold text-neutral-900 text-sm">
+                  Spread the word
+                </h3>
                 <p className="text-neutral-500 text-sm mt-0.5">
-                  Tell fellow camper travellers about the app. Share it on forums, social media,
-                  or with your camping club.
+                  Tell fellow camper travellers about the app. Share it on forums, social media, or
+                  with your camping club.
                 </p>
               </div>
             </div>
 
             <div className="flex items-start gap-4">
               <div className="w-10 h-10 bg-amber-50 rounded-lg flex items-center justify-center flex-shrink-0">
-                <svg className="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                <svg
+                  className="w-5 h-5 text-amber-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+                  />
                 </svg>
               </div>
               <div>
-                <h3 className="font-display font-semibold text-neutral-900 text-sm">Report bugs and suggest features</h3>
+                <h3 className="font-display font-semibold text-neutral-900 text-sm">
+                  Report bugs and suggest features
+                </h3>
                 <p className="text-neutral-500 text-sm mt-0.5">
                   Found a problem or have an idea? Open an issue on{' '}
                   <a
@@ -184,22 +218,35 @@ const SupportPage: React.FC = () => {
                     className="text-primary-600 underline"
                   >
                     GitHub Issues
-                  </a>.
+                  </a>
+                  .
                 </p>
               </div>
             </div>
 
             <div className="flex items-start gap-4">
               <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0">
-                <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                <svg
+                  className="w-5 h-5 text-blue-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  />
                 </svg>
               </div>
               <div>
-                <h3 className="font-display font-semibold text-neutral-900 text-sm">Book through our links</h3>
+                <h3 className="font-display font-semibold text-neutral-900 text-sm">
+                  Book through our links
+                </h3>
                 <p className="text-neutral-500 text-sm mt-0.5">
-                  When booking campsites, using our affiliate links earns us a small commission
-                  at no extra cost to you.{' '}
+                  When booking campsites, using our affiliate links earns us a small commission at
+                  no extra cost to you.{' '}
                   <Link to="/affiliate-disclosure" className="text-primary-600 underline">
                     Learn more
                   </Link>
@@ -214,8 +261,8 @@ const SupportPage: React.FC = () => {
           <Heart className="w-10 h-10 text-accent-500 mx-auto mb-3" />
           <h2 className="text-2xl font-display font-bold text-accent-900 mb-2">Thank you</h2>
           <p className="text-accent-700 max-w-md mx-auto">
-            Whether you donate, share the app, or simply use it to plan your next adventure
-            &mdash; thank you for being part of this project.
+            Whether you donate, share the app, or simply use it to plan your next adventure &mdash;
+            thank you for being part of this project.
           </p>
           <div className="mt-6">
             <Link

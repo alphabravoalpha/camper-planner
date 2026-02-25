@@ -33,7 +33,7 @@ const createDirectionArrowIcon = (rotation: number): DivIcon => {
     `,
     className: 'direction-arrow',
     iconSize: [24, 24],
-    iconAnchor: [12, 12]
+    iconAnchor: [12, 12],
   });
 };
 
@@ -46,7 +46,12 @@ const calculateBearing = (lat1: number, lng1: number, lat2: number, lng2: number
 };
 
 // Calculate midpoint between two coordinates
-const calculateMidpoint = (lat1: number, lng1: number, lat2: number, lng2: number): [number, number] => {
+const calculateMidpoint = (
+  lat1: number,
+  lng1: number,
+  lat2: number,
+  lng2: number
+): [number, number] => {
   return [(lat1 + lat2) / 2, (lng1 + lng2) / 2];
 };
 
@@ -70,7 +75,11 @@ const formatDuration = (seconds: number): string => {
 };
 
 // Create distance/time label icon
-const createRouteInfoIcon = (distance: number, duration: number, isHighlighted = false): DivIcon => {
+const createRouteInfoIcon = (
+  distance: number,
+  duration: number,
+  isHighlighted = false
+): DivIcon => {
   const distanceText = formatDistance(distance);
   const durationText = formatDuration(duration);
 
@@ -85,7 +94,7 @@ const createRouteInfoIcon = (distance: number, duration: number, isHighlighted =
     `,
     className: 'route-info-marker',
     iconSize: [60, 30],
-    iconAnchor: [30, 15]
+    iconAnchor: [30, 15],
   });
 };
 
@@ -97,11 +106,25 @@ const createRestrictionIcon = (restriction: RestrictedSegment): DivIcon => {
 
   const getRestrictionSymbol = (type: string) => {
     switch (type) {
-      case 'height': return svgIcon('<path d="M12 2v20"/><path d="m5 5 7-3 7 3"/><path d="m5 19 7 3 7-3"/>', 14);
-      case 'width': return svgIcon('<path d="M2 12h20"/><path d="m5 9-3 3 3 3"/><path d="m19 9 3 3-3 3"/>', 14);
-      case 'weight': return svgIcon('<path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/>', 14);
-      case 'length': return svgIcon('<path d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.41 2.41 0 0 1 0-3.4l2.6-2.6a2.41 2.41 0 0 1 3.4 0Z"/><path d="m14.5 12.5 2-2"/><path d="m11.5 9.5 2-2"/><path d="m8.5 6.5 2-2"/><path d="m17.5 15.5 2-2"/>', 14);
-      default: return svgIcon('<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/>', 14);
+      case 'height':
+        return svgIcon('<path d="M12 2v20"/><path d="m5 5 7-3 7 3"/><path d="m5 19 7 3 7-3"/>', 14);
+      case 'width':
+        return svgIcon('<path d="M2 12h20"/><path d="m5 9-3 3 3 3"/><path d="m19 9 3 3-3 3"/>', 14);
+      case 'weight':
+        return svgIcon(
+          '<path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/>',
+          14
+        );
+      case 'length':
+        return svgIcon(
+          '<path d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.41 2.41 0 0 1 0-3.4l2.6-2.6a2.41 2.41 0 0 1 3.4 0Z"/><path d="m14.5 12.5 2-2"/><path d="m11.5 9.5 2-2"/><path d="m8.5 6.5 2-2"/><path d="m17.5 15.5 2-2"/>',
+          14
+        );
+      default:
+        return svgIcon(
+          '<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/>',
+          14
+        );
     }
   };
 
@@ -124,10 +147,9 @@ const createRestrictionIcon = (restriction: RestrictedSegment): DivIcon => {
     className: 'restriction-warning-icon',
     iconSize: [32, 36],
     iconAnchor: [16, 36],
-    popupAnchor: [0, -36]
+    popupAnchor: [0, -36],
   });
 };
-
 
 // Enhanced waypoint numbering overlay
 interface WaypointNumberProps {
@@ -137,12 +159,17 @@ interface WaypointNumberProps {
 }
 
 const WaypointNumber: React.FC<WaypointNumberProps> = ({ waypoint, index, total }) => {
-  const { updateWaypoint, removeWaypoint, insertWaypoint, insertBeforeWaypoint, waypoints } = useRouteStore();
+  const { updateWaypoint, removeWaypoint, insertWaypoint, insertBeforeWaypoint, waypoints } =
+    useRouteStore();
   const { addNotification } = useUIStore();
   const [isEditing, setIsEditing] = useState(false);
   const [editedName, setEditedName] = useState(waypoint.name || '');
   const [editedNotes, setEditedNotes] = useState(waypoint.notes || '');
-  const [stagedLocation, setStagedLocation] = useState<{ lat: number; lng: number; name: string } | null>(null);
+  const [stagedLocation, setStagedLocation] = useState<{
+    lat: number;
+    lng: number;
+    name: string;
+  } | null>(null);
   const [showLocationSearch, setShowLocationSearch] = useState(false);
 
   const getWaypointStyle = () => {
@@ -171,14 +198,23 @@ const WaypointNumber: React.FC<WaypointNumberProps> = ({ waypoint, index, total 
       updateWaypoint(waypoint.id, updates);
       addNotification({
         type: 'success',
-        message: stagedLocation ? 'Waypoint location updated' : 'Waypoint updated successfully'
+        message: stagedLocation ? 'Waypoint location updated' : 'Waypoint updated successfully',
       });
     }
 
     setIsEditing(false);
     setStagedLocation(null);
     setShowLocationSearch(false);
-  }, [waypoint.id, waypoint.name, waypoint.notes, editedName, editedNotes, stagedLocation, updateWaypoint, addNotification]);
+  }, [
+    waypoint.id,
+    waypoint.name,
+    waypoint.notes,
+    editedName,
+    editedNotes,
+    stagedLocation,
+    updateWaypoint,
+    addNotification,
+  ]);
 
   const handleCancelEdit = useCallback(() => {
     setEditedName(waypoint.name || '');
@@ -192,7 +228,7 @@ const WaypointNumber: React.FC<WaypointNumberProps> = ({ waypoint, index, total 
     removeWaypoint(waypoint.id);
     addNotification({
       type: 'success',
-      message: `Removed ${waypoint.name || 'waypoint'} from route`
+      message: `Removed ${waypoint.name || 'waypoint'} from route`,
     });
   }, [waypoint.id, waypoint.name, removeWaypoint, addNotification]);
 
@@ -213,12 +249,12 @@ const WaypointNumber: React.FC<WaypointNumberProps> = ({ waypoint, index, total 
       lat: Number(lat.toFixed(6)),
       lng: Number(lng.toFixed(6)),
       type: 'waypoint',
-      name: `Waypoint ${currentIndex + 1}`
+      name: `Waypoint ${currentIndex + 1}`,
     };
     insertBeforeWaypoint(newWaypoint, waypoint.id);
     addNotification({
       type: 'success',
-      message: `Inserted ${newWaypoint.name} before ${waypoint.name || 'waypoint'}`
+      message: `Inserted ${newWaypoint.name} before ${waypoint.name || 'waypoint'}`,
     });
   }, [waypoint, waypoints, insertBeforeWaypoint, addNotification]);
 
@@ -239,12 +275,12 @@ const WaypointNumber: React.FC<WaypointNumberProps> = ({ waypoint, index, total 
       lat: Number(lat.toFixed(6)),
       lng: Number(lng.toFixed(6)),
       type: 'waypoint',
-      name: `Waypoint ${currentIndex + 2}`
+      name: `Waypoint ${currentIndex + 2}`,
     };
     insertWaypoint(newWaypoint, waypoint.id);
     addNotification({
       type: 'success',
-      message: `Inserted ${newWaypoint.name} after ${waypoint.name || 'waypoint'}`
+      message: `Inserted ${newWaypoint.name} after ${waypoint.name || 'waypoint'}`,
     });
   }, [waypoint, waypoints, insertWaypoint, addNotification]);
 
@@ -255,10 +291,16 @@ const WaypointNumber: React.FC<WaypointNumberProps> = ({ waypoint, index, total 
   };
 
   const getWaypointIcon = () => {
-    const flagSvg = svgIcon('<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/>');
+    const flagSvg = svgIcon(
+      '<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/>'
+    );
     const tentSvg = svgIcon('<path d="M3 20 12 4l9 16Z"/><path d="M12 4v16"/>');
-    const buildingSvg = svgIcon('<path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/>');
-    const pinSvg = svgIcon('<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>');
+    const buildingSvg = svgIcon(
+      '<path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/>'
+    );
+    const pinSvg = svgIcon(
+      '<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>'
+    );
     if (waypoint.type === 'start') return flagSvg;
     if (waypoint.type === 'end') return flagSvg;
     if (waypoint.type === 'campsite') return tentSvg;
@@ -294,7 +336,9 @@ const WaypointNumber: React.FC<WaypointNumberProps> = ({ waypoint, index, total 
         )}"></div>
 
         <!-- Route progress indicator -->
-        ${total > 1 ? `
+        ${
+          total > 1
+            ? `
           <div class="absolute -bottom-3 left-1/2 transform -translate-x-1/2">
             <div class="w-2 h-4 bg-neutral-300 rounded-full border border-neutral-400">
               <div
@@ -303,7 +347,9 @@ const WaypointNumber: React.FC<WaypointNumberProps> = ({ waypoint, index, total 
               ></div>
             </div>
           </div>
-        ` : ''}
+        `
+            : ''
+        }
 
         <!-- Waypoint name label -->
         <div class="absolute top-12 left-1/2 transform -translate-x-1/2 whitespace-nowrap">
@@ -316,22 +362,27 @@ const WaypointNumber: React.FC<WaypointNumberProps> = ({ waypoint, index, total 
     className: 'enhanced-waypoint-marker',
     iconSize: [40, 60],
     iconAnchor: [20, 30],
-    popupAnchor: [0, -30]
+    popupAnchor: [0, -30],
   });
 
   return (
     <Marker
       position={[waypoint.lat, waypoint.lng]}
-      // @ts-ignore - React-Leaflet v4 prop compatibility
+      // @ts-expect-error - React-Leaflet v4 prop compatibility
       icon={numberIcon}
       zIndexOffset={2000} // Highest priority - above everything
     >
       <Popup
         eventHandlers={{
-          click: (e: any) => e.originalEvent?.stopPropagation()
+          click: (e: L.LeafletEvent) => (e as L.LeafletMouseEvent).originalEvent?.stopPropagation(),
         }}
       >
-        <div className="p-3 min-w-[250px]" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="p-3 min-w-[250px]"
+          onClick={e => e.stopPropagation()}
+          onKeyDown={e => e.stopPropagation()}
+          role="presentation"
+        >
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
               <span className="text-lg" dangerouslySetInnerHTML={{ __html: getWaypointIcon() }} />
@@ -339,7 +390,7 @@ const WaypointNumber: React.FC<WaypointNumberProps> = ({ waypoint, index, total 
             </div>
             {!isEditing && (
               <button
-                onClick={(e) => {
+                onClick={e => {
                   e.stopPropagation();
                   e.preventDefault();
                   setIsEditing(true);
@@ -356,30 +407,39 @@ const WaypointNumber: React.FC<WaypointNumberProps> = ({ waypoint, index, total 
             /* Edit Mode */
             <div className="space-y-3">
               <div>
-                <label className="block text-xs font-medium text-neutral-700 mb-1">
+                <label
+                  htmlFor={`rv-waypoint-name-${waypoint.id}`}
+                  className="block text-xs font-medium text-neutral-700 mb-1"
+                >
                   Name
                 </label>
                 <input
+                  id={`rv-waypoint-name-${waypoint.id}`}
                   type="text"
                   value={editedName}
-                  onChange={(e) => setEditedName(e.target.value)}
-                  onClick={(e) => e.stopPropagation()}
-                  onFocus={(e) => e.stopPropagation()}
+                  onChange={e => setEditedName(e.target.value)}
+                  onClick={e => e.stopPropagation()}
+                  onFocus={e => e.stopPropagation()}
                   className="w-full px-2 py-1 text-sm border border-neutral-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
                   placeholder="Enter waypoint name"
+                  // eslint-disable-next-line jsx-a11y/no-autofocus -- autoFocus needed for UX when editing waypoint names
                   autoFocus
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-neutral-700 mb-1">
+                <label
+                  htmlFor={`rv-waypoint-notes-${waypoint.id}`}
+                  className="block text-xs font-medium text-neutral-700 mb-1"
+                >
                   Notes
                 </label>
                 <textarea
+                  id={`rv-waypoint-notes-${waypoint.id}`}
                   value={editedNotes}
-                  onChange={(e) => setEditedNotes(e.target.value)}
-                  onClick={(e) => e.stopPropagation()}
-                  onFocus={(e) => e.stopPropagation()}
+                  onChange={e => setEditedNotes(e.target.value)}
+                  onClick={e => e.stopPropagation()}
+                  onFocus={e => e.stopPropagation()}
                   className="w-full px-2 py-1 text-sm border border-neutral-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-500 resize-none"
                   rows={3}
                   placeholder="Add notes about this waypoint..."
@@ -389,7 +449,7 @@ const WaypointNumber: React.FC<WaypointNumberProps> = ({ waypoint, index, total 
               {/* Change Location Section */}
               <div>
                 <button
-                  onClick={(e) => {
+                  onClick={e => {
                     e.stopPropagation();
                     e.preventDefault();
                     setShowLocationSearch(!showLocationSearch);
@@ -397,8 +457,18 @@ const WaypointNumber: React.FC<WaypointNumberProps> = ({ waypoint, index, total 
                   className="text-xs text-primary-600 hover:text-primary-700 font-medium flex items-center gap-1"
                 >
                   <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                    />
                   </svg>
                   <span>{showLocationSearch ? 'Hide location search' : 'Change location'}</span>
                 </button>
@@ -406,12 +476,12 @@ const WaypointNumber: React.FC<WaypointNumberProps> = ({ waypoint, index, total 
                 {showLocationSearch && (
                   <div className="mt-2">
                     <LocationSearch
-                      onLocationSelect={(result) => {
+                      onLocationSelect={result => {
                         const name = result.name || result.display_name.split(',')[0].trim();
                         setStagedLocation({
                           lat: result.lat,
                           lng: result.lng,
-                          name
+                          name,
                         });
                         setEditedName(name);
                         setShowLocationSearch(false);
@@ -431,7 +501,7 @@ const WaypointNumber: React.FC<WaypointNumberProps> = ({ waypoint, index, total 
 
               <div className="flex space-x-2 pt-2 border-t border-neutral-200">
                 <button
-                  onClick={(e) => {
+                  onClick={e => {
                     e.stopPropagation();
                     e.preventDefault();
                     handleSaveEdit();
@@ -441,7 +511,7 @@ const WaypointNumber: React.FC<WaypointNumberProps> = ({ waypoint, index, total 
                   Save
                 </button>
                 <button
-                  onClick={(e) => {
+                  onClick={e => {
                     e.stopPropagation();
                     e.preventDefault();
                     handleCancelEdit();
@@ -461,11 +531,15 @@ const WaypointNumber: React.FC<WaypointNumberProps> = ({ waypoint, index, total 
               </div>
               <div className="flex justify-between">
                 <span>Position:</span>
-                <span className="font-medium">{index + 1} of {total}</span>
+                <span className="font-medium">
+                  {index + 1} of {total}
+                </span>
               </div>
               <div className="flex justify-between">
                 <span>Coordinates:</span>
-                <span className="font-mono text-xs">{waypoint.lat.toFixed(4)}, {waypoint.lng.toFixed(4)}</span>
+                <span className="font-mono text-xs">
+                  {waypoint.lat.toFixed(4)}, {waypoint.lng.toFixed(4)}
+                </span>
               </div>
 
               {waypoint.visitDate && (
@@ -491,7 +565,7 @@ const WaypointNumber: React.FC<WaypointNumberProps> = ({ waypoint, index, total 
 
               <div className="flex space-x-2 pt-2 border-t border-neutral-200">
                 <button
-                  onClick={(e) => {
+                  onClick={e => {
                     e.stopPropagation();
                     e.preventDefault();
                     handleInsertBefore();
@@ -502,7 +576,7 @@ const WaypointNumber: React.FC<WaypointNumberProps> = ({ waypoint, index, total 
                   + Before
                 </button>
                 <button
-                  onClick={(e) => {
+                  onClick={e => {
                     e.stopPropagation();
                     e.preventDefault();
                     handleInsertAfter();
@@ -513,7 +587,7 @@ const WaypointNumber: React.FC<WaypointNumberProps> = ({ waypoint, index, total 
                   + After
                 </button>
                 <button
-                  onClick={(e) => {
+                  onClick={e => {
                     e.stopPropagation();
                     e.preventDefault();
                     handleDelete();
@@ -532,7 +606,10 @@ const WaypointNumber: React.FC<WaypointNumberProps> = ({ waypoint, index, total 
 };
 
 // Calculate route visualization component - displays actual calculated routes
-const CalculatedRouteDisplay: React.FC<{ route: RouteResponse; waypoints?: Waypoint[] }> = ({ route, waypoints: userWaypoints }) => {
+const CalculatedRouteDisplay: React.FC<{ route: RouteResponse; waypoints?: Waypoint[] }> = ({
+  route,
+  waypoints: userWaypoints,
+}) => {
   const routeData = route?.routes?.[0]; // Use first route if available
 
   // Extract coordinates from the route geometry - must be called before early return
@@ -565,13 +642,13 @@ const CalculatedRouteDisplay: React.FC<{ route: RouteResponse; waypoints?: Waypo
   // Get dash pattern based on restrictions
   const getDashArray = () => {
     if (route.restrictions?.cannotAccommodate) {
-      return "5, 10"; // Heavily dashed for impossible routes
+      return '5, 10'; // Heavily dashed for impossible routes
     }
     if (route.restrictions?.violatedDimensions.length) {
-      return "10, 5"; // Dashed for restricted routes
+      return '10, 5'; // Dashed for restricted routes
     }
     if (route.warnings && route.warnings.length > 0) {
-      return "15, 5"; // Light dashed for warnings
+      return '15, 5'; // Light dashed for warnings
     }
     return undefined; // Solid line for normal routes
   };
@@ -583,8 +660,8 @@ const CalculatedRouteDisplay: React.FC<{ route: RouteResponse; waypoints?: Waypo
       {/* Route outline for better visibility */}
       <Polyline
         positions={routeCoordinates}
-        // @ts-ignore - React-Leaflet v4 prop compatibility
-          color="#ffffff"
+        // @ts-expect-error - React-Leaflet v4 prop compatibility
+        color="#ffffff"
         weight={8}
         opacity={0.6}
         className="calculated-route-outline"
@@ -594,8 +671,8 @@ const CalculatedRouteDisplay: React.FC<{ route: RouteResponse; waypoints?: Waypo
       {/* Main calculated route polyline */}
       <Polyline
         positions={routeCoordinates}
-        // @ts-ignore - React-Leaflet v4 prop compatibility
-          color={getRouteColor()}
+        // @ts-expect-error - React-Leaflet v4 prop compatibility
+        color={getRouteColor()}
         weight={6}
         opacity={0.8}
         className="calculated-route"
@@ -611,10 +688,16 @@ const CalculatedRouteDisplay: React.FC<{ route: RouteResponse; waypoints?: Waypo
         if (userWaypoints && userWaypoints.length >= 2 && index < userWaypoints.length - 1) {
           // Best: use the actual user waypoint coordinates
           midpoint = calculateMidpoint(
-            userWaypoints[index].lat, userWaypoints[index].lng,
-            userWaypoints[index + 1].lat, userWaypoints[index + 1].lng
+            userWaypoints[index].lat,
+            userWaypoints[index].lng,
+            userWaypoints[index + 1].lat,
+            userWaypoints[index + 1].lng
           );
-        } else if (routeData.waypoints && routeData.waypoints.length >= 2 && index < routeData.waypoints.length - 1) {
+        } else if (
+          routeData.waypoints &&
+          routeData.waypoints.length >= 2 &&
+          index < routeData.waypoints.length - 1
+        ) {
           // Fallback: use waypoint indices into the route coordinates
           const startIdx = routeData.waypoints[index];
           const endIdx = routeData.waypoints[index + 1];
@@ -625,7 +708,9 @@ const CalculatedRouteDisplay: React.FC<{ route: RouteResponse; waypoints?: Waypo
           }
         } else {
           // Last resort: evenly divide coordinates (clamped to valid range)
-          const startIdx = Math.floor((index * routeCoordinates.length) / routeData.segments.length);
+          const startIdx = Math.floor(
+            (index * routeCoordinates.length) / routeData.segments.length
+          );
           const endIdx = Math.min(
             Math.floor(((index + 1) * routeCoordinates.length) / routeData.segments.length),
             routeCoordinates.length - 1
@@ -644,7 +729,7 @@ const CalculatedRouteDisplay: React.FC<{ route: RouteResponse; waypoints?: Waypo
             <Marker
               key={`segment-info-${index}`}
               position={midpoint}
-              // @ts-ignore - React-Leaflet v4 prop compatibility
+              // @ts-expect-error - React-Leaflet v4 prop compatibility
               icon={infoIcon}
               zIndexOffset={1500}
             >
@@ -682,7 +767,7 @@ const CalculatedRouteDisplay: React.FC<{ route: RouteResponse; waypoints?: Waypo
             <Marker
               key={`restriction-${index}`}
               position={midpoint}
-              // @ts-ignore - React-Leaflet v4 prop compatibility
+              // @ts-expect-error - React-Leaflet v4 prop compatibility
               icon={icon}
               zIndexOffset={3000} // Highest priority - above everything else
             >
@@ -696,17 +781,18 @@ const CalculatedRouteDisplay: React.FC<{ route: RouteResponse; waypoints?: Waypo
                     </div>
                     <div className="flex justify-between">
                       <span>Severity:</span>
-                      <span className={`font-medium capitalize ${
-                        restriction.severity === 'error' ? 'text-red-600' : 'text-amber-600'
-                      }`}>
+                      <span
+                        className={`font-medium capitalize ${
+                          restriction.severity === 'error' ? 'text-red-600' : 'text-amber-600'
+                        }`}
+                      >
                         {restriction.severity}
                       </span>
                     </div>
                     <div className="mt-2 text-neutral-600">
                       {restriction.severity === 'error'
                         ? 'Vehicle cannot pass this section'
-                        : 'Caution: Check vehicle dimensions'
-                      }
+                        : 'Caution: Check vehicle dimensions'}
                     </div>
                   </div>
                 </div>
@@ -732,7 +818,7 @@ const StraightLineRouteDisplay: React.FC<{ waypoints: Waypoint[] }> = ({ waypoin
         start: waypoints[i],
         end: waypoints[i + 1],
         segmentIndex: i,
-        totalSegments: waypoints.length - 1
+        totalSegments: waypoints.length - 1,
       });
     }
 
@@ -757,8 +843,18 @@ const StraightLineRouteDisplay: React.FC<{ waypoints: Waypoint[] }> = ({ waypoin
   return (
     <>
       {routeSegments.map((segment, _index) => {
-        const bearing = calculateBearing(segment.start.lat, segment.start.lng, segment.end.lat, segment.end.lng);
-        const midpoint = calculateMidpoint(segment.start.lat, segment.start.lng, segment.end.lat, segment.end.lng);
+        const bearing = calculateBearing(
+          segment.start.lat,
+          segment.start.lng,
+          segment.end.lat,
+          segment.end.lng
+        );
+        const midpoint = calculateMidpoint(
+          segment.start.lat,
+          segment.start.lng,
+          segment.end.lat,
+          segment.end.lng
+        );
         const arrowIcon = createDirectionArrowIcon(bearing);
         const segmentColor = getSegmentColor(segment.segmentIndex, segment.totalSegments);
 
@@ -766,9 +862,12 @@ const StraightLineRouteDisplay: React.FC<{ waypoints: Waypoint[] }> = ({ waypoin
           <React.Fragment key={`segment-${segment.start.id}-${segment.end.id}`}>
             {/* Route line */}
             <Polyline
-              positions={[[segment.start.lat, segment.start.lng], [segment.end.lat, segment.end.lng]]}
-              // @ts-ignore - React-Leaflet v4 prop compatibility
-          color={segmentColor}
+              positions={[
+                [segment.start.lat, segment.start.lng],
+                [segment.end.lat, segment.end.lng],
+              ]}
+              // @ts-expect-error - React-Leaflet v4 prop compatibility
+              color={segmentColor}
               weight={4}
               opacity={0.6}
               className="straight-line-route"
@@ -778,8 +877,8 @@ const StraightLineRouteDisplay: React.FC<{ waypoints: Waypoint[] }> = ({ waypoin
             {/* Direction arrow at midpoint */}
             <Marker
               position={midpoint}
-              // @ts-ignore - React-Leaflet v4 prop compatibility
-          icon={arrowIcon}
+              // @ts-expect-error - React-Leaflet v4 prop compatibility
+              icon={arrowIcon}
               zIndexOffset={1000}
             />
           </React.Fragment>

@@ -463,7 +463,7 @@ describe('CampsiteFilterService', () => {
     it('should handle campsite without amenities', () => {
       const campsiteNoAmenities = {
         ...mockCampsites[0],
-        amenities: undefined as any,
+        amenities: undefined as unknown as Campsite['amenities'],
       };
 
       const filterState = {
@@ -474,10 +474,7 @@ describe('CampsiteFilterService', () => {
         },
       };
 
-      const result = CampsiteFilterService.filterCampsites(
-        [campsiteNoAmenities],
-        filterState
-      );
+      const result = CampsiteFilterService.filterCampsites([campsiteNoAmenities], filterState);
 
       expect(result).toHaveLength(0);
     });
@@ -491,10 +488,7 @@ describe('CampsiteFilterService', () => {
 
   describe('Search Suggestions', () => {
     it('should generate search suggestions', () => {
-      const suggestions = CampsiteFilterService.generateSearchSuggestions(
-        'Camp',
-        mockCampsites
-      );
+      const suggestions = CampsiteFilterService.generateSearchSuggestions('Camp', mockCampsites);
 
       expect(suggestions).toBeDefined();
       expect(Array.isArray(suggestions)).toBe(true);
@@ -510,10 +504,7 @@ describe('CampsiteFilterService', () => {
     });
 
     it('should handle empty query', () => {
-      const suggestions = CampsiteFilterService.generateSearchSuggestions(
-        '',
-        mockCampsites
-      );
+      const suggestions = CampsiteFilterService.generateSearchSuggestions('', mockCampsites);
 
       expect(suggestions).toBeDefined();
       expect(suggestions).toHaveLength(0); // Should return empty for empty query

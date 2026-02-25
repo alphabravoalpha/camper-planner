@@ -71,7 +71,7 @@ const DEFAULT_EUROPEAN_FUEL_PRICES = {
   petrol: 1.65,
   diesel: 1.55,
   lpg: 0.85,
-  electricity: 0.35 // per kWh
+  electricity: 0.35, // per kWh
 };
 
 // Vehicle type default consumptions (L/100km for conventional, kWh/100km for electric)
@@ -79,18 +79,18 @@ const DEFAULT_VEHICLE_CONSUMPTIONS = {
   motorhome: {
     small: { petrol: 12, diesel: 10, lpg: 14 },
     medium: { petrol: 15, diesel: 12, lpg: 17 },
-    large: { petrol: 18, diesel: 15, lpg: 20 }
+    large: { petrol: 18, diesel: 15, lpg: 20 },
   },
   caravan: {
     small: { petrol: 10, diesel: 8, lpg: 12 },
     medium: { petrol: 13, diesel: 10, lpg: 15 },
-    large: { petrol: 16, diesel: 13, lpg: 18 }
+    large: { petrol: 16, diesel: 13, lpg: 18 },
   },
   campervan: {
     small: { petrol: 9, diesel: 7, lpg: 11 },
     medium: { petrol: 11, diesel: 9, lpg: 13 },
-    large: { petrol: 14, diesel: 11, lpg: 16 }
-  }
+    large: { petrol: 14, diesel: 11, lpg: 16 },
+  },
 };
 
 export class CostCalculationService {
@@ -121,7 +121,7 @@ export class CostCalculationService {
       consumptionType: 'l_per_100km',
       consumption: defaults?.diesel || 12,
       fuelType: 'diesel',
-      tankCapacity: 80 // Default fuel capacity
+      tankCapacity: 80, // Default fuel capacity
     };
   }
 
@@ -150,21 +150,29 @@ export class CostCalculationService {
     }
 
     // Use provided settings or defaults
-    const consumptionSettings = customConsumption ||
+    const consumptionSettings =
+      customConsumption ||
       this.fuelConsumptionSettings ||
-      (vehicleProfile ? this.getDefaultConsumption(vehicleProfile) : {
-        consumptionType: 'l_per_100km',
-        consumption: 12,
-        fuelType: 'diesel'
-      });
+      (vehicleProfile
+        ? this.getDefaultConsumption(vehicleProfile)
+        : {
+            consumptionType: 'l_per_100km',
+            consumption: 12,
+            fuelType: 'diesel',
+          });
 
-    const priceSettings = customPrices || this.fuelPriceSettings || {
-      priceType: 'default_european',
-      currency: 'EUR'
-    };
+    const priceSettings = customPrices ||
+      this.fuelPriceSettings || {
+        priceType: 'default_european',
+        currency: 'EUR',
+      };
 
     // Calculate route segments
-    const segments = await this.calculateRouteSegments(waypoints, consumptionSettings, priceSettings);
+    const segments = await this.calculateRouteSegments(
+      waypoints,
+      consumptionSettings,
+      priceSettings
+    );
 
     // Calculate daily breakdown
     const dailyBreakdown = this.calculateDailyBreakdown(segments);
@@ -172,7 +180,10 @@ export class CostCalculationService {
     // Calculate totals
     const totalFuelCost = segments.reduce((sum, segment) => sum + segment.fuelCost, 0);
     const totalTollCost = segments.reduce((sum, segment) => sum + (segment.tollCost || 0), 0);
-    const totalAccommodationCost = segments.reduce((sum, segment) => sum + (segment.accommodationCost || 0), 0);
+    const totalAccommodationCost = segments.reduce(
+      (sum, segment) => sum + (segment.accommodationCost || 0),
+      0
+    );
 
     return {
       totalCost: totalFuelCost + totalTollCost + totalAccommodationCost,
@@ -184,7 +195,7 @@ export class CostCalculationService {
       otherCosts: 0,
       currency: priceSettings.currency,
       segments,
-      dailyBreakdown
+      dailyBreakdown,
     };
   }
 
@@ -213,7 +224,7 @@ export class CostCalculationService {
           type: 'fuel_efficiency',
           description: 'Improve fuel efficiency through eco-driving techniques',
           potentialSaving,
-          actionRequired: 'Maintain steady speeds, avoid rapid acceleration, plan efficient routes'
+          actionRequired: 'Maintain steady speeds, avoid rapid acceleration, plan efficient routes',
         });
       }
     }
@@ -224,7 +235,7 @@ export class CostCalculationService {
       type: 'route_alternative',
       description: 'Consider alternative routes to reduce fuel consumption',
       potentialSaving: routeAlternativeSaving,
-      actionRequired: 'Use route optimization with fuel efficiency priority'
+      actionRequired: 'Use route optimization with fuel efficiency priority',
     });
 
     // Fuel stop optimization
@@ -233,7 +244,7 @@ export class CostCalculationService {
         type: 'fuel_stop',
         description: 'Optimize fuel stops at cheaper stations',
         potentialSaving: currentBreakdown.fuelCost * 0.03,
-        actionRequired: 'Plan fuel stops at hypermarkets or discount stations'
+        actionRequired: 'Plan fuel stops at hypermarkets or discount stations',
       });
     }
 
@@ -243,7 +254,7 @@ export class CostCalculationService {
       currentCost: currentBreakdown.totalCost,
       optimizedCost: currentBreakdown.totalCost - totalSavings,
       savings: totalSavings,
-      suggestions: suggestions.sort((a, b) => b.potentialSaving - a.potentialSaving)
+      suggestions: suggestions.sort((a, b) => b.potentialSaving - a.potentialSaving),
     };
   }
 
@@ -339,7 +350,7 @@ export class CostCalculationService {
         fuelCost,
         accommodationCost,
         segmentType,
-        tollCost: 0 // Framework for future toll integration
+        tollCost: 0, // Framework for future toll integration
       });
     }
 
@@ -349,7 +360,9 @@ export class CostCalculationService {
   /**
    * Calculate daily cost breakdown
    */
-  private static calculateDailyBreakdown(segments: RouteSegment[]): CostBreakdown['dailyBreakdown'] {
+  private static calculateDailyBreakdown(
+    segments: RouteSegment[]
+  ): CostBreakdown['dailyBreakdown'] {
     const dailyBreakdown: CostBreakdown['dailyBreakdown'] = [];
     let currentDate = new Date();
     let dailyDistance = 0;
@@ -370,7 +383,7 @@ export class CostCalculationService {
           fuelCost: dailyFuelCost,
           accommodationCost: dailyAccommodationCost,
           foodCost: 0,
-          totalDailyCost: dailyFuelCost + dailyAccommodationCost
+          totalDailyCost: dailyFuelCost + dailyAccommodationCost,
         });
 
         // Reset for next day
@@ -398,11 +411,13 @@ export class CostCalculationService {
       otherCosts: 0,
       currency: 'EUR',
       segments: [],
-      dailyBreakdown: []
+      dailyBreakdown: [],
     };
   }
 
-  private static determineVehicleSize(vehicleProfile: VehicleProfile): 'small' | 'medium' | 'large' {
+  private static determineVehicleSize(
+    vehicleProfile: VehicleProfile
+  ): 'small' | 'medium' | 'large' {
     const length = vehicleProfile.length || 6;
     if (length < 6) return 'small';
     if (length < 8) return 'medium';
@@ -426,11 +441,14 @@ export class CostCalculationService {
 
   private static calculateDistance(waypoint1: Waypoint, waypoint2: Waypoint): number {
     const R = 6371; // Earth's radius in km
-    const dLat = (waypoint2.lat - waypoint1.lat) * Math.PI / 180;
-    const dLng = (waypoint2.lng - waypoint1.lng) * Math.PI / 180;
-    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(waypoint1.lat * Math.PI / 180) * Math.cos(waypoint2.lat * Math.PI / 180) *
-      Math.sin(dLng / 2) * Math.sin(dLng / 2);
+    const dLat = ((waypoint2.lat - waypoint1.lat) * Math.PI) / 180;
+    const dLng = ((waypoint2.lng - waypoint1.lng) * Math.PI) / 180;
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos((waypoint1.lat * Math.PI) / 180) *
+        Math.cos((waypoint2.lat * Math.PI) / 180) *
+        Math.sin(dLng / 2) *
+        Math.sin(dLng / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
   }

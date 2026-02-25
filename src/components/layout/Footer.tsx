@@ -18,13 +18,20 @@ const Footer: React.FC = () => {
           {/* Brand */}
           <div className="sm:col-span-2 lg:col-span-1">
             <div className="flex items-center gap-2 mb-3">
-              <img src="/logo.png" alt="European Camper Planner" className="w-7 h-7" width={28} height={28} />
+              <img
+                src="/logo.png"
+                alt="European Camper Planner"
+                className="w-7 h-7"
+                width={28}
+                height={28}
+              />
               <span className="text-white font-display font-semibold text-sm">
                 European Camper Planner
               </span>
             </div>
             <p className="text-neutral-400 text-sm leading-relaxed">
-              Free, privacy-first trip planning for European camper travellers. No accounts, no subscriptions.
+              Free, privacy-first trip planning for European camper travellers. No accounts, no
+              subscriptions.
             </p>
           </div>
 
@@ -33,22 +40,34 @@ const Footer: React.FC = () => {
             <h3 className="text-white font-display font-semibold text-sm mb-3">Plan</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/" className="text-sm text-neutral-400 hover:text-white hover:underline transition-colors">
+                <Link
+                  to="/"
+                  className="text-sm text-neutral-400 hover:text-white hover:underline transition-colors"
+                >
                   Trip Planner
                 </Link>
               </li>
               <li>
-                <Link to="/guides" className="text-sm text-neutral-400 hover:text-white hover:underline transition-colors">
+                <Link
+                  to="/guides"
+                  className="text-sm text-neutral-400 hover:text-white hover:underline transition-colors"
+                >
                   Travel Guides
                 </Link>
               </li>
               <li>
-                <Link to="/about" className="text-sm text-neutral-400 hover:text-white hover:underline transition-colors">
+                <Link
+                  to="/about"
+                  className="text-sm text-neutral-400 hover:text-white hover:underline transition-colors"
+                >
                   About
                 </Link>
               </li>
               <li>
-                <Link to="/help" className="text-sm text-neutral-400 hover:text-white hover:underline transition-colors">
+                <Link
+                  to="/help"
+                  className="text-sm text-neutral-400 hover:text-white hover:underline transition-colors"
+                >
                   Help Guide
                 </Link>
               </li>
@@ -60,17 +79,26 @@ const Footer: React.FC = () => {
             <h3 className="text-white font-display font-semibold text-sm mb-3">Legal</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/privacy" className="text-sm text-neutral-400 hover:text-white hover:underline transition-colors">
+                <Link
+                  to="/privacy"
+                  className="text-sm text-neutral-400 hover:text-white hover:underline transition-colors"
+                >
                   Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link to="/terms" className="text-sm text-neutral-400 hover:text-white hover:underline transition-colors">
+                <Link
+                  to="/terms"
+                  className="text-sm text-neutral-400 hover:text-white hover:underline transition-colors"
+                >
                   Terms of Use
                 </Link>
               </li>
               <li>
-                <Link to="/affiliate-disclosure" className="text-sm text-neutral-400 hover:text-white hover:underline transition-colors">
+                <Link
+                  to="/affiliate-disclosure"
+                  className="text-sm text-neutral-400 hover:text-white hover:underline transition-colors"
+                >
                   Affiliate Disclosure
                 </Link>
               </li>
@@ -82,13 +110,19 @@ const Footer: React.FC = () => {
             <h3 className="text-white font-display font-semibold text-sm mb-3">Support</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/support" className="text-sm text-neutral-400 hover:text-white hover:underline transition-colors inline-flex items-center gap-1">
+                <Link
+                  to="/support"
+                  className="text-sm text-neutral-400 hover:text-white hover:underline transition-colors inline-flex items-center gap-1"
+                >
                   <Heart className="w-3.5 h-3.5" />
                   Support This Project
                 </Link>
               </li>
               <li>
-                <Link to="/feedback" className="text-sm text-neutral-400 hover:text-white hover:underline transition-colors inline-flex items-center gap-1">
+                <Link
+                  to="/feedback"
+                  className="text-sm text-neutral-400 hover:text-white hover:underline transition-colors inline-flex items-center gap-1"
+                >
                   <MessageSquare className="w-3.5 h-3.5" />
                   Feedback
                 </Link>
@@ -124,12 +158,13 @@ const Footer: React.FC = () => {
       <div className="border-t border-neutral-800">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-neutral-500">
-            <p>
-              &copy; {currentYear} European Camper Trip Planner. Free and open source.
-            </p>
+            <p>&copy; {currentYear} European Camper Trip Planner. Free and open source.</p>
             <p className="text-center sm:text-right">
               Some links may earn us a small commission at no extra cost to you.{' '}
-              <Link to="/affiliate-disclosure" className="underline hover:text-neutral-300 transition-colors">
+              <Link
+                to="/affiliate-disclosure"
+                className="underline hover:text-neutral-300 transition-colors"
+              >
                 Learn more
               </Link>
             </p>

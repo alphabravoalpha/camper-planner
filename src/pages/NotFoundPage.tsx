@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui';
 
 const NotFoundPage: React.FC = () => {
-  const { } = useTranslation();
+  const _i18n = useTranslation();
 
   return (
     <div className="min-h-screen bg-neutral-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
@@ -15,16 +15,18 @@ const NotFoundPage: React.FC = () => {
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10 text-center">
           {/* 404 Illustration */}
           <div className="mx-auto w-48 h-48 mb-6">
-            <img src="/images/404-lost.png" alt="Lost campervan at a crossroads" className="w-full h-full object-contain" />
+            <img
+              src="/images/404-lost.png"
+              alt="Lost campervan at a crossroads"
+              className="w-full h-full object-contain"
+            />
           </div>
 
           {/* Error Message */}
           <h1 className="text-4xl font-bold text-neutral-900 mb-2">404</h1>
-          <h2 className="text-xl font-semibold text-neutral-700 mb-4">
-            Page Not Found
-          </h2>
+          <h2 className="text-xl font-semibold text-neutral-700 mb-4">Page Not Found</h2>
           <p className="text-neutral-500 mb-8">
-            The page you're looking for doesn't exist or has been moved.
+            The page you&apos;re looking for doesn&apos;t exist or has been moved.
           </p>
 
           {/* Navigation Options */}

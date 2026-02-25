@@ -9,10 +9,7 @@ interface WelcomeBannerProps {
   className?: string;
 }
 
-export const WelcomeBanner: React.FC<WelcomeBannerProps> = ({
-  onStartTutorial,
-  className
-}) => {
+export const WelcomeBanner: React.FC<WelcomeBannerProps> = ({ onStartTutorial, className }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [isDismissed, setIsDismissed] = useState(false);
 
@@ -52,15 +49,14 @@ export const WelcomeBanner: React.FC<WelcomeBannerProps> = ({
     >
       <div className="bg-gradient-to-r from-primary-50 to-primary-50 border border-primary-200 rounded-lg shadow-lg p-4">
         <div className="flex items-start space-x-3">
-          <div className="flex-shrink-0 text-2xl">
-            👋
-          </div>
+          <div className="flex-shrink-0 text-2xl">👋</div>
           <div className="flex-1 min-w-0">
             <h3 className="text-sm font-semibold text-primary-900 mb-1">
               Welcome to European Camper Trip Planner!
             </h3>
             <p className="text-sm text-primary-800 mb-3">
-              Get started by clicking on the map to add waypoints, or take a quick tutorial to learn all the features.
+              Get started by clicking on the map to add waypoints, or take a quick tutorial to learn
+              all the features.
             </p>
             <div className="flex flex-wrap gap-2">
               {onStartTutorial && (
@@ -68,9 +64,24 @@ export const WelcomeBanner: React.FC<WelcomeBannerProps> = ({
                   onClick={onStartTutorial}
                   className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-white bg-primary-600 rounded-md hover:bg-primary-700 transition-colors"
                 >
-                  <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  <svg
+                    className="w-4 h-4 mr-1.5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
                   </svg>
                   Start Tutorial
                 </button>
@@ -89,7 +100,12 @@ export const WelcomeBanner: React.FC<WelcomeBannerProps> = ({
             aria-label="Dismiss banner"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
         </div>

@@ -1,8 +1,14 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { DataService, type DataServiceConfig, type RateLimitConfig, type RequestContext } from '../DataService';
+import {
+  DataService,
+  type DataServiceConfig,
+  type RateLimitConfig,
+  type RequestContext,
+} from '../DataService';
 
 // Mock fetch globally
-global.fetch = vi.fn();
+const mockFetch = vi.fn();
+global.fetch = mockFetch as unknown as typeof fetch;
 
 // Concrete implementation for testing
 class TestDataService extends DataService {
@@ -78,7 +84,7 @@ describe('DataService', () => {
   describe('HTTP Requests', () => {
     it('should make GET request successfully', async () => {
       const mockData = { id: 1, name: 'Test' };
-      (global.fetch as any).mockResolvedValueOnce({
+      mockFetch.mockResolvedValueOnce({
         ok: true,
         headers: new Headers({ 'content-type': 'application/json' }),
         json: async () => mockData,
@@ -95,7 +101,7 @@ describe('DataService', () => {
 
     it('should make GET request with query params', async () => {
       const mockData = { results: [] };
-      (global.fetch as any).mockResolvedValueOnce({
+      mockFetch.mockResolvedValueOnce({
         ok: true,
         headers: new Headers({ 'content-type': 'application/json' }),
         json: async () => mockData,
@@ -117,7 +123,7 @@ describe('DataService', () => {
 
     it('should make POST request with JSON body', async () => {
       const mockResponse = { success: true };
-      (global.fetch as any).mockResolvedValueOnce({
+      mockFetch.mockResolvedValueOnce({
         ok: true,
         headers: new Headers({ 'content-type': 'application/json' }),
         json: async () => mockResponse,
@@ -132,13 +138,13 @@ describe('DataService', () => {
       const result = await service.testRequest(context);
       expect(result).toEqual(mockResponse);
 
-      const fetchCall = (global.fetch as any).mock.calls[0];
+      const fetchCall = mockFetch.mock.calls[0];
       expect(fetchCall[1].method).toBe('POST');
       expect(fetchCall[1].body).toBe(JSON.stringify({ name: 'Test', value: 123 }));
     });
 
     it('should include API key in Authorization header', async () => {
-      (global.fetch as any).mockResolvedValueOnce({
+      mockFetch.mockResolvedValueOnce({
         ok: true,
         headers: new Headers({ 'content-type': 'application/json' }),
         json: async () => ({}),
@@ -151,12 +157,12 @@ describe('DataService', () => {
 
       await service.testRequest(context);
 
-      const fetchCall = (global.fetch as any).mock.calls[0];
+      const fetchCall = mockFetch.mock.calls[0];
       expect(fetchCall[1].headers['Authorization']).toBe('Bearer test-api-key');
     });
 
     it('should include User-Agent header', async () => {
-      (global.fetch as any).mockResolvedValueOnce({
+      mockFetch.mockResolvedValueOnce({
         ok: true,
         headers: new Headers({ 'content-type': 'application/json' }),
         json: async () => ({}),
@@ -169,13 +175,13 @@ describe('DataService', () => {
 
       await service.testRequest(context);
 
-      const fetchCall = (global.fetch as any).mock.calls[0];
+      const fetchCall = mockFetch.mock.calls[0];
       expect(fetchCall[1].headers['User-Agent']).toBe('TestAgent/1.0');
     });
 
     it('should handle text responses', async () => {
       const mockText = 'Plain text response';
-      (global.fetch as any).mockResolvedValueOnce({
+      mockFetch.mockResolvedValueOnce({
         ok: true,
         headers: new Headers({ 'content-type': 'text/plain' }),
         text: async () => mockText,
@@ -191,7 +197,7 @@ describe('DataService', () => {
     });
 
     it('should throw error on HTTP error status', async () => {
-      (global.fetch as any).mockResolvedValueOnce({
+      mockFetch.mockResolvedValueOnce({
         ok: false,
         status: 404,
         statusText: 'Not Found',
@@ -212,7 +218,7 @@ describe('DataService', () => {
         customTimeout: 1000,
       };
 
-      (global.fetch as any).mockImplementationOnce((url: string, options: any) => {
+      mockFetch.mockImplementationOnce((_url: string, options: RequestInit) => {
         // Verify timeout signal is set
         expect(options.signal).toBeDefined();
         return Promise.resolve({
@@ -229,7 +235,7 @@ describe('DataService', () => {
   describe('Retry Logic', () => {
     it('should retry on network error', async () => {
       let attempts = 0;
-      (global.fetch as any).mockImplementation(() => {
+      mockFetch.mockImplementation(() => {
         attempts++;
         if (attempts < 3) {
           return Promise.reject(new Error('Network error'));
@@ -252,7 +258,7 @@ describe('DataService', () => {
     }, 10000); // Increase timeout for retry delays
 
     it('should not retry on 4xx errors', async () => {
-      (global.fetch as any).mockResolvedValue({
+      mockFetch.mockResolvedValue({
         ok: false,
         status: 400,
         statusText: 'Bad Request',
@@ -271,7 +277,7 @@ describe('DataService', () => {
       const abortError = new Error('The operation was aborted');
       abortError.name = 'AbortError';
 
-      (global.fetch as any).mockRejectedValue(abortError);
+      mockFetch.mockRejectedValue(abortError);
 
       const context: RequestContext = {
         method: 'GET',
@@ -285,7 +291,7 @@ describe('DataService', () => {
   describe('Caching', () => {
     it('should cache successful GET requests', async () => {
       const mockData = { id: 1 };
-      (global.fetch as any).mockResolvedValue({
+      mockFetch.mockResolvedValue({
         ok: true,
         headers: new Headers({ 'content-type': 'application/json' }),
         json: async () => mockData,
@@ -306,7 +312,7 @@ describe('DataService', () => {
     });
 
     it('should skip cache when requested', async () => {
-      (global.fetch as any).mockResolvedValue({
+      mockFetch.mockResolvedValue({
         ok: true,
         headers: new Headers({ 'content-type': 'application/json' }),
         json: async () => ({ id: 1 }),
@@ -383,7 +389,7 @@ describe('DataService', () => {
 
   describe('Rate Limiting', () => {
     it('should allow requests within rate limit', async () => {
-      (global.fetch as any).mockResolvedValue({
+      mockFetch.mockResolvedValue({
         ok: true,
         headers: new Headers({ 'content-type': 'application/json' }),
         json: async () => ({}),
@@ -412,7 +418,7 @@ describe('DataService', () => {
 
       const limitedService = new TestDataService(config, smallRateLimit);
 
-      (global.fetch as any).mockResolvedValue({
+      mockFetch.mockResolvedValue({
         ok: true,
         headers: new Headers({ 'content-type': 'application/json' }),
         json: async () => ({}),
@@ -441,7 +447,7 @@ describe('DataService', () => {
 
       const unlimitedService = new TestDataService(config, noRateLimit);
 
-      (global.fetch as any).mockResolvedValue({
+      mockFetch.mockResolvedValue({
         ok: true,
         headers: new Headers({ 'content-type': 'application/json' }),
         json: async () => ({}),

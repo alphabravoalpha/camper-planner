@@ -26,7 +26,7 @@ const BlogHero: React.FC<BlogHeroProps> = ({ post }) => {
           src={post.heroImage.src}
           alt={post.heroImage.alt}
           className="w-full h-full object-cover"
-          onError={(e) => {
+          onError={e => {
             const img = e.target as HTMLImageElement;
             img.onerror = null;
             img.src = '/images/blog/fallback-hero.jpg';
@@ -39,9 +39,13 @@ const BlogHero: React.FC<BlogHeroProps> = ({ post }) => {
           <div className="max-w-4xl mx-auto">
             {/* Breadcrumbs */}
             <nav className="flex items-center gap-1.5 text-xs text-white/80 mb-3">
-              <Link to="/" className="hover:text-white transition-colors">Home</Link>
+              <Link to="/" className="hover:text-white transition-colors">
+                Home
+              </Link>
               <ChevronRight className="w-3 h-3" />
-              <Link to="/guides" className="hover:text-white transition-colors">Guides</Link>
+              <Link to="/guides" className="hover:text-white transition-colors">
+                Guides
+              </Link>
               <ChevronRight className="w-3 h-3" />
               <span className="text-white/60 truncate">{categoryInfo.name}</span>
             </nav>

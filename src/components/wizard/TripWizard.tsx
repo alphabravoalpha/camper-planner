@@ -1,19 +1,52 @@
 // Trip Planning Wizard
 // Step-by-step modal for creating a complete multi-day trip itinerary
 
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import {
-  X, MapPin, Calendar, Car, Ship, Route, ChevronRight, ChevronLeft,
-  Loader2, AlertTriangle, Check, ExternalLink, ArrowLeftRight,
-  Sun, Snowflake, Leaf, CloudRain, Clock, Tent, Star, Wifi,
-  Zap, Droplets, ShowerHead, Scale, Rocket, TrainFront, Lightbulb,
+  X,
+  MapPin,
+  Calendar,
+  Car,
+  Ship,
+  Route,
+  ChevronRight,
+  ChevronLeft,
+  Loader2,
+  AlertTriangle,
+  Check,
+  ExternalLink,
+  ArrowLeftRight,
+  Sun,
+  Snowflake,
+  Leaf,
+  CloudRain,
+  Clock,
+  Tent,
+  Scale,
+  Rocket,
+  TrainFront,
+  Lightbulb,
 } from 'lucide-react';
 import { useTripWizardStore, useVehicleStore, useRouteStore } from '../../store';
 import { useTripSettingsStore } from '../../store/tripSettingsStore';
-import { TripWizardService, DRIVING_STYLE_LIMITS, type DrivingStyle, type CampsiteOption } from '../../services/TripWizardService';
+import {
+  TripWizardService,
+  DRIVING_STYLE_LIMITS,
+  type DrivingStyle,
+  type CampsiteOption,
+  type ItineraryDay,
+} from '../../services/TripWizardService';
 import { campsiteService } from '../../services/CampsiteService';
-import { CHANNEL_CROSSINGS, type ChannelCrossing, needsChannelCrossing } from '../../data/channelCrossings';
+import { CHANNEL_CROSSINGS, needsChannelCrossing } from '../../data/channelCrossings';
 import { type Waypoint } from '../../types';
+
+// Mapped geocode result for search dropdowns
+interface GeocodeMappedResult {
+  place_id: number;
+  display_name: string;
+  lat: string;
+  lon: string;
+}
 
 // ============================================
 // Wizard Step Components
@@ -37,14 +70,13 @@ const TripWizard: React.FC = () => {
   const routeStore = useRouteStore();
 
   // Determine if crossing step is needed
-  const needsCrossing = wizard.start && wizard.end
-    ? needsChannelCrossing(wizard.start.lat, wizard.start.lng, wizard.end.lat, wizard.end.lng)
-    : false;
+  const needsCrossing =
+    wizard.start && wizard.end
+      ? needsChannelCrossing(wizard.start.lat, wizard.start.lng, wizard.end.lat, wizard.end.lng)
+      : false;
 
   // Build visible steps (skip crossing if not needed)
-  const visibleSteps = STEPS.filter(step =>
-    step.id !== 'crossing' || needsCrossing
-  );
+  const visibleSteps = STEPS.filter(step => step.id !== 'crossing' || needsCrossing);
 
   const currentStepId = visibleSteps[wizard.wizardStep]?.id || 'start-end';
   const isLastStep = wizard.wizardStep === visibleSteps.length - 1;
@@ -53,12 +85,18 @@ const TripWizard: React.FC = () => {
   // Can proceed to next step?
   const canProceed = (() => {
     switch (currentStepId) {
-      case 'start-end': return !!(wizard.start && wizard.end);
-      case 'dates': return !!wizard.startDate;
-      case 'driving': return true; // always has a default
-      case 'crossing': return needsCrossing ? !!wizard.crossing : true;
-      case 'itinerary': return !!wizard.itinerary;
-      default: return false;
+      case 'start-end':
+        return !!(wizard.start && wizard.end);
+      case 'dates':
+        return !!wizard.startDate;
+      case 'driving':
+        return true; // always has a default
+      case 'crossing':
+        return needsCrossing ? !!wizard.crossing : true;
+      case 'itinerary':
+        return !!wizard.itinerary;
+      default:
+        return false;
     }
   })();
 
@@ -87,8 +125,10 @@ const TripWizard: React.FC = () => {
           vehicleProfile: vehicleProfile || undefined,
         });
         wizard.setItinerary(itinerary);
-      } catch (error: any) {
-        wizard.setGenerationError(error.message || 'Failed to generate itinerary');
+      } catch (error: unknown) {
+        wizard.setGenerationError(
+          error instanceof Error ? error.message : 'Failed to generate itinerary'
+        );
       } finally {
         wizard.setIsGenerating(false);
       }
@@ -149,7 +189,9 @@ const TripWizard: React.FC = () => {
     // Persist wizard settings to the trip settings store
     const crossing = wizard.crossing;
     const crossingType: 'ferry' | 'eurotunnel' | undefined = crossing
-      ? (crossing.type === 'tunnel' ? 'eurotunnel' : 'ferry')
+      ? crossing.type === 'tunnel'
+        ? 'eurotunnel'
+        : 'ferry'
       : undefined;
 
     useTripSettingsStore.getState().updateSettings({
@@ -157,12 +199,16 @@ const TripWizard: React.FC = () => {
       ...(wizard.endDate ? { endDate: wizard.endDate.toISOString().split('T')[0] } : {}),
       drivingStyle: wizard.drivingStyle,
       restDayFrequency: wizard.restDayFrequency,
-      ...(crossing && crossingType ? {
-        crossing: {
-          type: crossingType,
-          estimatedCost: Math.round((crossing.estimatedCost.low + crossing.estimatedCost.high) / 2),
-        },
-      } : {}),
+      ...(crossing && crossingType
+        ? {
+            crossing: {
+              type: crossingType,
+              estimatedCost: Math.round(
+                (crossing.estimatedCost.low + crossing.estimatedCost.high) / 2
+              ),
+            },
+          }
+        : {}),
     });
 
     // Close wizard
@@ -179,7 +225,10 @@ const TripWizard: React.FC = () => {
         <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-100">
           <h2 className="text-xl font-display font-bold text-neutral-900">Plan Your Trip</h2>
           <button
-            onClick={() => { wizard.closeWizard(); wizard.resetWizard(); }}
+            onClick={() => {
+              wizard.closeWizard();
+              wizard.resetWizard();
+            }}
             className="p-2 hover:bg-neutral-100 rounded-lg transition-all duration-200"
           >
             <X className="w-5 h-5 text-neutral-500" />
@@ -197,7 +246,9 @@ const TripWizard: React.FC = () => {
               return (
                 <React.Fragment key={step.id}>
                   {index > 0 && (
-                    <div className={`flex-1 h-0.5 ${isCompleted ? 'bg-primary-500' : 'bg-neutral-200'}`} />
+                    <div
+                      className={`flex-1 h-0.5 ${isCompleted ? 'bg-primary-500' : 'bg-neutral-200'}`}
+                    />
                   )}
                   <button
                     onClick={() => index < wizard.wizardStep && wizard.setStep(index)}
@@ -205,16 +256,12 @@ const TripWizard: React.FC = () => {
                       isActive
                         ? 'bg-primary-100 text-primary-700 ring-2 ring-primary-200'
                         : isCompleted
-                        ? 'bg-primary-50 text-primary-600 hover:bg-primary-100 cursor-pointer'
-                        : 'text-neutral-400'
+                          ? 'bg-primary-50 text-primary-600 hover:bg-primary-100 cursor-pointer'
+                          : 'text-neutral-400'
                     }`}
                     disabled={index > wizard.wizardStep}
                   >
-                    {isCompleted ? (
-                      <Check className="w-4 h-4" />
-                    ) : (
-                      <Icon className="w-4 h-4" />
-                    )}
+                    {isCompleted ? <Check className="w-4 h-4" /> : <Icon className="w-4 h-4" />}
                     <span className="hidden sm:inline">{step.label}</span>
                   </button>
                 </React.Fragment>
@@ -248,7 +295,9 @@ const TripWizard: React.FC = () => {
               disabled={!canProceed}
               className="flex items-center gap-2 px-6 py-2.5 bg-accent-500 text-white rounded-lg hover:bg-accent-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-display font-semibold shadow-sm hover:shadow-medium active:scale-[0.97]"
             >
-              {visibleSteps[wizard.wizardStep + 1]?.id === 'itinerary' ? 'Generate Itinerary' : 'Next'}
+              {visibleSteps[wizard.wizardStep + 1]?.id === 'itinerary'
+                ? 'Generate Itinerary'
+                : 'Next'}
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>
@@ -266,8 +315,8 @@ const StepStartEnd: React.FC = () => {
   const { start, end, setStart, setEnd } = useTripWizardStore();
   const [startQuery, setStartQuery] = useState(start?.name || '');
   const [endQuery, setEndQuery] = useState(end?.name || '');
-  const [startResults, setStartResults] = useState<any[]>([]);
-  const [endResults, setEndResults] = useState<any[]>([]);
+  const [startResults, setStartResults] = useState<GeocodeMappedResult[]>([]);
+  const [endResults, setEndResults] = useState<GeocodeMappedResult[]>([]);
   const [searchingStart, setSearchingStart] = useState(false);
   const [searchingEnd, setSearchingEnd] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
@@ -275,7 +324,7 @@ const StepStartEnd: React.FC = () => {
   const startDebounceRef = useRef<ReturnType<typeof setTimeout>>();
   const endDebounceRef = useRef<ReturnType<typeof setTimeout>>();
 
-  const searchLocation = useCallback(async (query: string): Promise<any[]> => {
+  const searchLocation = useCallback(async (query: string): Promise<GeocodeMappedResult[]> => {
     if (query.length < 2) return [];
     try {
       setSearchError(null);
@@ -294,35 +343,41 @@ const StepStartEnd: React.FC = () => {
     }
   }, []);
 
-  const handleStartSearch = useCallback((query: string) => {
-    setStartQuery(query);
-    if (startDebounceRef.current) clearTimeout(startDebounceRef.current);
-    if (query.length >= 2) {
-      startDebounceRef.current = setTimeout(async () => {
-        setSearchingStart(true);
-        const results = await searchLocation(query);
-        setStartResults(results);
-        setSearchingStart(false);
-      }, 500);
-    } else {
-      setStartResults([]);
-    }
-  }, [searchLocation]);
+  const handleStartSearch = useCallback(
+    (query: string) => {
+      setStartQuery(query);
+      if (startDebounceRef.current) clearTimeout(startDebounceRef.current);
+      if (query.length >= 2) {
+        startDebounceRef.current = setTimeout(async () => {
+          setSearchingStart(true);
+          const results = await searchLocation(query);
+          setStartResults(results);
+          setSearchingStart(false);
+        }, 500);
+      } else {
+        setStartResults([]);
+      }
+    },
+    [searchLocation]
+  );
 
-  const handleEndSearch = useCallback((query: string) => {
-    setEndQuery(query);
-    if (endDebounceRef.current) clearTimeout(endDebounceRef.current);
-    if (query.length >= 2) {
-      endDebounceRef.current = setTimeout(async () => {
-        setSearchingEnd(true);
-        const results = await searchLocation(query);
-        setEndResults(results);
-        setSearchingEnd(false);
-      }, 500);
-    } else {
-      setEndResults([]);
-    }
-  }, [searchLocation]);
+  const handleEndSearch = useCallback(
+    (query: string) => {
+      setEndQuery(query);
+      if (endDebounceRef.current) clearTimeout(endDebounceRef.current);
+      if (query.length >= 2) {
+        endDebounceRef.current = setTimeout(async () => {
+          setSearchingEnd(true);
+          const results = await searchLocation(query);
+          setEndResults(results);
+          setSearchingEnd(false);
+        }, 500);
+      } else {
+        setEndResults([]);
+      }
+    },
+    [searchLocation]
+  );
 
   const handleSwap = useCallback(() => {
     const temp = start;
@@ -335,35 +390,39 @@ const StepStartEnd: React.FC = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-display font-semibold text-neutral-900 mb-1">Where are you going?</h3>
+        <h3 className="text-lg font-display font-semibold text-neutral-900 mb-1">
+          Where are you going?
+        </h3>
         <p className="text-sm text-neutral-500">Enter your start and end locations for the trip.</p>
       </div>
 
       <div className="space-y-4">
         {/* Start Location */}
         <div>
-          <label className="block text-sm font-medium text-neutral-700 mb-1">
+          <label
+            htmlFor="wizard-start-location"
+            className="block text-sm font-medium text-neutral-700 mb-1"
+          >
             <MapPin className="w-4 h-4 inline mr-1 text-green-600" />
             Starting from
           </label>
           <div className="relative">
             <input
+              id="wizard-start-location"
               type="text"
               value={startQuery}
-              onChange={(e) => handleStartSearch(e.target.value)}
+              onChange={e => handleStartSearch(e.target.value)}
               placeholder="e.g. Edinburgh, Scotland"
               className="w-full px-4 py-3 border-2 border-neutral-200 rounded-lg focus:ring-2 focus:ring-primary-200 focus:border-primary-500 text-base"
             />
             {searchingStart && (
               <Loader2 className="absolute right-3 top-3.5 w-5 h-5 text-neutral-400 animate-spin" />
             )}
-            {start && (
-              <Check className="absolute right-3 top-3.5 w-5 h-5 text-green-500" />
-            )}
+            {start && <Check className="absolute right-3 top-3.5 w-5 h-5 text-green-500" />}
           </div>
           {startResults.length > 0 && !start && (
             <div className="mt-1 bg-white rounded-lg shadow-medium ring-1 ring-black/5 overflow-hidden">
-              {startResults.map((result: any) => (
+              {startResults.map((result: GeocodeMappedResult) => (
                 <button
                   key={result.place_id}
                   onClick={() => {
@@ -384,7 +443,10 @@ const StepStartEnd: React.FC = () => {
           )}
           {start && (
             <button
-              onClick={() => { setStart(null); setStartQuery(''); }}
+              onClick={() => {
+                setStart(null);
+                setStartQuery('');
+              }}
               className="text-xs text-primary-600 hover:text-primary-700 mt-1"
             >
               Change
@@ -405,28 +467,30 @@ const StepStartEnd: React.FC = () => {
 
         {/* End Location */}
         <div>
-          <label className="block text-sm font-medium text-neutral-700 mb-1">
+          <label
+            htmlFor="wizard-end-location"
+            className="block text-sm font-medium text-neutral-700 mb-1"
+          >
             <MapPin className="w-4 h-4 inline mr-1 text-red-500" />
             Going to
           </label>
           <div className="relative">
             <input
+              id="wizard-end-location"
               type="text"
               value={endQuery}
-              onChange={(e) => handleEndSearch(e.target.value)}
+              onChange={e => handleEndSearch(e.target.value)}
               placeholder="e.g. Elba, Italy"
               className="w-full px-4 py-3 border-2 border-neutral-200 rounded-lg focus:ring-2 focus:ring-primary-200 focus:border-primary-500 text-base"
             />
             {searchingEnd && (
               <Loader2 className="absolute right-3 top-3.5 w-5 h-5 text-neutral-400 animate-spin" />
             )}
-            {end && (
-              <Check className="absolute right-3 top-3.5 w-5 h-5 text-green-500" />
-            )}
+            {end && <Check className="absolute right-3 top-3.5 w-5 h-5 text-green-500" />}
           </div>
           {endResults.length > 0 && !end && (
             <div className="mt-1 bg-white rounded-lg shadow-medium ring-1 ring-black/5 overflow-hidden">
-              {endResults.map((result: any) => (
+              {endResults.map((result: GeocodeMappedResult) => (
                 <button
                   key={result.place_id}
                   onClick={() => {
@@ -447,7 +511,10 @@ const StepStartEnd: React.FC = () => {
           )}
           {end && (
             <button
-              onClick={() => { setEnd(null); setEndQuery(''); }}
+              onClick={() => {
+                setEnd(null);
+                setEndQuery('');
+              }}
               className="text-xs text-primary-600 hover:text-primary-700 mt-1"
             >
               Change
@@ -470,20 +537,27 @@ const StepStartEnd: React.FC = () => {
           <strong>{start.name}</strong> → <strong>{end.name}</strong>
           <br />
           <span className="text-primary-600">
-            Approx. {Math.round(
-              6371 * 2 * Math.atan2(
-                Math.sqrt(
-                  Math.sin(((end.lat - start.lat) * Math.PI / 180) / 2) ** 2 +
-                  Math.cos(start.lat * Math.PI / 180) * Math.cos(end.lat * Math.PI / 180) *
-                  Math.sin(((end.lng - start.lng) * Math.PI / 180) / 2) ** 2
-                ),
-                Math.sqrt(1 -
-                  Math.sin(((end.lat - start.lat) * Math.PI / 180) / 2) ** 2 -
-                  Math.cos(start.lat * Math.PI / 180) * Math.cos(end.lat * Math.PI / 180) *
-                  Math.sin(((end.lng - start.lng) * Math.PI / 180) / 2) ** 2
+            Approx.{' '}
+            {Math.round(
+              6371 *
+                2 *
+                Math.atan2(
+                  Math.sqrt(
+                    Math.sin(((end.lat - start.lat) * Math.PI) / 180 / 2) ** 2 +
+                      Math.cos((start.lat * Math.PI) / 180) *
+                        Math.cos((end.lat * Math.PI) / 180) *
+                        Math.sin(((end.lng - start.lng) * Math.PI) / 180 / 2) ** 2
+                  ),
+                  Math.sqrt(
+                    1 -
+                      Math.sin(((end.lat - start.lat) * Math.PI) / 180 / 2) ** 2 -
+                      Math.cos((start.lat * Math.PI) / 180) *
+                        Math.cos((end.lat * Math.PI) / 180) *
+                        Math.sin(((end.lng - start.lng) * Math.PI) / 180 / 2) ** 2
+                  )
                 )
-              )
-            )} km as the crow flies
+            )}{' '}
+            km as the crow flies
           </span>
         </div>
       )}
@@ -500,10 +574,29 @@ const StepDates: React.FC = () => {
 
   const getSeason = (date: Date): { name: string; icon: React.ReactNode; tip: string } => {
     const month = date.getMonth();
-    if (month >= 2 && month <= 4) return { name: 'Spring', icon: <Leaf className="w-5 h-5 text-green-500" />, tip: 'Great time for southern Europe. Some mountain passes may still be closed.' };
-    if (month >= 5 && month <= 7) return { name: 'Summer', icon: <Sun className="w-5 h-5 text-yellow-500" />, tip: 'Peak season — book campsites early! Great weather but busy roads.' };
-    if (month >= 8 && month <= 10) return { name: 'Autumn', icon: <CloudRain className="w-5 h-5 text-orange-500" />, tip: 'Beautiful colours, fewer crowds. Watch for early darkness and rain.' };
-    return { name: 'Winter', icon: <Snowflake className="w-5 h-5 text-blue-400" />, tip: 'Many campsites closed. Mountain passes may require snow chains.' };
+    if (month >= 2 && month <= 4)
+      return {
+        name: 'Spring',
+        icon: <Leaf className="w-5 h-5 text-green-500" />,
+        tip: 'Great time for southern Europe. Some mountain passes may still be closed.',
+      };
+    if (month >= 5 && month <= 7)
+      return {
+        name: 'Summer',
+        icon: <Sun className="w-5 h-5 text-yellow-500" />,
+        tip: 'Peak season — book campsites early! Great weather but busy roads.',
+      };
+    if (month >= 8 && month <= 10)
+      return {
+        name: 'Autumn',
+        icon: <CloudRain className="w-5 h-5 text-orange-500" />,
+        tip: 'Beautiful colours, fewer crowds. Watch for early darkness and rain.',
+      };
+    return {
+      name: 'Winter',
+      icon: <Snowflake className="w-5 h-5 text-blue-400" />,
+      tip: 'Many campsites closed. Mountain passes may require snow chains.',
+    };
   };
 
   const season = startDate ? getSeason(startDate) : null;
@@ -511,28 +604,50 @@ const StepDates: React.FC = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-display font-semibold text-neutral-900 mb-1">When are you going?</h3>
+        <h3 className="text-lg font-display font-semibold text-neutral-900 mb-1">
+          When are you going?
+        </h3>
         <p className="text-sm text-neutral-500">Set your departure date. End date is optional.</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-semibold text-neutral-700 mb-1">Departure Date</label>
+          <label
+            htmlFor="wizard-departure-date"
+            className="block text-sm font-semibold text-neutral-700 mb-1"
+          >
+            Departure Date
+          </label>
           <input
+            id="wizard-departure-date"
             type="date"
             value={startDate ? startDate.toISOString().split('T')[0] : ''}
-            onChange={(e) => setStartDate(e.target.value ? new Date(e.target.value + 'T00:00:00') : null)}
+            onChange={e =>
+              setStartDate(e.target.value ? new Date(e.target.value + 'T00:00:00') : null)
+            }
             min={new Date().toISOString().split('T')[0]}
             className="w-full px-4 py-3 border-2 border-neutral-200 rounded-lg focus:ring-2 focus:ring-primary-200 focus:border-primary-500 text-base"
           />
         </div>
         <div>
-          <label className="block text-sm font-semibold text-neutral-700 mb-1">Return Date <span className="text-neutral-400">(optional)</span></label>
+          <label
+            htmlFor="wizard-return-date"
+            className="block text-sm font-semibold text-neutral-700 mb-1"
+          >
+            Return Date <span className="text-neutral-400">(optional)</span>
+          </label>
           <input
+            id="wizard-return-date"
             type="date"
             value={endDate ? endDate.toISOString().split('T')[0] : ''}
-            onChange={(e) => setEndDate(e.target.value ? new Date(e.target.value + 'T00:00:00') : null)}
-            min={startDate ? startDate.toISOString().split('T')[0] : new Date().toISOString().split('T')[0]}
+            onChange={e =>
+              setEndDate(e.target.value ? new Date(e.target.value + 'T00:00:00') : null)
+            }
+            min={
+              startDate
+                ? startDate.toISOString().split('T')[0]
+                : new Date().toISOString().split('T')[0]
+            }
             className="w-full px-4 py-3 border-2 border-neutral-200 rounded-lg focus:ring-2 focus:ring-primary-200 focus:border-primary-500 text-base"
           />
         </div>
@@ -556,7 +671,8 @@ const StepDates: React.FC = () => {
 // ============================================
 
 const StepDrivingStyle: React.FC = () => {
-  const { drivingStyle, setDrivingStyle, restDayFrequency, setRestDayFrequency } = useTripWizardStore();
+  const { drivingStyle, setDrivingStyle, restDayFrequency, setRestDayFrequency } =
+    useTripWizardStore();
   const { profile } = useVehicleStore();
 
   const styles: { id: DrivingStyle; icon: React.FC<{ className?: string }>; title: string }[] = [
@@ -568,8 +684,13 @@ const StepDrivingStyle: React.FC = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-display font-semibold text-neutral-900 mb-1">How do you like to drive?</h3>
-        <p className="text-sm text-neutral-500">Choose your daily driving preference. This determines how the trip is broken into daily stages.</p>
+        <h3 className="text-lg font-display font-semibold text-neutral-900 mb-1">
+          How do you like to drive?
+        </h3>
+        <p className="text-sm text-neutral-500">
+          Choose your daily driving preference. This determines how the trip is broken into daily
+          stages.
+        </p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -587,7 +708,9 @@ const StepDrivingStyle: React.FC = () => {
                   : 'border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50'
               }`}
             >
-              <div className="mb-2"><style.icon className="w-6 h-6" /></div>
+              <div className="mb-2">
+                <style.icon className="w-6 h-6" />
+              </div>
               <h4 className="font-display font-semibold text-neutral-900">{style.title}</h4>
               <p className="text-xs text-neutral-500 mt-1">{limits.shortDescription}</p>
               <p className="text-xs text-neutral-400 mt-2 leading-relaxed">{limits.description}</p>
@@ -598,8 +721,10 @@ const StepDrivingStyle: React.FC = () => {
 
       {/* Rest days */}
       <div>
-        <label className="block text-sm font-semibold text-neutral-700 mb-2">Rest Days</label>
-        <div className="flex gap-2">
+        <span id="rest-days-label" className="block text-sm font-semibold text-neutral-700 mb-2">
+          Rest Days
+        </span>
+        <div className="flex gap-2" role="group" aria-labelledby="rest-days-label">
           {[
             { value: 0, label: 'No rest days' },
             { value: 3, label: 'Every 3 days' },
@@ -650,27 +775,40 @@ const StepCrossing: React.FC = () => {
   };
 
   // Get recommended order based on start/end locations
-  const recommended = start && end
-    ? TripWizardService.getRecommendedCrossings(start.lat, start.lng, end.lat, end.lng)
-    : [];
+  const recommended =
+    start && end
+      ? TripWizardService.getRecommendedCrossings(start.lat, start.lng, end.lat, end.lng)
+      : [];
   const topRecommendedId = recommended[0]?.id;
 
   const regionLabels: Record<string, { title: string; desc: string }> = {
     short: { title: 'Short Crossings', desc: 'Dover & Folkestone — quickest to cross' },
-    western: { title: 'Western Crossings', desc: 'Portsmouth, Plymouth & Poole — arrive further south/west' },
-    northern: { title: 'Northern Crossings', desc: 'Harwich, Hull & Newcastle — best for northern routes' },
+    western: {
+      title: 'Western Crossings',
+      desc: 'Portsmouth, Plymouth & Poole — arrive further south/west',
+    },
+    northern: {
+      title: 'Northern Crossings',
+      desc: 'Harwich, Hull & Newcastle — best for northern routes',
+    },
   };
 
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-display font-semibold text-neutral-900 mb-1">Getting to Europe</h3>
-        <p className="text-sm text-neutral-500">Choose how you want to cross the Channel. We'll route via the terminals.</p>
+        <h3 className="text-lg font-display font-semibold text-neutral-900 mb-1">
+          Getting to Europe
+        </h3>
+        <p className="text-sm text-neutral-500">
+          Choose how you want to cross the Channel. We&apos;ll route via the terminals.
+        </p>
       </div>
 
       {Object.entries(crossingsByRegion).map(([region, crossings]) => (
         <div key={region}>
-          <h4 className="font-display font-semibold text-neutral-800 mb-1">{regionLabels[region].title}</h4>
+          <h4 className="font-display font-semibold text-neutral-800 mb-1">
+            {regionLabels[region].title}
+          </h4>
           <p className="text-xs text-neutral-500 mb-2">{regionLabels[region].desc}</p>
           <div className="space-y-2">
             {crossings.map(c => {
@@ -707,13 +845,15 @@ const StepCrossing: React.FC = () => {
                   <div className="flex items-center gap-4 mt-1.5 text-xs text-neutral-500">
                     <span className="flex items-center gap-1">
                       <Clock className="w-3.5 h-3.5" />
-                      {c.duration < 60 ? `${c.duration} min` : `${Math.floor(c.duration / 60)}h ${c.duration % 60 > 0 ? `${c.duration % 60}m` : ''}`}
+                      {c.duration < 60
+                        ? `${c.duration} min`
+                        : `${Math.floor(c.duration / 60)}h ${c.duration % 60 > 0 ? `${c.duration % 60}m` : ''}`}
                     </span>
                     <span>{c.operators.join(', ')}</span>
-                    <span>£{c.estimatedCost.low}–£{c.estimatedCost.high}</span>
-                    {c.overnightCrossing && (
-                      <span className="text-purple-600">Overnight</span>
-                    )}
+                    <span>
+                      £{c.estimatedCost.low}–£{c.estimatedCost.high}
+                    </span>
+                    {c.overnightCrossing && <span className="text-purple-600">Overnight</span>}
                   </div>
 
                   {isSelected && c.notes && (
@@ -728,7 +868,7 @@ const StepCrossing: React.FC = () => {
                           href={url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          onClick={(e) => e.stopPropagation()}
+                          onClick={e => e.stopPropagation()}
                           className="inline-flex items-center gap-1 text-xs text-primary-600 hover:text-primary-700 bg-primary-50 px-2 py-1 rounded-lg"
                         >
                           Book with {c.operators[i] || c.operators[0]}
@@ -762,8 +902,12 @@ const StepItinerary: React.FC<StepItineraryProps> = ({ onCreateTrip }) => {
     return (
       <div className="flex flex-col items-center justify-center py-16">
         <Loader2 className="w-10 h-10 text-primary-500 animate-spin mb-4" />
-        <h3 className="text-lg font-display font-semibold text-neutral-900">Generating your trip plan...</h3>
-        <p className="text-sm text-neutral-500 mt-1">Calculating route, finding campsites, and building your itinerary.</p>
+        <h3 className="text-lg font-display font-semibold text-neutral-900">
+          Generating your trip plan...
+        </h3>
+        <p className="text-sm text-neutral-500 mt-1">
+          Calculating route, finding campsites, and building your itinerary.
+        </p>
       </div>
     );
   }
@@ -772,7 +916,9 @@ const StepItinerary: React.FC<StepItineraryProps> = ({ onCreateTrip }) => {
     return (
       <div className="flex flex-col items-center justify-center py-16">
         <AlertTriangle className="w-10 h-10 text-red-500 mb-4" />
-        <h3 className="text-lg font-display font-semibold text-neutral-900">Failed to generate itinerary</h3>
+        <h3 className="text-lg font-display font-semibold text-neutral-900">
+          Failed to generate itinerary
+        </h3>
         <p className="text-sm text-red-600 mt-1">{generationError}</p>
         <button
           onClick={() => useTripWizardStore.getState().prevStep()}
@@ -792,7 +938,8 @@ const StepItinerary: React.FC<StepItineraryProps> = ({ onCreateTrip }) => {
         <div>
           <h3 className="text-lg font-display font-bold text-neutral-900">Your Trip Itinerary</h3>
           <p className="text-sm text-neutral-500">
-            {itinerary.totalDays} days · {itinerary.totalDistance} km · {itinerary.totalDrivingTime} hours driving
+            {itinerary.totalDays} days · {itinerary.totalDistance} km · {itinerary.totalDrivingTime}{' '}
+            hours driving
           </p>
         </div>
       </div>
@@ -833,35 +980,41 @@ const StepItinerary: React.FC<StepItineraryProps> = ({ onCreateTrip }) => {
 // Day Card Component
 // ============================================
 
-const DayCard: React.FC<{ day: any }> = ({ day }) => {
+const DayCard: React.FC<{ day: ItineraryDay }> = ({ day }) => {
   const [expanded, setExpanded] = useState(false);
   const { selectCampsite } = useTripWizardStore();
 
   const isDriving = day.type === 'driving' || day.type === 'crossing';
   const isRest = day.type === 'rest';
 
-  const dateStr = day.date instanceof Date
-    ? day.date.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })
-    : '';
+  const dateStr =
+    day.date instanceof Date
+      ? day.date.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })
+      : '';
 
   return (
-    <div className={`rounded-xl overflow-hidden shadow-soft ${
-      day.type === 'crossing' ? 'ring-1 ring-blue-200 bg-blue-50/50' :
-      isRest ? 'ring-1 ring-green-200 bg-green-50/50' :
-      'ring-1 ring-neutral-200/50'
-    }`}>
+    <div
+      className={`rounded-xl overflow-hidden shadow-soft ${
+        day.type === 'crossing'
+          ? 'ring-1 ring-blue-200 bg-blue-50/50'
+          : isRest
+            ? 'ring-1 ring-green-200 bg-green-50/50'
+            : 'ring-1 ring-neutral-200/50'
+      }`}
+    >
       {/* Day Header */}
-      <button
-        onClick={() => setExpanded(!expanded)}
-        className="w-full text-left p-4"
-      >
+      <button onClick={() => setExpanded(!expanded)} className="w-full text-left p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
-              day.type === 'crossing' ? 'bg-blue-200 text-blue-800' :
-              isRest ? 'bg-green-200 text-green-800' :
-              'bg-neutral-200 text-neutral-800'
-            }`}>
+            <div
+              className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
+                day.type === 'crossing'
+                  ? 'bg-blue-200 text-blue-800'
+                  : isRest
+                    ? 'bg-green-200 text-green-800'
+                    : 'bg-neutral-200 text-neutral-800'
+              }`}
+            >
               {day.dayNumber}
             </div>
             <div>
@@ -882,14 +1035,18 @@ const DayCard: React.FC<{ day: any }> = ({ day }) => {
               </div>
             </div>
           </div>
-          <ChevronRight className={`w-5 h-5 text-neutral-400 transition-transform ${expanded ? 'rotate-90' : ''}`} />
+          <ChevronRight
+            className={`w-5 h-5 text-neutral-400 transition-transform ${expanded ? 'rotate-90' : ''}`}
+          />
         </div>
 
         {/* Selected campsite preview */}
         {day.selectedOvernight && !expanded && (
           <div className="flex items-center gap-2 mt-2 ml-11 text-xs text-neutral-500">
             <Tent className="w-3.5 h-3.5 text-green-600" />
-            <span>Staying at <strong>{day.selectedOvernight.campsite.name}</strong></span>
+            <span>
+              Staying at <strong>{day.selectedOvernight.campsite.name}</strong>
+            </span>
             <span className="text-green-600">({day.selectedOvernight.suitabilityScore}/100)</span>
           </div>
         )}
@@ -902,7 +1059,9 @@ const DayCard: React.FC<{ day: any }> = ({ day }) => {
           {day.notes.length > 0 && (
             <div className="text-xs text-neutral-500 space-y-0.5 ml-11">
               {day.notes.map((note: string, i: number) => (
-                <p key={i} className="flex items-start gap-1"><Lightbulb className="w-3 h-3 mt-0.5 flex-shrink-0" /> {note}</p>
+                <p key={i} className="flex items-start gap-1">
+                  <Lightbulb className="w-3 h-3 mt-0.5 flex-shrink-0" /> {note}
+                </p>
               ))}
             </div>
           )}
@@ -911,13 +1070,19 @@ const DayCard: React.FC<{ day: any }> = ({ day }) => {
           {day.crossing && (
             <div className="ml-11 bg-blue-50 rounded-lg p-3 text-sm">
               <p className="font-medium text-blue-900 flex items-center gap-1">
-                {day.crossing.type === 'tunnel' ? <TrainFront className="w-4 h-4" /> : <Ship className="w-4 h-4" />} {day.crossing.name}
+                {day.crossing.type === 'tunnel' ? (
+                  <TrainFront className="w-4 h-4" />
+                ) : (
+                  <Ship className="w-4 h-4" />
+                )}{' '}
+                {day.crossing.name}
               </p>
               <p className="text-xs text-blue-700 mt-1">
-                {day.crossing.operators.join(', ')} · {day.crossing.duration < 60
+                {day.crossing.operators.join(', ')} ·{' '}
+                {day.crossing.duration < 60
                   ? `${day.crossing.duration} min`
-                  : `${Math.floor(day.crossing.duration / 60)}h ${day.crossing.duration % 60 > 0 ? `${day.crossing.duration % 60}m` : ''}`
-                } crossing · £{day.crossing.estimatedCost.low}–£{day.crossing.estimatedCost.high}
+                  : `${Math.floor(day.crossing.duration / 60)}h ${day.crossing.duration % 60 > 0 ? `${day.crossing.duration % 60}m` : ''}`}{' '}
+                crossing · £{day.crossing.estimatedCost.low}–£{day.crossing.estimatedCost.high}
               </p>
               <div className="flex gap-2 mt-2">
                 {day.crossing.bookingUrls.map((url: string, i: number) => (
@@ -959,18 +1124,23 @@ const DayCard: React.FC<{ day: any }> = ({ day }) => {
                       <div className="flex items-center justify-between">
                         <div>
                           <span className="font-medium text-sm text-neutral-900">
-                            {i === 0 && '⭐ '}{option.campsite.name}
+                            {i === 0 && '⭐ '}
+                            {option.campsite.name}
                           </span>
                           <span className="text-xs text-neutral-500 ml-2">
                             {option.distanceFromRoute} km from route
                           </span>
                         </div>
                         <div className="flex items-center gap-1">
-                          <span className={`text-xs font-bold ${
-                            option.suitabilityScore >= 80 ? 'text-green-600' :
-                            option.suitabilityScore >= 60 ? 'text-yellow-600' :
-                            'text-neutral-500'
-                          }`}>
+                          <span
+                            className={`text-xs font-bold ${
+                              option.suitabilityScore >= 80
+                                ? 'text-green-600'
+                                : option.suitabilityScore >= 60
+                                  ? 'text-yellow-600'
+                                  : 'text-neutral-500'
+                            }`}
+                          >
                             {option.suitabilityScore}/100
                           </span>
                           {isSelected && <Check className="w-4 h-4 text-green-600" />}
@@ -978,7 +1148,10 @@ const DayCard: React.FC<{ day: any }> = ({ day }) => {
                       </div>
                       <div className="flex flex-wrap gap-1.5 mt-1.5">
                         {option.amenitySummary.slice(0, 5).map(amenity => (
-                          <span key={amenity} className="text-xs bg-neutral-100 text-neutral-600 px-1.5 py-0.5 rounded">
+                          <span
+                            key={amenity}
+                            className="text-xs bg-neutral-100 text-neutral-600 px-1.5 py-0.5 rounded"
+                          >
                             {amenity}
                           </span>
                         ))}

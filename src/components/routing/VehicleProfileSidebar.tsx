@@ -61,10 +61,17 @@ const VehicleProfileSidebar: React.FC<VehicleProfileSidebarProps> = () => {
           <div
             className="vehicle-sidebar-backdrop absolute inset-0 bg-black bg-opacity-50 transition-opacity"
             onClick={closeVehicleSidebar}
+            onKeyDown={e => e.key === 'Escape' && closeVehicleSidebar()}
+            role="button"
+            tabIndex={0}
+            aria-label="Close vehicle sidebar"
           />
 
           {/* Sidebar */}
-          <div data-tour-id="vehicle-sidebar-panel" className="absolute left-0 top-0 h-full w-full max-w-md bg-white shadow-xl transform transition-transform">
+          <div
+            data-tour-id="vehicle-sidebar-panel"
+            className="absolute left-0 top-0 h-full w-full max-w-md bg-white shadow-xl transform transition-transform"
+          >
             <div className="h-full flex flex-col">
               {/* Header */}
               <div className="flex items-center justify-between p-4 border-b border-neutral-200">
@@ -74,17 +81,19 @@ const VehicleProfileSidebar: React.FC<VehicleProfileSidebarProps> = () => {
                   className="text-neutral-400 hover:text-neutral-600 p-1 rounded transition-colors"
                 >
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
                   </svg>
                 </button>
               </div>
 
               {/* Content */}
               <div className="flex-1 overflow-y-auto p-4">
-                <VehicleProfilePanel
-                  onClose={closeVehicleSidebar}
-                  compact={true}
-                />
+                <VehicleProfilePanel onClose={closeVehicleSidebar} compact={true} />
               </div>
             </div>
           </div>

@@ -5,10 +5,10 @@ import { useState, useEffect } from 'react';
 
 // Breakpoint definitions that match Tailwind CSS
 export const breakpoints = {
-  sm: 640,   // Small devices (landscape phones, 640px and up)
-  md: 768,   // Medium devices (tablets, 768px and up)
-  lg: 1024,  // Large devices (desktops, 1024px and up)
-  xl: 1280,  // Extra large devices (large desktops, 1280px and up)
+  sm: 640, // Small devices (landscape phones, 640px and up)
+  md: 768, // Medium devices (tablets, 768px and up)
+  lg: 1024, // Large devices (desktops, 1024px and up)
+  xl: 1280, // Extra large devices (large desktops, 1280px and up)
   '2xl': 1536, // 2X Large devices (larger desktops, 1536px and up)
 } as const;
 
@@ -39,7 +39,7 @@ export const commonDevices = {
   'Google Pixel 5': { width: 393, height: 851, pixelRatio: 2.75 },
 
   // Tablets
-  'iPad': { width: 768, height: 1024, pixelRatio: 2 },
+  iPad: { width: 768, height: 1024, pixelRatio: 2 },
   'iPad Pro 11"': { width: 834, height: 1194, pixelRatio: 2 },
   'iPad Pro 12.9"': { width: 1024, height: 1366, pixelRatio: 2 },
   'Samsung Galaxy Tab': { width: 800, height: 1280, pixelRatio: 2 },
@@ -354,13 +354,13 @@ export const testingUtils = {
   // Log current viewport information
   logViewportInfo: () => {
     if (typeof window !== 'undefined') {
-      console.log('Viewport Info:', {
+      // Viewport info collected silently for testing
+      void {
         width: window.innerWidth,
         height: window.innerHeight,
         devicePixelRatio: window.devicePixelRatio,
         orientation: window.innerHeight > window.innerWidth ? 'portrait' : 'landscape',
-        userAgent: navigator.userAgent,
-      });
+      };
     }
   },
 
@@ -390,11 +390,10 @@ export const testingUtils = {
   },
 
   // Simulate different viewport sizes
-  simulateViewport: (width: number, height: number) => {
+  simulateViewport: (_width: number, _height: number) => {
     if (typeof window !== 'undefined' && window.screen) {
       // This is for testing/debugging purposes only
-      console.log(`Simulating viewport: ${width}x${height}`);
-
+      // Simulating viewport: use Playwright or Cypress in real testing
       // In a real testing environment, you'd use tools like Playwright or Cypress
       // to actually change the viewport size
     }

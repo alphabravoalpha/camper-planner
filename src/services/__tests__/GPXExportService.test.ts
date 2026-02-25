@@ -92,10 +92,7 @@ describe('GPXExportService', () => {
     });
 
     it('should include GPX header', async () => {
-      const result = await GPXExportService.exportToGPX(
-        mockRouteResponse,
-        mockWaypoints
-      );
+      const result = await GPXExportService.exportToGPX(mockRouteResponse, mockWaypoints);
 
       expect(result.data).toContain('<?xml version="1.0"');
       expect(result.data).toContain('<gpx');
@@ -114,10 +111,7 @@ describe('GPXExportService', () => {
     });
 
     it('should close GPX tags properly', async () => {
-      const result = await GPXExportService.exportToGPX(
-        mockRouteResponse,
-        mockWaypoints
-      );
+      const result = await GPXExportService.exportToGPX(mockRouteResponse, mockWaypoints);
 
       expect(result.data).toContain('</gpx>');
     });
@@ -171,11 +165,7 @@ describe('GPXExportService', () => {
     });
 
     it('should include auto-generated description', async () => {
-      const result = await GPXExportService.exportToGPX(
-        mockRouteResponse,
-        mockWaypoints,
-        'Test'
-      );
+      const result = await GPXExportService.exportToGPX(mockRouteResponse, mockWaypoints, 'Test');
 
       // Description is auto-generated from route data, not from options
       // Note: options.description is currently ignored - potential enhancement
@@ -186,10 +176,7 @@ describe('GPXExportService', () => {
 
   describe('Waypoint Handling', () => {
     it('should export all waypoints', async () => {
-      const result = await GPXExportService.exportToGPX(
-        mockRouteResponse,
-        mockWaypoints
-      );
+      const result = await GPXExportService.exportToGPX(mockRouteResponse, mockWaypoints);
 
       expect(result.data).toContain('Paris');
       expect(result.data).toContain('Lyon');
@@ -197,20 +184,14 @@ describe('GPXExportService', () => {
     });
 
     it('should include waypoint coordinates', async () => {
-      const result = await GPXExportService.exportToGPX(
-        mockRouteResponse,
-        mockWaypoints
-      );
+      const result = await GPXExportService.exportToGPX(mockRouteResponse, mockWaypoints);
 
       expect(result.data).toContain('lat="48.8566"');
       expect(result.data).toContain('lon="2.3522"');
     });
 
     it('should handle empty waypoints array', async () => {
-      const result = await GPXExportService.exportToGPX(
-        mockRouteResponse,
-        []
-      );
+      const result = await GPXExportService.exportToGPX(mockRouteResponse, []);
 
       // Empty waypoints fail validation (no waypoints = invalid route)
       expect(result.success).toBe(false);
@@ -220,10 +201,7 @@ describe('GPXExportService', () => {
 
   describe('Track Points', () => {
     it('should export track points from geometry', async () => {
-      const result = await GPXExportService.exportToGPX(
-        mockRouteResponse,
-        mockWaypoints
-      );
+      const result = await GPXExportService.exportToGPX(mockRouteResponse, mockWaypoints);
 
       // Should have track points for geometry coordinates
       const trkptCount = (result.data?.match(/<trkpt/g) || []).length;
@@ -231,10 +209,7 @@ describe('GPXExportService', () => {
     });
 
     it('should include track segment', async () => {
-      const result = await GPXExportService.exportToGPX(
-        mockRouteResponse,
-        mockWaypoints
-      );
+      const result = await GPXExportService.exportToGPX(mockRouteResponse, mockWaypoints);
 
       expect(result.data).toContain('<trkseg>');
       expect(result.data).toContain('</trkseg>');
@@ -265,10 +240,7 @@ describe('GPXExportService', () => {
     });
 
     it('should use default name when route name not provided', async () => {
-      const result = await GPXExportService.exportToGPX(
-        mockRouteResponse,
-        mockWaypoints
-      );
+      const result = await GPXExportService.exportToGPX(mockRouteResponse, mockWaypoints);
 
       expect(result.filename).toBeDefined();
       expect(result.filename).toMatch(/\.gpx$/);
@@ -277,20 +249,14 @@ describe('GPXExportService', () => {
 
   describe('File Size', () => {
     it('should calculate file size', async () => {
-      const result = await GPXExportService.exportToGPX(
-        mockRouteResponse,
-        mockWaypoints
-      );
+      const result = await GPXExportService.exportToGPX(mockRouteResponse, mockWaypoints);
 
       expect(result.size).toBeDefined();
       expect(result.size).toBeGreaterThan(0);
     });
 
     it('should have reasonable file size', async () => {
-      const result = await GPXExportService.exportToGPX(
-        mockRouteResponse,
-        mockWaypoints
-      );
+      const result = await GPXExportService.exportToGPX(mockRouteResponse, mockWaypoints);
 
       // GPX file should be between 1KB and 1MB for typical route
       expect(result.size).toBeGreaterThan(1000);
@@ -305,10 +271,7 @@ describe('GPXExportService', () => {
         error: 'Route calculation failed',
       } as unknown as RouteResponse;
 
-      const result = await GPXExportService.exportToGPX(
-        invalidRoute,
-        mockWaypoints
-      );
+      const result = await GPXExportService.exportToGPX(invalidRoute, mockWaypoints);
 
       expect(result.success).toBe(false);
       expect(result.error).toBeDefined();
@@ -320,10 +283,7 @@ describe('GPXExportService', () => {
         geometry: [],
       };
 
-      const result = await GPXExportService.exportToGPX(
-        routeWithoutGeometry,
-        mockWaypoints
-      );
+      const result = await GPXExportService.exportToGPX(routeWithoutGeometry, mockWaypoints);
 
       // May or may not fail depending on validation logic
       expect(result.format).toBe('gpx');
@@ -332,7 +292,7 @@ describe('GPXExportService', () => {
     it('should handle null waypoints gracefully', async () => {
       const result = await GPXExportService.exportToGPX(
         mockRouteResponse,
-        null as any
+        null as unknown as Waypoint[]
       );
 
       // Should handle gracefully
@@ -342,13 +302,10 @@ describe('GPXExportService', () => {
 
   describe('GPX Validation', () => {
     it('should produce valid XML', async () => {
-      const result = await GPXExportService.exportToGPX(
-        mockRouteResponse,
-        mockWaypoints
-      );
+      const result = await GPXExportService.exportToGPX(mockRouteResponse, mockWaypoints);
 
       // Basic XML validation - should have matching open/close tags
-      const openTags = result.data?.match(/<(?!\/)[^>]+>/g) || [];
+      const _openTags = result.data?.match(/<(?!\/)[^>]+>/g) || [];
       const closeTags = result.data?.match(/<\/[^>]+>/g) || [];
 
       // Every close tag should have a corresponding open tag
@@ -366,10 +323,7 @@ describe('GPXExportService', () => {
         },
       ];
 
-      const result = await GPXExportService.exportToGPX(
-        mockRouteResponse,
-        waypoints
-      );
+      const result = await GPXExportService.exportToGPX(mockRouteResponse, waypoints);
 
       // Should escape XML special characters
       expect(result.data).not.toContain('<special>');
@@ -383,10 +337,7 @@ describe('GPXExportService', () => {
     it('should handle single waypoint', async () => {
       const singleWaypoint = [mockWaypoints[0]];
 
-      const result = await GPXExportService.exportToGPX(
-        mockRouteResponse,
-        singleWaypoint
-      );
+      const result = await GPXExportService.exportToGPX(mockRouteResponse, singleWaypoint);
 
       expect(result.success).toBe(true);
     });
@@ -410,10 +361,7 @@ describe('GPXExportService', () => {
         ],
       };
 
-      const result = await GPXExportService.exportToGPX(
-        largeRoute,
-        mockWaypoints
-      );
+      const result = await GPXExportService.exportToGPX(largeRoute, mockWaypoints);
 
       expect(result.success).toBe(true);
       expect(result.size).toBeGreaterThan(50000); // Large file with 1000 points
@@ -422,11 +370,7 @@ describe('GPXExportService', () => {
     it('should handle very long route names', async () => {
       const longName = 'A'.repeat(500);
 
-      const result = await GPXExportService.exportToGPX(
-        mockRouteResponse,
-        mockWaypoints,
-        longName
-      );
+      const result = await GPXExportService.exportToGPX(mockRouteResponse, mockWaypoints, longName);
 
       expect(result.success).toBe(true);
       // Filename is sanitized but not truncated (just removes special chars)
@@ -446,10 +390,7 @@ describe('GPXExportService', () => {
         type: 'start',
       };
 
-      const result = await GPXExportService.exportToGPX(
-        mockRouteResponse,
-        [preciseWaypoint]
-      );
+      const result = await GPXExportService.exportToGPX(mockRouteResponse, [preciseWaypoint]);
 
       expect(result.data).toContain('48.856614');
       expect(result.data).toContain('2.352222');

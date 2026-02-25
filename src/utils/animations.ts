@@ -7,72 +7,46 @@ import { useReducedMotion } from './accessibility';
 // Animation presets that respect reduced motion preferences
 export const animations = {
   // Fade animations
-  fadeIn: (reducedMotion: boolean = false) => cn(
-    'transition-opacity duration-300 ease-out',
-    reducedMotion ? '' : 'animate-fade-in'
-  ),
+  fadeIn: (reducedMotion: boolean = false) =>
+    cn('transition-opacity duration-300 ease-out', reducedMotion ? '' : 'animate-fade-in'),
 
-  fadeOut: (reducedMotion: boolean = false) => cn(
-    'transition-opacity duration-300 ease-out',
-    reducedMotion ? '' : 'animate-fade-out'
-  ),
+  fadeOut: (reducedMotion: boolean = false) =>
+    cn('transition-opacity duration-300 ease-out', reducedMotion ? '' : 'animate-fade-out'),
 
   // Scale animations
-  scaleIn: (reducedMotion: boolean = false) => cn(
-    'transition-transform duration-300 ease-out',
-    reducedMotion ? '' : 'animate-scale-in'
-  ),
+  scaleIn: (reducedMotion: boolean = false) =>
+    cn('transition-transform duration-300 ease-out', reducedMotion ? '' : 'animate-scale-in'),
 
-  scaleOut: (reducedMotion: boolean = false) => cn(
-    'transition-transform duration-300 ease-out',
-    reducedMotion ? '' : 'animate-scale-out'
-  ),
+  scaleOut: (reducedMotion: boolean = false) =>
+    cn('transition-transform duration-300 ease-out', reducedMotion ? '' : 'animate-scale-out'),
 
   // Slide animations
-  slideInUp: (reducedMotion: boolean = false) => cn(
-    'transition-transform duration-500 ease-out',
-    reducedMotion ? '' : 'animate-slide-up'
-  ),
+  slideInUp: (reducedMotion: boolean = false) =>
+    cn('transition-transform duration-500 ease-out', reducedMotion ? '' : 'animate-slide-up'),
 
-  slideInDown: (reducedMotion: boolean = false) => cn(
-    'transition-transform duration-500 ease-out',
-    reducedMotion ? '' : 'animate-slide-down'
-  ),
+  slideInDown: (reducedMotion: boolean = false) =>
+    cn('transition-transform duration-500 ease-out', reducedMotion ? '' : 'animate-slide-down'),
 
-  slideInLeft: (reducedMotion: boolean = false) => cn(
-    'transition-transform duration-500 ease-out',
-    reducedMotion ? '' : 'animate-slide-left'
-  ),
+  slideInLeft: (reducedMotion: boolean = false) =>
+    cn('transition-transform duration-500 ease-out', reducedMotion ? '' : 'animate-slide-left'),
 
-  slideInRight: (reducedMotion: boolean = false) => cn(
-    'transition-transform duration-500 ease-out',
-    reducedMotion ? '' : 'animate-slide-right'
-  ),
+  slideInRight: (reducedMotion: boolean = false) =>
+    cn('transition-transform duration-500 ease-out', reducedMotion ? '' : 'animate-slide-right'),
 
   // Bounce animation
-  bounce: (reducedMotion: boolean = false) => cn(
-    reducedMotion ? '' : 'animate-bounce'
-  ),
+  bounce: (reducedMotion: boolean = false) => cn(reducedMotion ? '' : 'animate-bounce'),
 
   // Pulse animation
-  pulse: (reducedMotion: boolean = false) => cn(
-    reducedMotion ? '' : 'animate-pulse'
-  ),
+  pulse: (reducedMotion: boolean = false) => cn(reducedMotion ? '' : 'animate-pulse'),
 
   // Spin animation
-  spin: (reducedMotion: boolean = false) => cn(
-    reducedMotion ? '' : 'animate-spin'
-  ),
+  spin: (reducedMotion: boolean = false) => cn(reducedMotion ? '' : 'animate-spin'),
 
   // Shake animation for errors
-  shake: (reducedMotion: boolean = false) => cn(
-    reducedMotion ? '' : 'animate-shake'
-  ),
+  shake: (reducedMotion: boolean = false) => cn(reducedMotion ? '' : 'animate-shake'),
 
   // Wiggle animation for attention
-  wiggle: (reducedMotion: boolean = false) => cn(
-    reducedMotion ? '' : 'animate-wiggle'
-  ),
+  wiggle: (reducedMotion: boolean = false) => cn(reducedMotion ? '' : 'animate-wiggle'),
 };
 
 // Transition presets
@@ -98,80 +72,70 @@ export const transitions = {
 // Micro-interaction utilities
 export const microInteractions = {
   // Button interactions
-  buttonPress: (reducedMotion: boolean = false) => cn(
-    'transition-transform duration-150 ease-out',
-    reducedMotion ? '' : 'active:scale-95'
-  ),
+  buttonPress: (reducedMotion: boolean = false) =>
+    cn('transition-transform duration-150 ease-out', reducedMotion ? '' : 'active:scale-95'),
 
-  buttonHover: (reducedMotion: boolean = false) => cn(
-    'transition-all duration-200 ease-out',
-    reducedMotion ? 'hover:bg-opacity-90' : 'hover:scale-105 hover:shadow-lg'
-  ),
+  buttonHover: (reducedMotion: boolean = false) =>
+    cn(
+      'transition-all duration-200 ease-out',
+      reducedMotion ? 'hover:bg-opacity-90' : 'hover:scale-105 hover:shadow-lg'
+    ),
 
   // Card interactions
-  cardHover: (reducedMotion: boolean = false) => cn(
-    'transition-all duration-300 ease-out',
-    reducedMotion ? 'hover:bg-neutral-50' : 'hover:scale-105 hover:shadow-xl'
-  ),
+  cardHover: (reducedMotion: boolean = false) =>
+    cn(
+      'transition-all duration-300 ease-out',
+      reducedMotion ? 'hover:bg-neutral-50' : 'hover:scale-105 hover:shadow-xl'
+    ),
 
-  cardPress: (reducedMotion: boolean = false) => cn(
-    'transition-transform duration-150 ease-out',
-    reducedMotion ? '' : 'active:scale-98'
-  ),
+  cardPress: (reducedMotion: boolean = false) =>
+    cn('transition-transform duration-150 ease-out', reducedMotion ? '' : 'active:scale-98'),
 
   // Input interactions
-  inputFocus: () => cn(
-    'transition-all duration-200 ease-out',
-    'focus:ring-2 focus:ring-primary-500 focus:border-primary-500'
-  ),
+  inputFocus: () =>
+    cn(
+      'transition-all duration-200 ease-out',
+      'focus:ring-2 focus:ring-primary-500 focus:border-primary-500'
+    ),
 
   // Icon interactions
-  iconSpin: (reducedMotion: boolean = false) => cn(
-    reducedMotion ? '' : 'hover:animate-spin'
-  ),
+  iconSpin: (reducedMotion: boolean = false) => cn(reducedMotion ? '' : 'hover:animate-spin'),
 
-  iconBounce: (reducedMotion: boolean = false) => cn(
-    reducedMotion ? '' : 'hover:animate-bounce'
-  ),
+  iconBounce: (reducedMotion: boolean = false) => cn(reducedMotion ? '' : 'hover:animate-bounce'),
 
   // Loading interactions
-  loadingPulse: (reducedMotion: boolean = false) => cn(
-    reducedMotion ? 'opacity-70' : 'animate-pulse'
-  ),
+  loadingPulse: (reducedMotion: boolean = false) =>
+    cn(reducedMotion ? 'opacity-70' : 'animate-pulse'),
 
-  loadingSpin: (reducedMotion: boolean = false) => cn(
-    reducedMotion ? '' : 'animate-spin'
-  ),
+  loadingSpin: (reducedMotion: boolean = false) => cn(reducedMotion ? '' : 'animate-spin'),
 };
 
 // Complex animation sequences
 export const sequences = {
   // Staggered animations for lists
   staggeredFadeIn: (index: number, reducedMotion: boolean = false) => ({
-    className: cn(
-      'transition-all duration-500 ease-out',
-      reducedMotion ? '' : 'animate-fade-in'
-    ),
-    style: reducedMotion ? {} : {
-      animationDelay: `${index * 100}ms`,
-      animationFillMode: 'both'
-    }
+    className: cn('transition-all duration-500 ease-out', reducedMotion ? '' : 'animate-fade-in'),
+    style: reducedMotion
+      ? {}
+      : {
+          animationDelay: `${index * 100}ms`,
+          animationFillMode: 'both',
+        },
   }),
 
   // Progressive reveal
   progressiveReveal: (delay: number = 0, reducedMotion: boolean = false) => ({
-    className: cn(
-      'transition-all duration-700 ease-out',
-      reducedMotion ? '' : 'animate-slide-up'
-    ),
-    style: reducedMotion ? {} : {
-      animationDelay: `${delay}ms`,
-      animationFillMode: 'both'
-    }
+    className: cn('transition-all duration-700 ease-out', reducedMotion ? '' : 'animate-slide-up'),
+    style: reducedMotion
+      ? {}
+      : {
+          animationDelay: `${delay}ms`,
+          animationFillMode: 'both',
+        },
   }),
 
   // Typewriter effect for text
-  typewriter: (text: string, speed: number = 50, reducedMotion: boolean = false) => {
+  typewriter: (text: string, _speed: number = 50, reducedMotion: boolean = false) => {
     if (reducedMotion) return text;
 
     // This would be implemented with a custom hook in React
@@ -212,7 +176,8 @@ export const useAnimations = () => {
 
     // Sequences
     staggeredFadeIn: (index: number) => sequences.staggeredFadeIn(index, prefersReducedMotion),
-    progressiveReveal: (delay: number = 0) => sequences.progressiveReveal(delay, prefersReducedMotion),
+    progressiveReveal: (delay: number = 0) =>
+      sequences.progressiveReveal(delay, prefersReducedMotion),
 
     // Utility
     prefersReducedMotion,
@@ -238,7 +203,7 @@ export const cssVariables = {
 export const performanceUtils = {
   // Use will-change for elements that will animate
   willChange: (properties: string[]) => ({
-    willChange: properties.join(', ')
+    willChange: properties.join(', '),
   }),
 
   // Remove will-change after animation
@@ -248,15 +213,12 @@ export const performanceUtils = {
 
   // Use transform3d for hardware acceleration
   transform3d: (x: number = 0, y: number = 0, z: number = 0) => ({
-    transform: `translate3d(${x}px, ${y}px, ${z}px)`
+    transform: `translate3d(${x}px, ${y}px, ${z}px)`,
   }),
 
   // Optimize for animations
-  optimizeForAnimation: () => cn(
-    'will-change-transform',
-    'backface-visibility-hidden',
-    'transform-gpu'
-  ),
+  optimizeForAnimation: () =>
+    cn('will-change-transform', 'backface-visibility-hidden', 'transform-gpu'),
 };
 
 // Toast notification animations
@@ -295,25 +257,29 @@ export const toastAnimations = {
 // Modal animations
 export const modalAnimations = {
   overlay: {
-    enter: (reducedMotion: boolean = false) => cn(
-      'transition-opacity duration-300 ease-out',
-      reducedMotion ? 'opacity-100' : 'animate-fade-in opacity-100'
-    ),
-    exit: (reducedMotion: boolean = false) => cn(
-      'transition-opacity duration-300 ease-out',
-      reducedMotion ? 'opacity-0' : 'animate-fade-out opacity-0'
-    ),
+    enter: (reducedMotion: boolean = false) =>
+      cn(
+        'transition-opacity duration-300 ease-out',
+        reducedMotion ? 'opacity-100' : 'animate-fade-in opacity-100'
+      ),
+    exit: (reducedMotion: boolean = false) =>
+      cn(
+        'transition-opacity duration-300 ease-out',
+        reducedMotion ? 'opacity-0' : 'animate-fade-out opacity-0'
+      ),
   },
 
   content: {
-    enter: (reducedMotion: boolean = false) => cn(
-      'transition-all duration-300 ease-out',
-      reducedMotion ? 'opacity-100' : 'animate-scale-in opacity-100'
-    ),
-    exit: (reducedMotion: boolean = false) => cn(
-      'transition-all duration-300 ease-out',
-      reducedMotion ? 'opacity-0' : 'animate-scale-out opacity-0'
-    ),
+    enter: (reducedMotion: boolean = false) =>
+      cn(
+        'transition-all duration-300 ease-out',
+        reducedMotion ? 'opacity-100' : 'animate-scale-in opacity-100'
+      ),
+    exit: (reducedMotion: boolean = false) =>
+      cn(
+        'transition-all duration-300 ease-out',
+        reducedMotion ? 'opacity-0' : 'animate-scale-out opacity-0'
+      ),
   },
 };
 
@@ -333,13 +299,19 @@ export const pageTransitions = {
   slideTransition: (direction: 'left' | 'right' = 'right', reducedMotion: boolean = false) => ({
     enter: cn(
       'transition-transform duration-500 ease-out',
-      reducedMotion ? 'transform-none' :
-        direction === 'right' ? 'animate-slide-right' : 'animate-slide-left'
+      reducedMotion
+        ? 'transform-none'
+        : direction === 'right'
+          ? 'animate-slide-right'
+          : 'animate-slide-left'
     ),
     exit: cn(
       'transition-transform duration-300 ease-out',
-      reducedMotion ? 'transform-none' :
-        direction === 'right' ? 'animate-slide-left' : 'animate-slide-right'
+      reducedMotion
+        ? 'transform-none'
+        : direction === 'right'
+          ? 'animate-slide-left'
+          : 'animate-slide-right'
     ),
   }),
 };
