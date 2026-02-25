@@ -26,6 +26,11 @@ const BlogHero: React.FC<BlogHeroProps> = ({ post }) => {
           src={post.heroImage.src}
           alt={post.heroImage.alt}
           className="w-full h-full object-cover"
+          onError={(e) => {
+            const img = e.target as HTMLImageElement;
+            img.onerror = null;
+            img.src = '/images/blog/fallback-hero.jpg';
+          }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
 
