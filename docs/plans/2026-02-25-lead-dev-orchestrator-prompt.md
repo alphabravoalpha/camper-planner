@@ -24,7 +24,7 @@ Read and understand the full project state:
 7. Run: npm run lint — capture any lint issues
 8. Run: npm run build — confirm production build succeeds, note bundle sizes
 9. Check package.json for installed but unused dependencies
-10. Check the live site at camperplanning.com — test the core workflow (search → add waypoint → campsites → tools menu) on both desktop and mobile viewports
+10. Check the live site at camperplanning.com using Claude in Chrome (MCP browser automation is available) — test the core workflow (search → add waypoint → campsites → tools menu) on both desktop and mobile viewports. Use tabs_context_mcp to get tab context, navigate to the site, take screenshots, and interact with the UI directly.
 11. Read the 5 most recently modified source files to understand current code quality
 12. Check .github/workflows/ for CI/CD completeness
 13. Check for any open GitHub issues: gh issue list
@@ -43,6 +43,7 @@ Evaluate the project against these quality dimensions. For each, rate it RED (mi
 8. **Test Coverage** — Service tests exist (357 tests). What about component tests? E2E tests? Use the playwright plugin to check
 9. **Developer Experience** — Pre-commit hooks, CI pipeline completeness, type-check in CI, lint in CI, test in CI, automatic deployment
 10. **Code Quality** — Dead code, unused exports, TODO/FIXME comments, console.log leaks, any types remaining
+11. **Visual Polish** — Does the site look professional? Are there placeholder images, missing graphics, inconsistent styling, or generic stock-photo energy? Blog articles especially benefit from custom hero images. Image generation is available via Gemini in Chrome.
 
 ## Phase 3: Prioritised Roadmap
 
@@ -97,12 +98,37 @@ Each prompt should be wrapped in a markdown code block so I can copy-paste it di
 2. Write each generated prompt to docs/plans/prompts/ as individual files (prompt-batch-1.md, prompt-batch-2.md, etc.) so they're version controlled
 3. Commit everything: git add docs/plans/ && git commit -m "docs: quality roadmap and orchestrated session prompts"
 
+## Available Capabilities
+
+Every worker session has access to these — make sure generated prompts use them where relevant:
+
+### Claude in Chrome (MCP Browser Automation)
+All sessions have access to a Chrome browser via MCP tools. This is VITAL for verifying work on the live site. Every prompt that involves UI changes or deployment MUST include a step to:
+1. Open camperplanning.com in Chrome (use tabs_context_mcp, tabs_create_mcp, navigate tools)
+2. Take screenshots to verify changes are live and working
+3. Test on mobile viewport (use resize_window to 375×812) as well as desktop
+4. Check for console errors (use read_console_messages)
+
+Include this instruction in every relevant prompt:
+"After deploying, verify on the live site using Claude in Chrome: navigate to camperplanning.com, take screenshots, test the affected features, check console for errors, and test at mobile viewport (375×812)."
+
+### Image Generation via Gemini
+Sessions can generate images by navigating to gemini.google.com in Chrome, typing a prompt, and downloading the result. Use this for:
+- Custom illustrations for blog articles
+- Hero images for guide pages
+- Icons or graphics that need to be unique (not stock)
+- Any visual assets the site needs
+
+Include this instruction where image creation is needed:
+"Generate images using Gemini: open gemini.google.com in Chrome, enter your image prompt, wait for generation, then download and save to the appropriate public/ directory."
+
 ## Important Rules
 
 - Do NOT implement anything yourself. Your only job is analysis and prompt generation.
 - Do NOT modify any source code files. Only create/modify files in docs/.
 - Every prompt you generate must use git worktrees (superpowers:using-git-worktrees) so parallel sessions don't conflict on main.
 - Every prompt must end with creating a PR and running pr-review-toolkit:review-pr.
+- Every prompt that touches UI or deploys MUST verify on the live site using Claude in Chrome.
 - Prioritise user-facing impact over developer niceties. Accessibility and reliability come before DX improvements.
 - Be specific in prompts — name exact files, exact commands, exact success criteria. Vague prompts produce vague work.
 - Include a final "cleanup batch" prompt that merges all PRs, resolves conflicts, updates CLAUDE.md (using claude-md-management:claude-md-improver), and deploys to production.
