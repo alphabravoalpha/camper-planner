@@ -101,17 +101,16 @@ const TripWizard: React.FC = () => {
   const handleCreateTrip = useCallback(() => {
     if (!wizard.itinerary) return;
 
-    // Clear existing route
-    routeStore.clearRoute();
+    const ts = Date.now();
 
-    // Add waypoints from itinerary
-    const waypoints: Waypoint[] = [];
+    // Build waypoints from itinerary
+    const newWaypoints: Waypoint[] = [];
 
     wizard.itinerary.days.forEach((day, index) => {
       // Add start of first day
       if (index === 0) {
-        waypoints.push({
-          id: `trip-${Date.now()}-start`,
+        newWaypoints.push({
+          id: `trip-${ts}-start`,
           lat: day.start.lat,
           lng: day.start.lng,
           type: 'start',
@@ -121,8 +120,8 @@ const TripWizard: React.FC = () => {
 
       // Add overnight campsite (if selected and not last day)
       if (day.selectedOvernight && index < wizard.itinerary!.days.length - 1) {
-        waypoints.push({
-          id: `trip-${Date.now()}-camp-${index}`,
+        newWaypoints.push({
+          id: `trip-${ts}-camp-${index}`,
           lat: day.selectedOvernight.campsite.lat,
           lng: day.selectedOvernight.campsite.lng,
           type: 'campsite',
@@ -132,8 +131,8 @@ const TripWizard: React.FC = () => {
 
       // Add end of last day
       if (index === wizard.itinerary!.days.length - 1) {
-        waypoints.push({
-          id: `trip-${Date.now()}-end`,
+        newWaypoints.push({
+          id: `trip-${ts}-end`,
           lat: day.end.lat,
           lng: day.end.lng,
           type: 'end',
@@ -142,8 +141,10 @@ const TripWizard: React.FC = () => {
       }
     });
 
-    // Add all waypoints to the route store
-    waypoints.forEach(wp => routeStore.addWaypoint(wp));
+    // Clear stale route and set all waypoints in a single update
+    // (avoids momentary empty-waypoints state that could unmount RouteCalculator)
+    routeStore.setCalculatedRoute(null);
+    routeStore.reorderWaypoints(newWaypoints);
 
     // Persist wizard settings to the trip settings store
     const crossing = wizard.crossing;
