@@ -9,14 +9,10 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
-  reporter: [
-    ['html'],
-    ['junit', { outputFile: 'test-results/junit.xml' }],
-    ['github'],
-  ],
+  reporter: [['html'], ['junit', { outputFile: 'test-results/junit.xml' }], ['github']],
 
   use: {
-    baseURL: process.env.BASE_URL || 'http://localhost:3000/camper-planner/',
+    baseURL: process.env.BASE_URL || 'http://localhost:3000/',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
