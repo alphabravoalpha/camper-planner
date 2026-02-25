@@ -108,9 +108,9 @@ export default function ContextualNudge({
       role="status"
       aria-live="polite"
       className={
-        'fixed bottom-24 left-1/2 -translate-x-1/2 z-30 ' +
+        'fixed bottom-[4.5rem] sm:bottom-24 left-4 right-16 sm:right-auto sm:left-1/2 sm:-translate-x-1/2 z-30 ' +
         'bg-white/95 backdrop-blur-sm rounded-lg shadow-lg border border-neutral-200 ' +
-        'px-4 py-3 max-w-md flex items-center gap-3 ' +
+        'px-4 py-3 sm:max-w-md flex items-center gap-3 ' +
         'animate-slide-up motion-reduce:animate-none'
       }
     >

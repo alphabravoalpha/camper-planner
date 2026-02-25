@@ -18,7 +18,7 @@ const Footer: React.FC = () => {
           {/* Brand */}
           <div className="sm:col-span-2 lg:col-span-1">
             <div className="flex items-center gap-2 mb-3">
-              <img src="/logo.png" alt="European Camper Planner" className="w-7 h-7" />
+              <img src="/logo.png" alt="European Camper Planner" className="w-7 h-7" width={28} height={28} />
               <span className="text-white font-display font-semibold text-sm">
                 European Camper Planner
               </span>

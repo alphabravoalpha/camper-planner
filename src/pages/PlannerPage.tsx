@@ -1,10 +1,10 @@
 // Main Trip Planner Page
 // Phase 1: Basic page structure, Phase 2: Map integration
 
-import React, { useState } from 'react';
+import React, { Suspense, useState } from 'react';
 import { Link } from 'react-router-dom';
 import MapContainer from '../components/map/MapContainer';
-import TripWizard from '../components/wizard/TripWizard';
+const TripWizard = React.lazy(() => import('../components/wizard/TripWizard'));
 import { useTripWizardStore, useRouteStore } from '../store';
 import { useOnboarding } from '../hooks/useOnboarding';
 import { Route as RouteIcon, X, MapPin, Tent, Download, BookOpen } from 'lucide-react';
@@ -99,8 +99,12 @@ const PlannerPage: React.FC = () => {
         )}
       </div>
 
-      {/* Trip Planning Wizard Modal */}
-      <TripWizard />
+      {/* Trip Planning Wizard Modal — lazy loaded */}
+      {wizardOpen && (
+        <Suspense fallback={null}>
+          <TripWizard />
+        </Suspense>
+      )}
     </div>
   );
 };

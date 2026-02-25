@@ -74,7 +74,7 @@ const Header: React.FC = () => {
               {location.pathname === '/' && (
                 <button
                   onClick={toggleSidebar}
-                  className="lg:hidden p-2 rounded-lg text-neutral-500 hover:text-neutral-700 hover:bg-neutral-50"
+                  className="hidden md:block lg:hidden p-2 rounded-lg text-neutral-500 hover:text-neutral-700 hover:bg-neutral-50"
                   aria-label="Toggle sidebar"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -84,7 +84,7 @@ const Header: React.FC = () => {
               )}
 
               <Link to="/" className="flex items-center space-x-3">
-                <img src="/logo.png" alt="European Camper Planner" className="w-8 h-8" />
+                <img src="/logo.png" alt="European Camper Planner" className="w-8 h-8" width={32} height={32} />
                 <div className="hidden sm:block">
                   <h1 className="text-lg lg:text-xl font-display font-extrabold text-neutral-900">
                     European Camper Planner

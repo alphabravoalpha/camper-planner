@@ -133,11 +133,12 @@ export function useTourPositioning(
     const vh = window.innerHeight;
     const isMobile = vw < 640; // matches Tailwind's sm: breakpoint
 
-    // No target → use preferred position (center or corner)
+    // No target → use preferred position (center or corner).
+    // On mobile, always center since corner positioning can overflow.
     if (!targetSelector) {
       setResult({
         cutoutRect: null,
-        tooltipStyle: calculateTooltipPosition(null, tooltipPosition, vw, vh),
+        tooltipStyle: calculateTooltipPosition(null, isMobile ? 'center' : tooltipPosition, vw, vh),
         isTargetFound: false,
       });
       return;

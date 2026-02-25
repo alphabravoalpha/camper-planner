@@ -92,7 +92,7 @@ const TourTooltip: React.FC<TourTooltipProps> = ({
     <div
       ref={containerRef}
       className={cn(
-        'fixed bg-white rounded-lg shadow-xl border border-neutral-200 p-5 max-w-[calc(100vw-2rem)] animate-fade-in',
+        'fixed bg-white rounded-lg shadow-xl border border-neutral-200 p-5 max-w-[calc(100vw-2rem)] max-h-[calc(100vh-2rem)] overflow-y-auto animate-fade-in',
         isWelcome ? 'w-96' : 'w-80'
       )}
       style={{
@@ -121,7 +121,7 @@ const TourTooltip: React.FC<TourTooltipProps> = ({
         <>
           {/* Logo */}
           <div className="flex justify-center mb-3">
-            <img src="/images/onboarding-welcome.png" alt="European Camper Planner" className="w-14 h-14 rounded-lg object-cover" />
+            <img src="/images/onboarding-welcome.png" alt="European Camper Planner" className="w-14 h-14 rounded-lg object-cover" width={56} height={56} />
           </div>
 
           {/* Headline */}

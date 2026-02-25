@@ -71,9 +71,12 @@ export const EmptyStateCard: React.FC<EmptyStateCardProps> = ({
           Use the Trip Wizard for a guided setup
         </button>
 
-        {/* Right-click hint */}
-        <p className="text-xs text-neutral-400 text-center">
+        {/* Right-click / long-press hint */}
+        <p className="text-xs text-neutral-400 text-center hidden sm:block">
           Right-click the map to add a point directly
+        </p>
+        <p className="text-xs text-neutral-400 text-center sm:hidden">
+          Long press the map to add a point directly
         </p>
       </div>
     </div>
