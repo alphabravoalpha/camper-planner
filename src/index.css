@@ -33,7 +33,12 @@ body {
   min-height: 100vh;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: var(--font-display);
 }
 
@@ -49,19 +54,19 @@ h1 {
    ────────────────────────────────────────────────────────────────────── */
 
 /* Step 2 (add-start): Boost search bar above overlay */
-body[data-tour-step="add-start"] [data-tour-id="search-bar"] {
+body[data-tour-step='add-start'] [data-tour-id='search-bar'] {
   z-index: 9998 !important;
   position: relative;
 }
 
 /* Step 3 (find-campsites): Boost campsite toggle button above overlay */
-body[data-tour-step="find-campsites"] [data-tour-id="campsite-toggle"] {
+body[data-tour-step='find-campsites'] [data-tour-id='campsite-toggle'] {
   z-index: 9998 !important;
   position: relative;
 }
 
 /* Step 5 (toolkit): Boost left toolbar above overlay */
-body[data-tour-step="toolkit"] [data-tour-id="left-toolbar"] {
+body[data-tour-step='toolkit'] [data-tour-id='left-toolbar'] {
   z-index: 9998 !important;
   position: relative;
 }

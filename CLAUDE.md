@@ -1,17 +1,21 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to Claude Code (claude.ai/code) when working with
+code in this repository.
 
 ## Project Overview
 
-This is the **European Camper Trip Planner** - a free, comprehensive camper trip planning platform for European travelers. The project aims to fill the gap left by North American-focused paid tools (RV LIFE, Roadtrippers) by providing a zero-cost, privacy-first solution.
+This is the **European Camper Trip Planner** - a free, comprehensive camper trip
+planning platform for European travelers. The project aims to fill the gap left
+by North American-focused paid tools (RV LIFE, Roadtrippers) by providing a
+zero-cost, privacy-first solution.
 
 ## Development Status
 
-**Current Status:** LIVE IN PRODUCTION at camperplanning.com
-**Custom Domain:** camperplanning.com (GitHub Pages, DNS via Squarespace) — live with HTTPS
-**Monetization:** Booking.com affiliate (via CJ, pending approval) + Ko-fi donations (live, embedded on Support page)
-**Last Updated:** February 11, 2026
+**Current Status:** LIVE IN PRODUCTION at camperplanning.com **Custom Domain:**
+camperplanning.com (GitHub Pages, DNS via Squarespace) — live with HTTPS
+**Monetization:** Booking.com affiliate (via CJ, pending approval) + Ko-fi
+donations (live, embedded on Support page) **Last Updated:** February 25, 2026
 
 ## Technology Stack (Implemented)
 
@@ -23,8 +27,12 @@ This is the **European Camper Trip Planner** - a free, comprehensive camper trip
 - **Data Sources:** Overpass API (OSM), Nominatim geocoding
 - **Internationalization:** React-i18next 13.0
 - **Testing:** Vitest 1.0 + React Testing Library
-- **Code Quality:** ESLint 9.36 + Prettier 3.0
-- **Hosting:** GitHub Pages at camperplanning.com (custom domain via Squarespace DNS)
+- **Code Quality:** ESLint 9.36 + Prettier 3.0 + Husky pre-commit hooks +
+  lint-staged
+- **PWA:** vite-plugin-pwa (Workbox service worker, offline caching, install
+  prompt)
+- **Hosting:** GitHub Pages at camperplanning.com (custom domain via Squarespace
+  DNS)
 - **Monetization:** BookingService (affiliate links) + Ko-fi (donations)
 - **SEO:** Open Graph, Twitter Cards, JSON-LD structured data, sitemap.xml
 
@@ -51,23 +59,33 @@ npm test:coverage        # Run tests with coverage report
 
 # Deployment
 npm run deploy           # Deploy to GitHub Pages
+
+# Git Hooks (via Husky)
+# Pre-commit: lint-staged runs ESLint + Prettier on staged files
+# Configured in .husky/pre-commit and package.json lint-staged config
 ```
 
 ## Architecture Principles
 
 ### 1. Future-Proof Foundation
-Build V1 as if V2 already exists, just disabled. Components should be enhanceable, not replaceable.
+
+Build V1 as if V2 already exists, just disabled. Components should be
+enhanceable, not replaceable.
 
 ### 2. Configuration-Driven Development
-Features are enabled/disabled via feature flags. V2 features are consolidated in `v2-features/` directory.
+
+Features are enabled/disabled via feature flags. V2 features are consolidated in
+`v2-features/` directory.
 
 ### 3. Privacy-First Design
+
 - Local storage primary (browser as database)
 - No user tracking or accounts required
 - Exportable data (users own their information)
 - Zero monthly hosting costs
 
 ### 4. Progressive Enhancement
+
 - Static site capable
 - Works offline once loaded
 - Graceful degradation when APIs fail
@@ -75,6 +93,7 @@ Features are enabled/disabled via feature flags. V2 features are consolidated in
 ## Component Architecture
 
 ### Actual Implemented Structure
+
 ```
 /src/components/
 ├── map/                 # ✅ Phase 1-2: Map interface (10 components)
@@ -113,9 +132,12 @@ Features are enabled/disabled via feature flags. V2 features are consolidated in
 ```
 
 ### Service Layer (All Implemented)
+
 All external APIs are abstracted through service classes:
+
 - **RoutingService** - OpenRouteService integration with vehicle restrictions
-- **CampsiteService** - Overpass API for OSM campsite data (35KB, full implementation)
+- **CampsiteService** - Overpass API for OSM campsite data (35KB, full
+  implementation)
 - **CampsiteFilterService** - Advanced campsite filtering and search
 - **CampsiteOptimizationService** - Campsite recommendation algorithms
 - **RouteOptimizationService** - TSP solver for multi-stop optimization
@@ -125,17 +147,20 @@ All external APIs are abstracted through service classes:
 - **GPXExportService** - GPX export for GPS devices
 - **RouteExportService** - Multi-format route export (29KB)
 - **MultiFormatExportService** - JSON/KML/other formats
-- **BookingService** - Affiliate link generation (Booking.com via CJ) — wired to CampsiteDetails UI
+- **BookingService** - Affiliate link generation (Booking.com via CJ) — wired to
+  CampsiteDetails UI
 - **TripWizardService** - Trip planning wizard with itinerary generation
 - **DataService** - Base service with caching and rate limiting
 
-**V2 features** are consolidated in `v2-features/` at project root (see `v2-features/README.md`).
+**V2 features** are consolidated in `v2-features/` at project root (see
+`v2-features/README.md`).
 
 ## Development Phases
 
 **Phases must be completed sequentially. Current: Phase 6**
 
 ### Phase 1: Foundation ✅ COMPLETE
+
 - ✅ React app initialized with Vite
 - ✅ Core dependencies configured (React Router, Leaflet, Zustand, Tailwind)
 - ✅ App shell and navigation working
@@ -143,6 +168,7 @@ All external APIs are abstracted through service classes:
 - ✅ Path aliases configured (@/components, @/services, etc.)
 
 ### Phase 2: Core Mapping ✅ COMPLETE
+
 - ✅ Interactive map with OpenStreetMap tiles
 - ✅ Click-to-add waypoints with drag reordering
 - ✅ Waypoint management and persistence
@@ -150,6 +176,7 @@ All external APIs are abstracted through service classes:
 - ✅ Mobile-responsive map interactions
 
 ### Phase 3: Vehicle & Routing ✅ COMPLETE
+
 - ✅ Vehicle profile configuration UI
 - ✅ OpenRouteService integration with vehicle restrictions
 - ✅ Route calculation and display
@@ -157,6 +184,7 @@ All external APIs are abstracted through service classes:
 - ✅ Route distance and time estimation
 
 ### Phase 4: Campsite Integration ✅ COMPLETE
+
 - ✅ Overpass API integration for campsite data
 - ✅ Campsite display with clustering
 - ✅ Advanced filtering (type, amenities, distance)
@@ -164,6 +192,7 @@ All external APIs are abstracted through service classes:
 - ✅ Caching and rate limiting implemented
 
 ### Phase 5: Planning Tools ✅ COMPLETE
+
 - ✅ Route optimization algorithms (TSP solver)
 - ✅ Cost calculation (fuel estimation, trip budgeting)
 - ✅ Trip management (save, load, manage multiple trips)
@@ -171,25 +200,31 @@ All external APIs are abstracted through service classes:
 - ✅ Local storage with schema versioning
 
 ### Phase 6: Export & Polish ✅ COMPLETE
+
 - ✅ GPX export service implemented (ahead of schedule)
 - ✅ Multi-format export (JSON, KML)
 - ✅ User onboarding (passive guided tour — click-through feature overview)
 - ✅ Error handling improvements (user-friendly messages, retry mechanisms)
-- ✅ Mobile experience polish (haptic feedback, touch optimization, bottom sheets)
+- ✅ Mobile experience polish (haptic feedback, touch optimization, bottom
+  sheets)
 - ✅ Performance optimization (bundle reduced to ~300KB gzipped)
 - ✅ Design system (comprehensive design tokens)
 - ✅ Loading states (skeleton loaders for all major components)
-- ✅ Accessibility (focus indicators, keyboard navigation, reduced motion support)
+- ✅ Accessibility (focus indicators, keyboard navigation, reduced motion
+  support)
 - ✅ Launch preparation (testing, cross-browser, performance audit)
 
 ### Phase 7: Monetization & Launch Infrastructure ✅ COMPLETE
+
 - ✅ Footer component with legal links, affiliate disclosure, donation button
-- ✅ Legal pages: Privacy Policy (GDPR), Terms of Use, Affiliate Disclosure (FTC/ASA)
+- ✅ Legal pages: Privacy Policy (GDPR), Terms of Use, Affiliate Disclosure
+  (FTC/ASA)
 - ✅ Support/Donate page with Ko-fi embedded inline (iframe widget)
 - ✅ BookingService wired to CampsiteDetails UI (Booking.com affiliate via CJ)
 - ✅ AFFILIATE_LINKS feature flag enabled in features.ts
 - ✅ GitHub Actions CI/CD configured with affiliate ID secrets
-- ✅ Custom domain (camperplanning.com) configured — CNAME, base path, router basename
+- ✅ Custom domain (camperplanning.com) configured — CNAME, base path, router
+  basename
 - ✅ SEO: meta tags, Open Graph, Twitter Cards, JSON-LD structured data
 - ✅ sitemap.xml and robots.txt
 - ✅ Settings page made functional (data summary, export, clear data)
@@ -199,17 +234,24 @@ All external APIs are abstracted through service classes:
 ## Key Constraints
 
 ### V1 Scope Control
-**SCOPE CONTROL RULE:** Any feature not explicitly listed in `docs/02-feature-requirements.md` requires separate approval before implementation.
+
+**SCOPE CONTROL RULE:** Any feature not explicitly listed in
+`docs/02-feature-requirements.md` requires separate approval before
+implementation.
 
 ### Explicitly Excluded from V1
+
 - User accounts or cloud synchronization
 - Real-time traffic or weather data
-- Complex affiliate tracking (simple link generation is V1, advanced booking is V2)
+- Complex affiliate tracking (simple link generation is V1, advanced booking is
+  V2)
 - Advanced booking integration (availability checks, price comparison — V2)
 - Community features (reviews, sharing)
 
 ### API Integration Notes
-- **Rate Limiting:** Client-side throttling required (OpenRouteService: 2,000/day, Nominatim: 1/second)
+
+- **Rate Limiting:** Client-side throttling required (OpenRouteService:
+  2,000/day, Nominatim: 1/second)
 - **Fallback Strategy:** Multiple backup services configured for each API
 - **Caching:** Aggressive local caching to minimize API calls
 - **Error Handling:** Graceful degradation when services unavailable
@@ -217,10 +259,14 @@ All external APIs are abstracted through service classes:
 ## Data Architecture
 
 ### Local Storage Schema
-Designed for evolution - V1 data must migrate cleanly to V2. All trip data stored locally with version tracking for schema migration.
+
+Designed for evolution - V1 data must migrate cleanly to V2. All trip data
+stored locally with version tracking for schema migration.
 
 ### Vehicle Restrictions
+
 Core feature differentiator - routes must respect:
+
 - Height (bridges, tunnels)
 - Weight (road limits)
 - Width (narrow roads)
@@ -230,36 +276,48 @@ Core feature differentiator - routes must respect:
 
 ### Core Principles
 
-1. **Quality AND Delivery** - Ship quality features with strategic testing. Perfect is the enemy of done.
-2. **Strategic Testing** - Test business logic thoroughly (services), validate critical paths, manual test the rest.
-3. **Build-Test-Ship Cycle** - Build feature → Manual test → Fix bugs → Ship. Iterate based on real usage.
-4. **Focus on Impact** - Prioritize features users need over features that might be nice.
-5. **Plan for Growth** - V1 decisions must support V2/V3 goals without architectural rewrites.
-6. **Zero Ongoing Costs** - Leverage free tiers and static hosting to maintain sustainability.
-7. **Privacy by Design** - No tracking, local storage primary, user data ownership.
+1. **Quality AND Delivery** - Ship quality features with strategic testing.
+   Perfect is the enemy of done.
+2. **Strategic Testing** - Test business logic thoroughly (services), validate
+   critical paths, manual test the rest.
+3. **Build-Test-Ship Cycle** - Build feature → Manual test → Fix bugs → Ship.
+   Iterate based on real usage.
+4. **Focus on Impact** - Prioritize features users need over features that might
+   be nice.
+5. **Plan for Growth** - V1 decisions must support V2/V3 goals without
+   architectural rewrites.
+6. **Zero Ongoing Costs** - Leverage free tiers and static hosting to maintain
+   sustainability.
+7. **Privacy by Design** - No tracking, local storage primary, user data
+   ownership.
 
 ### Development Standards
 
 **Code Quality:**
+
 - TypeScript strict mode, no `any` types
 - ESLint and Prettier compliance
 - Comprehensive error handling
 - Clear, documented code
 
 **Testing Strategy (Pragmatic):**
-- **Services**: 80% coverage minimum (CRITICAL - business logic) ✅ ACHIEVED: 86%
+
+- **Services**: 80% coverage minimum (CRITICAL - business logic) ✅ ACHIEVED:
+  86%
 - **Critical UI**: 30-40% coverage (map, waypoints, core interactions)
 - **Integration**: 5 key user workflows (E2E tests with Playwright)
 - **Manual**: Pre-launch validation (browsers, devices, accessibility)
 - **Everything else**: Manual testing during development, fix bugs as found
 
 **Testing Tiers:**
+
 1. MUST TEST: Services (86% coverage, 357 tests) ✅ COMPLETE
 2. SHOULD TEST: Critical components (MapContainer, WaypointManager)
 3. CAN SKIP: Simple UI (buttons, forms) - manual verification only
 4. PRE-LAUNCH: 5 integration tests + cross-browser/device validation
 
 **Before Moving to Next Phase:**
+
 - [ ] Core features implemented and working
 - [ ] Service layer tested (business logic validated)
 - [ ] Critical paths manually tested
@@ -268,6 +326,7 @@ Core feature differentiator - routes must respect:
 - [ ] User feedback incorporated
 
 **Never:**
+
 - Ship features with untested business logic (services MUST have tests)
 - Skip manual testing of user-facing features
 - Ignore obvious bugs to meet deadlines
@@ -283,23 +342,31 @@ Core feature differentiator - routes must respect:
 - `docs/05-data-sources-api-spec.md` - API integration specifications
 
 ### Monetization & Legal Pages
+
 - `src/pages/SupportPage.tsx` - Ko-fi donation page (embedded iframe widget)
 - `src/pages/PrivacyPolicyPage.tsx` - GDPR-compliant privacy policy
 - `src/pages/TermsPage.tsx` - Terms of use (England & Wales law)
 - `src/pages/AffiliateDisclosurePage.tsx` - FTC/ASA affiliate disclosure
-- `src/components/layout/Footer.tsx` - Site footer (hidden on planner, shown on content pages)
-- `src/config/features.ts` - Feature flags (AFFILIATE_LINKS: true, ADVANCED_BOOKING: false)
-- `src/services/BookingService.ts` - Affiliate link generation (Booking.com via CJ — pending approval)
+- `src/components/layout/Footer.tsx` - Site footer (hidden on planner, shown on
+  content pages)
+- `src/config/features.ts` - Feature flags (AFFILIATE_LINKS: true,
+  ADVANCED_BOOKING: false)
+- `src/services/BookingService.ts` - Affiliate link generation (Booking.com via
+  CJ — pending approval)
 
 ### SEO & Domain
+
 - `index.html` - Meta tags, OG tags, Twitter Cards, JSON-LD structured data
 - `public/CNAME` - Custom domain: camperplanning.com
-- `public/sitemap.xml` - 7 URLs with priorities
+- `public/sitemap.xml` - 19 URLs (auto-generated at build via
+  `scripts/generate-sitemap.ts`)
 - `public/robots.txt` - Allow all, disallow /settings
 - `.env.local.example` - Documented affiliate env var template
 
 ### CI/CD
-- `.github/workflows/gh-pages.yml` - Deploys to GitHub Pages with affiliate secrets from GitHub Secrets
+
+- `.github/workflows/gh-pages.yml` - Deploys to GitHub Pages with affiliate
+  secrets from GitHub Secrets
 
 ## Current Development Priority: Post-Launch Growth
 
@@ -308,6 +375,7 @@ Core feature differentiator - routes must respect:
 **Site is live at camperplanning.com.** All core features working.
 
 **Technical Summary:**
+
 - 14,109+ lines of code written
 - **357 service tests** (99.7% pass rate) ✅
 - **86% service coverage** (12/14 services tested) ✅
@@ -316,24 +384,31 @@ Core feature differentiator - routes must respect:
 
 ### Launch Checklist (Completed)
 
-1. ✅ **Squarespace DNS configured** — camperplanning.com pointing to GitHub Pages
+1. ✅ **Squarespace DNS configured** — camperplanning.com pointing to GitHub
+   Pages
 2. ✅ **HTTPS enabled** in GitHub Pages settings
-3. ✅ **Ko-fi account created** — ko-fi.com/camperplanning (embedded on Support page)
-4. ✅ **Booking.com affiliate applied** — via CJ (Commission Junction), awaiting approval
-5. ⏳ **Add `BOOKING_AFFILIATE_ID` as GitHub Secret** — once CJ/Booking.com approves
-6. 📋 **Pitchup** — no public affiliate programme; revisit when site has traffic to approach directly
+3. ✅ **Ko-fi account created** — ko-fi.com/camperplanning (embedded on Support
+   page)
+4. ✅ **Booking.com affiliate applied** — via CJ (Commission Junction), awaiting
+   approval
+5. ⏳ **Add `BOOKING_AFFILIATE_ID` as GitHub Secret** — once CJ/Booking.com
+   approves
+6. 📋 **Pitchup** — no public affiliate programme; revisit when site has traffic
+   to approach directly
 7. ❌ **ACSI** — not a fit (sells guides/cards, not bookings)
 8. 📋 **Create OG social sharing image** (1200x630px) at `public/og-image.png`
 
 ### Post-Launch Priorities
 
 **Immediate:**
+
 - Monitor for bugs via GitHub Issues
 - Add Booking.com affiliate ID once CJ approval comes through
 - Check Google Search Console for indexing
 - Drive initial traffic to build stats for future partnerships
 
 **Short-term:**
+
 - Performance audit with Lighthouse (target >85)
 - Full WCAG AA compliance validation
 - User guide / FAQ documentation
@@ -341,36 +416,97 @@ Core feature differentiator - routes must respect:
 - Approach Pitchup directly once traffic numbers are established
 
 **Medium-term (V2 considerations):**
+
 - Advanced booking integration (availability, price comparison)
 - Community features (trip sharing, reviews)
 - Multi-language content pages
-- Progressive Web App (PWA) support
+- ~~Progressive Web App (PWA) support~~ ✅ Implemented (Feb 25, 2026)
 
-## Recent Updates (February 11, 2026)
+## Recent Updates (February 25, 2026)
+
+### Quality & Infrastructure Improvements (Batches 1-5)
+
+**CI/CD Quality Gates (Batch 1 — PR #8):**
+
+- Husky pre-commit hooks with lint-staged (ESLint + Prettier on staged files)
+- CI pipeline now enforces zero lint warnings before deploy
+- E2E tests (Playwright) run post-deploy against live site
+- Quality checks: type-check → lint → tests → build → deploy → verify → E2E
+
+**Lint & Accessibility Cleanup (Batch 2 — PR #12):**
+
+- Fixed 100+ ESLint warnings across 83+ files (zero warnings remaining)
+- Added jsx-a11y accessibility rules (htmlFor/id pairs, keyboard handlers, ARIA
+  roles)
+- Replaced all `any` types with proper TypeScript types
+- ESLint config enhanced with jsx-a11y plugin
+
+**Blog Images Self-Hosted (Batch 3 — PR #10):**
+
+- All 10 blog hero images self-hosted in `public/images/blog/`
+- Replaced broken Unsplash CDN URLs with local copies
+- Blog cards and hero components use `<img>` with fallback handling
+
+**Bug Fixes (Batch 4 — PR #9):**
+
+- Bug #6: Trip calculation fixed (route now calculates properly)
+- Bug #5: Feedback page "Back to planner" uses browser back navigation
+- Bug #4: Feedback iframe has loading state and fallback link
+- All 3 GitHub issues closed
+
+**PWA & Offline Support (Batch 5 — PR #11):**
+
+- `vite-plugin-pwa` configured with Workbox service worker
+- App manifest with icons for install prompt
+- Offline caching: precache app shell, runtime cache for API responses + images
+- `OfflineNotice` component shows banner when connection is lost
+- 55 assets precached for offline use
+
+**Build Pipeline Fix:**
+
+- Build script changed from `tsc -b && vite build` to `vite build` (type-check
+  runs separately in CI)
+- Sitemap auto-generated at build time via `scripts/generate-sitemap.ts` (19
+  URLs)
+
+## Previous Updates (February 11, 2026)
 
 ### Production Launch & Monetization Setup
+
 - Site went live at camperplanning.com with HTTPS
-- Ko-fi account created and embedded inline on Support page (replaced redirect button with iframe widget)
-- Booking.com affiliate application submitted via CJ (Commission Junction) — awaiting approval
-- Pitchup has no affiliate programme — will approach directly once site has traffic
+- Ko-fi account created and embedded inline on Support page (replaced redirect
+  button with iframe widget)
+- Booking.com affiliate application submitted via CJ (Commission Junction) —
+  awaiting approval
+- Pitchup has no affiliate programme — will approach directly once site has
+  traffic
 - ACSI affiliate programme not a fit (sells guides, not campsite bookings)
-- Onboarding rewritten: replaced interactive setup wizard with passive guided tour (no forms, click-through feature overview)
+- Onboarding rewritten: replaced interactive setup wizard with passive guided
+  tour (no forms, click-through feature overview)
 - Onboarding version bumped to 2.0 (returning users see new tour)
 
 ### Feedback System & Bug Triage Pipeline
+
 **New Page:**
-- `FeedbackPage.tsx` — Feedback page with embedded Google Form (feature requests, bug reports, general suggestions)
+
+- `FeedbackPage.tsx` — Feedback page with embedded Google Form (feature
+  requests, bug reports, general suggestions)
 
 **New Workflow:**
-- `.github/workflows/bug-triage.yml` — Runs type-check, lint, tests, and build when a `bug`-labelled issue is opened; posts diagnostics as a comment
+
+- `.github/workflows/bug-triage.yml` — Runs type-check, lint, tests, and build
+  when a `bug`-labelled issue is opened; posts diagnostics as a comment
 
 **Feedback Pipeline:**
+
 - Google Form collects feedback → responses land in Google Sheet
-- Bug reports auto-create GitHub Issues via Google Apps Script (`scripts/google-form-to-github-issue.gs`)
+- Bug reports auto-create GitHub Issues via Google Apps Script
+  (`scripts/google-form-to-github-issue.gs`)
 - GitHub Actions runs automated triage on new bug issues
 - Owner reviews notifications and asks Claude Code to investigate/fix
 
 **Updated Files:**
+
 - `App.tsx` — Added `/feedback` route
 - `Header.tsx` — Added Feedback nav link (MessageSquare icon)
 - `Footer.tsx` — Added Feedback link in Support column
@@ -380,28 +516,43 @@ Core feature differentiator - routes must respect:
 ## Previous Updates (February 10, 2026)
 
 ### Monetization & Launch Infrastructure
+
 **New Pages (4):**
-- `PrivacyPolicyPage.tsx` — GDPR-compliant privacy policy (local storage, no tracking, third-party API disclosure)
-- `TermsPage.tsx` — Terms of use (England & Wales governing law, free tool disclaimer)
-- `AffiliateDisclosurePage.tsx` — FTC/ASA-compliant affiliate disclosure (Booking.com, Pitchup, ACSI)
+
+- `PrivacyPolicyPage.tsx` — GDPR-compliant privacy policy (local storage, no
+  tracking, third-party API disclosure)
+- `TermsPage.tsx` — Terms of use (England & Wales governing law, free tool
+  disclaimer)
+- `AffiliateDisclosurePage.tsx` — FTC/ASA-compliant affiliate disclosure
+  (Booking.com, Pitchup, ACSI)
 - `SupportPage.tsx` — Ko-fi donation page with "What your support funds" grid
 
 **New Components (1):**
-- `Footer.tsx` — Site-wide footer with nav, legal links, Ko-fi donation, affiliate disclosure line. Conditionally hidden on planner (full-screen map), shown on all content pages.
+
+- `Footer.tsx` — Site-wide footer with nav, legal links, Ko-fi donation,
+  affiliate disclosure line. Conditionally hidden on planner (full-screen map),
+  shown on all content pages.
 
 **Affiliate Integration:**
-- Wired existing `BookingService` (26 tests) to `CampsiteDetails.tsx` — replaced hardcoded `AFFILIATE_CONFIGS` with dynamic `bookingService.generateBookingLinks()`
+
+- Wired existing `BookingService` (26 tests) to `CampsiteDetails.tsx` — replaced
+  hardcoded `AFFILIATE_CONFIGS` with dynamic
+  `bookingService.generateBookingLinks()`
 - Added `AFFILIATE_LINKS: true` feature flag in `features.ts`
-- Configured GitHub Actions to inject affiliate IDs from GitHub Secrets (currently only `VITE_BOOKING_AFFILIATE_ID` relevant — awaiting CJ approval)
-- All affiliate links use `rel="sponsored noopener noreferrer"` and include transparency labels
+- Configured GitHub Actions to inject affiliate IDs from GitHub Secrets
+  (currently only `VITE_BOOKING_AFFILIATE_ID` relevant — awaiting CJ approval)
+- All affiliate links use `rel="sponsored noopener noreferrer"` and include
+  transparency labels
 
 **Custom Domain:**
+
 - Changed `vite.config.ts` base from `/camper-planner/` to `/`
 - Changed router basename from `/camper-planner` to `/`
 - CNAME file set to `camperplanning.com`
 - Updated GitHub Actions verify URL to `https://camperplanning.com/`
 
 **SEO:**
+
 - Complete `index.html` rewrite with meta description, keywords, canonical URL
 - Open Graph tags (og:title, og:description, og:image, og:url, og:site_name)
 - Twitter Card tags (summary_large_image)
@@ -410,26 +561,36 @@ Core feature differentiator - routes must respect:
 - `robots.txt` (allow all, disallow /settings)
 
 **Other Updates:**
-- `SettingsPage.tsx` rewritten from stub to functional page (data summary, export JSON, clear data, privacy info)
+
+- `SettingsPage.tsx` rewritten from stub to functional page (data summary,
+  export JSON, clear data, privacy info)
 - `Header.tsx` updated with Support navigation link (Heart icon)
-- `AboutPage.tsx` updated with affiliate transparency messaging and Support card section
+- `AboutPage.tsx` updated with affiliate transparency messaging and Support card
+  section
 
 ## Previous Updates (February 6, 2026)
 
 ### Codebase Housekeeping
+
 - Removed 5 ad-hoc JS test scripts and ~1,700 lines of dead code from `src/`
 - Removed 4 empty macOS-duplicate directories and empty stubs
-- Configured Vite `esbuild.pure` to strip `console.log`/`console.debug` from production builds
+- Configured Vite `esbuild.pure` to strip `console.log`/`console.debug` from
+  production builds
 - Removed ~20 debug `console.log` statements from source files
-- Removed unused `ui/ErrorBoundary.tsx` (duplicate of `layout/ErrorBoundary.tsx`)
-- Replaced 3 `any` types in central store with proper `RouteResponse` and `WaypointActionData` types
-- Consolidated 11 V2-disabled files from scattered locations into `v2-features/` directory
+- Removed unused `ui/ErrorBoundary.tsx` (duplicate of
+  `layout/ErrorBoundary.tsx`)
+- Replaced 3 `any` types in central store with proper `RouteResponse` and
+  `WaypointActionData` types
+- Consolidated 11 V2-disabled files from scattered locations into `v2-features/`
+  directory
 - Moved `templates.bak/` to `templates/` at project root
 
 ## Previous Updates (October 8, 2025)
 
 ### Phase 6 Week 1-2 Completed
+
 **Error Handling Improvements:**
+
 - Added `ServiceError` interface with error classification
 - Implemented `classifyError()` method in DataService.ts
 - Enhanced SimpleCampsiteLayer.tsx with user-friendly error UI
@@ -437,6 +598,7 @@ Core feature differentiator - routes must respect:
 - Context-specific error suggestions for users
 
 **Mobile Experience Polish:**
+
 - Increased touch targets from 48px to 56px on mobile
 - Added haptic feedback (vibration) for waypoint drag operations
 - Implemented bottom sheet design for mobile panels
@@ -444,12 +606,14 @@ Core feature differentiator - routes must respect:
 - Touch-action CSS and mobile detection
 
 **Performance Optimization:**
+
 - Smart chunk splitting by vendor and feature
 - Aggressive tree-shaking configuration
 - Bundle size reduced to ~300KB gzipped (from ~500KB)
 - Feature-based code splitting already in place
 
 **Design System:**
+
 - Created comprehensive design-tokens.css with full design system
 - Colors (primary, secondary, accent, neutral, semantic)
 - Spacing scale (0-24 in rem units)
@@ -459,12 +623,15 @@ Core feature differentiator - routes must respect:
 - Updated index.css to use CSS variables
 
 **Loading States:**
+
 - Created SkeletonLoader.tsx with base Skeleton component
-- Specialized skeletons: CampsiteCard, RouteInfo, WaypointList, MapLoading, Panel
+- Specialized skeletons: CampsiteCard, RouteInfo, WaypointList, MapLoading,
+  Panel
 - Shimmer animation for wave effect
 - Pulse and wave animation variants
 
 **Accessibility:**
+
 - Focus ring utilities with keyboard navigation support
 - Reduced motion support for animations
 - Focus indicators on all interactive elements

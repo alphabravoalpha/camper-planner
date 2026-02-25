@@ -27,10 +27,10 @@ export const blogPosts: BlogPost[] = [
 ];
 
 export const getPostBySlug = (slug: string): BlogPost | undefined =>
-  blogPosts.find((p) => p.slug === slug);
+  blogPosts.find(p => p.slug === slug);
 
 export const getPostsByCategory = (cat: BlogCategory): BlogPost[] =>
-  blogPosts.filter((p) => p.category === cat);
+  blogPosts.filter(p => p.category === cat);
 
 export const getRecentPosts = (limit: number = 6): BlogPost[] =>
   [...blogPosts]
@@ -40,7 +40,7 @@ export const getRecentPosts = (limit: number = 6): BlogPost[] =>
 export const getRelatedPosts = (post: BlogPost, limit: number = 3): BlogPost[] =>
   blogPosts
     .filter(
-      (p) =>
+      p =>
         p.slug !== post.slug &&
         (p.category === post.category || post.relatedSlugs?.includes(p.slug))
     )

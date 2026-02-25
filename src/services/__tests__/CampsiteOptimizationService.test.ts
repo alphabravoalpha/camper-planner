@@ -33,10 +33,9 @@ vi.mock('../CampsiteService', () => ({
 }));
 
 // Helper to access private static methods for testing
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- needed for accessing private static methods in tests
 const ServicePrivate = CampsiteOptimizationService as unknown as Record<
   string,
-  (...args: any[]) => any
+  (...args: unknown[]) => unknown
 >;
 
 describe('CampsiteOptimizationService', () => {

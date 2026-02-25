@@ -59,9 +59,7 @@ export const CHANNEL_CROSSINGS: ChannelCrossing[] = [
     duration: 120,
     frequency: 'Up to 12 sailings per day',
     operators: ['DFDS'],
-    bookingUrls: [
-      'https://www.dfds.com/en-gb/passenger-ferries/dover-dunkirk',
-    ],
+    bookingUrls: ['https://www.dfds.com/en-gb/passenger-ferries/dover-dunkirk'],
     vehicleTypes: ['motorhome', 'caravan', 'campervan'],
     notes: 'Good alternative to Calais. Often cheaper, slightly longer crossing.',
     estimatedCost: { low: 80, high: 250, currency: 'GBP' },
@@ -77,12 +75,11 @@ export const CHANNEL_CROSSINGS: ChannelCrossing[] = [
     duration: 35,
     frequency: 'Up to 4 departures per hour',
     operators: ['Eurotunnel Le Shuttle'],
-    bookingUrls: [
-      'https://www.eurotunnel.com/uk/travelling-with-us/motorhomes-caravans/',
-    ],
+    bookingUrls: ['https://www.eurotunnel.com/uk/travelling-with-us/motorhomes-caravans/'],
     vehicleTypes: ['motorhome', 'campervan'],
     maxVehicleLength: 18,
-    notes: 'Fastest crossing. Drive on, drive off. Caravans accepted on some services — check height restrictions (max 2.85m for standard, 3.95m for high-loader).',
+    notes:
+      'Fastest crossing. Drive on, drive off. Caravans accepted on some services — check height restrictions (max 2.85m for standard, 3.95m for high-loader).',
     estimatedCost: { low: 120, high: 400, currency: 'GBP' },
     region: 'short',
     overnightCrossing: false,
@@ -96,15 +93,14 @@ export const CHANNEL_CROSSINGS: ChannelCrossing[] = [
     name: 'Portsmouth → Caen (Ouistreham)',
     type: 'ferry',
     departure: { name: 'Portsmouth', lat: 50.7989, lng: -1.0872, country: 'GB' },
-    arrival: { name: 'Caen (Ouistreham)', lat: 49.2830, lng: -0.2488, country: 'FR' },
+    arrival: { name: 'Caen (Ouistreham)', lat: 49.283, lng: -0.2488, country: 'FR' },
     duration: 360,
     frequency: 'Up to 3 sailings per day',
     operators: ['Brittany Ferries'],
-    bookingUrls: [
-      'https://www.brittany-ferries.co.uk/routes/portsmouth-caen',
-    ],
+    bookingUrls: ['https://www.brittany-ferries.co.uk/routes/portsmouth-caen'],
     vehicleTypes: ['motorhome', 'caravan', 'campervan'],
-    notes: 'Arrives in Normandy. Good for western France, Spain, and Portugal routes. Day and overnight sailings available.',
+    notes:
+      'Arrives in Normandy. Good for western France, Spain, and Portugal routes. Day and overnight sailings available.',
     estimatedCost: { low: 150, high: 450, currency: 'GBP' },
     region: 'western',
     overnightCrossing: true,
@@ -118,9 +114,7 @@ export const CHANNEL_CROSSINGS: ChannelCrossing[] = [
     duration: 330,
     frequency: '1-2 sailings per day',
     operators: ['Brittany Ferries'],
-    bookingUrls: [
-      'https://www.brittany-ferries.co.uk/routes/portsmouth-le-havre',
-    ],
+    bookingUrls: ['https://www.brittany-ferries.co.uk/routes/portsmouth-le-havre'],
     vehicleTypes: ['motorhome', 'caravan', 'campervan'],
     notes: 'Overnight crossing. Arrives early morning, good for heading south through France.',
     estimatedCost: { low: 150, high: 400, currency: 'GBP' },
@@ -132,13 +126,11 @@ export const CHANNEL_CROSSINGS: ChannelCrossing[] = [
     name: 'Portsmouth → St Malo',
     type: 'ferry',
     departure: { name: 'Portsmouth', lat: 50.7989, lng: -1.0872, country: 'GB' },
-    arrival: { name: 'St Malo', lat: 48.6493, lng: -2.0070, country: 'FR' },
+    arrival: { name: 'St Malo', lat: 48.6493, lng: -2.007, country: 'FR' },
     duration: 540,
     frequency: '1 sailing per day (seasonal)',
     operators: ['Brittany Ferries'],
-    bookingUrls: [
-      'https://www.brittany-ferries.co.uk/routes/portsmouth-st-malo',
-    ],
+    bookingUrls: ['https://www.brittany-ferries.co.uk/routes/portsmouth-st-malo'],
     vehicleTypes: ['motorhome', 'caravan', 'campervan'],
     notes: 'Overnight crossing to Brittany. Longer but arrives further west. Seasonal service.',
     estimatedCost: { low: 180, high: 500, currency: 'GBP' },
@@ -149,16 +141,15 @@ export const CHANNEL_CROSSINGS: ChannelCrossing[] = [
     id: 'plymouth-roscoff',
     name: 'Plymouth → Roscoff',
     type: 'ferry',
-    departure: { name: 'Plymouth', lat: 50.3660, lng: -4.1422, country: 'GB' },
-    arrival: { name: 'Roscoff', lat: 48.7267, lng: -3.9810, country: 'FR' },
+    departure: { name: 'Plymouth', lat: 50.366, lng: -4.1422, country: 'GB' },
+    arrival: { name: 'Roscoff', lat: 48.7267, lng: -3.981, country: 'FR' },
     duration: 360,
     frequency: '1-2 sailings per day (seasonal)',
     operators: ['Brittany Ferries'],
-    bookingUrls: [
-      'https://www.brittany-ferries.co.uk/routes/plymouth-roscoff',
-    ],
+    bookingUrls: ['https://www.brittany-ferries.co.uk/routes/plymouth-roscoff'],
     vehicleTypes: ['motorhome', 'caravan', 'campervan'],
-    notes: 'Best for travelers from the West Country. Arrives in Brittany. Seasonal service (March-November).',
+    notes:
+      'Best for travelers from the West Country. Arrives in Brittany. Seasonal service (March-November).',
     estimatedCost: { low: 150, high: 450, currency: 'GBP' },
     region: 'western',
     overnightCrossing: true,
@@ -167,14 +158,12 @@ export const CHANNEL_CROSSINGS: ChannelCrossing[] = [
     id: 'poole-cherbourg',
     name: 'Poole → Cherbourg',
     type: 'ferry',
-    departure: { name: 'Poole', lat: 50.7076, lng: -1.9870, country: 'GB' },
+    departure: { name: 'Poole', lat: 50.7076, lng: -1.987, country: 'GB' },
     arrival: { name: 'Cherbourg', lat: 49.6386, lng: -1.6163, country: 'FR' },
     duration: 270,
     frequency: '1-2 sailings per day',
     operators: ['Brittany Ferries'],
-    bookingUrls: [
-      'https://www.brittany-ferries.co.uk/routes/poole-cherbourg',
-    ],
+    bookingUrls: ['https://www.brittany-ferries.co.uk/routes/poole-cherbourg'],
     vehicleTypes: ['motorhome', 'caravan', 'campervan'],
     notes: 'Shorter western crossing. Good for Normandy and heading south.',
     estimatedCost: { low: 130, high: 380, currency: 'GBP' },
@@ -186,13 +175,11 @@ export const CHANNEL_CROSSINGS: ChannelCrossing[] = [
     name: 'Newhaven → Dieppe',
     type: 'ferry',
     departure: { name: 'Newhaven', lat: 50.7924, lng: 0.0613, country: 'GB' },
-    arrival: { name: 'Dieppe', lat: 49.9266, lng: 1.0770, country: 'FR' },
+    arrival: { name: 'Dieppe', lat: 49.9266, lng: 1.077, country: 'FR' },
     duration: 240,
     frequency: 'Up to 3 sailings per day',
     operators: ['DFDS'],
-    bookingUrls: [
-      'https://www.dfds.com/en-gb/passenger-ferries/newhaven-dieppe',
-    ],
+    bookingUrls: ['https://www.dfds.com/en-gb/passenger-ferries/newhaven-dieppe'],
     vehicleTypes: ['motorhome', 'caravan', 'campervan'],
     notes: 'Arrives in upper Normandy. Good alternative to Dover for London/South East travelers.',
     estimatedCost: { low: 90, high: 280, currency: 'GBP' },
@@ -208,15 +195,14 @@ export const CHANNEL_CROSSINGS: ChannelCrossing[] = [
     name: 'Harwich → Hook of Holland',
     type: 'ferry',
     departure: { name: 'Harwich', lat: 51.9461, lng: 1.2474, country: 'GB' },
-    arrival: { name: 'Hook of Holland', lat: 51.9811, lng: 4.1230, country: 'NL' },
+    arrival: { name: 'Hook of Holland', lat: 51.9811, lng: 4.123, country: 'NL' },
     duration: 420,
     frequency: '2 sailings per day',
     operators: ['Stena Line'],
-    bookingUrls: [
-      'https://www.stenaline.co.uk/routes/harwich-hook-of-holland',
-    ],
+    bookingUrls: ['https://www.stenaline.co.uk/routes/harwich-hook-of-holland'],
     vehicleTypes: ['motorhome', 'caravan', 'campervan'],
-    notes: 'Overnight crossing to the Netherlands. Best for Germany, Benelux, and Scandinavia routes.',
+    notes:
+      'Overnight crossing to the Netherlands. Best for Germany, Benelux, and Scandinavia routes.',
     estimatedCost: { low: 120, high: 350, currency: 'GBP' },
     region: 'northern',
     overnightCrossing: true,
@@ -230,11 +216,10 @@ export const CHANNEL_CROSSINGS: ChannelCrossing[] = [
     duration: 660,
     frequency: '1 sailing per day (overnight)',
     operators: ['P&O Ferries'],
-    bookingUrls: [
-      'https://www.poferries.com/en/hull-rotterdam',
-    ],
+    bookingUrls: ['https://www.poferries.com/en/hull-rotterdam'],
     vehicleTypes: ['motorhome', 'caravan', 'campervan'],
-    notes: 'Overnight crossing. Best for travelers from the North of England. Arrives early morning.',
+    notes:
+      'Overnight crossing. Best for travelers from the North of England. Arrives early morning.',
     estimatedCost: { low: 130, high: 380, currency: 'GBP' },
     region: 'northern',
     overnightCrossing: true,
@@ -243,16 +228,15 @@ export const CHANNEL_CROSSINGS: ChannelCrossing[] = [
     id: 'newcastle-amsterdam',
     name: 'Newcastle → Amsterdam (IJmuiden)',
     type: 'ferry',
-    departure: { name: 'Newcastle', lat: 54.9960, lng: -1.4402, country: 'GB' },
-    arrival: { name: 'Amsterdam (IJmuiden)', lat: 52.4614, lng: 4.6020, country: 'NL' },
+    departure: { name: 'Newcastle', lat: 54.996, lng: -1.4402, country: 'GB' },
+    arrival: { name: 'Amsterdam (IJmuiden)', lat: 52.4614, lng: 4.602, country: 'NL' },
     duration: 960,
     frequency: '1 sailing per day (overnight)',
     operators: ['DFDS'],
-    bookingUrls: [
-      'https://www.dfds.com/en-gb/passenger-ferries/newcastle-amsterdam',
-    ],
+    bookingUrls: ['https://www.dfds.com/en-gb/passenger-ferries/newcastle-amsterdam'],
     vehicleTypes: ['motorhome', 'caravan', 'campervan'],
-    notes: 'Overnight crossing from the North East. Mini-cruise experience. Best for Netherlands, Germany, and beyond.',
+    notes:
+      'Overnight crossing from the North East. Mini-cruise experience. Best for Netherlands, Germany, and beyond.',
     estimatedCost: { low: 150, high: 400, currency: 'GBP' },
     region: 'northern',
     overnightCrossing: true,
@@ -284,8 +268,10 @@ export function isMainlandEurope(lat: number, lng: number): boolean {
  * Check if a channel crossing is needed between two locations
  */
 export function needsChannelCrossing(
-  startLat: number, startLng: number,
-  endLat: number, endLng: number
+  startLat: number,
+  startLng: number,
+  endLat: number,
+  endLng: number
 ): boolean {
   const startIsUK = isUKOrIreland(startLat, startLng);
   const endIsUK = isUKOrIreland(endLat, endLng);
@@ -301,17 +287,19 @@ export function needsChannelCrossing(
  * (drive to port + crossing + drive from port to destination)
  */
 export function getRecommendedCrossings(
-  startLat: number, startLng: number,
-  endLat: number, endLng: number
+  startLat: number,
+  startLng: number,
+  endLat: number,
+  endLng: number
 ): ChannelCrossing[] {
   // Simple distance-based scoring
   const haversine = (lat1: number, lng1: number, lat2: number, lng2: number): number => {
     const R = 6371;
-    const dLat = (lat2 - lat1) * Math.PI / 180;
-    const dLng = (lng2 - lng1) * Math.PI / 180;
-    const a = Math.sin(dLat / 2) ** 2 +
-      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-      Math.sin(dLng / 2) ** 2;
+    const dLat = ((lat2 - lat1) * Math.PI) / 180;
+    const dLng = ((lng2 - lng1) * Math.PI) / 180;
+    const a =
+      Math.sin(dLat / 2) ** 2 +
+      Math.cos((lat1 * Math.PI) / 180) * Math.cos((lat2 * Math.PI) / 180) * Math.sin(dLng / 2) ** 2;
     return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   };
 

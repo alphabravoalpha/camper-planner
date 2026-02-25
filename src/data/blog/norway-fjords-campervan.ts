@@ -5,7 +5,7 @@ const post: BlogPost = {
   slug: 'norway-fjords-campervan',
   title: 'Norway Fjords by Campervan: The Ultimate Road Trip Guide',
   description:
-    'Everything you need to plan a campervan road trip through Norway\'s fjord country, including the best routes, ferry crossings, costs, wild camping under allemannsretten, and practical tips for tunnels, toll roads, and midnight sun travel.',
+    "Everything you need to plan a campervan road trip through Norway's fjord country, including the best routes, ferry crossings, costs, wild camping under allemannsretten, and practical tips for tunnels, toll roads, and midnight sun travel.",
   author: 'CamperPlanning',
   publishedDate: '2026-01-25',
   category: 'destination-guides',
@@ -37,7 +37,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'This guide covers the practical essentials for planning a fjord country road trip: the best routes, what things actually cost, how to use allemannsretten (the right to roam) for free camping, and how to handle Norway\'s unique infrastructure of tunnels, ferries, and toll stations.',
+        "This guide covers the practical essentials for planning a fjord country road trip: the best routes, what things actually cost, how to use allemannsretten (the right to roam) for free camping, and how to handle Norway's unique infrastructure of tunnels, ferries, and toll stations.",
     },
 
     // ── Allemannsretten ──────────────────────────────────────────
@@ -49,12 +49,12 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Norway\'s allemannsretten (right of public access) is the foundation of campervan travel in the country. This right, codified in the Outdoor Recreation Act of 1957, allows anyone to camp on uncultivated land -- including mountains, forests, moors, and beaches -- for up to two nights in the same location without asking permission. The right applies to campervans and motorhomes as well as tents, provided you are at least 150 metres from the nearest inhabited house or cabin.',
+        "Norway's allemannsretten (right of public access) is the foundation of campervan travel in the country. This right, codified in the Outdoor Recreation Act of 1957, allows anyone to camp on uncultivated land -- including mountains, forests, moors, and beaches -- for up to two nights in the same location without asking permission. The right applies to campervans and motorhomes as well as tents, provided you are at least 150 metres from the nearest inhabited house or cabin.",
     },
     {
       type: 'paragraph',
       content:
-        'In practice, this means you can park your campervan at almost any scenic pull-off, lay-by, or viewpoint along Norway\'s fjord roads and sleep there legally. Many of the best wild camping spots are obvious -- a flat area beside a lake, a wide shoulder overlooking a fjord, a clearing at the end of a farm track. Other campervan travellers will often be parked there too, and there is an unspoken etiquette: arrive quietly, leave no trace, do not block access, and move on after two nights.',
+        "In practice, this means you can park your campervan at almost any scenic pull-off, lay-by, or viewpoint along Norway's fjord roads and sleep there legally. Many of the best wild camping spots are obvious -- a flat area beside a lake, a wide shoulder overlooking a fjord, a clearing at the end of a farm track. Other campervan travellers will often be parked there too, and there is an unspoken etiquette: arrive quietly, leave no trace, do not block access, and move on after two nights.",
     },
     {
       type: 'tip',
@@ -81,7 +81,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Geirangerfjord is Norway\'s most famous fjord and a UNESCO World Heritage Site. The fjord itself is 15 kilometres long, flanked by near-vertical cliffs with waterfalls cascading from abandoned farms perched impossibly high on narrow ledges. The village of Geiranger at the head of the fjord is the most-visited single spot in fjord Norway, which means it gets very busy in summer -- cruise ships disgorge thousands of passengers daily.',
+        "Geirangerfjord is Norway's most famous fjord and a UNESCO World Heritage Site. The fjord itself is 15 kilometres long, flanked by near-vertical cliffs with waterfalls cascading from abandoned farms perched impossibly high on narrow ledges. The village of Geiranger at the head of the fjord is the most-visited single spot in fjord Norway, which means it gets very busy in summer -- cruise ships disgorge thousands of passengers daily.",
     },
     {
       type: 'paragraph',
@@ -96,12 +96,12 @@ const post: BlogPost = {
     {
       type: 'heading',
       level: 3,
-      content: 'Sognefjord: Norway\'s Longest and Deepest',
+      content: "Sognefjord: Norway's Longest and Deepest",
     },
     {
       type: 'paragraph',
       content:
-        'Sognefjord stretches 204 kilometres inland from the coast, with a maximum depth of 1,308 metres -- deeper than much of the North Sea. Its side branches are among the most scenic in Norway: Naeroyfjord (another UNESCO site, barely 250 metres wide at its narrowest) and Aurlandsfjord, accessible via the spectacular Aurlandsfjellet mountain road (Rv243) known as the Snow Road. The Stegastein viewpoint, a cantilevered platform jutting 30 metres over the Aurlandsfjord, is one of Norway\'s most photographed spots.',
+        "Sognefjord stretches 204 kilometres inland from the coast, with a maximum depth of 1,308 metres -- deeper than much of the North Sea. Its side branches are among the most scenic in Norway: Naeroyfjord (another UNESCO site, barely 250 metres wide at its narrowest) and Aurlandsfjord, accessible via the spectacular Aurlandsfjellet mountain road (Rv243) known as the Snow Road. The Stegastein viewpoint, a cantilevered platform jutting 30 metres over the Aurlandsfjord, is one of Norway's most photographed spots.",
     },
     {
       type: 'paragraph',
@@ -204,12 +204,12 @@ const post: BlogPost = {
     {
       type: 'heading',
       level: 2,
-      content: 'Tunnels: Norway\'s Underground Highway',
+      content: "Tunnels: Norway's Underground Highway",
     },
     {
       type: 'paragraph',
       content:
-        'Norway has over 1,100 road tunnels, more than any other country in the world. The Laerdal Tunnel, connecting Laerdal and Aurland on the route between Oslo and Bergen, is the world\'s longest road tunnel at 24.5 kilometres. Many fjord-country tunnels burrow through mountainsides and emerge at the water\'s edge, replacing former ferry crossings. They are generally well-lit, well-ventilated, and free (though some subsea tunnels charge tolls).',
+        "Norway has over 1,100 road tunnels, more than any other country in the world. The Laerdal Tunnel, connecting Laerdal and Aurland on the route between Oslo and Bergen, is the world's longest road tunnel at 24.5 kilometres. Many fjord-country tunnels burrow through mountainsides and emerge at the water's edge, replacing former ferry crossings. They are generally well-lit, well-ventilated, and free (though some subsea tunnels charge tolls).",
     },
     {
       type: 'paragraph',

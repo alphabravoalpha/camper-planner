@@ -3,9 +3,9 @@ import { IMAGES } from '../images';
 
 const post: BlogPost = {
   slug: 'wild-camping-europe-rules',
-  title: 'Wild Camping in Europe: Laws, Rules and Where It\'s Allowed',
+  title: "Wild Camping in Europe: Laws, Rules and Where It's Allowed",
   description:
-    'A comprehensive country-by-country guide to wild camping and free overnight parking laws across Europe, including Scandinavia\'s right to roam, Southern European restrictions, and practical tips for finding legal spots.',
+    "A comprehensive country-by-country guide to wild camping and free overnight parking laws across Europe, including Scandinavia's right to roam, Southern European restrictions, and practical tips for finding legal spots.",
   author: 'CamperPlanning',
   publishedDate: '2026-02-01',
   category: 'practical-guides',
@@ -59,7 +59,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'In practice, Norway is a wild camper\'s paradise. Pull-offs along fjord roads, mountain plateaux above the treeline, and coastal headlands all offer spectacular free overnight parking. Many Norwegian drivers even expect to see campervans parked in scenic spots. The only restrictions are agricultural land during the growing season and certain popular areas where local bylaws restrict camping due to overcrowding.',
+        "In practice, Norway is a wild camper's paradise. Pull-offs along fjord roads, mountain plateaux above the treeline, and coastal headlands all offer spectacular free overnight parking. Many Norwegian drivers even expect to see campervans parked in scenic spots. The only restrictions are agricultural land during the growing season and certain popular areas where local bylaws restrict camping due to overcrowding.",
     },
     {
       type: 'heading',
@@ -79,7 +79,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Finland\'s jokamiehen oikeus (everyman\'s right) allows free camping in the wilderness for hikers and tent campers, but the law is less clear for motor vehicles. You can generally park overnight in lay-bys and rest areas, and many municipalities provide free designated motorhome parking areas. National parks have specific campsite areas where vehicle camping is not permitted outside designated zones. In practice, wild camping in a campervan is widely tolerated in rural Finland, particularly in Lapland.',
+        "Finland's jokamiehen oikeus (everyman's right) allows free camping in the wilderness for hikers and tent campers, but the law is less clear for motor vehicles. You can generally park overnight in lay-bys and rest areas, and many municipalities provide free designated motorhome parking areas. National parks have specific campsite areas where vehicle camping is not permitted outside designated zones. In practice, wild camping in a campervan is widely tolerated in rural Finland, particularly in Lapland.",
     },
     {
       type: 'tip',
@@ -106,7 +106,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'However, many municipalities -- particularly coastal towns and popular tourist areas -- have enacted local bylaws (arretes municipaux) that specifically prohibit overnight motorhome parking. These are posted on signs at entrances to car parks and public areas. Nature reserves, national parks (Calanques, Verdon, Mercantour), and many beaches have blanket bans. With France\'s extensive network of over 6,000 aires, there is rarely a reason to wild camp anyway.',
+        "However, many municipalities -- particularly coastal towns and popular tourist areas -- have enacted local bylaws (arretes municipaux) that specifically prohibit overnight motorhome parking. These are posted on signs at entrances to car parks and public areas. Nature reserves, national parks (Calanques, Verdon, Mercantour), and many beaches have blanket bans. With France's extensive network of over 6,000 aires, there is rarely a reason to wild camp anyway.",
     },
     {
       type: 'heading',
@@ -178,7 +178,7 @@ const post: BlogPost = {
     {
       type: 'warning',
       content:
-        'Portugal\'s wild camping crackdown is the most aggressive in Southern Europe. Enforcement teams specifically patrol known vanlife hotspots along the west coast and Algarve. Even sleeping in a vehicle in a public car park can result in a fine if the area is posted as no-camping. Use Portugal\'s growing network of official motorhome areas instead.',
+        "Portugal's wild camping crackdown is the most aggressive in Southern Europe. Enforcement teams specifically patrol known vanlife hotspots along the west coast and Algarve. Even sleeping in a vehicle in a public car park can result in a fine if the area is posted as no-camping. Use Portugal's growing network of official motorhome areas instead.",
     },
     {
       type: 'heading',

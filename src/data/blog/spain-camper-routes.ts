@@ -3,7 +3,7 @@ import { IMAGES } from '../images';
 
 const post: BlogPost = {
   slug: 'spain-camper-routes',
-  title: 'Spain\'s Best Camper Van Routes: Atlantic to Mediterranean',
+  title: "Spain's Best Camper Van Routes: Atlantic to Mediterranean",
   description:
     'Detailed itineraries for campervan and motorhome travel across Spain, from the green Atlantic coast of Galicia to the sun-baked beaches of Andalusia and the rugged beauty of the Mediterranean coast, with practical tips on areas, climate, and costs.',
   author: 'CamperPlanning',
@@ -18,7 +18,7 @@ const post: BlogPost = {
     {
       type: 'heading',
       level: 2,
-      content: 'Spain: Europe\'s Most Diverse Camper Destination',
+      content: "Spain: Europe's Most Diverse Camper Destination",
     },
     {
       type: 'image',
@@ -53,18 +53,17 @@ const post: BlogPost = {
     },
     {
       type: 'paragraph',
-      content:
-        'Distance: approximately 900 km. Recommended duration: 10-14 days.',
+      content: 'Distance: approximately 900 km. Recommended duration: 10-14 days.',
     },
     {
       type: 'paragraph',
       content:
-        'Northern Spain is the country\'s best-kept secret. The Costa Verde (Green Coast) stretching from Galicia through Asturias and Cantabria to the Basque Country is a world apart from the stereotypical sun-and-sand image. Here you will find lush green hills, dramatic ocean cliffs, deserted sandy beaches, Romanesque churches, fishing villages where the day\'s catch is still landed by hand, and a food culture that rivals anything in Europe.',
+        "Northern Spain is the country's best-kept secret. The Costa Verde (Green Coast) stretching from Galicia through Asturias and Cantabria to the Basque Country is a world apart from the stereotypical sun-and-sand image. Here you will find lush green hills, dramatic ocean cliffs, deserted sandy beaches, Romanesque churches, fishing villages where the day's catch is still landed by hand, and a food culture that rivals anything in Europe.",
     },
     {
       type: 'paragraph',
       content:
-        'Start in Santiago de Compostela, the endpoint of the Camino de Santiago pilgrimage and a UNESCO-listed city with one of Europe\'s great cathedral squares. From there, head south-west to the Rias Baixas -- a series of deep estuaries along the coast that produce the region\'s famous Albarino white wine and some of Spain\'s best seafood. Camping Rias Baixas near Sanxenxo is well-positioned for exploring the coast and the O Grove seafood restaurants.',
+        "Start in Santiago de Compostela, the endpoint of the Camino de Santiago pilgrimage and a UNESCO-listed city with one of Europe's great cathedral squares. From there, head south-west to the Rias Baixas -- a series of deep estuaries along the coast that produce the region's famous Albarino white wine and some of Spain's best seafood. Camping Rias Baixas near Sanxenxo is well-positioned for exploring the coast and the O Grove seafood restaurants.",
     },
     {
       type: 'paragraph',
@@ -79,12 +78,12 @@ const post: BlogPost = {
     {
       type: 'tip',
       content:
-        'Northern Spain gets significantly more rain than the south, particularly from October to May. Pack waterproof clothing and be prepared for changeable weather even in summer. Temperatures are mild (18-25 degrees in July and August) compared to the south\'s extreme heat, making this an ideal summer route.',
+        "Northern Spain gets significantly more rain than the south, particularly from October to May. Pack waterproof clothing and be prepared for changeable weather even in summer. Temperatures are mild (18-25 degrees in July and August) compared to the south's extreme heat, making this an ideal summer route.",
     },
     {
       type: 'paragraph',
       content:
-        'The Basque Country caps the route with San Sebastian, regularly voted one of the world\'s best food cities. The old town (Parte Vieja) has the highest concentration of Michelin stars per square metre in the world, alongside hundreds of pintxos bars where a crawl through four or five establishments constitutes one of Europe\'s great eating experiences. Camping Igueldo, on the hill above La Concha beach, has direct views across one of Spain\'s most beautiful bays.',
+        "The Basque Country caps the route with San Sebastian, regularly voted one of the world's best food cities. The old town (Parte Vieja) has the highest concentration of Michelin stars per square metre in the world, alongside hundreds of pintxos bars where a crawl through four or five establishments constitutes one of Europe's great eating experiences. Camping Igueldo, on the hill above La Concha beach, has direct views across one of Spain's most beautiful bays.",
     },
 
     // ── Andalusia ────────────────────────────────────────────────
@@ -100,8 +99,7 @@ const post: BlogPost = {
     },
     {
       type: 'paragraph',
-      content:
-        'Distance: approximately 950 km. Recommended duration: 10-14 days.',
+      content: 'Distance: approximately 950 km. Recommended duration: 10-14 days.',
     },
     {
       type: 'paragraph',
@@ -111,7 +109,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Seville is Spain\'s most charismatic city, with the massive Gothic cathedral, the Alcazar palace complex, and the atmospheric Santa Cruz quarter. Do not attempt to drive a motorhome into the historic centre -- park at Camping Villsom on the outskirts and use the excellent metro and bus network. Cordoba\'s Mezquita (mosque-cathedral) is one of the most extraordinary buildings in Europe, a forest of over 850 columns with red-and-white striped arches that seems to stretch to infinity.',
+        "Seville is Spain's most charismatic city, with the massive Gothic cathedral, the Alcazar palace complex, and the atmospheric Santa Cruz quarter. Do not attempt to drive a motorhome into the historic centre -- park at Camping Villsom on the outskirts and use the excellent metro and bus network. Cordoba's Mezquita (mosque-cathedral) is one of the most extraordinary buildings in Europe, a forest of over 850 columns with red-and-white striped arches that seems to stretch to infinity.",
     },
     {
       type: 'paragraph',
@@ -121,12 +119,12 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'The coast from Almeria to Cabo de Gata is dramatically different from the developed Costa del Sol. Cabo de Gata Natural Park is an arid volcanic landscape of golden cliffs, hidden coves, and crystal-clear water that feels more like North Africa than Spain. Wild camping was once widespread here but is now strictly prohibited in the park boundaries. Several campsites and areas on the park\'s edges provide legal alternatives.',
+        "The coast from Almeria to Cabo de Gata is dramatically different from the developed Costa del Sol. Cabo de Gata Natural Park is an arid volcanic landscape of golden cliffs, hidden coves, and crystal-clear water that feels more like North Africa than Spain. Wild camping was once widespread here but is now strictly prohibited in the park boundaries. Several campsites and areas on the park's edges provide legal alternatives.",
     },
     {
       type: 'paragraph',
       content:
-        'Ronda, perched on either side of a 100-metre gorge spanned by an 18th-century stone bridge, is one of Andalusia\'s most dramatic towns. It is manageable in a campervan (park at the area de autocaravanas on the northern edge) but very tight for large motorhomes in the approaches. Tarifa, the southernmost point of continental Europe, faces Morocco across the narrow Strait of Gibraltar and is the wind-surfing and kite-surfing capital of Europe.',
+        "Ronda, perched on either side of a 100-metre gorge spanned by an 18th-century stone bridge, is one of Andalusia's most dramatic towns. It is manageable in a campervan (park at the area de autocaravanas on the northern edge) but very tight for large motorhomes in the approaches. Tarifa, the southernmost point of continental Europe, faces Morocco across the narrow Strait of Gibraltar and is the wind-surfing and kite-surfing capital of Europe.",
     },
     {
       type: 'warning',
@@ -147,13 +145,12 @@ const post: BlogPost = {
     },
     {
       type: 'paragraph',
-      content:
-        'Distance: approximately 600 km. Recommended duration: 7-10 days.',
+      content: 'Distance: approximately 600 km. Recommended duration: 7-10 days.',
     },
     {
       type: 'paragraph',
       content:
-        'Spain\'s Mediterranean coast is the most developed and touristic, but it also contains some genuine highlights that reward campervan exploration beyond the package-holiday resorts. The key is to seek out the stretches of coast between the resort towns, where you can still find traditional fishing villages, undeveloped headlands, and quiet coves.',
+        "Spain's Mediterranean coast is the most developed and touristic, but it also contains some genuine highlights that reward campervan exploration beyond the package-holiday resorts. The key is to seek out the stretches of coast between the resort towns, where you can still find traditional fishing villages, undeveloped headlands, and quiet coves.",
     },
     {
       type: 'paragraph',
@@ -163,12 +160,12 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Peniscola is a medieval fortress town built on a rocky promontory that juts into the sea -- it served as the set for Game of Thrones\'s Meereen. The old town is vehicle-free, but the area de autocaravanas at the base of the promontory is well-positioned. Tarragona has outstanding Roman ruins -- an amphitheatre overlooking the sea, a well-preserved aqueduct, and extensive city walls -- and is far less crowded than Barcelona.',
+        "Peniscola is a medieval fortress town built on a rocky promontory that juts into the sea -- it served as the set for Game of Thrones's Meereen. The old town is vehicle-free, but the area de autocaravanas at the base of the promontory is well-positioned. Tarragona has outstanding Roman ruins -- an amphitheatre overlooking the sea, a well-preserved aqueduct, and extensive city walls -- and is far less crowded than Barcelona.",
     },
     {
       type: 'paragraph',
       content:
-        'Barcelona is magnificent but terrible for motorhomes. Park at one of the campsites in Castelldefels or Malgrat de Mar and use the Rodalies commuter trains. The Costa Brava north of Barcelona is the real gem of this route: Tossa de Mar has a walled old town on a headland above a sandy bay, Begur has multiple coves with turquoise water, and Cadaques -- where Salvador Dali lived and worked -- is a whitewashed gem at the end of a winding mountain road. Cap de Creus, the easternmost point of Spain, is a wild rocky headland that inspired Dali\'s surrealist landscapes.',
+        "Barcelona is magnificent but terrible for motorhomes. Park at one of the campsites in Castelldefels or Malgrat de Mar and use the Rodalies commuter trains. The Costa Brava north of Barcelona is the real gem of this route: Tossa de Mar has a walled old town on a headland above a sandy bay, Begur has multiple coves with turquoise water, and Cadaques -- where Salvador Dali lived and worked -- is a whitewashed gem at the end of a winding mountain road. Cap de Creus, the easternmost point of Spain, is a wild rocky headland that inspired Dali's surrealist landscapes.",
     },
     {
       type: 'warning',
@@ -189,13 +186,12 @@ const post: BlogPost = {
     },
     {
       type: 'paragraph',
-      content:
-        'Distance: approximately 550 km. Recommended duration: 5-7 days.',
+      content: 'Distance: approximately 550 km. Recommended duration: 5-7 days.',
     },
     {
       type: 'paragraph',
       content:
-        'Most campervan travellers skip Spain\'s interior, which is a mistake. The central meseta and the mountain ranges that border it contain some of Spain\'s most atmospheric landscapes and best-preserved historic towns, with a fraction of the coastal crowds. Toledo, the former capital, sits on a granite bluff above the Tagus river and contains medieval synagogues, mosques, and churches within a single compact old town. Consuegra\'s ridge of white windmills, silhouetted against the vast La Mancha plain, is the quintessential Don Quixote landscape.',
+        "Most campervan travellers skip Spain's interior, which is a mistake. The central meseta and the mountain ranges that border it contain some of Spain's most atmospheric landscapes and best-preserved historic towns, with a fraction of the coastal crowds. Toledo, the former capital, sits on a granite bluff above the Tagus river and contains medieval synagogues, mosques, and churches within a single compact old town. Consuegra's ridge of white windmills, silhouetted against the vast La Mancha plain, is the quintessential Don Quixote landscape.",
     },
     {
       type: 'paragraph',
@@ -205,19 +201,19 @@ const post: BlogPost = {
     {
       type: 'tip',
       content:
-        'The Spanish interior is ideal for spring (March-May) and autumn (September-November) travel. Summers are punishingly hot (regularly above 40 degrees in La Mancha and Andalusia\'s interior), and winters can be cold with frost and occasional snow on the meseta.',
+        "The Spanish interior is ideal for spring (March-May) and autumn (September-November) travel. Summers are punishingly hot (regularly above 40 degrees in La Mancha and Andalusia's interior), and winters can be cold with frost and occasional snow on the meseta.",
     },
 
     // ── Areas System ─────────────────────────────────────────────
     {
       type: 'heading',
       level: 2,
-      content: 'Spain\'s Area de Autocaravanas System',
+      content: "Spain's Area de Autocaravanas System",
     },
     {
       type: 'paragraph',
       content:
-        'Spain\'s network of areas de autocaravanas has transformed motorhome travel in the country over the past decade. These designated parking and service areas are found in towns, cities, and popular tourist areas throughout the country. They range from simple parking areas with a water point and waste disposal to fully equipped facilities with electricity, showers, laundry, and wifi. Many are operated by municipalities as a way to attract motorhome tourism, and a growing number are privately run with higher-end services.',
+        "Spain's network of areas de autocaravanas has transformed motorhome travel in the country over the past decade. These designated parking and service areas are found in towns, cities, and popular tourist areas throughout the country. They range from simple parking areas with a water point and waste disposal to fully equipped facilities with electricity, showers, laundry, and wifi. Many are operated by municipalities as a way to attract motorhome tourism, and a growing number are privately run with higher-end services.",
     },
     {
       type: 'list',
@@ -238,7 +234,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Spain\'s climate varies enormously by region. The Atlantic north (Galicia, Asturias, Cantabria, Basque Country) is cool and wet, with weather similar to Brittany or Cornwall -- summers are warm (20-28 degrees) with occasional rain, and winters are mild but grey. The Mediterranean coast is hot and dry in summer (30-35 degrees) and mild in winter (10-18 degrees). Inland Spain experiences extremes: scorching summers and cold winters, with the meseta regularly freezing between December and February. The south coast (Costa del Sol, Almeria, Murcia) has Europe\'s warmest winters and is the destination of choice for motorhome owners escaping northern European cold from November to March.',
+        "Spain's climate varies enormously by region. The Atlantic north (Galicia, Asturias, Cantabria, Basque Country) is cool and wet, with weather similar to Brittany or Cornwall -- summers are warm (20-28 degrees) with occasional rain, and winters are mild but grey. The Mediterranean coast is hot and dry in summer (30-35 degrees) and mild in winter (10-18 degrees). Inland Spain experiences extremes: scorching summers and cold winters, with the meseta regularly freezing between December and February. The south coast (Costa del Sol, Almeria, Murcia) has Europe's warmest winters and is the destination of choice for motorhome owners escaping northern European cold from November to March.",
     },
     {
       type: 'list',
@@ -264,7 +260,7 @@ const post: BlogPost = {
         'Spanish autopistas (toll motorways) are expensive but increasingly being made free as concessions expire. The AP-7 along the Mediterranean coast is now mostly toll-free.',
         'Supermarket shopping is excellent and affordable. Mercadona, Lidl, and Aldi are the best value. Municipal markets (mercados) sell fresh produce at good prices.',
         'Meal deal: The menu del dia (fixed-price lunch) at local restaurants costs 10-15 euros for a three-course meal with wine. It is the best-value eating in Western Europe.',
-        'Spain\'s timetable is later than northern Europe. Lunch is 2-4pm, dinner is 9-11pm. Adjust your schedule or you will find restaurants closed when you are hungry.',
+        "Spain's timetable is later than northern Europe. Lunch is 2-4pm, dinner is 9-11pm. Adjust your schedule or you will find restaurants closed when you are hungry.",
         'Free wifi is available at most bars and restaurants if you buy a drink. Many areas de autocaravanas also offer wifi.',
       ],
     },
@@ -278,7 +274,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Spain offers more variety per kilometre than almost any other European country. Whether you are drawn to the green Atlantic north, the Moorish south, the Mediterranean beaches, or the empty interior, planning your route in advance ensures you hit the highlights without wasting days on unnecessary driving. Spain\'s distances are deceptive -- it takes over 10 hours to drive from Santiago de Compostela to Tarifa.',
+        "Spain offers more variety per kilometre than almost any other European country. Whether you are drawn to the green Atlantic north, the Moorish south, the Mediterranean beaches, or the empty interior, planning your route in advance ensures you hit the highlights without wasting days on unnecessary driving. Spain's distances are deceptive -- it takes over 10 hours to drive from Santiago de Compostela to Tarifa.",
     },
     {
       type: 'cta',

@@ -53,7 +53,7 @@ const post: BlogPost = {
         'Two stars: Clean, marked pitches with electricity available. Hot showers (sometimes coin-operated). Basic sanitary block. Often excellent value at 12-22 euros per night.',
         'Three stars: Well-maintained pitches with reliable electricity. Modern sanitary facilities with hot water included. Small shop or snack bar. Sometimes a swimming pool. The "sweet spot" for most camper travellers. Typically 18-35 euros per night.',
         'Four stars: Large, landscaped pitches. Excellent sanitary facilities, often with private cubicles. Swimming pool, restaurant, supermarket, laundry. Entertainment in high season. Typically 28-50 euros per night.',
-        'Five stars: Resort-level facilities. Heated pools, spa or wellness area, multiple restaurants, sports facilities, kids\' clubs, private sanitary units on premium pitches. Typically 40-80+ euros per night.',
+        "Five stars: Resort-level facilities. Heated pools, spa or wellness area, multiple restaurants, sports facilities, kids' clubs, private sanitary units on premium pitches. Typically 40-80+ euros per night.",
       ],
     },
     {
@@ -71,7 +71,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Electric hookup is available at virtually every campsite in Western Europe from two stars upward, but the details matter. European campsites use the CEE blue industrial connector (also called the camping plug or caravan plug) -- a round, three-pin, blue-capped plug rated for outdoor use. You will need a CEE hookup cable, typically 25 metres long, which connects your vehicle\'s input socket to the campsite bollard. Most rental motorhomes and campervans come with one; if buying, budget 30-50 euros for a quality cable.',
+        "Electric hookup is available at virtually every campsite in Western Europe from two stars upward, but the details matter. European campsites use the CEE blue industrial connector (also called the camping plug or caravan plug) -- a round, three-pin, blue-capped plug rated for outdoor use. You will need a CEE hookup cable, typically 25 metres long, which connects your vehicle's input socket to the campsite bollard. Most rental motorhomes and campervans come with one; if buying, budget 30-50 euros for a quality cable.",
     },
     {
       type: 'paragraph',

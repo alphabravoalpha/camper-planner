@@ -5,7 +5,7 @@ const post: BlogPost = {
   slug: 'camping-italian-coast-guide',
   title: 'Camping the Italian Coast: From Amalfi to Cinque Terre',
   description:
-    'A complete guide to campervan and motorhome travel along Italy\'s stunning coastline, from the dramatic Amalfi Coast through Calabria and Puglia to the colourful villages of Cinque Terre, with practical advice on ZTL zones, soste, and narrow roads.',
+    "A complete guide to campervan and motorhome travel along Italy's stunning coastline, from the dramatic Amalfi Coast through Calabria and Puglia to the colourful villages of Cinque Terre, with practical advice on ZTL zones, soste, and narrow roads.",
   author: 'CamperPlanning',
   publishedDate: '2026-02-05',
   category: 'destination-guides',
@@ -18,7 +18,7 @@ const post: BlogPost = {
     {
       type: 'heading',
       level: 2,
-      content: 'Italy\'s Coast: Spectacular, Challenging, and Unforgettable',
+      content: "Italy's Coast: Spectacular, Challenging, and Unforgettable",
     },
     {
       type: 'image',
@@ -59,7 +59,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'The practical approach for camper travellers is to use the Amalfi Coast as a day-trip destination rather than a driving route. Base yourself at a campsite in Sorrento, Salerno, or Pompei and use the excellent SITA bus service or the ferry network to visit Amalfi, Positano, and Ravello without your vehicle. Campeggio Santa Fortunata in Sorrento has sea-view pitches and direct beach access. Camping Nube d\'Argento near Sorrento offers terraced pitches among lemon groves with shuttle bus access to the town centre.',
+        "The practical approach for camper travellers is to use the Amalfi Coast as a day-trip destination rather than a driving route. Base yourself at a campsite in Sorrento, Salerno, or Pompei and use the excellent SITA bus service or the ferry network to visit Amalfi, Positano, and Ravello without your vehicle. Campeggio Santa Fortunata in Sorrento has sea-view pitches and direct beach access. Camping Nube d'Argento near Sorrento offers terraced pitches among lemon groves with shuttle bus access to the town centre.",
     },
     {
       type: 'paragraph',
@@ -93,7 +93,7 @@ const post: BlogPost = {
     {
       type: 'heading',
       level: 2,
-      content: 'The Cilento Coast: Italy\'s Hidden Riviera',
+      content: "The Cilento Coast: Italy's Hidden Riviera",
     },
     {
       type: 'paragraph',
@@ -120,12 +120,12 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Calabria is the toe of the Italian boot, and it remains one of the least-visited regions in mainland Italy despite having some of the country\'s most dramatic coastline. The Tyrrhenian coast around Tropea features white sand beaches backed by cliffs, with the town itself perched on a rocky promontory overlooking a turquoise bay. Capo Vaticano, south of Tropea, has a string of secluded coves accessible by foot or by boat that rival anything in Sardinia.',
+        "Calabria is the toe of the Italian boot, and it remains one of the least-visited regions in mainland Italy despite having some of the country's most dramatic coastline. The Tyrrhenian coast around Tropea features white sand beaches backed by cliffs, with the town itself perched on a rocky promontory overlooking a turquoise bay. Capo Vaticano, south of Tropea, has a string of secluded coves accessible by foot or by boat that rival anything in Sardinia.",
     },
     {
       type: 'paragraph',
       content:
-        'The Ionian coast is wilder and less developed, with long stretches of empty beach, ancient Greek ruins at Locri and Crotone, and the extraordinary mountain villages of the Aspromonte and Sila national parks within easy reach of the coast. Camping is affordable here -- 15-22 euros per night at most sites -- and the food is exceptional, with Calabria\'s fiery nduja sausage, fresh swordfish, and Ciro wines featuring on every menu.',
+        "The Ionian coast is wilder and less developed, with long stretches of empty beach, ancient Greek ruins at Locri and Crotone, and the extraordinary mountain villages of the Aspromonte and Sila national parks within easy reach of the coast. Camping is affordable here -- 15-22 euros per night at most sites -- and the food is exceptional, with Calabria's fiery nduja sausage, fresh swordfish, and Ciro wines featuring on every menu.",
     },
     {
       type: 'paragraph',

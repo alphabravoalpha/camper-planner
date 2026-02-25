@@ -428,7 +428,7 @@ export class RouteExportService {
   static async exportToKML(
     waypoints: Waypoint[],
     options: ExportOptions,
-    _additionalData?: ExportAdditionalData
+    additionalData?: ExportAdditionalData
   ): Promise<ExportResult> {
     const warnings: string[] = [];
 

@@ -13,7 +13,9 @@
     @apply font-sans antialiased;
   }
 
-  html, body, #root {
+  html,
+  body,
+  #root {
     @apply h-full;
   }
 }

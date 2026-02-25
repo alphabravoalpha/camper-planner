@@ -181,7 +181,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'France has the most extensive toll motorway network in Europe. A full-length drive from Calais to the Cote d\'Azur costs approximately EUR 70--90 in tolls each way for a vehicle under 3.5 tonnes. Motorhomes over 3 metres in height are often classified in a higher toll category (Class 2 or 3), which increases costs by 30--60 percent. Italy\'s autostrada system is cheaper but still adds up: Milan to Rome is roughly EUR 40--50. Spain\'s toll roads (autopistas) are being progressively freed up, but some sections still charge. Portugal has electronic-only tolls on some motorways -- you need to register your number plate or buy a temporary transponder at the border.',
+        "France has the most extensive toll motorway network in Europe. A full-length drive from Calais to the Cote d'Azur costs approximately EUR 70--90 in tolls each way for a vehicle under 3.5 tonnes. Motorhomes over 3 metres in height are often classified in a higher toll category (Class 2 or 3), which increases costs by 30--60 percent. Italy's autostrada system is cheaper but still adds up: Milan to Rome is roughly EUR 40--50. Spain's toll roads (autopistas) are being progressively freed up, but some sections still charge. Portugal has electronic-only tolls on some motorways -- you need to register your number plate or buy a temporary transponder at the border.",
     },
     {
       type: 'tip',
@@ -223,7 +223,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'One of the most common mistakes first-timers make is underestimating how much their vehicle\'s physical size affects where they can go and how they drive. A motorhome is typically 2.3--2.4 metres wide, 6--7.5 metres long, and 2.8--3.2 metres tall (with roof-mounted air conditioning or satellite dishes adding extra). Those numbers matter more in Europe than almost anywhere else, because European roads were often built centuries before motor vehicles existed.',
+        "One of the most common mistakes first-timers make is underestimating how much their vehicle's physical size affects where they can go and how they drive. A motorhome is typically 2.3--2.4 metres wide, 6--7.5 metres long, and 2.8--3.2 metres tall (with roof-mounted air conditioning or satellite dishes adding extra). Those numbers matter more in Europe than almost anywhere else, because European roads were often built centuries before motor vehicles existed.",
     },
     {
       type: 'heading',
@@ -233,7 +233,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Height is the dimension most likely to cause problems. Many European towns have low railway bridges, archways, covered market squares, and underground car parks that will not accommodate a vehicle over 3 metres. In France, some village roads pass through medieval gateways as low as 2.5 metres. Your GPS may not know about these restrictions, so always trust road signs over your navigation system. Write your vehicle\'s exact height on a piece of tape and stick it to the dashboard where you can see it at all times. Most rental companies already do this, but verify the number is correct -- especially if you have added a roof box or bike rack.',
+        "Height is the dimension most likely to cause problems. Many European towns have low railway bridges, archways, covered market squares, and underground car parks that will not accommodate a vehicle over 3 metres. In France, some village roads pass through medieval gateways as low as 2.5 metres. Your GPS may not know about these restrictions, so always trust road signs over your navigation system. Write your vehicle's exact height on a piece of tape and stick it to the dashboard where you can see it at all times. Most rental companies already do this, but verify the number is correct -- especially if you have added a roof box or bike rack.",
     },
     {
       type: 'heading',
@@ -243,7 +243,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Your motorhome\'s MAM (Maximum Authorised Mass, also called MTPLM or GVW) is the maximum legal weight of the vehicle including everything inside it -- passengers, water, fuel, food, luggage, and equipment. For a 3,500 kg motorhome, the payload (what you can carry on top of the base vehicle weight) is typically only 400--600 kg. That gets eaten up fast: 100 litres of fresh water weighs 100 kg, a full fuel tank adds 60--80 kg, and two adults with luggage account for another 200 kg. Overloading is illegal and dangerous -- it affects braking distance, tyre wear, and vehicle stability. Weigh your loaded vehicle at a public weighbridge before departing if possible.',
+        "Your motorhome's MAM (Maximum Authorised Mass, also called MTPLM or GVW) is the maximum legal weight of the vehicle including everything inside it -- passengers, water, fuel, food, luggage, and equipment. For a 3,500 kg motorhome, the payload (what you can carry on top of the base vehicle weight) is typically only 400--600 kg. That gets eaten up fast: 100 litres of fresh water weighs 100 kg, a full fuel tank adds 60--80 kg, and two adults with luggage account for another 200 kg. Overloading is illegal and dangerous -- it affects braking distance, tyre wear, and vehicle stability. Weigh your loaded vehicle at a public weighbridge before departing if possible.",
     },
     {
       type: 'heading',
@@ -422,13 +422,13 @@ const post: BlogPost = {
         'Cleaning fees: some rentals include a final clean in the price; others charge EUR 80--150 if the vehicle is not returned in good condition.',
         'One-way fees: dropping the vehicle at a different depot to where you collected it typically costs EUR 200--500.',
         'Ferry crossings: if crossing the Channel from the UK, Eurotunnel and ferry companies charge based on vehicle length. A 7 m motorhome on a Dover--Calais ferry costs GBP 150--300 return depending on time of year.',
-        'Low-emission zones: many European cities (Paris, Brussels, Amsterdam, Milan) restrict older diesel vehicles. Check whether your motorhome\'s Euro emission standard allows entry.',
+        "Low-emission zones: many European cities (Paris, Brussels, Amsterdam, Milan) restrict older diesel vehicles. Check whether your motorhome's Euro emission standard allows entry.",
       ],
     },
     {
       type: 'tip',
       content:
-        'Use the CamperPlanning cost calculator to estimate your fuel costs for a planned route. Enter your vehicle\'s fuel consumption rate and the tool calculates total fuel costs based on actual route distance and current fuel prices.',
+        "Use the CamperPlanning cost calculator to estimate your fuel costs for a planned route. Enter your vehicle's fuel consumption rate and the tool calculates total fuel costs based on actual route distance and current fuel prices.",
     },
 
     // ── Beginner-Friendly Destinations ────────────────────────────

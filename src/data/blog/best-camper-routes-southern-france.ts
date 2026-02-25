@@ -3,7 +3,7 @@ import { IMAGES } from '../images';
 
 const post: BlogPost = {
   slug: 'best-camper-routes-southern-france',
-  title: 'Best Camper Routes in Southern France: Provence, Cote d\'Azur & Languedoc',
+  title: "Best Camper Routes in Southern France: Provence, Cote d'Azur & Languedoc",
   description:
     'Three detailed motorhome itineraries through Southern France covering lavender fields, coastal drives, and wine country, with practical tips on tolls, low bridges, and campsite recommendations.',
   author: 'CamperPlanning',
@@ -53,8 +53,7 @@ const post: BlogPost = {
     },
     {
       type: 'paragraph',
-      content:
-        'Distance: approximately 320 km. Recommended duration: 5--7 days.',
+      content: 'Distance: approximately 320 km. Recommended duration: 5--7 days.',
     },
     {
       type: 'image',
@@ -98,7 +97,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'The D943 from Apt to Sault climbs gradually onto the Plateau d\'Albion, and from mid-June to early August the fields on both sides of the road are a solid sheet of purple. Sault is a quiet market town perched on a promontory, with a small but well-maintained municipal campsite (Camping Municipal de Sault) that accepts motorhomes up to 8 metres. Wednesday is market day, and the lavender honey from local producers is exceptional.',
+        "The D943 from Apt to Sault climbs gradually onto the Plateau d'Albion, and from mid-June to early August the fields on both sides of the road are a solid sheet of purple. Sault is a quiet market town perched on a promontory, with a small but well-maintained municipal campsite (Camping Municipal de Sault) that accepts motorhomes up to 8 metres. Wednesday is market day, and the lavender honey from local producers is exceptional.",
     },
     {
       type: 'paragraph',
@@ -113,7 +112,7 @@ const post: BlogPost = {
     {
       type: 'heading',
       level: 3,
-      content: 'Gorges du Verdon: Europe\'s Grand Canyon',
+      content: "Gorges du Verdon: Europe's Grand Canyon",
     },
     {
       type: 'paragraph',
@@ -135,7 +134,7 @@ const post: BlogPost = {
     {
       type: 'heading',
       level: 2,
-      content: 'Route 2: The Cote d\'Azur Coastal Drive',
+      content: "Route 2: The Cote d'Azur Coastal Drive",
     },
     {
       type: 'paragraph',
@@ -144,8 +143,7 @@ const post: BlogPost = {
     },
     {
       type: 'paragraph',
-      content:
-        'Distance: approximately 280 km. Recommended duration: 5--7 days.',
+      content: 'Distance: approximately 280 km. Recommended duration: 5--7 days.',
     },
     {
       type: 'image',
@@ -174,12 +172,12 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'The stretch between Cannes and Frejus along the N7 and the Corniche de l\'Esterel is one of the most beautiful coastal drives in the Mediterranean. The Esterel Massif is a range of ancient red porphyry rock that drops directly into deep blue water, creating a colour contrast that is almost unreal. There are several small parking areas along the corniche where you can stop for photos or a swim from the rocks. Be aware that some of these pull-offs have 2.3m height barriers to prevent overnight motorhome parking -- check before you commit.',
+        "The stretch between Cannes and Frejus along the N7 and the Corniche de l'Esterel is one of the most beautiful coastal drives in the Mediterranean. The Esterel Massif is a range of ancient red porphyry rock that drops directly into deep blue water, creating a colour contrast that is almost unreal. There are several small parking areas along the corniche where you can stop for photos or a swim from the rocks. Be aware that some of these pull-offs have 2.3m height barriers to prevent overnight motorhome parking -- check before you commit.",
     },
     {
       type: 'paragraph',
       content:
-        'Saint-Tropez is worth a visit for the harbour and the Musee de l\'Annonciade, but it is not a motorhome-friendly town. Summer traffic on the single approach road can mean hour-long queues. The best strategy is to park at one of the campsites in Ramatuelle or Gassin, a few kilometres south, and either cycle or take the coastal shuttle boat from Port Grimaud. Camping Kon Tiki in Ramatuelle is a large, well-equipped site within cycling distance of Pampelonne beach.',
+        "Saint-Tropez is worth a visit for the harbour and the Musee de l'Annonciade, but it is not a motorhome-friendly town. Summer traffic on the single approach road can mean hour-long queues. The best strategy is to park at one of the campsites in Ramatuelle or Gassin, a few kilometres south, and either cycle or take the coastal shuttle boat from Port Grimaud. Camping Kon Tiki in Ramatuelle is a large, well-equipped site within cycling distance of Pampelonne beach.",
     },
     {
       type: 'tip',
@@ -194,7 +192,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'West of Saint-Tropez, the coast becomes less developed and more wild. Hyeres is the gateway to the Iles d\'Or (Golden Islands) -- Porquerolles, Port-Cros, and the Ile du Levant. Porquerolles in particular is worth a day trip: car-free, with white sand beaches and crystal-clear snorkelling water. Ferries run from La Tour Fondue, where there is a large (paid) car park that accepts motorhomes up to 3.5 tonnes.',
+        "West of Saint-Tropez, the coast becomes less developed and more wild. Hyeres is the gateway to the Iles d'Or (Golden Islands) -- Porquerolles, Port-Cros, and the Ile du Levant. Porquerolles in particular is worth a day trip: car-free, with white sand beaches and crystal-clear snorkelling water. Ferries run from La Tour Fondue, where there is a large (paid) car park that accepts motorhomes up to 3.5 tonnes.",
     },
     {
       type: 'paragraph',
@@ -220,8 +218,7 @@ const post: BlogPost = {
     },
     {
       type: 'paragraph',
-      content:
-        'Distance: approximately 350 km. Recommended duration: 5--7 days.',
+      content: 'Distance: approximately 350 km. Recommended duration: 5--7 days.',
     },
     {
       type: 'image',
@@ -235,7 +232,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Montpellier is a vibrant university city with a beautifully restored medieval centre, excellent food markets, and a lively atmosphere that feels distinctly different from the resort towns of the Riviera. The municipal campsite (Camping l\'Oasis Palavasienne) is located at Palavas-les-Flots, 10 km south on the coast, with a tram connection into the city centre. Alternatively, there is a large free aire at Lattes, just south of Montpellier, with motorhome services.',
+        "Montpellier is a vibrant university city with a beautifully restored medieval centre, excellent food markets, and a lively atmosphere that feels distinctly different from the resort towns of the Riviera. The municipal campsite (Camping l'Oasis Palavasienne) is located at Palavas-les-Flots, 10 km south on the coast, with a tram connection into the city centre. Alternatively, there is a large free aire at Lattes, just south of Montpellier, with motorhome services.",
     },
     {
       type: 'paragraph',
@@ -280,12 +277,12 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'From Carcassonne, you can loop south to Limoux -- famous for producing the world\'s oldest sparkling wine, Blanquette de Limoux, which predates Champagne by over a century -- before heading back east towards the coast via Narbonne. Narbonne was the first Roman colony in Gaul and has an excellent covered market (Les Halles de Narbonne) and the unfinished but enormous Cathedral Saint-Just-et-Saint-Pasteur. The coast south of Narbonne at Gruissan is wild and undeveloped, with salt flats, flamingos, and a distinctive village of chalets built on stilts above the Etang de Gruissan.',
+        "From Carcassonne, you can loop south to Limoux -- famous for producing the world's oldest sparkling wine, Blanquette de Limoux, which predates Champagne by over a century -- before heading back east towards the coast via Narbonne. Narbonne was the first Roman colony in Gaul and has an excellent covered market (Les Halles de Narbonne) and the unfinished but enormous Cathedral Saint-Just-et-Saint-Pasteur. The coast south of Narbonne at Gruissan is wild and undeveloped, with salt flats, flamingos, and a distinctive village of chalets built on stilts above the Etang de Gruissan.",
     },
     {
       type: 'tip',
       content:
-        'The Languedoc is significantly cheaper than Provence or the Cote d\'Azur. Campsite fees are typically 30-50% lower, restaurant prices are more modest, and wine from local domaines can cost as little as 3-5 euros per bottle direct from the producer. If you are on a budget, this route offers the best value of the three.',
+        "The Languedoc is significantly cheaper than Provence or the Cote d'Azur. Campsite fees are typically 30-50% lower, restaurant prices are more modest, and wine from local domaines can cost as little as 3-5 euros per bottle direct from the producer. If you are on a budget, this route offers the best value of the three.",
     },
 
     // ── Practical Tips ────────────────────────────────────────────
@@ -321,7 +318,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'French autoroutes are expensive for motorhomes. Vehicles over 3.5 tonnes pay Class 2 rates, which are roughly 50% higher than car rates. For example, the A7 from Lyon to Marseille costs approximately 45-55 euros for a Class 2 vehicle in one direction. The A8 along the Cote d\'Azur from Aix-en-Provence to Nice adds another 25-30 euros. These costs add up quickly on a multi-week trip.',
+        "French autoroutes are expensive for motorhomes. Vehicles over 3.5 tonnes pay Class 2 rates, which are roughly 50% higher than car rates. For example, the A7 from Lyon to Marseille costs approximately 45-55 euros for a Class 2 vehicle in one direction. The A8 along the Cote d'Azur from Aix-en-Provence to Nice adds another 25-30 euros. These costs add up quickly on a multi-week trip.",
     },
     {
       type: 'paragraph',
@@ -341,17 +338,17 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Height restrictions are the most common hazard for motorhomes in Southern France. Medieval town centres often have archways and gates well under 3 metres. Car parks frequently have 2.0m or 2.1m height barriers. Even some modern supermarket car parks use barriers to prevent overnight motorhome parking. Always know your vehicle\'s exact height including any roof boxes, antennas, or air conditioning units, and watch for the diamond-shaped yellow height restriction signs posted before tunnels and underpasses.',
+        "Height restrictions are the most common hazard for motorhomes in Southern France. Medieval town centres often have archways and gates well under 3 metres. Car parks frequently have 2.0m or 2.1m height barriers. Even some modern supermarket car parks use barriers to prevent overnight motorhome parking. Always know your vehicle's exact height including any roof boxes, antennas, or air conditioning units, and watch for the diamond-shaped yellow height restriction signs posted before tunnels and underpasses.",
     },
     {
       type: 'paragraph',
       content:
-        'Narrow village roads are another challenge, particularly in the Luberon, the hill villages above the Cote d\'Azur, and the Cathar country of the Languedoc. Many D-roads through villages were built for horse carts and are genuinely too narrow for vehicles over 2.3 metres wide. Wing mirrors are vulnerable. As a general rule, if your GPS is routing you through the centre of a small hilltop village, look for an alternative route around it. Park outside and walk in -- the walk is usually short and always more pleasant than a stressful drive through streets where your mirrors scrape the shutters.',
+        "Narrow village roads are another challenge, particularly in the Luberon, the hill villages above the Cote d'Azur, and the Cathar country of the Languedoc. Many D-roads through villages were built for horse carts and are genuinely too narrow for vehicles over 2.3 metres wide. Wing mirrors are vulnerable. As a general rule, if your GPS is routing you through the centre of a small hilltop village, look for an alternative route around it. Park outside and walk in -- the walk is usually short and always more pleasant than a stressful drive through streets where your mirrors scrape the shutters.",
     },
     {
       type: 'warning',
       content:
-        'Never rely solely on a standard car GPS for motorhome navigation. Car GPS units will route you through low bridges, narrow streets, and weight-restricted roads. Use CamperPlanning\'s route planner or a dedicated motorhome GPS that factors in your vehicle dimensions.',
+        "Never rely solely on a standard car GPS for motorhome navigation. Car GPS units will route you through low bridges, narrow streets, and weight-restricted roads. Use CamperPlanning's route planner or a dedicated motorhome GPS that factors in your vehicle dimensions.",
     },
     {
       type: 'heading',
@@ -406,7 +403,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Southern France is generally safe for motorhome travel, but vehicle break-ins do occur, particularly in the Cote d\'Azur region and around Marseille. Autoroute rest areas are the highest-risk locations -- never leave valuables visible and consider using a security lock on your habitation door when sleeping at rest stops. Dedicated aires and campsites are much safer. Common-sense precautions apply: do not leave electronics, cameras, or bags visible through windows; use internal blinds and curtains when parked; and choose well-lit, populated stopping places when possible.',
+        "Southern France is generally safe for motorhome travel, but vehicle break-ins do occur, particularly in the Cote d'Azur region and around Marseille. Autoroute rest areas are the highest-risk locations -- never leave valuables visible and consider using a security lock on your habitation door when sleeping at rest stops. Dedicated aires and campsites are much safer. Common-sense precautions apply: do not leave electronics, cameras, or bags visible through windows; use internal blinds and curtains when parked; and choose well-lit, populated stopping places when possible.",
     },
     {
       type: 'tip',
@@ -423,7 +420,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'If you have three to four weeks, you can link all three routes into a single grand loop. Start in Montpellier and head west through Languedoc to Carcassonne (Route 3), then cut south-east to the coast at Narbonne. Follow the coast east through Beziers and Sete back to Montpellier, then continue east via Nimes and Avignon to begin the Provence loop (Route 1). After the Gorges du Verdon, drop south to Aix-en-Provence and pick up the Cote d\'Azur route (Route 2) from Cassis heading east to Nice. The total distance is roughly 950 km of actual driving, but with detours, sightseeing, and market visits, you will likely cover 1,200 km or more.',
+        "If you have three to four weeks, you can link all three routes into a single grand loop. Start in Montpellier and head west through Languedoc to Carcassonne (Route 3), then cut south-east to the coast at Narbonne. Follow the coast east through Beziers and Sete back to Montpellier, then continue east via Nimes and Avignon to begin the Provence loop (Route 1). After the Gorges du Verdon, drop south to Aix-en-Provence and pick up the Cote d'Azur route (Route 2) from Cassis heading east to Nice. The total distance is roughly 950 km of actual driving, but with detours, sightseeing, and market visits, you will likely cover 1,200 km or more.",
     },
     {
       type: 'paragraph',

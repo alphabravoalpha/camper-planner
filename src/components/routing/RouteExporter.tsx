@@ -226,7 +226,7 @@ const ExportOptionsPanel: React.FC<{
 // Import Panel Component
 const ImportPanel: React.FC<{
   onImportComplete: (result: unknown) => void;
-}> = ({ onImportComplete }) => {
+}> = ({ onImportComplete: _onImportComplete }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
   const { addNotification } = useUIStore();
@@ -247,9 +247,8 @@ const ImportPanel: React.FC<{
       } finally {
         setIsImporting(false);
       }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     },
-    [addNotification, onImportComplete]
+    [addNotification]
   );
 
   const handleDrop = useCallback(

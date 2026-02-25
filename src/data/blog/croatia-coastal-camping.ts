@@ -18,7 +18,7 @@ const post: BlogPost = {
     {
       type: 'heading',
       level: 2,
-      content: 'Croatia: The Adriatic\'s Camping Jewel',
+      content: "Croatia: The Adriatic's Camping Jewel",
     },
     {
       type: 'image',
@@ -27,7 +27,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Croatia has emerged as one of Europe\'s premier campervan destinations over the past decade, and for good reason. The Adriatic coastline stretches over 1,700 kilometres if you include the islands, with water so clear that you can see the seabed from cliff-top roads. Behind the coast, mountain ranges rise abruptly, and inland, turquoise rivers carve through limestone to create waterfalls and travertine pools that look almost artificial in their perfection. Add to this well-developed campsite infrastructure, reasonable prices (especially outside July and August), and a food and wine culture that draws on both Italian and Balkan traditions, and Croatia becomes an irresistible proposition.',
+        "Croatia has emerged as one of Europe's premier campervan destinations over the past decade, and for good reason. The Adriatic coastline stretches over 1,700 kilometres if you include the islands, with water so clear that you can see the seabed from cliff-top roads. Behind the coast, mountain ranges rise abruptly, and inland, turquoise rivers carve through limestone to create waterfalls and travertine pools that look almost artificial in their perfection. Add to this well-developed campsite infrastructure, reasonable prices (especially outside July and August), and a food and wine culture that draws on both Italian and Balkan traditions, and Croatia becomes an irresistible proposition.",
     },
     {
       type: 'paragraph',
@@ -59,7 +59,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Dubrovnik\'s city walls are the finest in the Mediterranean and the walk around them (2 km, about 90 minutes) is an essential experience despite the 35-euro entry fee. The old town\'s marble-paved Stradun, the Rector\'s Palace, and the harbour are all compact and walkable. Visit early morning or late afternoon to avoid cruise ship crowds -- on busy days, 3,000 or more passengers flood the old town between 9am and 5pm.',
+        "Dubrovnik's city walls are the finest in the Mediterranean and the walk around them (2 km, about 90 minutes) is an essential experience despite the 35-euro entry fee. The old town's marble-paved Stradun, the Rector's Palace, and the harbour are all compact and walkable. Visit early morning or late afternoon to avoid cruise ship crowds -- on busy days, 3,000 or more passengers flood the old town between 9am and 5pm.",
     },
     {
       type: 'tip',
@@ -74,12 +74,12 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Split is Croatia\'s second city and perhaps its most characterful. The entire old town is built within and around the walls of Diocletian\'s Palace, a 4th-century Roman emperor\'s retirement home that has been continuously inhabited for 1,700 years. The palace has morphed into a living city neighbourhood -- apartments, shops, restaurants, and bars now occupy the former imperial chambers, and the cathedral was converted from a Roman mausoleum. It is one of the most extraordinary urban spaces in Europe.',
+        "Split is Croatia's second city and perhaps its most characterful. The entire old town is built within and around the walls of Diocletian's Palace, a 4th-century Roman emperor's retirement home that has been continuously inhabited for 1,700 years. The palace has morphed into a living city neighbourhood -- apartments, shops, restaurants, and bars now occupy the former imperial chambers, and the cathedral was converted from a Roman mausoleum. It is one of the most extraordinary urban spaces in Europe.",
     },
     {
       type: 'paragraph',
       content:
-        'For campervan travellers, Camping Stobrec is the best option: located in a small town 8 kilometres south of Split with a regular bus service into the city. The campsite has direct beach access and sea-view pitches. Alternatively, Autocamp Trogir, about 25 kilometres west, is well-placed for both Split and the UNESCO-listed old town of Trogir, which sits on its own tiny island connected by bridges. Trogir\'s compact medieval centre, with its Venetian architecture and 13th-century cathedral, is often described as a mini-Dubrovnik without the crowds.',
+        "For campervan travellers, Camping Stobrec is the best option: located in a small town 8 kilometres south of Split with a regular bus service into the city. The campsite has direct beach access and sea-view pitches. Alternatively, Autocamp Trogir, about 25 kilometres west, is well-placed for both Split and the UNESCO-listed old town of Trogir, which sits on its own tiny island connected by bridges. Trogir's compact medieval centre, with its Venetian architecture and 13th-century cathedral, is often described as a mini-Dubrovnik without the crowds.",
     },
     {
       type: 'heading',
@@ -94,24 +94,24 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Camping Zaton Holiday Resort, 15 kilometres north of Zadar, is one of Croatia\'s largest and best-equipped campsites, with multiple swimming pools, a water park, restaurants, and a long pebble beach. It caters primarily to families and can feel like a small town in high season. For something quieter, the smaller campsites on Dugi Otok island (accessible by ferry from Zadar) offer a more remote, island-life experience.',
+        "Camping Zaton Holiday Resort, 15 kilometres north of Zadar, is one of Croatia's largest and best-equipped campsites, with multiple swimming pools, a water park, restaurants, and a long pebble beach. It caters primarily to families and can feel like a small town in high season. For something quieter, the smaller campsites on Dugi Otok island (accessible by ferry from Zadar) offer a more remote, island-life experience.",
     },
 
     // ── Istria ───────────────────────────────────────────────────
     {
       type: 'heading',
       level: 2,
-      content: 'The Istrian Peninsula: Croatia\'s Tuscany',
+      content: "The Istrian Peninsula: Croatia's Tuscany",
     },
     {
       type: 'paragraph',
       content:
-        'Istria, the heart-shaped peninsula in Croatia\'s north-west, shares a border with Italy and Slovenia and has a distinctly Italian-influenced character. Towns have Italian as well as Croatian names, the cuisine leans towards pasta, truffles, and olive oil rather than grilled meat, and the architecture of hilltop towns like Motovun, Groznjan, and Hum (the self-proclaimed smallest city in the world, population 28) recalls Tuscan hill villages.',
+        "Istria, the heart-shaped peninsula in Croatia's north-west, shares a border with Italy and Slovenia and has a distinctly Italian-influenced character. Towns have Italian as well as Croatian names, the cuisine leans towards pasta, truffles, and olive oil rather than grilled meat, and the architecture of hilltop towns like Motovun, Groznjan, and Hum (the self-proclaimed smallest city in the world, population 28) recalls Tuscan hill villages.",
     },
     {
       type: 'paragraph',
       content:
-        'The Istrian coast has some of Croatia\'s best-developed camping infrastructure. Rovinj, with its Venetian campanile rising above a cluster of pastel-coloured houses on a tiny peninsula, is the most photogenic town on the coast. Camping Polari and Camping Porton Biondi are both within walking or cycling distance. Pula, at the peninsula\'s southern tip, has a remarkably well-preserved Roman amphitheatre that still hosts concerts and film festivals. The Arena Campsite is walking distance from the amphitheatre.',
+        "The Istrian coast has some of Croatia's best-developed camping infrastructure. Rovinj, with its Venetian campanile rising above a cluster of pastel-coloured houses on a tiny peninsula, is the most photogenic town on the coast. Camping Polari and Camping Porton Biondi are both within walking or cycling distance. Pula, at the peninsula's southern tip, has a remarkably well-preserved Roman amphitheatre that still hosts concerts and film festivals. The Arena Campsite is walking distance from the amphitheatre.",
     },
     {
       type: 'paragraph',
@@ -138,7 +138,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Plitvice Lakes National Park is Croatia\'s most visited natural attraction and a UNESCO World Heritage Site. Sixteen interconnected lakes cascade down a limestone valley via a series of waterfalls and travertine barriers, the water transitioning from emerald green to deep blue depending on mineral content and light conditions. Wooden boardwalks thread through the park, taking you over, alongside, and sometimes behind the waterfalls. It is genuinely one of the most beautiful natural landscapes in Europe.',
+        "Plitvice Lakes National Park is Croatia's most visited natural attraction and a UNESCO World Heritage Site. Sixteen interconnected lakes cascade down a limestone valley via a series of waterfalls and travertine barriers, the water transitioning from emerald green to deep blue depending on mineral content and light conditions. Wooden boardwalks thread through the park, taking you over, alongside, and sometimes behind the waterfalls. It is genuinely one of the most beautiful natural landscapes in Europe.",
     },
     {
       type: 'paragraph',
@@ -181,7 +181,7 @@ const post: BlogPost = {
       type: 'list',
       items: [
         'Hvar: Car ferry from Split to Stari Grad (2 hours). Lavender fields, Venetian architecture, buzzing nightlife. Camping Vira near Hvar town.',
-        'Brac: Car ferry from Split to Supetar (50 minutes). Home to Zlatni Rat, one of Europe\'s most photographed beaches -- a golden pebble spit that shifts shape with the currents. Camping Kito on the south coast.',
+        "Brac: Car ferry from Split to Supetar (50 minutes). Home to Zlatni Rat, one of Europe's most photographed beaches -- a golden pebble spit that shifts shape with the currents. Camping Kito on the south coast.",
         'Korcula: Car ferry from Orebic on the Peljesac peninsula (15 minutes). Claims to be the birthplace of Marco Polo. Beautiful walled old town. Camping Kalac near Korcula town.',
         'Cres and Losinj: Car ferry from Brestova on the Istrian coast to Porozina on Cres (20 minutes). Wild, forested islands with griffon vulture colonies. Camping Kovacine on Cres.',
         'Rab: Car ferry from Jablanac on the mainland (15 minutes). Sandy beaches -- rare in Croatia. Camping Padova on Rab island.',
@@ -231,7 +231,7 @@ const post: BlogPost = {
       items: [
         'Budget (15-25 euros): Basic but clean sites with shared facilities. Often in quieter locations away from major towns. Good for self-sufficient campers.',
         'Mid-range (25-40 euros): Well-equipped sites with modern sanitary blocks, electricity, small pool or beach access. The best value tier for most travellers.',
-        'Premium (40-70 euros): Full resort facilities -- multiple pools, restaurants, water sports, kids\' entertainment. Sites like Camping Zaton, Lanterna, and Polari fall into this category.',
+        "Premium (40-70 euros): Full resort facilities -- multiple pools, restaurants, water sports, kids' entertainment. Sites like Camping Zaton, Lanterna, and Polari fall into this category.",
       ],
     },
 
@@ -244,7 +244,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Croatia\'s A1 motorway runs inland from Zagreb to Split and is the fastest route for covering long distances along the coast. Tolls are charged by distance and vehicle category. A campervan under 6 metres typically pays car rates (Category I), while larger motorhomes may be classified as Category II and pay higher rates. The full A1 from Zagreb to Split costs approximately 25-35 euros depending on vehicle category.',
+        "Croatia's A1 motorway runs inland from Zagreb to Split and is the fastest route for covering long distances along the coast. Tolls are charged by distance and vehicle category. A campervan under 6 metres typically pays car rates (Category I), while larger motorhomes may be classified as Category II and pay higher rates. The full A1 from Zagreb to Split costs approximately 25-35 euros depending on vehicle category.",
     },
     {
       type: 'paragraph',
@@ -295,7 +295,7 @@ const post: BlogPost = {
       items: [
         'Days 1-2: Dubrovnik. Campsite at Solitudo. Walk the city walls, explore the old town, day trip to Lokrum Island.',
         'Days 3-4: Drive the coast to Split via Makarska. Stop at Biokovo Nature Park for mountain views. Camp at Stobrec.',
-        'Day 5: Split old town. Diocletian\'s Palace, Riva waterfront, Green Market.',
+        "Day 5: Split old town. Diocletian's Palace, Riva waterfront, Green Market.",
         'Day 6: Ferry to Hvar or Brac for one night of island camping.',
         'Days 7-8: Drive north to Krka National Park via Sibenik. Camp near Skradin. Full day in the park.',
         'Day 9: Zadar. Sea Organ, Sun Salutation, old town. Camp at Zaton.',
@@ -314,7 +314,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Croatia packs an extraordinary amount of natural beauty, historic cities, and island adventures into a compact coastline. Planning your route in advance -- especially ferry crossings and campsite bookings in high season -- transforms a potentially stressful drive into a relaxed exploration of one of Europe\'s most beautiful countries.',
+        "Croatia packs an extraordinary amount of natural beauty, historic cities, and island adventures into a compact coastline. Planning your route in advance -- especially ferry crossings and campsite bookings in high season -- transforms a potentially stressful drive into a relaxed exploration of one of Europe's most beautiful countries.",
     },
     {
       type: 'cta',

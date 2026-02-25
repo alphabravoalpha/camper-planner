@@ -36,9 +36,8 @@ jobs:
       - name: Type check
         run: npm run type-check
 
-      - name: Lint (warnings allowed)
-        # Permissive threshold until lint cleanup is complete — tighten to 0 after
-        run: npx eslint . --report-unused-disable-directives --max-warnings 9999
+      - name: Lint (zero warnings)
+        run: npx eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0
 
       - name: Run unit tests
         run: npx vitest run
