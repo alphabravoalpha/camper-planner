@@ -1,7 +1,7 @@
 // Map Controls Panel Component
 // Phase 2.3: Comprehensive map controls with fullscreen and advanced features
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import * as L from 'leaflet';
 import { cn } from '../../utils/cn';
 import { useRouteStore, useUIStore } from '../../store';
@@ -28,6 +28,20 @@ const MapControlsPanel: React.FC<MapControlsPanelProps> = ({
   const { waypoints } = useRouteStore();
   const { addNotification } = useUIStore();
   const [showShortcuts, setShowShortcuts] = useState(false);
+  const [showOverflow, setShowOverflow] = useState(false);
+  const overflowRef = useRef<HTMLDivElement>(null);
+
+  // Close overflow menu on click outside
+  useEffect(() => {
+    if (!showOverflow) return;
+    const handleClick = (e: MouseEvent) => {
+      if (overflowRef.current && !overflowRef.current.contains(e.target as Node)) {
+        setShowOverflow(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [showOverflow]);
 
   // Initialize keyboard shortcuts
   const { shortcuts, actions } = useMapKeyboardShortcuts({
@@ -127,69 +141,71 @@ const MapControlsPanel: React.FC<MapControlsPanelProps> = ({
           </svg>
         </button>
 
-        {/* Reset View */}
-        <button
-          onClick={onResetView}
-          className="block w-10 h-10 flex items-center justify-center hover:bg-neutral-50 border-b border-neutral-200 transition-colors"
-          title="Reset to Europe view (Ctrl+R)"
-          aria-label="Reset to Europe view"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a9 9 0 019 9 9 9 0 019-9M12 12V9" />
-          </svg>
-        </button>
-
-        {/* Layer Control Toggle */}
-        <button
-          onClick={onToggleLayerControl}
-          className={cn(
-            "block w-10 h-10 flex items-center justify-center hover:bg-neutral-50 border-b border-neutral-200 transition-colors",
-            !layerControlCollapsed && "bg-primary-50 text-primary-600"
-          )}
-          title="Toggle layer control (Ctrl+L)"
-          aria-label="Toggle map layer control"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
-          </svg>
-        </button>
-
-        {/* Fullscreen Toggle */}
-        <button
-          onClick={onToggleFullscreen}
-          className={cn(
-            "block w-10 h-10 flex items-center justify-center hover:bg-neutral-50 transition-colors",
-            isFullscreen && "bg-primary-50 text-primary-600"
-          )}
-          title={`${isFullscreen ? 'Exit' : 'Enter'} fullscreen (Alt+F)`}
-          aria-label={`${isFullscreen ? 'Exit' : 'Enter'} fullscreen mode`}
-        >
-          {isFullscreen ? (
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 9V4.5M9 9H4.5M9 9L3.5 3.5M15 9h4.5M15 9V4.5M15 9l5.5-5.5M9 15v4.5M9 15H4.5M9 15l-5.5 5.5M15 15h4.5M15 15v4.5m0-4.5l5.5 5.5" />
+        {/* Overflow menu trigger */}
+        <div className="relative" ref={overflowRef}>
+          <button
+            onClick={() => setShowOverflow(!showOverflow)}
+            className={cn(
+              "block w-10 h-10 flex items-center justify-center hover:bg-neutral-50 transition-colors",
+              showOverflow && "bg-neutral-100"
+            )}
+            title="More options"
+            aria-label="More map options"
+            aria-expanded={showOverflow}
+            aria-haspopup="menu"
+          >
+            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+              <circle cx="12" cy="5" r="2" />
+              <circle cx="12" cy="12" r="2" />
+              <circle cx="12" cy="19" r="2" />
             </svg>
-          ) : (
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
-            </svg>
+          </button>
+
+          {showOverflow && (
+            <div className="absolute right-12 top-0 bg-white rounded-lg shadow-lg border border-neutral-200 py-1 min-w-[180px] z-50" role="menu">
+              {/* Reset View */}
+              <button
+                onClick={() => { onResetView(); setShowOverflow(false); }}
+                className="flex items-center gap-3 px-3 py-2 text-sm text-neutral-700 hover:bg-neutral-50 w-full"
+                role="menuitem"
+              >
+                Reset to Europe view
+              </button>
+              {/* Layer Control */}
+              <button
+                onClick={() => { onToggleLayerControl(); setShowOverflow(false); }}
+                className={cn(
+                  "flex items-center gap-3 px-3 py-2 text-sm hover:bg-neutral-50 w-full",
+                  !layerControlCollapsed ? "text-primary-600" : "text-neutral-700"
+                )}
+                role="menuitem"
+              >
+                Toggle layers
+              </button>
+              {/* Fullscreen */}
+              <button
+                onClick={() => { onToggleFullscreen(); setShowOverflow(false); }}
+                className={cn(
+                  "flex items-center gap-3 px-3 py-2 text-sm hover:bg-neutral-50 w-full",
+                  isFullscreen ? "text-primary-600" : "text-neutral-700"
+                )}
+                role="menuitem"
+              >
+                {isFullscreen ? 'Exit fullscreen' : 'Fullscreen'}
+              </button>
+              <div className="border-t border-neutral-100 my-1" role="separator" />
+              {/* Keyboard Shortcuts */}
+              <button
+                onClick={() => { setShowShortcuts(!showShortcuts); setShowOverflow(false); }}
+                className="flex items-center gap-3 px-3 py-2 text-sm text-neutral-700 hover:bg-neutral-50 w-full"
+                role="menuitem"
+              >
+                Keyboard shortcuts
+              </button>
+            </div>
           )}
-        </button>
+        </div>
       </div>
-
-      {/* Keyboard Shortcuts Toggle */}
-      <button
-        onClick={() => setShowShortcuts(!showShortcuts)}
-        className={cn(
-          "bg-white/90 backdrop-blur-sm rounded-lg shadow-medium p-2 hover:bg-neutral-50 transition-all duration-200",
-          showShortcuts && "bg-primary-50 text-primary-600"
-        )}
-        title="Show keyboard shortcuts"
-        aria-label="Toggle keyboard shortcuts help"
-      >
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
-        </svg>
-      </button>
 
       {/* Keyboard Shortcuts Panel */}
       {showShortcuts && (

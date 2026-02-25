@@ -4,7 +4,7 @@
 import { useState, useEffect } from 'react';
 
 const ONBOARDING_STORAGE_KEY = 'camper-planner-onboarding-complete';
-const ONBOARDING_VERSION = '5.0'; // Workflow-based tour: London→French Riviera narrative, campsite waypoints, daily stages
+const ONBOARDING_VERSION = '6.0'; // UX overhaul: streamlined 6-step tour with toolkit step
 
 interface OnboardingState {
   isComplete: boolean;

@@ -2,14 +2,10 @@
 // Performs real actions during the onboarding tour so users see live results.
 // Uses Zustand getState() for store actions, synthetic DOM clicks for local panel state.
 //
-// Z-index layering during the tour is managed via CSS in index.css:
-//   body[data-tour-step="vehicle-setup"]   boosts the vehicle sidebar to z-9998
-//   body[data-tour-step="daily-stages"]    boosts the planning tools panel to z-9998
-//   body[data-tour-step="cost-calculator"] boosts right-side panels to z-9998
-// This ensures panels render ABOVE the overlay (z-9997) but BELOW the tooltip (z-9999).
+// The 6-step tour only opens the campsite layer (step 3) — no vehicle, planning,
+// or cost panels are toggled during the tour, so closeAllPanels is simplified.
 
 import { useRouteStore, useVehicleStore, useUIStore, useMapStore } from '../../store';
-import { useTripSettingsStore } from '../../store/tripSettingsStore';
 
 // =============================================================================
 // Demo Data — London to French Riviera trip narrative
@@ -75,15 +71,6 @@ function clickByTourId(tourId: string): boolean {
   return false;
 }
 
-/** Check if a button is in its "active" state (coloured bg). */
-function isButtonActive(selector: string): boolean {
-  const el = document.querySelector(selector);
-  if (!el) return false;
-  const cls = el.className;
-  // Campsite toggle: bg-green-600; Cost calculator: bg-emerald-50; Planning tools: bg-violet-50
-  return cls.includes('bg-green-600') || cls.includes('bg-emerald-50') || cls.includes('bg-violet-50');
-}
-
 // =============================================================================
 // Step Actions — all idempotent (safe to call multiple times, e.g. Back/Next)
 // =============================================================================
@@ -106,150 +93,55 @@ export const demoActions = {
   },
 
   /**
-   * Step 3 (search-destination): Pan map to show France overview.
-   * No API calls — just shows the map at a zoom level where
-   * the user can imagine searching for a destination.
+   * Step 3 (find-campsites): Pan to Nice area and toggle campsites on.
    */
-  panToFrance: () => {
-    useMapStore.getState().setCenter([46.5, 2.3]);
-    useMapStore.getState().setZoom(6);
-  },
-
-  /**
-   * Step 4 (campsite-near-lyon): Add campsite near Lyon as overnight stop.
-   */
-  addLyonCampsite: () => {
-    const route = useRouteStore.getState();
-    // Only add if not already present (idempotent)
-    const hasLyon = route.waypoints.some((wp) => wp.id === 'demo-campsite-lyon');
-    if (!hasLyon) {
-      route.addWaypoint(DEMO_WAYPOINTS[1]);
-    }
-    // Pan to show both London and Lyon area
-    useMapStore.getState().setCenter([48.5, 2.5]);
-    useMapStore.getState().setZoom(6);
-  },
-
-  /**
-   * Step 5 (campsite-destination): Add campsite near Nice as final destination.
-   */
-  addNiceCampsite: () => {
-    const route = useRouteStore.getState();
-    // Only add if not already present (idempotent)
-    const hasNice = route.waypoints.some((wp) => wp.id === 'demo-campsite-nice');
-    if (!hasNice) {
-      route.addWaypoint(DEMO_WAYPOINTS[2]);
-    }
-    // Pan to show full route from London to Nice
-    useMapStore.getState().setCenter([47.0, 3.5]);
-    useMapStore.getState().setZoom(5);
-  },
-
-  /**
-   * Step 6 (vehicle-setup): Set demo vehicle profile and open the vehicle sidebar.
-   * CSS boosts the sidebar to z-9998 so it renders above the overlay.
-   */
-  openVehiclePanel: () => {
-    // Close any MapContainer panels left over from previous steps
-    if (isButtonActive('[aria-label="Toggle cost calculator"]')) {
-      clickByAriaLabel('Toggle cost calculator');
-    }
-    if (isButtonActive('[aria-label="Toggle trip plan"]')) {
-      clickByAriaLabel('Toggle trip plan');
-    }
-    useVehicleStore.getState().setProfile(DEMO_VEHICLE);
-    useTripSettingsStore.getState().updateSettings({
-      fuelConsumption: {
-        value: 12.5,
-        unit: 'l_per_100km',
-        fuelType: 'diesel',
-        tankCapacity: 80,
-      },
-    });
-    // Open the vehicle sidebar panel so users see it populated
-    useUIStore.getState().openVehicleSidebar();
-  },
-
-  /**
-   * Step 7 (daily-stages): Close vehicle sidebar, open planning tools panel.
-   * CSS boosts planning-tools-panel to z-9998 so it renders above the overlay.
-   */
-  showPlanningTools: () => {
-    useUIStore.getState().closeVehicleSidebar();
-    // Close cost calculator if open
-    if (isButtonActive('[aria-label="Toggle cost calculator"]')) {
-      clickByAriaLabel('Toggle cost calculator');
-    }
-    // Delay to let sidebar close animation finish
-    setTimeout(() => {
-      // Only open planning tools if not already open
-      if (!isButtonActive('[aria-label="Toggle trip plan"]')) {
-        clickByTourId('planning-tools-button');
-      }
-    }, 250);
-  },
-
-  /**
-   * Step 8 (cost-calculator): Close planning tools, open cost calculator panel.
-   * CSS boosts .map-panel-right to z-9998 so it renders above the overlay.
-   */
-  showCostCalculator: () => {
-    // Close planning tools if open
-    if (isButtonActive('[aria-label="Toggle trip plan"]')) {
-      clickByAriaLabel('Toggle trip plan');
-    }
-    // Close vehicle sidebar if still open
-    useUIStore.getState().closeVehicleSidebar();
-    // Delay to let panels close
-    setTimeout(() => {
-      // Only open cost calculator if it's not already open
-      if (!isButtonActive('[aria-label="Toggle cost calculator"]')) {
-        clickByAriaLabel('Toggle cost calculator');
-      }
-    }, 250);
-  },
-
-  /**
-   * Step 9 (campsites-map): Close cost calculator, toggle campsites on.
-   */
-  showCampsites: () => {
-    // Close cost calculator if it's open
-    if (isButtonActive('[aria-label="Toggle cost calculator"]')) {
-      clickByAriaLabel('Toggle cost calculator');
-    }
-    // Close planning tools if open
-    if (isButtonActive('[aria-label="Toggle trip plan"]')) {
-      clickByAriaLabel('Toggle trip plan');
-    }
-    // Close vehicle sidebar if still open
-    useUIStore.getState().closeVehicleSidebar();
+  showCampsitesAtNice: () => {
+    // Pan to Nice/French Riviera area at a zoom level showing campsite markers
+    useMapStore.getState().setCenter([43.7, 7.1]);
+    useMapStore.getState().setZoom(11);
     // Toggle campsites on (only if currently off)
     setTimeout(() => {
       const btn = document.querySelector('[data-tour-id="campsite-toggle"]');
       if (btn && btn.className.includes('bg-white')) {
         clickByTourId('campsite-toggle');
       }
-    }, 250);
+    }, 300);
   },
 
   /**
-   * Step 10 (ready): Close all open panels for clean state.
+   * Step 4 (add-campsite): Toggle campsites off, add Lyon + Nice, show full route.
    */
-  closeAllPanels: () => {
-    // Close campsite controls if open
-    if (isButtonActive('[data-tour-id="campsite-toggle"]')) {
+  addCampsitesToRoute: () => {
+    // Turn off campsite layer to show clean route view
+    const btn = document.querySelector('[data-tour-id="campsite-toggle"]');
+    if (btn && !btn.className.includes('bg-white')) {
       clickByTourId('campsite-toggle');
     }
-    // Close cost calculator if open
-    if (isButtonActive('[aria-label="Toggle cost calculator"]')) {
-      clickByAriaLabel('Toggle cost calculator');
+
+    const route = useRouteStore.getState();
+    // Add Lyon campsite (idempotent)
+    if (!route.waypoints.some((wp) => wp.id === 'demo-campsite-lyon')) {
+      route.addWaypoint(DEMO_WAYPOINTS[1]);
     }
-    // Close planning tools if open
-    if (isButtonActive('[aria-label="Toggle trip plan"]')) {
-      clickByAriaLabel('Toggle trip plan');
+    // Add Nice campsite (idempotent)
+    if (!route.waypoints.some((wp) => wp.id === 'demo-campsite-nice')) {
+      route.addWaypoint(DEMO_WAYPOINTS[2]);
     }
-    // Close vehicle sidebar if still open
-    useUIStore.getState().closeVehicleSidebar();
+    // Pan to show full route London → Lyon → Nice
+    useMapStore.getState().setCenter([47.0, 3.5]);
+    useMapStore.getState().setZoom(5);
+  },
+
+  /**
+   * Step 6 (ready): Close all open panels for clean state.
+   * Only the campsite layer may be open during the 6-step tour.
+   */
+  closeAllPanels: () => {
+    // Turn off campsite layer if on
+    const btn = document.querySelector('[data-tour-id="campsite-toggle"]');
+    if (btn && !btn.className.includes('bg-white')) {
+      clickByTourId('campsite-toggle');
+    }
   },
 
   /**

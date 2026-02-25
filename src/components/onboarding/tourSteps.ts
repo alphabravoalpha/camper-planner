@@ -1,15 +1,12 @@
 // Tour Step Configuration
-// Pure data — defines the 10-step spotlight guided tour with live demo actions.
+// Pure data — defines the 6-step spotlight guided tour with live demo actions.
 //
-// The tour walks through a realistic trip-planning workflow: London → French Riviera.
-// Steps mirror what a real user does: add home, search destination, pick campsites,
-// set vehicle, check daily stages, estimate costs, explore campsite layer.
+// The tour walks through the core trip-planning loop: search → find campsites → add to route.
+// Steps mirror what a real user does: add start, discover campsites, build a multi-stop trip.
 //
 // Z-index management:
-//   The overlay is always at z-9997. Steps that open panels (vehicle sidebar,
-//   planning tools, cost calculator) have CSS rules in index.css that boost those
-//   panels to z-9998, keyed off body[data-tour-step="<stepId>"]. This means every
-//   step just sets its ID and the CSS takes care of making the right panels visible.
+//   The overlay is always at z-9997. Steps that spotlight UI elements have CSS rules in
+//   index.css that boost those elements to z-9998, keyed off body[data-tour-step="<stepId>"].
 //   The `overlayOpacity` field controls how dark the overlay is — lower values
 //   let map content (waypoints, campsites) show through more clearly.
 
@@ -29,7 +26,7 @@ export interface SpotlightStep {
   body: string;
   tip?: string;
   /** Lucide icon name for the tooltip header */
-  iconKey: 'Truck' | 'MapPin' | 'Tent' | 'Calculator' | 'Briefcase' | 'CheckCircle' | 'Search' | 'Navigation';
+  iconKey: 'Truck' | 'MapPin' | 'Tent' | 'Calculator' | 'Briefcase' | 'CheckCircle' | 'Search' | 'Navigation' | 'Wrench';
   /** Extra padding around the spotlight cutout in px (default 12) */
   spotlightPadding?: number;
   /** Overlay darkness 0-1 (default 0.6). Lower = more see-through so live changes are visible. */
@@ -44,10 +41,12 @@ export interface SpotlightStep {
   features?: string[];
   /** Custom CTA button text (default: "Next", or "Start Planning" on last step) */
   ctaText?: string;
+  /** Tool items shown on the toolkit step */
+  tools?: Array<{ emoji: string; label: string; description: string }>;
 }
 
 /** Step IDs during which the search bar should remain visible on the map */
-export const WAYPOINT_STEP_IDS = ['add-start', 'search-destination'];
+export const WAYPOINT_STEP_IDS = ['add-start'];
 
 export const SPOTLIGHT_STEPS: SpotlightStep[] = [
   // ─── Step 1: Welcome ──────────────────────────────────────────────────
@@ -58,143 +57,80 @@ export const SPOTLIGHT_STEPS: SpotlightStep[] = [
     variant: 'welcome',
     title: 'Welcome',
     headline: 'Plan Your European Camper Trip',
-    body: 'Follow along as we plan a motorhome trip from London to the French Riviera — the same workflow you\'ll use for your own trips.',
+    body: "We'll show you the basics in under a minute. Let's plan a quick trip from London to the South of France.",
     features: [
-      'Search and add stops along your route',
-      'Discover campsites with amenity filters',
-      'Set vehicle dimensions for safe road routing',
-      'View daily driving stages and trip costs',
-      'Export routes to GPX for your GPS',
+      'Search locations and build your route',
+      'Discover campsites along the way',
+      'Vehicle-safe routing that avoids low bridges and narrow roads',
     ],
     ctaText: 'Show Me How',
     iconKey: 'Truck',
   },
 
-  // ─── Step 2: Start from Home ──────────────────────────────────────────
+  // ─── Step 2: Search & Add Start ─────────────────────────────────────
   {
     id: 'add-start',
     targetSelector: '[data-tour-id="search-bar"]',
     tooltipPosition: 'below',
     title: 'Start Point',
-    headline: 'Start from Home',
-    body: 'Every trip starts somewhere. We\'ve added London as your departure point — you\'ll do the same by searching for your address or right-clicking the map.',
-    tip: 'You can search for any address, city, or place of interest.',
+    headline: 'Search for Your Starting Point',
+    body: "Type any address, city, or place. We've added London — you'll search for your own starting point.",
+    tip: "Click '+ Add' on a result to add it to your route.",
     iconKey: 'MapPin',
     spotlightPadding: 12,
     overlayOpacity: 0.3,
     onEnter: demoActions.addLondon,
   },
 
-  // ─── Step 3: Search for a Destination ─────────────────────────────────
+  // ─── Step 3: Find Campsites ─────────────────────────────────────────
   {
-    id: 'search-destination',
-    targetSelector: '[data-tour-id="search-bar"]',
-    tooltipPosition: 'below',
-    title: 'Destination',
-    headline: 'Search for a Destination',
-    body: 'Now search for where you want to go. We\'re heading to the South of France — the search finds cities, towns, and campsites near any location.',
-    tip: 'Results show both places and campsites. Click \'Go\' to navigate the map, or \'+ Add\' to add it to your route.',
-    iconKey: 'Search',
-    spotlightPadding: 12,
-    overlayOpacity: 0.3,
-    onEnter: demoActions.panToFrance,
-  },
-
-  // ─── Step 4: Pick a Campsite (Lyon) ───────────────────────────────────
-  // No spotlight target — low overlay so map markers are clearly visible.
-  {
-    id: 'campsite-near-lyon',
-    targetSelector: null,
-    tooltipPosition: 'right',
-    title: 'Overnight Stop',
-    headline: 'Pick a Campsite for Your First Night',
-    body: 'On a long drive, you\'ll want overnight stops. We\'ve added a campsite near Lyon — around 450km from London, a good day\'s driving.',
-    tip: 'Zoom into any area and toggle campsites on to browse real data from OpenStreetMap.',
-    iconKey: 'Tent',
-    overlayOpacity: 0.12,
-    onEnter: demoActions.addLyonCampsite,
-  },
-
-  // ─── Step 5: Final Destination Campsite (Nice) ────────────────────────
-  {
-    id: 'campsite-destination',
-    targetSelector: null,
-    tooltipPosition: 'right',
-    title: 'Final Destination',
-    headline: 'Add Your Destination Campsite',
-    body: 'We\'ve added a campsite on the French Riviera as your final stop. With three waypoints, the planner calculates the full multi-stop route.',
-    tip: 'Drag waypoint markers on the map to adjust your route at any time.',
-    iconKey: 'Tent',
-    overlayOpacity: 0.08,
-    onEnter: demoActions.addNiceCampsite,
-  },
-
-  // ─── Step 6: Vehicle Setup ────────────────────────────────────────────
-  // Opens the vehicle sidebar (z-50). CSS rule `body[data-tour-step="vehicle-setup"]`
-  // boosts the sidebar wrapper to z-9998 (above overlay) and hides its own
-  // dark backdrop (our spotlight overlay handles the dimming).
-  {
-    id: 'vehicle-setup',
-    targetSelector: '[data-tour-id="vehicle-sidebar-panel"]',
-    tooltipPosition: 'right',
-    title: 'Vehicle',
-    headline: 'Set Up Your Vehicle',
-    body: 'Tell the planner your vehicle\'s dimensions so it avoids roads too narrow, bridges too low, or weight-restricted routes.',
-    tip: 'Open this panel any time by clicking the vehicle badge in the header.',
-    iconKey: 'Truck',
-    spotlightPadding: 0,
-    overlayOpacity: 0.5,
-    onEnter: demoActions.openVehiclePanel,
-  },
-
-  // ─── Step 7: Daily Driving Stages ─────────────────────────────────────
-  // Opens the planning tools panel. CSS rule `body[data-tour-step="daily-stages"]`
-  // boosts the panel to z-9998 (above overlay).
-  {
-    id: 'daily-stages',
-    targetSelector: '[data-tour-id="planning-tools-panel"]',
-    tooltipPosition: 'left',
-    title: 'Planning',
-    headline: 'Daily Driving Stages',
-    body: 'The planning tools split your route into daily stages based on your vehicle type. A motorhome is typically limited to around 6 hours of driving per day.',
-    iconKey: 'Navigation',
-    spotlightPadding: 0,
-    overlayOpacity: 0.5,
-    onEnter: demoActions.showPlanningTools,
-  },
-
-  // ─── Step 8: Cost Calculator ──────────────────────────────────────────
-  // Opens cost calculator panel. CSS rule `body[data-tour-step="cost-calculator"]`
-  // boosts .map-panel-right to z-9998 (above overlay).
-  {
-    id: 'cost-calculator',
-    targetSelector: '.map-panel-right',
-    tooltipPosition: 'left',
-    title: 'Costs',
-    headline: 'Estimate Trip Costs',
-    body: 'The cost calculator estimates fuel costs based on your vehicle\'s consumption and fuel prices in each country along your route.',
-    iconKey: 'Calculator',
-    spotlightPadding: 0,
-    overlayOpacity: 0.5,
-    onEnter: demoActions.showCostCalculator,
-  },
-
-  // ─── Step 9: Campsite Layer ───────────────────────────────────────────
-  {
-    id: 'campsites-map',
+    id: 'find-campsites',
     targetSelector: '[data-tour-id="campsite-toggle"]',
     tooltipPosition: 'right',
     title: 'Campsites',
-    headline: 'Explore Campsites on the Map',
-    body: 'Toggle campsites on to see real data from OpenStreetMap. Zoom in to see individual markers — click any for details, amenities, and booking links.',
-    tip: 'Use the filters to narrow results by type, amenities, or vehicle compatibility.',
+    headline: 'Find Campsites Anywhere',
+    body: "Toggle campsites on to see real campsite data. We've zoomed to the French Riviera — zoom into any area on your trips to browse campsites there.",
+    tip: 'Click any campsite marker for details, amenities, and booking links.',
     iconKey: 'Tent',
     spotlightPadding: 8,
     overlayOpacity: 0.15,
-    onEnter: demoActions.showCampsites,
+    onEnter: demoActions.showCampsitesAtNice,
   },
 
-  // ─── Step 10: Ready ───────────────────────────────────────────────────
+  // ─── Step 4: Add Campsite to Route ──────────────────────────────────
+  {
+    id: 'add-campsite',
+    targetSelector: null,
+    tooltipPosition: 'right',
+    title: 'Build Route',
+    headline: 'Add Stops Along the Way',
+    body: "We've added a campsite near Nice and an overnight stop near Lyon. Click any campsite marker → 'Add to Route' to build multi-stop trips.",
+    tip: 'Drag waypoints on the map to reorder your route.',
+    iconKey: 'Tent',
+    overlayOpacity: 0.08,
+    onEnter: demoActions.addCampsitesToRoute,
+  },
+
+  // ─── Step 5: Toolkit ────────────────────────────────────────────────
+  {
+    id: 'toolkit',
+    targetSelector: '[data-tour-id="left-toolbar"]',
+    tooltipPosition: 'right',
+    title: 'Tools',
+    headline: 'Tools When You Need Them',
+    body: 'Once your route is taking shape, these tools help you refine it:',
+    iconKey: 'Wrench',
+    spotlightPadding: 8,
+    overlayOpacity: 0.4,
+    tools: [
+      { emoji: '🚐', label: 'Vehicle setup', description: 'set dimensions for safe routing' },
+      { emoji: '📊', label: 'Trip costs', description: 'fuel and budget estimates' },
+      { emoji: '📅', label: 'Daily stages', description: 'break long drives into days' },
+      { emoji: '💾', label: 'Save & export', description: 'save trips, export to GPS' },
+    ],
+  },
+
+  // ─── Step 6: Ready ──────────────────────────────────────────────────
   {
     id: 'ready',
     targetSelector: null,
@@ -202,7 +138,7 @@ export const SPOTLIGHT_STEPS: SpotlightStep[] = [
     variant: 'final',
     title: 'Ready',
     headline: "You're Ready to Plan!",
-    body: "That's the workflow! When you click Start Planning, we'll clear the demo trip and give you a fresh map. Search for your starting point, find campsites along the way, and build your dream route.",
+    body: "We'll clear the demo trip and give you a fresh map. Search for your starting point and start building your route.",
     ctaText: 'Start Planning',
     iconKey: 'CheckCircle',
     onEnter: demoActions.closeAllPanels,
