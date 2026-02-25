@@ -2,7 +2,7 @@
 // Embedded Google Form for user suggestions, bug reports, and feature requests
 
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {
   MessageSquare, ChevronLeft, Lightbulb, Bug, Star, ExternalLink, ChevronRight
 } from 'lucide-react';
