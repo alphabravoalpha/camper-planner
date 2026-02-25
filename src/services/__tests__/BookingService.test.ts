@@ -2,22 +2,16 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import BookingService, { type BookingSearchOptions } from '../BookingService';
 import { type Campsite } from '../CampsiteService';
 
-// Mock environment variables
-vi.stubGlobal('import', {
-  meta: {
-    env: {
-      VITE_BOOKING_AFFILIATE_ID: 'test-booking-123',
-      VITE_PITCHUP_AFFILIATE_ID: 'test-pitchup-456',
-      VITE_ACSI_AFFILIATE_CODE: 'test-acsi-789',
-    },
-  },
-});
-
 describe('BookingService', () => {
   let service: BookingService;
   let mockCampsite: Campsite;
 
   beforeEach(() => {
+    // Set env vars before constructing service (reads import.meta.env at init)
+    vi.stubEnv('VITE_BOOKING_AFFILIATE_ID', 'test-booking-123');
+    vi.stubEnv('VITE_PITCHUP_AFFILIATE_ID', 'test-pitchup-456');
+    vi.stubEnv('VITE_ACSI_AFFILIATE_CODE', 'test-acsi-789');
+
     service = new BookingService();
 
     mockCampsite = {
@@ -213,29 +207,20 @@ describe('BookingService', () => {
 
   describe('Provider-Specific URLs', () => {
     it('should generate correct Booking.com URL', () => {
-      const link = service.generateProviderLink(
-        service.getProvider('booking')!,
-        mockCampsite
-      );
+      const link = service.generateProviderLink(service.getProvider('booking')!, mockCampsite);
 
       expect(link).toContain('https://www.booking.com/searchresults.html');
       expect(link).toContain('accommodation_type=camping');
     });
 
     it('should generate correct Pitchup URL', () => {
-      const link = service.generateProviderLink(
-        service.getProvider('pitchup')!,
-        mockCampsite
-      );
+      const link = service.generateProviderLink(service.getProvider('pitchup')!, mockCampsite);
 
       expect(link).toContain('https://www.pitchup.com/search');
     });
 
     it('should generate correct ACSI URL', () => {
-      const link = service.generateProviderLink(
-        service.getProvider('acsi')!,
-        mockCampsite
-      );
+      const link = service.generateProviderLink(service.getProvider('acsi')!, mockCampsite);
 
       expect(link).toContain('https://www.acsi.eu/en/search-and-book');
       expect(link).toContain('lon=2.3522'); // ACSI uses 'lon' not 'lng'
