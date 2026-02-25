@@ -24,5 +24,5 @@ export const validators = {
 
   routeWaypoints: (waypoints: unknown[]): boolean => {
     return waypoints.length >= 2 && waypoints.length <= 50;
-  }
+  },
 };

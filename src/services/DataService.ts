@@ -26,9 +26,9 @@ export interface RateLimitConfig {
 export interface RequestContext {
   method: 'GET' | 'POST' | 'PUT' | 'DELETE';
   endpoint: string;
-  params?: Record<string, any>;
+  params?: Record<string, unknown>;
   headers?: Record<string, string>;
-  body?: any;
+  body?: unknown;
   skipCache?: boolean;
   customTimeout?: number;
 }
@@ -43,7 +43,7 @@ export interface ServiceError {
 
 export abstract class DataService {
   protected config: DataServiceConfig;
-  protected cache: Map<string, CacheEntry<any>>;
+  protected cache: Map<string, CacheEntry<unknown>>;
   protected rateLimitState: Map<string, { count: number; resetTime: number }>;
   protected rateLimit: RateLimitConfig;
 
@@ -157,7 +157,7 @@ export abstract class DataService {
         if (contentType && contentType.includes('application/json')) {
           return await response.json();
         } else {
-          return await response.text() as T;
+          return (await response.text()) as T;
         }
       } catch (error) {
         lastError = error as Error;
@@ -196,8 +196,9 @@ export abstract class DataService {
         type: 'timeout',
         message: `Request timed out${context ? ` while ${context}` : ''}`,
         originalError: error,
-        suggestion: 'The service is taking too long to respond. Please try again or zoom in to search a smaller area.',
-        retryable: true
+        suggestion:
+          'The service is taking too long to respond. Please try again or zoom in to search a smaller area.',
+        retryable: true,
       };
     }
 
@@ -208,7 +209,7 @@ export abstract class DataService {
         message: `Network connection failed${context ? ` while ${context}` : ''}`,
         originalError: error,
         suggestion: 'Please check your internet connection and try again.',
-        retryable: true
+        retryable: true,
       };
     }
 
@@ -218,8 +219,10 @@ export abstract class DataService {
         type: 'rate_limit',
         message: `Too many requests${context ? ` while ${context}` : ''}`,
         originalError: error,
-        suggestion: error.message.includes('wait') ? error.message : 'Please wait a moment before trying again.',
-        retryable: true
+        suggestion: error.message.includes('wait')
+          ? error.message
+          : 'Please wait a moment before trying again.',
+        retryable: true,
       };
     }
 
@@ -230,7 +233,7 @@ export abstract class DataService {
         message: `Service temporarily unavailable${context ? ` while ${context}` : ''}`,
         originalError: error,
         suggestion: 'The service is experiencing issues. Please try again in a few moments.',
-        retryable: true
+        retryable: true,
       };
     }
 
@@ -245,7 +248,7 @@ export abstract class DataService {
           message: `Too many requests${context ? ` while ${context}` : ''}`,
           originalError: error,
           suggestion: 'Please wait a moment before searching again.',
-          retryable: true
+          retryable: true,
         };
       }
 
@@ -258,7 +261,7 @@ export abstract class DataService {
         suggestion: is404
           ? 'Try searching a different location or zooming out to see more results.'
           : 'Please check your request and try again.',
-        retryable: false
+        retryable: false,
       };
     }
 
@@ -268,7 +271,7 @@ export abstract class DataService {
       message: `Something went wrong${context ? ` while ${context}` : ''}`,
       originalError: error,
       suggestion: 'Please try again. If the problem persists, try refreshing the page.',
-      retryable: true
+      retryable: true,
     };
   }
 
@@ -278,7 +281,10 @@ export abstract class DataService {
   private async checkRateLimit(): Promise<void> {
     const now = Date.now();
     const key = 'default';
-    const state = this.rateLimitState.get(key) || { count: 0, resetTime: now + this.rateLimit.windowMs };
+    const state = this.rateLimitState.get(key) || {
+      count: 0,
+      resetTime: now + this.rateLimit.windowMs,
+    };
 
     // Reset counter if window has passed
     if (now > state.resetTime) {
@@ -354,7 +360,10 @@ export abstract class DataService {
   /**
    * Get cache statistics
    */
-  public getCacheStats(): { size: number; entries: Array<{ key: string; size: number; age: number }> } {
+  public getCacheStats(): {
+    size: number;
+    entries: Array<{ key: string; size: number; age: number }>;
+  } {
     const now = Date.now();
     const entries = Array.from(this.cache.entries()).map(([key, entry]) => ({
       key,

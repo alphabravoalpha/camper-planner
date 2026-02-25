@@ -27,9 +27,7 @@ const staticPages = [
 function getBlogSlugs(): string[] {
   const blogDir = path.join(__dirname, '..', 'src', 'data', 'blog');
   const files = fs.readdirSync(blogDir);
-  return files
-    .filter((f) => f.endsWith('.ts') && f !== 'index.ts')
-    .map((f) => f.replace('.ts', ''));
+  return files.filter(f => f.endsWith('.ts') && f !== 'index.ts').map(f => f.replace('.ts', ''));
 }
 
 function generateSitemap(): string {
@@ -68,4 +66,7 @@ const outputPath = path.join(__dirname, '..', 'public', 'sitemap.xml');
 fs.writeFileSync(outputPath, sitemap, 'utf-8');
 
 const blogCount = getBlogSlugs().length;
-console.log(`Sitemap generated with ${staticPages.length + blogCount} URLs (${staticPages.length} static + ${blogCount} blog posts)`);
+// eslint-disable-next-line no-console
+console.log(
+  `Sitemap generated with ${staticPages.length + blogCount} URLs (${staticPages.length} static + ${blogCount} blog posts)`
+);

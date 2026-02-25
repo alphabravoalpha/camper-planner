@@ -32,15 +32,15 @@ const RouteComparison: React.FC<RouteComparisonProps> = ({ className }) => {
       id: 'main',
       route: calculatedRoute.routes[0],
       label: 'Main Route',
-      isCurrent: true
+      isCurrent: true,
     },
     ...(calculatedRoute.alternativeRoutes || []).map((altRoute: RouteData, index: number) => ({
       id: `alt-${index}`,
       route: altRoute,
       label: `Alternative ${index + 1}`,
       isAlternative: true,
-      isCurrent: false
-    }))
+      isCurrent: false,
+    })),
   ];
 
   // Only show if we have alternatives
@@ -59,7 +59,7 @@ const RouteComparison: React.FC<RouteComparisonProps> = ({ className }) => {
     const newRouteResponse: RouteResponse = {
       ...calculatedRoute,
       routes: [option.route],
-      id: `selected_${routeId}_${Date.now()}`
+      id: `selected_${routeId}_${Date.now()}`,
     };
 
     setCalculatedRoute(newRouteResponse);
@@ -67,7 +67,7 @@ const RouteComparison: React.FC<RouteComparisonProps> = ({ className }) => {
 
     addNotification({
       type: 'info',
-      message: `Switched to ${option.label.toLowerCase()}`
+      message: `Switched to ${option.label.toLowerCase()}`,
     });
   };
 
@@ -76,10 +76,10 @@ const RouteComparison: React.FC<RouteComparisonProps> = ({ className }) => {
     const timeDiff = route.summary.duration - baseRoute.summary.duration;
 
     return {
-      distanceDiff: Math.round(distanceDiff / 1000 * 10) / 10, // km
+      distanceDiff: Math.round((distanceDiff / 1000) * 10) / 10, // km
       timeDiff: Math.round(timeDiff / 60), // minutes
       distancePercent: Math.round((distanceDiff / baseRoute.summary.distance) * 100),
-      timePercent: Math.round((timeDiff / baseRoute.summary.duration) * 100)
+      timePercent: Math.round((timeDiff / baseRoute.summary.duration) * 100),
     };
   };
 
@@ -95,7 +95,9 @@ const RouteComparison: React.FC<RouteComparisonProps> = ({ className }) => {
     <div className={cn('bg-white rounded-lg border border-neutral-200', className)}>
       <div className="p-4 border-b border-neutral-200">
         <h3 className="text-lg font-semibold text-neutral-900">Route Comparison</h3>
-        <p className="text-sm text-neutral-600 mt-1">{routeOptions.length} route options available</p>
+        <p className="text-sm text-neutral-600 mt-1">
+          {routeOptions.length} route options available
+        </p>
       </div>
 
       <div className="p-4">
@@ -105,7 +107,7 @@ const RouteComparison: React.FC<RouteComparisonProps> = ({ className }) => {
             const isSelected = selectedRoute === option.id;
             const comparison = index > 0 ? getRouteComparison(option.route, baseRoute) : null;
 
-            const distanceKm = Math.round(option.route.summary.distance / 1000 * 10) / 10;
+            const distanceKm = Math.round((option.route.summary.distance / 1000) * 10) / 10;
             const hours = Math.floor(option.route.summary.duration / 3600);
             const minutes = Math.round((option.route.summary.duration % 3600) / 60);
 
@@ -118,17 +120,25 @@ const RouteComparison: React.FC<RouteComparisonProps> = ({ className }) => {
                     ? 'border-primary-500 bg-primary-50 ring-2 ring-primary-200'
                     : 'border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50'
                 )}
+                role="button"
+                tabIndex={0}
                 onClick={() => switchToRoute(option.id)}
+                onKeyDown={e => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    switchToRoute(option.id);
+                  }
+                }}
               >
                 {/* Route Header */}
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center space-x-3">
-                    <div className={cn(
-                      'w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium',
-                      isSelected
-                        ? 'bg-primary-500 text-white'
-                        : 'bg-neutral-100 text-neutral-700'
-                    )}>
+                    <div
+                      className={cn(
+                        'w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium',
+                        isSelected ? 'bg-primary-500 text-white' : 'bg-neutral-100 text-neutral-700'
+                      )}
+                    >
                       {index === 0 ? '1' : String.fromCharCode(65 + index)} {/* 1, A, B, C... */}
                     </div>
                     <div>
@@ -142,7 +152,11 @@ const RouteComparison: React.FC<RouteComparisonProps> = ({ className }) => {
                   {isSelected && (
                     <div className="flex items-center space-x-1 text-primary-600">
                       <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        <path
+                          fillRule="evenodd"
+                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                          clipRule="evenodd"
+                        />
                       </svg>
                       <span className="text-sm font-medium">Current</span>
                     </div>
@@ -155,10 +169,12 @@ const RouteComparison: React.FC<RouteComparisonProps> = ({ className }) => {
                     <div className="text-neutral-500">Distance</div>
                     <div className="font-medium">{distanceKm} km</div>
                     {comparison && (
-                      <div className={cn(
-                        "text-xs",
-                        comparison.distanceDiff > 0 ? 'text-red-600' : 'text-green-600'
-                      )}>
+                      <div
+                        className={cn(
+                          'text-xs',
+                          comparison.distanceDiff > 0 ? 'text-red-600' : 'text-green-600'
+                        )}
+                      >
                         {formatDifference(comparison.distanceDiff, 'km')}
                       </div>
                     )}
@@ -166,12 +182,16 @@ const RouteComparison: React.FC<RouteComparisonProps> = ({ className }) => {
 
                   <div>
                     <div className="text-neutral-500">Time</div>
-                    <div className="font-medium">{hours}h {minutes}m</div>
+                    <div className="font-medium">
+                      {hours}h {minutes}m
+                    </div>
                     {comparison && (
-                      <div className={cn(
-                        "text-xs",
-                        comparison.timeDiff > 0 ? 'text-red-600' : 'text-green-600'
-                      )}>
+                      <div
+                        className={cn(
+                          'text-xs',
+                          comparison.timeDiff > 0 ? 'text-red-600' : 'text-green-600'
+                        )}
+                      >
                         {formatDifference(comparison.timeDiff, 'min')}
                       </div>
                     )}
@@ -180,12 +200,15 @@ const RouteComparison: React.FC<RouteComparisonProps> = ({ className }) => {
                   <div>
                     <div className="text-neutral-500">Type</div>
                     <div className="font-medium">
-                      {index === 0 ? 'Fastest' : comparison ?
-                        (comparison.distanceDiff < 0 ? 'Shorter' : 'Scenic') : 'Alternative'}
+                      {index === 0
+                        ? 'Fastest'
+                        : comparison
+                          ? comparison.distanceDiff < 0
+                            ? 'Shorter'
+                            : 'Scenic'
+                          : 'Alternative'}
                     </div>
-                    {profile && (
-                      <div className="text-xs text-neutral-500">Vehicle safe</div>
-                    )}
+                    {profile && <div className="text-xs text-neutral-500">Vehicle safe</div>}
                   </div>
                 </div>
 
@@ -194,10 +217,12 @@ const RouteComparison: React.FC<RouteComparisonProps> = ({ className }) => {
                   <div className="mt-3 flex items-center space-x-4 text-xs text-neutral-600">
                     {Math.abs(comparison.distancePercent) > 10 && (
                       <div className="flex items-center space-x-1">
-                        <span className={cn(
-                          "w-2 h-2 rounded-full",
-                          comparison.distancePercent > 0 ? 'bg-red-400' : 'bg-green-400'
-                        )} />
+                        <span
+                          className={cn(
+                            'w-2 h-2 rounded-full',
+                            comparison.distancePercent > 0 ? 'bg-red-400' : 'bg-green-400'
+                          )}
+                        />
                         <span>
                           {comparison.distancePercent > 0 ? 'Longer route' : 'Shorter route'}
                         </span>
@@ -205,13 +230,13 @@ const RouteComparison: React.FC<RouteComparisonProps> = ({ className }) => {
                     )}
                     {Math.abs(comparison.timePercent) > 15 && (
                       <div className="flex items-center space-x-1">
-                        <span className={cn(
-                          "w-2 h-2 rounded-full",
-                          comparison.timePercent > 0 ? 'bg-orange-400' : 'bg-primary-400'
-                        )} />
-                        <span>
-                          {comparison.timePercent > 0 ? 'Slower' : 'Faster'}
-                        </span>
+                        <span
+                          className={cn(
+                            'w-2 h-2 rounded-full',
+                            comparison.timePercent > 0 ? 'bg-orange-400' : 'bg-primary-400'
+                          )}
+                        />
+                        <span>{comparison.timePercent > 0 ? 'Slower' : 'Faster'}</span>
                       </div>
                     )}
                   </div>
@@ -225,10 +250,18 @@ const RouteComparison: React.FC<RouteComparisonProps> = ({ className }) => {
         <div className="mt-4 p-3 bg-neutral-50 rounded-lg">
           <h4 className="font-medium text-neutral-900 mb-2">Route Selection Guide</h4>
           <div className="text-sm text-neutral-600 space-y-1">
-            <div>• <strong>Main Route:</strong> Fastest route optimized for your vehicle</div>
-            <div>• <strong>Alternatives:</strong> Different paths that may avoid restrictions or offer scenic routes</div>
+            <div>
+              • <strong>Main Route:</strong> Fastest route optimized for your vehicle
+            </div>
+            <div>
+              • <strong>Alternatives:</strong> Different paths that may avoid restrictions or offer
+              scenic routes
+            </div>
             {profile && (
-              <div>• All routes respect your vehicle dimensions ({profile.height}m H × {profile.width}m W × {profile.weight}t)</div>
+              <div>
+                • All routes respect your vehicle dimensions ({profile.height}m H × {profile.width}m
+                W × {profile.weight}t)
+              </div>
             )}
           </div>
         </div>

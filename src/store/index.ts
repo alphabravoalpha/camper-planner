@@ -4,7 +4,11 @@
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 import { type TripData, type VehicleProfile, type Waypoint } from '../types';
-import { type TripItinerary, type TripWizardInput, type CampsiteOption, type DrivingStyle } from '../services/TripWizardService';
+import {
+  type TripItinerary,
+  type CampsiteOption,
+  type DrivingStyle,
+} from '../services/TripWizardService';
 import { type ChannelCrossing } from '../data/channelCrossings';
 import { type RouteResponse } from '../services/RoutingService';
 
@@ -30,13 +34,13 @@ interface VehicleState {
 
 // Undo/Redo Action Data Types
 type WaypointActionData =
-  | Waypoint                                                                     // add (simple)
-  | { waypoint: Waypoint; afterId: string }                                      // add (insert after)
-  | { waypoint: Waypoint; beforeId: string }                                     // add (insert before)
-  | { id: string; waypoint: Waypoint | undefined }                               // remove
+  | Waypoint // add (simple)
+  | { waypoint: Waypoint; afterId: string } // add (insert after)
+  | { waypoint: Waypoint; beforeId: string } // add (insert before)
+  | { id: string; waypoint: Waypoint | undefined } // remove
   | { id: string; updates: Partial<Waypoint>; previousWaypoint: Waypoint | undefined } // update
-  | Waypoint[]                                                                   // reorder
-  | null;                                                                        // clear
+  | Waypoint[] // reorder
+  | null; // clear
 
 // Undo/Redo Action Interface
 interface WaypointAction {
@@ -93,7 +97,11 @@ interface TripState {
 interface UIState {
   isLoading: boolean;
   error: string | null;
-  notifications: Array<{ id: string; type: 'success' | 'error' | 'warning' | 'info'; message: string }>;
+  notifications: Array<{
+    id: string;
+    type: 'success' | 'error' | 'warning' | 'info';
+    message: string;
+  }>;
   sidebarOpen: boolean;
   vehicleSidebarOpen: boolean;
   setLoading: (loading: boolean) => void;
@@ -108,13 +116,13 @@ interface UIState {
 // Create Map Store
 export const useMapStore = create<MapState>()(
   devtools(
-    (set) => ({
-      center: [54.5260, 15.2551], // Center of Europe
+    set => ({
+      center: [54.526, 15.2551], // Center of Europe
       zoom: 5,
       selectedWaypoint: null,
-      setCenter: (center) => set({ center }),
-      setZoom: (zoom) => set({ zoom }),
-      setSelectedWaypoint: (selectedWaypoint) => set({ selectedWaypoint }),
+      setCenter: center => set({ center }),
+      setZoom: zoom => set({ zoom }),
+      setSelectedWaypoint: selectedWaypoint => set({ selectedWaypoint }),
     }),
     { name: 'map-store' }
   )
@@ -124,16 +132,16 @@ export const useMapStore = create<MapState>()(
 export const useVehicleStore = create<VehicleState>()(
   persist(
     devtools(
-      (set) => ({
+      set => ({
         profile: null,
-        setProfile: (profile) => set({ profile }),
+        setProfile: profile => set({ profile }),
         clearProfile: () => set({ profile: null }),
       }),
       { name: 'vehicle-store' }
     ),
     {
       name: 'camper-planner-vehicle',
-      partialize: (state) => ({ profile: state.profile }),
+      partialize: state => ({ profile: state.profile }),
     }
   )
 );
@@ -142,8 +150,11 @@ export const useVehicleStore = create<VehicleState>()(
 const updateWaypointTypes = (waypoints: Waypoint[]): Waypoint[] => {
   return waypoints.map((waypoint, index) => {
     // Preserve special types (campsite, accommodation) for intermediate waypoints
-    if (index > 0 && index < waypoints.length - 1 &&
-        (waypoint.type === 'campsite' || waypoint.type === 'accommodation')) {
+    if (
+      index > 0 &&
+      index < waypoints.length - 1 &&
+      (waypoint.type === 'campsite' || waypoint.type === 'accommodation')
+    ) {
       return waypoint;
     }
 
@@ -165,15 +176,14 @@ const updateWaypointTypes = (waypoints: Waypoint[]): Waypoint[] => {
 
 // Helper function to add action to history
 const addToHistory = (state: RouteState, action: WaypointAction): RouteState => {
-  const newHistory = [
-    ...state.history.slice(0, state.historyIndex + 1),
-    action
-  ].slice(-state.maxHistorySize);
+  const newHistory = [...state.history.slice(0, state.historyIndex + 1), action].slice(
+    -state.maxHistorySize
+  );
 
   return {
     ...state,
     history: newHistory,
-    historyIndex: newHistory.length - 1
+    historyIndex: newHistory.length - 1,
   };
 };
 
@@ -191,8 +201,8 @@ export const useRouteStore = create<RouteState>()(
         historyIndex: -1,
         maxHistorySize: 50,
 
-        addWaypoint: (waypoint) =>
-          set((state) => {
+        addWaypoint: waypoint =>
+          set(state => {
             const newWaypoints = [...state.waypoints, waypoint];
             const updatedWaypoints = updateWaypointTypes(newWaypoints);
 
@@ -200,18 +210,18 @@ export const useRouteStore = create<RouteState>()(
               type: 'add',
               timestamp: Date.now(),
               data: waypoint,
-              previousState: state.waypoints
+              previousState: state.waypoints,
             };
 
             return {
               ...addToHistory(state, action),
               waypoints: updatedWaypoints,
-              isOptimized: false
+              isOptimized: false,
             };
           }),
 
-        removeWaypoint: (id) =>
-          set((state) => {
+        removeWaypoint: id =>
+          set(state => {
             const removedWaypoint = state.waypoints.find(wp => wp.id === id);
             const filteredWaypoints = state.waypoints.filter(wp => wp.id !== id);
             const updatedWaypoints = updateWaypointTypes(filteredWaypoints);
@@ -220,18 +230,18 @@ export const useRouteStore = create<RouteState>()(
               type: 'remove',
               timestamp: Date.now(),
               data: { id, waypoint: removedWaypoint },
-              previousState: state.waypoints
+              previousState: state.waypoints,
             };
 
             return {
               ...addToHistory(state, action),
               waypoints: updatedWaypoints,
-              isOptimized: false
+              isOptimized: false,
             };
           }),
 
         updateWaypoint: (id, updates) =>
-          set((state) => {
+          set(state => {
             const previousWaypoint = state.waypoints.find(wp => wp.id === id);
             const updatedWaypoints = state.waypoints.map(wp =>
               wp.id === id ? { ...wp, ...updates } : wp
@@ -241,16 +251,16 @@ export const useRouteStore = create<RouteState>()(
               type: 'update',
               timestamp: Date.now(),
               data: { id, updates, previousWaypoint },
-              previousState: state.waypoints
+              previousState: state.waypoints,
             };
 
             return {
               ...addToHistory(state, action),
-              waypoints: updatedWaypoints
+              waypoints: updatedWaypoints,
             };
           }),
 
-        reorderWaypoints: (waypoints) => {
+        reorderWaypoints: waypoints => {
           const state = get();
           const updatedWaypoints = updateWaypointTypes(waypoints);
 
@@ -258,23 +268,23 @@ export const useRouteStore = create<RouteState>()(
             type: 'reorder',
             timestamp: Date.now(),
             data: waypoints,
-            previousState: state.waypoints
+            previousState: state.waypoints,
           };
 
           set({
             ...addToHistory(state, action),
             waypoints: updatedWaypoints,
-            isOptimized: true
+            isOptimized: true,
           });
         },
 
         insertWaypoint: (waypoint, afterId) =>
-          set((state) => {
+          set(state => {
             const afterIndex = state.waypoints.findIndex(wp => wp.id === afterId);
             const newWaypoints = [
               ...state.waypoints.slice(0, afterIndex + 1),
               waypoint,
-              ...state.waypoints.slice(afterIndex + 1)
+              ...state.waypoints.slice(afterIndex + 1),
             ];
             const updatedWaypoints = updateWaypointTypes(newWaypoints);
 
@@ -282,23 +292,23 @@ export const useRouteStore = create<RouteState>()(
               type: 'add',
               timestamp: Date.now(),
               data: { waypoint, afterId },
-              previousState: state.waypoints
+              previousState: state.waypoints,
             };
 
             return {
               ...addToHistory(state, action),
               waypoints: updatedWaypoints,
-              isOptimized: false
+              isOptimized: false,
             };
           }),
 
         insertBeforeWaypoint: (waypoint, beforeId) =>
-          set((state) => {
+          set(state => {
             const beforeIndex = state.waypoints.findIndex(wp => wp.id === beforeId);
             const newWaypoints = [
               ...state.waypoints.slice(0, beforeIndex),
               waypoint,
-              ...state.waypoints.slice(beforeIndex)
+              ...state.waypoints.slice(beforeIndex),
             ];
             const updatedWaypoints = updateWaypointTypes(newWaypoints);
 
@@ -306,23 +316,23 @@ export const useRouteStore = create<RouteState>()(
               type: 'add',
               timestamp: Date.now(),
               data: { waypoint, beforeId },
-              previousState: state.waypoints
+              previousState: state.waypoints,
             };
 
             return {
               ...addToHistory(state, action),
               waypoints: updatedWaypoints,
-              isOptimized: false
+              isOptimized: false,
             };
           }),
 
         clearRoute: () =>
-          set((state) => {
+          set(state => {
             const action: WaypointAction = {
               type: 'clear',
               timestamp: Date.now(),
               data: null,
-              previousState: state.waypoints
+              previousState: state.waypoints,
             };
 
             return {
@@ -331,15 +341,15 @@ export const useRouteStore = create<RouteState>()(
               calculatedRoute: null,
               isOptimized: false,
               totalDistance: 0,
-              estimatedTime: 0
+              estimatedTime: 0,
             };
           }),
 
-        setCalculatedRoute: (calculatedRoute) => set({ calculatedRoute }),
+        setCalculatedRoute: calculatedRoute => set({ calculatedRoute }),
 
         // Undo/Redo functions
         undo: () =>
-          set((state) => {
+          set(state => {
             if (state.historyIndex < 0) return state;
 
             const action = state.history[state.historyIndex];
@@ -347,12 +357,12 @@ export const useRouteStore = create<RouteState>()(
               ...state,
               waypoints: updateWaypointTypes(action.previousState),
               historyIndex: state.historyIndex - 1,
-              isOptimized: false
+              isOptimized: false,
             };
           }),
 
         redo: () =>
-          set((state) => {
+          set(state => {
             if (state.historyIndex >= state.history.length - 1) return state;
 
             const nextIndex = state.historyIndex + 1;
@@ -367,7 +377,7 @@ export const useRouteStore = create<RouteState>()(
                   newWaypoints = [
                     ...state.waypoints.slice(0, afterIndex + 1),
                     addData.waypoint,
-                    ...state.waypoints.slice(afterIndex + 1)
+                    ...state.waypoints.slice(afterIndex + 1),
                   ];
                 } else {
                   newWaypoints = [...state.waypoints, addData as Waypoint];
@@ -380,7 +390,11 @@ export const useRouteStore = create<RouteState>()(
                 break;
               }
               case 'update': {
-                const updateData = action.data as { id: string; updates: Partial<Waypoint>; previousWaypoint: Waypoint | undefined };
+                const updateData = action.data as {
+                  id: string;
+                  updates: Partial<Waypoint>;
+                  previousWaypoint: Waypoint | undefined;
+                };
                 newWaypoints = state.waypoints.map(wp =>
                   wp.id === updateData.id ? { ...wp, ...updateData.updates } : wp
                 );
@@ -398,7 +412,7 @@ export const useRouteStore = create<RouteState>()(
               ...state,
               waypoints: updateWaypointTypes(newWaypoints),
               historyIndex: nextIndex,
-              isOptimized: action.type === 'reorder'
+              isOptimized: action.type === 'reorder',
             };
           }),
 
@@ -421,7 +435,7 @@ export const useRouteStore = create<RouteState>()(
     ),
     {
       name: 'camper-planner-route',
-      partialize: (state) => ({
+      partialize: state => ({
         waypoints: state.waypoints,
         isOptimized: state.isOptimized,
         totalDistance: state.totalDistance,
@@ -439,33 +453,30 @@ export const useTripStore = create<TripState>()(
       (set, get) => ({
         currentTrip: null,
         savedTrips: [],
-        setCurrentTrip: (currentTrip) => set({ currentTrip }),
-        saveTrip: (trip) =>
-          set((state) => ({
-            savedTrips: [
-              ...state.savedTrips.filter(t => t.id !== trip.id),
-              trip
-            ]
+        setCurrentTrip: currentTrip => set({ currentTrip }),
+        saveTrip: trip =>
+          set(state => ({
+            savedTrips: [...state.savedTrips.filter(t => t.id !== trip.id), trip],
           })),
-        loadTrip: (id) => {
+        loadTrip: id => {
           const trip = get().savedTrips.find(t => t.id === id);
           if (trip) {
             set({ currentTrip: trip });
           }
         },
-        deleteTrip: (id) =>
-          set((state) => ({
+        deleteTrip: id =>
+          set(state => ({
             savedTrips: state.savedTrips.filter(t => t.id !== id),
-            currentTrip: state.currentTrip?.id === id ? null : state.currentTrip
+            currentTrip: state.currentTrip?.id === id ? null : state.currentTrip,
           })),
       }),
       { name: 'trip-store' }
     ),
     {
       name: 'camper-planner-trips',
-      partialize: (state) => ({
+      partialize: state => ({
         savedTrips: state.savedTrips,
-        currentTrip: state.currentTrip
+        currentTrip: state.currentTrip,
       }),
     }
   )
@@ -480,23 +491,23 @@ export const useUIStore = create<UIState>()(
       notifications: [],
       sidebarOpen: true,
       vehicleSidebarOpen: false,
-      setLoading: (isLoading) => set({ isLoading }),
-      setError: (error) => set({ error }),
-      addNotification: (notification) => {
+      setLoading: isLoading => set({ isLoading }),
+      setError: error => set({ error }),
+      addNotification: notification => {
         const id = Math.random().toString(36).substr(2, 9);
-        set((state) => ({
-          notifications: [...state.notifications, { ...notification, id }]
+        set(state => ({
+          notifications: [...state.notifications, { ...notification, id }],
         }));
         // Auto-remove notification after 5 seconds
         setTimeout(() => {
           get().removeNotification(id);
         }, 5000);
       },
-      removeNotification: (id) =>
-        set((state) => ({
-          notifications: state.notifications.filter(n => n.id !== id)
+      removeNotification: id =>
+        set(state => ({
+          notifications: state.notifications.filter(n => n.id !== id),
         })),
-      toggleSidebar: () => set((state) => ({ sidebarOpen: !state.sidebarOpen })),
+      toggleSidebar: () => set(state => ({ sidebarOpen: !state.sidebarOpen })),
       openVehicleSidebar: () => set({ vehicleSidebarOpen: true }),
       closeVehicleSidebar: () => set({ vehicleSidebarOpen: false }),
     }),
@@ -547,7 +558,7 @@ interface TripWizardState {
 // Create Trip Wizard Store
 export const useTripWizardStore = create<TripWizardState>()(
   devtools(
-    (set) => ({
+    set => ({
       wizardOpen: false,
       wizardStep: 0,
       start: null,
@@ -563,27 +574,25 @@ export const useTripWizardStore = create<TripWizardState>()(
 
       openWizard: () => set({ wizardOpen: true, wizardStep: 0 }),
       closeWizard: () => set({ wizardOpen: false }),
-      setStep: (wizardStep) => set({ wizardStep }),
-      nextStep: () => set((state) => ({ wizardStep: state.wizardStep + 1 })),
-      prevStep: () => set((state) => ({ wizardStep: Math.max(0, state.wizardStep - 1) })),
-      setStart: (start) => set({ start }),
-      setEnd: (end) => set({ end }),
-      setStartDate: (startDate) => set({ startDate }),
-      setEndDate: (endDate) => set({ endDate }),
-      setDrivingStyle: (drivingStyle) => set({ drivingStyle }),
-      setCrossing: (crossing) => set({ crossing }),
-      setRestDayFrequency: (restDayFrequency) => set({ restDayFrequency }),
-      setItinerary: (itinerary) => set({ itinerary }),
-      setIsGenerating: (isGenerating) => set({ isGenerating }),
-      setGenerationError: (generationError) => set({ generationError }),
+      setStep: wizardStep => set({ wizardStep }),
+      nextStep: () => set(state => ({ wizardStep: state.wizardStep + 1 })),
+      prevStep: () => set(state => ({ wizardStep: Math.max(0, state.wizardStep - 1) })),
+      setStart: start => set({ start }),
+      setEnd: end => set({ end }),
+      setStartDate: startDate => set({ startDate }),
+      setEndDate: endDate => set({ endDate }),
+      setDrivingStyle: drivingStyle => set({ drivingStyle }),
+      setCrossing: crossing => set({ crossing }),
+      setRestDayFrequency: restDayFrequency => set({ restDayFrequency }),
+      setItinerary: itinerary => set({ itinerary }),
+      setIsGenerating: isGenerating => set({ isGenerating }),
+      setGenerationError: generationError => set({ generationError }),
 
       selectCampsite: (dayNumber, campsite) =>
-        set((state) => {
+        set(state => {
           if (!state.itinerary) return state;
           const updatedDays = state.itinerary.days.map(day =>
-            day.dayNumber === dayNumber
-              ? { ...day, selectedOvernight: campsite }
-              : day
+            day.dayNumber === dayNumber ? { ...day, selectedOvernight: campsite } : day
           );
           return {
             itinerary: { ...state.itinerary, days: updatedDays },

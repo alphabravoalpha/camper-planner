@@ -33,10 +33,7 @@ interface OnboardingFlowProps {
 // Main Onboarding Flow Component
 // =============================================================================
 
-const OnboardingFlow: React.FC<OnboardingFlowProps> = ({
-  onComplete,
-  onSkip,
-}) => {
+const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete, onSkip }) => {
   const announce = useAnnounce();
   const [currentStep, setCurrentStep] = useState(0);
   const containerRef = useFocusTrap(true);
@@ -96,10 +93,7 @@ const OnboardingFlow: React.FC<OnboardingFlowProps> = ({
     } else {
       const next = currentStep + 1;
       setCurrentStep(next);
-      announce(
-        `Step ${next + 1} of ${totalSteps}: ${SPOTLIGHT_STEPS[next].headline}`,
-        'polite'
-      );
+      announce(`Step ${next + 1} of ${totalSteps}: ${SPOTLIGHT_STEPS[next].headline}`, 'polite');
     }
   }, [currentStep, isLastStep, onComplete, announce, totalSteps]);
 
@@ -107,10 +101,7 @@ const OnboardingFlow: React.FC<OnboardingFlowProps> = ({
     if (currentStep > 0) {
       const prev = currentStep - 1;
       setCurrentStep(prev);
-      announce(
-        `Step ${prev + 1} of ${totalSteps}: ${SPOTLIGHT_STEPS[prev].headline}`,
-        'polite'
-      );
+      announce(`Step ${prev + 1} of ${totalSteps}: ${SPOTLIGHT_STEPS[prev].headline}`, 'polite');
     }
   }, [currentStep, announce, totalSteps]);
 
@@ -140,10 +131,7 @@ const OnboardingFlow: React.FC<OnboardingFlowProps> = ({
 
   return (
     <>
-      <SpotlightOverlay
-        cutoutRect={cutoutRect}
-        overlayOpacity={step.overlayOpacity}
-      />
+      <SpotlightOverlay cutoutRect={cutoutRect} overlayOpacity={step.overlayOpacity} />
       <TourTooltip
         step={step}
         currentIndex={currentStep}

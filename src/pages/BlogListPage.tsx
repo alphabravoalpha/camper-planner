@@ -21,7 +21,7 @@ const BlogListPage: React.FC = () => {
 
   const filteredPosts = useMemo(() => {
     if (activeCategory === 'all') return blogPosts;
-    return blogPosts.filter((p) => p.category === activeCategory);
+    return blogPosts.filter(p => p.category === activeCategory);
   }, [activeCategory]);
 
   return (
@@ -34,7 +34,12 @@ const BlogListPage: React.FC = () => {
 
       {/* Hero */}
       <div className="relative overflow-hidden bg-gradient-to-br from-primary-600 via-primary-700 to-primary-800 text-white">
-        <img src="/images/hero-guides.jpg" alt="" className="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-overlay" loading="lazy" />
+        <img
+          src="/images/hero-guides.jpg"
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-overlay"
+          loading="lazy"
+        />
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
           <div className="flex items-center gap-3 mb-4">
             <BookOpen className="w-8 h-8 text-primary-200" />
@@ -46,7 +51,8 @@ const BlogListPage: React.FC = () => {
             European Camper Travel Guides
           </h1>
           <p className="text-primary-100 text-lg max-w-2xl">
-            Destination guides, route planning tips, and practical advice for exploring Europe by motorhome or campervan.
+            Destination guides, route planning tips, and practical advice for exploring Europe by
+            motorhome or campervan.
           </p>
         </div>
       </div>
@@ -55,7 +61,7 @@ const BlogListPage: React.FC = () => {
       <div className="bg-white border-b border-neutral-200 sticky top-16 z-20">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex gap-1 overflow-x-auto py-3 -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-hide">
-            {ALL_CATEGORIES.map((cat) => {
+            {ALL_CATEGORIES.map(cat => {
               const label = cat === 'all' ? 'All Guides' : BLOG_CATEGORIES[cat].name;
               const isActive = activeCategory === cat;
               return (
@@ -84,7 +90,7 @@ const BlogListPage: React.FC = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredPosts.map((post) => (
+            {filteredPosts.map(post => (
               <BlogCard key={post.slug} post={post} />
             ))}
           </div>

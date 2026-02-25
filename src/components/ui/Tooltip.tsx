@@ -35,7 +35,7 @@ const Tooltip: React.FC<TooltipProps> = ({
   maxWidth = '300px',
   showArrow = true,
   trigger = 'hover',
-  interactive = false
+  interactive = false,
 }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [actualPosition, setActualPosition] = useState<TooltipPosition>(position);
@@ -51,14 +51,14 @@ const Tooltip: React.FC<TooltipProps> = ({
     info: 'bg-primary-600 text-white border-primary-500',
     warning: 'bg-yellow-600 text-white border-yellow-500',
     error: 'bg-red-600 text-white border-red-500',
-    success: 'bg-green-600 text-white border-green-500'
+    success: 'bg-green-600 text-white border-green-500',
   };
 
   // Size styles
   const sizeStyles = {
     sm: 'text-xs px-2 py-1',
     md: 'text-sm px-3 py-2',
-    lg: 'text-base px-4 py-3'
+    lg: 'text-base px-4 py-3',
   };
 
   // Calculate optimal position
@@ -98,20 +98,20 @@ const Tooltip: React.FC<TooltipProps> = ({
 
     switch (pos) {
       case 'top':
-        x = triggerRect.left + scrollX + (triggerRect.width / 2) - (tooltipRect.width / 2);
+        x = triggerRect.left + scrollX + triggerRect.width / 2 - tooltipRect.width / 2;
         y = triggerRect.top + scrollY - tooltipRect.height - 8;
         break;
       case 'bottom':
-        x = triggerRect.left + scrollX + (triggerRect.width / 2) - (tooltipRect.width / 2);
+        x = triggerRect.left + scrollX + triggerRect.width / 2 - tooltipRect.width / 2;
         y = triggerRect.bottom + scrollY + 8;
         break;
       case 'left':
         x = triggerRect.left + scrollX - tooltipRect.width - 8;
-        y = triggerRect.top + scrollY + (triggerRect.height / 2) - (tooltipRect.height / 2);
+        y = triggerRect.top + scrollY + triggerRect.height / 2 - tooltipRect.height / 2;
         break;
       case 'right':
         x = triggerRect.right + scrollX + 8;
-        y = triggerRect.top + scrollY + (triggerRect.height / 2) - (tooltipRect.height / 2);
+        y = triggerRect.top + scrollY + triggerRect.height / 2 - tooltipRect.height / 2;
         break;
     }
 
@@ -217,9 +217,11 @@ const Tooltip: React.FC<TooltipProps> = ({
 
     const arrowClasses = {
       top: 'border-l-transparent border-r-transparent border-b-0 border-t-8 border-t-neutral-900 bottom-0 left-1/2 transform -translate-x-1/2 translate-y-full',
-      bottom: 'border-l-transparent border-r-transparent border-t-0 border-b-8 border-b-neutral-900 top-0 left-1/2 transform -translate-x-1/2 -translate-y-full',
+      bottom:
+        'border-l-transparent border-r-transparent border-t-0 border-b-8 border-b-neutral-900 top-0 left-1/2 transform -translate-x-1/2 -translate-y-full',
       left: 'border-t-transparent border-b-transparent border-r-0 border-l-8 border-l-neutral-900 right-0 top-1/2 transform translate-x-full -translate-y-1/2',
-      right: 'border-t-transparent border-b-transparent border-l-0 border-r-8 border-r-neutral-900 left-0 top-1/2 transform -translate-x-full -translate-y-1/2'
+      right:
+        'border-t-transparent border-b-transparent border-l-0 border-r-8 border-r-neutral-900 left-0 top-1/2 transform -translate-x-full -translate-y-1/2',
     };
 
     return (
@@ -229,7 +231,10 @@ const Tooltip: React.FC<TooltipProps> = ({
           arrowClasses[pos as keyof typeof arrowClasses] || arrowClasses.bottom
         )}
         style={{
-          borderColor: variant === 'default' ? 'rgb(17 24 39)' : variantStyles[variant].split(' ')[0].replace('bg-', 'rgb(')
+          borderColor:
+            variant === 'default'
+              ? 'rgb(17 24 39)'
+              : variantStyles[variant].split(' ')[0].replace('bg-', 'rgb('),
         }}
       />
     );
@@ -242,9 +247,14 @@ const Tooltip: React.FC<TooltipProps> = ({
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         onClick={handleClick}
+        onKeyDown={e => {
+          if (e.key === 'Enter' || e.key === ' ') handleClick();
+        }}
         onFocus={handleFocus}
         onBlur={handleBlur}
         className="inline-block"
+        role="button"
+        tabIndex={0}
       >
         {children}
       </div>
@@ -264,7 +274,7 @@ const Tooltip: React.FC<TooltipProps> = ({
             left: coords.x,
             top: coords.y,
             maxWidth,
-            pointerEvents: interactive ? 'auto' : 'none'
+            pointerEvents: interactive ? 'auto' : 'none',
           }}
           onMouseEnter={handleTooltipMouseEnter}
           onMouseLeave={handleTooltipMouseLeave}

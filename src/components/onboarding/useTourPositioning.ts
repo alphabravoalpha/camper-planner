@@ -101,8 +101,14 @@ function calculateTooltipPosition(
   }
 
   // Clamp to viewport bounds
-  left = Math.max(VIEWPORT_PADDING, Math.min(left, viewportWidth - TOOLTIP_WIDTH - VIEWPORT_PADDING));
-  top = Math.max(VIEWPORT_PADDING, Math.min(top, viewportHeight - TOOLTIP_HEIGHT_ESTIMATE - VIEWPORT_PADDING));
+  left = Math.max(
+    VIEWPORT_PADDING,
+    Math.min(left, viewportWidth - TOOLTIP_WIDTH - VIEWPORT_PADDING)
+  );
+  top = Math.max(
+    VIEWPORT_PADDING,
+    Math.min(top, viewportHeight - TOOLTIP_HEIGHT_ESTIMATE - VIEWPORT_PADDING)
+  );
 
   return {
     position: 'fixed',
@@ -172,6 +178,7 @@ export function useTourPositioning(
       tooltipStyle,
       isTargetFound: true,
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- _step intentionally triggers re-measure when tour step changes
   }, [targetSelector, tooltipPosition, spotlightPadding, _step]);
 
   // Measure on mount, on selector/position change, and on resize

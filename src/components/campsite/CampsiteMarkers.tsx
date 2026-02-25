@@ -9,7 +9,11 @@ import '../../types/leaflet';
 import { campsiteService } from '../../services/CampsiteService';
 import { useRouteStore } from '../../store';
 import { FeatureFlags } from '../../config';
-import { type Campsite, type CampsiteRequest, type CampsiteType } from '../../services/CampsiteService';
+import {
+  type Campsite,
+  type CampsiteRequest,
+  type CampsiteType,
+} from '../../services/CampsiteService';
 
 interface CampsiteMarkersProps {
   bounds?: L.LatLngBounds;
@@ -24,9 +28,13 @@ const svgStr = (path: string, size = 16) =>
 
 const MARKER_SVG: Record<CampsiteType, string> = {
   campsite: svgStr('<path d="M3 20 12 4l9 16Z"/><path d="M12 4v16"/>'),
-  caravan_site: svgStr('<path d="M10 17h4V5H2v12h3"/><path d="M20 17h2v-3.34a4 4 0 0 0-1.17-2.83L19 9h-5"/><path d="M14 17h1"/><circle cx="7.5" cy="17.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/>'),
+  caravan_site: svgStr(
+    '<path d="M10 17h4V5H2v12h3"/><path d="M20 17h2v-3.34a4 4 0 0 0-1.17-2.83L19 9h-5"/><path d="M14 17h1"/><circle cx="7.5" cy="17.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/>'
+  ),
   aire: svgStr('<circle cx="12" cy="12" r="10"/><path d="M9 17V7h4a3 3 0 0 1 0 6H9"/>'),
-  parking: svgStr('<rect x="1" y="3" width="22" height="18" rx="2"/><path d="M9 17V7h4a3 3 0 0 1 0 6H9"/>'),
+  parking: svgStr(
+    '<rect x="1" y="3" width="22" height="18" rx="2"/><path d="M9 17V7h4a3 3 0 0 1 0 6H9"/>'
+  ),
 };
 
 // Custom campsite icons
@@ -48,7 +56,7 @@ const createCampsiteIcon = (type: CampsiteType, vehicleCompatible: boolean = tru
     ">${MARKER_SVG[type]}</div>`,
     iconSize: [32, 32],
     iconAnchor: [16, 16],
-    popupAnchor: [0, -16]
+    popupAnchor: [0, -16],
   });
 };
 
@@ -56,7 +64,7 @@ const CampsiteMarkers: React.FC<CampsiteMarkersProps> = ({
   bounds,
   visibleTypes = ['campsite', 'caravan_site', 'aire'],
   maxResults = 100,
-  onCampsiteClick
+  onCampsiteClick,
 }) => {
   const [campsites, setCampsites] = useState<Campsite[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -65,40 +73,42 @@ const CampsiteMarkers: React.FC<CampsiteMarkersProps> = ({
   const { calculatedRoute } = useRouteStore();
 
   // Load campsites for current bounds
-  const loadCampsites = useCallback(async (searchBounds: L.LatLngBounds) => {
-    if (!FeatureFlags.CAMPSITE_DISPLAY) return;
+  const loadCampsites = useCallback(
+    async (searchBounds: L.LatLngBounds) => {
+      if (!FeatureFlags.CAMPSITE_DISPLAY) return;
 
-    setIsLoading(true);
-    setError(null);
+      setIsLoading(true);
+      setError(null);
 
-    try {
-      const request: CampsiteRequest = {
-        bounds: {
-          north: searchBounds.getNorth(),
-          south: searchBounds.getSouth(),
-          east: searchBounds.getEast(),
-          west: searchBounds.getWest()
-        },
-        types: visibleTypes,
-        maxResults,
-        includeDetails: true
-      };
+      try {
+        const request: CampsiteRequest = {
+          bounds: {
+            north: searchBounds.getNorth(),
+            south: searchBounds.getSouth(),
+            east: searchBounds.getEast(),
+            west: searchBounds.getWest(),
+          },
+          types: visibleTypes,
+          maxResults,
+          includeDetails: true,
+        };
 
-      const response = await campsiteService.searchCampsites(request);
+        const response = await campsiteService.searchCampsites(request);
 
-      if (response.status === 'success') {
-        setCampsites(response.campsites);
-      } else {
-        throw new Error(response.error || 'Failed to load campsites');
+        if (response.status === 'success') {
+          setCampsites(response.campsites);
+        } else {
+          throw new Error(response.error || 'Failed to load campsites');
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to load campsites');
+        setCampsites([]);
+      } finally {
+        setIsLoading(false);
       }
-    } catch (err) {
-      console.error('Error loading campsites:', err);
-      setError(err instanceof Error ? err.message : 'Failed to load campsites');
-      setCampsites([]);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [visibleTypes, maxResults]);
+    },
+    [visibleTypes, maxResults]
+  );
 
   // Load campsites when bounds change
   useEffect(() => {
@@ -113,8 +123,10 @@ const CampsiteMarkers: React.FC<CampsiteMarkersProps> = ({
       const routeGeometry = calculatedRoute.routes[0].geometry;
 
       // Calculate bounding box from route geometry
-      let minLat = Infinity, maxLat = -Infinity;
-      let minLng = Infinity, maxLng = -Infinity;
+      let minLat = Infinity,
+        maxLat = -Infinity;
+      let minLng = Infinity,
+        maxLng = -Infinity;
 
       routeGeometry.coordinates.forEach((coord: [number, number]) => {
         const [lng, lat] = coord;
@@ -144,14 +156,14 @@ const CampsiteMarkers: React.FC<CampsiteMarkersProps> = ({
         <Marker
           key={campsite.id}
           position={[campsite.lat, campsite.lng]}
-          // @ts-ignore - icon prop works in runtime
+          // @ts-expect-error - React-Leaflet v4 types don't include icon prop but it works at runtime
           icon={createCampsiteIcon(campsite.type, campsite.vehicleCompatible)}
           eventHandlers={{
-            click: () => onCampsiteClick?.(campsite)
+            click: () => onCampsiteClick?.(campsite),
           }}
         >
           <Popup
-            // @ts-ignore - className works in runtime
+            // @ts-expect-error - className prop works at runtime but missing from React-Leaflet types
             className="campsite-popup"
             maxWidth={300}
           >
@@ -161,11 +173,13 @@ const CampsiteMarkers: React.FC<CampsiteMarkersProps> = ({
                 <h3 className="font-medium text-neutral-900 text-sm leading-tight">
                   {campsite.name || `${campsite.type} #${campsite.id}`}
                 </h3>
-                <span className={`px-2 py-1 rounded text-xs font-medium ${
-                  campsite.vehicleCompatible
-                    ? 'bg-green-100 text-green-800'
-                    : 'bg-red-100 text-red-800'
-                }`}>
+                <span
+                  className={`px-2 py-1 rounded text-xs font-medium ${
+                    campsite.vehicleCompatible
+                      ? 'bg-green-100 text-green-800'
+                      : 'bg-red-100 text-red-800'
+                  }`}
+                >
                   {campsite.vehicleCompatible ? '✓ Compatible' : '⚠ Check Size'}
                 </span>
               </div>
@@ -173,8 +187,13 @@ const CampsiteMarkers: React.FC<CampsiteMarkersProps> = ({
               {/* Type indicator */}
               <div className="flex items-center mb-2">
                 <span className="mr-2">
-                  {campsite.type === 'campsite' ? <Tent className="w-5 h-5" /> :
-                   campsite.type === 'caravan_site' ? <Truck className="w-5 h-5" /> : <ParkingCircle className="w-5 h-5" />}
+                  {campsite.type === 'campsite' ? (
+                    <Tent className="w-5 h-5" />
+                  ) : campsite.type === 'caravan_site' ? (
+                    <Truck className="w-5 h-5" />
+                  ) : (
+                    <ParkingCircle className="w-5 h-5" />
+                  )}
                 </span>
                 <span className="text-xs text-neutral-600 capitalize">
                   {campsite.type.replace('_', ' ')}
@@ -184,16 +203,21 @@ const CampsiteMarkers: React.FC<CampsiteMarkersProps> = ({
               {/* Basic info */}
               <div className="space-y-1 text-xs text-neutral-700">
                 {campsite.address && (
-                  <div className="flex items-center gap-1"><MapPin className="w-3 h-3" /> {campsite.address}</div>
+                  <div className="flex items-center gap-1">
+                    <MapPin className="w-3 h-3" /> {campsite.address}
+                  </div>
                 )}
 
                 {campsite.phone && (
-                  <div className="flex items-center gap-1"><Phone className="w-3 h-3" /> {campsite.phone}</div>
+                  <div className="flex items-center gap-1">
+                    <Phone className="w-3 h-3" /> {campsite.phone}
+                  </div>
                 )}
 
                 {campsite.website && (
                   <div className="flex items-center gap-1">
-                    <Globe className="w-3 h-3" /> <a
+                    <Globe className="w-3 h-3" />{' '}
+                    <a
                       href={campsite.website}
                       target="_blank"
                       rel="noopener noreferrer"
@@ -204,9 +228,7 @@ const CampsiteMarkers: React.FC<CampsiteMarkersProps> = ({
                   </div>
                 )}
 
-                {campsite.opening_hours && (
-                  <div>🕒 {campsite.opening_hours}</div>
-                )}
+                {campsite.opening_hours && <div>🕒 {campsite.opening_hours}</div>}
               </div>
 
               {/* Amenities */}
@@ -216,7 +238,10 @@ const CampsiteMarkers: React.FC<CampsiteMarkersProps> = ({
                   <div className="flex flex-wrap gap-1">
                     {Object.entries(campsite.amenities).map(([key, value]) =>
                       value === true ? (
-                        <span key={key} className="px-1.5 py-0.5 bg-primary-100 text-primary-800 text-xs rounded">
+                        <span
+                          key={key}
+                          className="px-1.5 py-0.5 bg-primary-100 text-primary-800 text-xs rounded"
+                        >
                           {key.replace(/_/g, ' ')}
                         </span>
                       ) : null
@@ -239,12 +264,8 @@ const CampsiteMarkers: React.FC<CampsiteMarkersProps> = ({
                     {campsite.access?.max_length && (
                       <div>Max length: {campsite.access.max_length}m</div>
                     )}
-                    {!campsite.access?.motorhome && (
-                      <div>No motorhomes</div>
-                    )}
-                    {!campsite.access?.caravan && (
-                      <div>No caravans</div>
-                    )}
+                    {!campsite.access?.motorhome && <div>No motorhomes</div>}
+                    {!campsite.access?.caravan && <div>No caravans</div>}
                   </div>
                 </div>
               )}
@@ -273,7 +294,12 @@ const CampsiteMarkers: React.FC<CampsiteMarkersProps> = ({
         <div className="fixed top-4 right-4 bg-red-50 border border-red-200 shadow-lg rounded-lg p-3 z-[1000]">
           <div className="flex items-center space-x-2 text-sm text-red-700">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 8v4m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
+              />
             </svg>
             <span>Error loading campsites: {error}</span>
           </div>

@@ -3,9 +3,26 @@
 
 import React, { useState, useEffect } from 'react';
 import {
-  Calendar, Clock, AlertTriangle, CheckCircle, Info, TrendingUp,
-  Route, Users, Thermometer, Cloud, Bed, Coffee, Camera, Fuel,
-  Navigation, Target, BarChart3, Settings, ChevronDown, ChevronUp
+  Calendar,
+  Clock,
+  AlertTriangle,
+  CheckCircle,
+  Info,
+  TrendingUp,
+  Route,
+  Users,
+  Thermometer,
+  Cloud,
+  Bed,
+  Coffee,
+  Camera,
+  Fuel,
+  Navigation,
+  Target,
+  BarChart3,
+  Settings,
+  ChevronDown,
+  ChevronUp,
 } from 'lucide-react';
 import { useRouteStore } from '../../store';
 import { useVehicleStore } from '../../store';
@@ -16,10 +33,10 @@ import {
   type TripMetrics,
   type PlanningRecommendation,
   type SeasonalFactors,
-  type DrivingLimits
+  type DrivingLimits,
 } from '../../services/TripPlanningService';
 import { useTripSettingsStore } from '../../store/tripSettingsStore';
-import { getSeasonFromDate, type Season } from '../../types/tripSettings';
+import { getSeasonFromDate } from '../../types/tripSettings';
 
 interface PlanningToolsProps {
   className?: string;
@@ -32,7 +49,7 @@ type ViewMode = 'overview' | 'calendar' | 'recommendations' | 'metrics';
 const PlanningTools: React.FC<PlanningToolsProps> = ({
   className = '',
   onPlanUpdate,
-  isVisible = true
+  isVisible = true,
 }) => {
   // Store hooks
   const { waypoints } = useRouteStore();
@@ -63,7 +80,14 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
       setMetrics(null);
       setRecommendations([]);
     }
-  }, [waypoints, profile, settings.startDate, settings.drivingStyle, settings.maxDrivingHoursPerDay]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentionally omitting calculateTripPlan to prevent infinite loop
+  }, [
+    waypoints,
+    profile,
+    settings.startDate,
+    settings.drivingStyle,
+    settings.maxDrivingHoursPerDay,
+  ]);
 
   const calculateTripPlan = async () => {
     setIsCalculating(true);
@@ -95,9 +119,11 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
       );
 
       // Get seasonal factors
-      const countries = [...new Set(plan.dailyStages.map(s =>
-        TripPlanningService.getCountryFromWaypoint(s.endWaypoint)
-      ))];
+      const countries = [
+        ...new Set(
+          plan.dailyStages.map(s => TripPlanningService.getCountryFromWaypoint(s.endWaypoint))
+        ),
+      ];
       const seasonal = TripPlanningService.getSeasonalFactors(season, countries);
 
       setTripPlan(plan);
@@ -109,9 +135,8 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
       if (onPlanUpdate) {
         onPlanUpdate(plan);
       }
-
-    } catch (err) {
-      console.error('Trip planning error:', err);
+    } catch (_err) {
+      // Error already surfaced in UI via setError
       setError('Failed to calculate trip plan. Please check your route.');
     } finally {
       setIsCalculating(false);
@@ -122,7 +147,7 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
     return date.toLocaleDateString('en-US', {
       weekday: 'short',
       month: 'short',
-      day: 'numeric'
+      day: 'numeric',
     });
   };
 
@@ -134,39 +159,57 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
 
   const getFeasibilityColor = (feasibility: DailyStage['feasibility']): string => {
     switch (feasibility) {
-      case 'excellent': return 'text-green-600 bg-green-100';
-      case 'good': return 'text-primary-600 bg-primary-100';
-      case 'challenging': return 'text-yellow-600 bg-yellow-100';
-      case 'unrealistic': return 'text-red-600 bg-red-100';
+      case 'excellent':
+        return 'text-green-600 bg-green-100';
+      case 'good':
+        return 'text-primary-600 bg-primary-100';
+      case 'challenging':
+        return 'text-yellow-600 bg-yellow-100';
+      case 'unrealistic':
+        return 'text-red-600 bg-red-100';
     }
   };
 
   const getPriorityColor = (priority: PlanningRecommendation['priority']): string => {
     switch (priority) {
-      case 'high': return 'text-red-600 bg-red-100';
-      case 'medium': return 'text-yellow-600 bg-yellow-100';
-      case 'low': return 'text-primary-600 bg-primary-100';
+      case 'high':
+        return 'text-red-600 bg-red-100';
+      case 'medium':
+        return 'text-yellow-600 bg-yellow-100';
+      case 'low':
+        return 'text-primary-600 bg-primary-100';
     }
   };
 
   const getTypeIcon = (type: PlanningRecommendation['type']) => {
     switch (type) {
-      case 'safety': return <AlertTriangle className="w-4 h-4" />;
-      case 'comfort': return <Users className="w-4 h-4" />;
-      case 'cost': return <TrendingUp className="w-4 h-4" />;
-      case 'timing': return <Clock className="w-4 h-4" />;
-      case 'season': return <Thermometer className="w-4 h-4" />;
-      case 'route': return <Route className="w-4 h-4" />;
+      case 'safety':
+        return <AlertTriangle className="w-4 h-4" />;
+      case 'comfort':
+        return <Users className="w-4 h-4" />;
+      case 'cost':
+        return <TrendingUp className="w-4 h-4" />;
+      case 'timing':
+        return <Clock className="w-4 h-4" />;
+      case 'season':
+        return <Thermometer className="w-4 h-4" />;
+      case 'route':
+        return <Route className="w-4 h-4" />;
     }
   };
 
   const getStopIcon = (type: string) => {
     switch (type) {
-      case 'overnight': return <Bed className="w-4 h-4" />;
-      case 'sightseeing': return <Camera className="w-4 h-4" />;
-      case 'lunch': return <Coffee className="w-4 h-4" />;
-      case 'fuel': return <Fuel className="w-4 h-4" />;
-      case 'rest': return <Clock className="w-4 h-4" />;
+      case 'overnight':
+        return <Bed className="w-4 h-4" />;
+      case 'sightseeing':
+        return <Camera className="w-4 h-4" />;
+      case 'lunch':
+        return <Coffee className="w-4 h-4" />;
+      case 'fuel':
+        return <Fuel className="w-4 h-4" />;
+      case 'rest':
+        return <Clock className="w-4 h-4" />;
     }
   };
 
@@ -201,7 +244,7 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
           { id: 'overview', label: 'Overview', icon: <BarChart3 className="w-4 h-4" /> },
           { id: 'calendar', label: 'Daily Plan', icon: <Calendar className="w-4 h-4" /> },
           { id: 'recommendations', label: 'Tips', icon: <CheckCircle className="w-4 h-4" /> },
-          { id: 'metrics', label: 'Analysis', icon: <TrendingUp className="w-4 h-4" /> }
+          { id: 'metrics', label: 'Analysis', icon: <TrendingUp className="w-4 h-4" /> },
         ].map(tab => (
           <button
             key={tab.id}
@@ -291,14 +334,18 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
                     <div className="text-xl font-bold text-orange-800 capitalize">
                       {tripPlan.overallFeasibility}
                     </div>
-                    <div className="text-sm text-orange-600">{tripPlan.feasibilityScore}% score</div>
+                    <div className="text-sm text-orange-600">
+                      {tripPlan.feasibilityScore}% score
+                    </div>
                   </div>
                 </div>
 
                 {/* Driving Limits Display */}
                 {drivingLimits && (
                   <div className="bg-neutral-50 rounded-lg p-4">
-                    <h4 className="font-medium text-neutral-800 mb-3">Daily Driving Limits (Based on Vehicle & Season)</h4>
+                    <h4 className="font-medium text-neutral-800 mb-3">
+                      Daily Driving Limits (Based on Vehicle & Season)
+                    </h4>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                       <div>
                         <span className="text-neutral-600">Max Distance:</span>
@@ -310,7 +357,9 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
                       </div>
                       <div>
                         <span className="text-neutral-600">Break Every:</span>
-                        <div className="font-semibold">{drivingLimits.recommendedBreakInterval}h</div>
+                        <div className="font-semibold">
+                          {drivingLimits.recommendedBreakInterval}h
+                        </div>
                       </div>
                       <div>
                         <span className="text-neutral-600">Average Speed:</span>
@@ -325,15 +374,28 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
                   <div className="bg-gradient-to-r from-sky-50 to-primary-50 rounded-lg p-4">
                     <div className="flex items-center gap-2 mb-3">
                       <Thermometer className="w-4 h-4 text-primary-600" />
-                      <h4 className="font-medium text-neutral-800 capitalize">{season} Travel Conditions</h4>
+                      <h4 className="font-medium text-neutral-800 capitalize">
+                        {season} Travel Conditions
+                      </h4>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <div className="text-sm text-neutral-600 mb-2">Expected Conditions:</div>
                         <div className="space-y-1 text-sm">
-                          <div>Temperature: {seasonalFactors.temperature.min}°C - {seasonalFactors.temperature.max}°C</div>
-                          <div>Tourist Density: <span className="capitalize">{seasonalFactors.touristDensity}</span></div>
-                          <div>Campsite Availability: <span className="capitalize">{seasonalFactors.campsiteAvailability}</span></div>
+                          <div>
+                            Temperature: {seasonalFactors.temperature.min}°C -{' '}
+                            {seasonalFactors.temperature.max}°C
+                          </div>
+                          <div>
+                            Tourist Density:{' '}
+                            <span className="capitalize">{seasonalFactors.touristDensity}</span>
+                          </div>
+                          <div>
+                            Campsite Availability:{' '}
+                            <span className="capitalize">
+                              {seasonalFactors.campsiteAvailability}
+                            </span>
+                          </div>
                         </div>
                       </div>
                       <div>
@@ -360,7 +422,9 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
                     </div>
                     <ul className="space-y-1">
                       {tripPlan.warnings.slice(0, 3).map((warning, index) => (
-                        <li key={index} className="text-sm text-yellow-700">• {warning}</li>
+                        <li key={index} className="text-sm text-yellow-700">
+                          • {warning}
+                        </li>
                       ))}
                     </ul>
                   </div>
@@ -378,11 +442,19 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
                   </div>
                 </div>
 
-                {tripPlan.dailyStages.map((stage) => (
+                {tripPlan.dailyStages.map(stage => (
                   <div key={stage.day} className="border rounded-lg overflow-hidden">
                     <div
                       className="p-4 cursor-pointer hover:bg-neutral-50"
+                      role="button"
+                      tabIndex={0}
                       onClick={() => toggleStageExpansion(stage.day)}
+                      onKeyDown={e => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          toggleStageExpansion(stage.day);
+                        }
+                      }}
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
@@ -394,12 +466,15 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
                               {stage.startWaypoint.name} → {stage.endWaypoint.name}
                             </div>
                             <div className="text-sm text-neutral-600">
-                              {stage.date && formatDate(stage.date)} • {Math.round(stage.distance)}km • {formatDuration(stage.drivingTime)}
+                              {stage.date && formatDate(stage.date)} • {Math.round(stage.distance)}
+                              km • {formatDuration(stage.drivingTime)}
                             </div>
                           </div>
                         </div>
                         <div className="flex items-center gap-2">
-                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${getFeasibilityColor(stage.feasibility)}`}>
+                          <span
+                            className={`px-2 py-1 rounded-full text-xs font-medium ${getFeasibilityColor(stage.feasibility)}`}
+                          >
                             {stage.feasibility}
                           </span>
                           {expandedStages.has(stage.day) ? (
@@ -419,12 +494,16 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
                             <div className="text-sm text-neutral-600 mb-1">Accommodation</div>
                             <div className="flex items-center gap-1 text-sm">
                               <Bed className="w-4 h-4 text-neutral-400" />
-                              <span className="capitalize">{stage.accommodationType.replace('_', ' ')}</span>
+                              <span className="capitalize">
+                                {stage.accommodationType.replace('_', ' ')}
+                              </span>
                             </div>
                           </div>
                           <div>
                             <div className="text-sm text-neutral-600 mb-1">Average Speed</div>
-                            <div className="text-sm">{Math.round(stage.distance / stage.drivingTime)}km/h</div>
+                            <div className="text-sm">
+                              {Math.round(stage.distance / stage.drivingTime)}km/h
+                            </div>
                           </div>
                           <div>
                             <div className="text-sm text-neutral-600 mb-1">Stops Planned</div>
@@ -441,7 +520,9 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
                                 <div key={stopIndex} className="flex items-center gap-2 text-sm">
                                   {getStopIcon(stop.type)}
                                   <span className="capitalize">{stop.type.replace('_', ' ')}</span>
-                                  <span className="text-neutral-600">({formatDuration(stop.recommendedDuration)})</span>
+                                  <span className="text-neutral-600">
+                                    ({formatDuration(stop.recommendedDuration)})
+                                  </span>
                                   <span className="text-neutral-500">- {stop.reasoning}</span>
                                 </div>
                               ))}
@@ -455,7 +536,10 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
                             <div className="text-sm text-red-600 font-medium mb-1">Warnings:</div>
                             <ul className="space-y-1">
                               {stage.warnings.map((warning, wIndex) => (
-                                <li key={wIndex} className="text-sm text-red-700 flex items-start gap-1">
+                                <li
+                                  key={wIndex}
+                                  className="text-sm text-red-700 flex items-start gap-1"
+                                >
                                   <AlertTriangle className="w-3 h-3 text-red-500 mt-0.5 flex-shrink-0" />
                                   {warning}
                                 </li>
@@ -467,10 +551,15 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
                         {/* Stage Recommendations */}
                         {stage.recommendations.length > 0 && (
                           <div>
-                            <div className="text-sm text-primary-600 font-medium mb-1">Recommendations:</div>
+                            <div className="text-sm text-primary-600 font-medium mb-1">
+                              Recommendations:
+                            </div>
                             <ul className="space-y-1">
                               {stage.recommendations.map((rec, rIndex) => (
-                                <li key={rIndex} className="text-sm text-primary-700 flex items-start gap-1">
+                                <li
+                                  key={rIndex}
+                                  className="text-sm text-primary-700 flex items-start gap-1"
+                                >
                                   <Info className="w-3 h-3 text-primary-500 mt-0.5 flex-shrink-0" />
                                   {rec}
                                 </li>
@@ -508,7 +597,9 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-2">
                               <h5 className="font-medium text-neutral-800">{rec.title}</h5>
-                              <span className={`px-2 py-1 rounded-full text-xs font-medium ${getPriorityColor(rec.priority)}`}>
+                              <span
+                                className={`px-2 py-1 rounded-full text-xs font-medium ${getPriorityColor(rec.priority)}`}
+                              >
                                 {rec.priority} priority
                               </span>
                             </div>
@@ -565,7 +656,8 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
                     </div>
                     <div className="text-sm text-primary-600">average per day</div>
                     <div className="text-sm text-neutral-600 mt-2">
-                      Comfort Level: <span className="font-medium capitalize">{metrics.comfortLevel}</span>
+                      Comfort Level:{' '}
+                      <span className="font-medium capitalize">{metrics.comfortLevel}</span>
                     </div>
                   </div>
 
@@ -608,19 +700,31 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
                     <div className="space-y-1 text-sm">
                       <div className="flex justify-between">
                         <span>Beginners:</span>
-                        <span className={metrics.suitability.beginners ? 'text-green-600' : 'text-red-600'}>
+                        <span
+                          className={
+                            metrics.suitability.beginners ? 'text-green-600' : 'text-red-600'
+                          }
+                        >
                           {metrics.suitability.beginners ? '✓ Suitable' : '✗ Not recommended'}
                         </span>
                       </div>
                       <div className="flex justify-between">
                         <span>Families:</span>
-                        <span className={metrics.suitability.families ? 'text-green-600' : 'text-red-600'}>
+                        <span
+                          className={
+                            metrics.suitability.families ? 'text-green-600' : 'text-red-600'
+                          }
+                        >
                           {metrics.suitability.families ? '✓ Suitable' : '✗ Not recommended'}
                         </span>
                       </div>
                       <div className="flex justify-between">
                         <span>Seniors:</span>
-                        <span className={metrics.suitability.seniors ? 'text-green-600' : 'text-red-600'}>
+                        <span
+                          className={
+                            metrics.suitability.seniors ? 'text-green-600' : 'text-red-600'
+                          }
+                        >
                           {metrics.suitability.seniors ? '✓ Suitable' : '✗ Not recommended'}
                         </span>
                       </div>

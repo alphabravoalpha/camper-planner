@@ -72,15 +72,15 @@ export const DEFAULT_FUEL_PRICES: Record<Currency, Record<FuelType, number>> = {
   },
   GBP: {
     diesel: 1.45,
-    petrol: 1.50,
+    petrol: 1.5,
     lpg: 0.75,
-    electric: 0.30,
+    electric: 0.3,
   },
   USD: {
-    diesel: 1.70,
-    petrol: 1.80,
+    diesel: 1.7,
+    petrol: 1.8,
     lpg: 0.95,
-    electric: 0.40,
+    electric: 0.4,
   },
 };
 
@@ -132,8 +132,9 @@ export function getSeasonFromDate(dateStr?: string): Season {
 }
 
 /** Return the driving hour and distance limits for a given driving style. */
-export function getDrivingLimitsForStyle(
-  style: DrivingStyle
-): { maxHours: number; maxKmPerDay: number } {
+export function getDrivingLimitsForStyle(style: DrivingStyle): {
+  maxHours: number;
+  maxKmPerDay: number;
+} {
   return DRIVING_LIMITS[style];
 }

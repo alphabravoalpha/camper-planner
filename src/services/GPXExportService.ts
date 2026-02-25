@@ -1,7 +1,11 @@
 // GPX Export Service
 // Phase 2.1: Complete GPX export functionality for route data
 
-import { type ExportableRoute, prepareRouteForExport, validateExportableRoute } from '../utils/routeExport';
+import {
+  type ExportableRoute,
+  prepareRouteForExport,
+  validateExportableRoute,
+} from '../utils/routeExport';
 import { type RouteResponse } from './RoutingService';
 import { type Waypoint } from '../types';
 
@@ -31,7 +35,7 @@ class GPXExportService {
     includeInstructions: true,
     includeElevation: true,
     includeMetadata: true,
-    creator: 'European Camper Trip Planner'
+    creator: 'European Camper Trip Planner',
   };
 
   /**
@@ -54,7 +58,7 @@ class GPXExportService {
         return {
           success: false,
           error: 'Invalid route data for export',
-          format: 'gpx'
+          format: 'gpx',
         };
       }
 
@@ -69,15 +73,14 @@ class GPXExportService {
         data: gpxContent,
         filename,
         format: 'gpx',
-        size: new Blob([gpxContent]).size
+        size: new Blob([gpxContent]).size,
       };
-
     } catch (error) {
       console.error('GPX export error:', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown export error',
-        format: 'gpx'
+        format: 'gpx',
       };
     }
   }
@@ -181,7 +184,7 @@ class GPXExportService {
 `;
 
       // Track segments
-      route.track.segments.forEach((segment, segmentIndex) => {
+      route.track.segments.forEach((segment, _segmentIndex) => {
         gpx += `    <trkseg>
 `;
 
@@ -339,7 +342,7 @@ class GPXExportService {
 
     return {
       valid: errors.length === 0,
-      errors
+      errors,
     };
   }
 
@@ -355,12 +358,15 @@ class GPXExportService {
     hasElevation: boolean;
     hasInstructions: boolean;
   } {
-    const totalTrackPoints = route.track.segments.reduce((sum, segment) => sum + segment.points.length, 0);
+    const totalTrackPoints = route.track.segments.reduce(
+      (sum, segment) => sum + segment.points.length,
+      0
+    );
     const hasElevation = route.track.segments.some(segment =>
       segment.points.some(point => point.elevation !== undefined)
     );
-    const hasInstructions = route.track.segments.some(segment =>
-      segment.instructions && segment.instructions.length > 0
+    const hasInstructions = route.track.segments.some(
+      segment => segment.instructions && segment.instructions.length > 0
     );
 
     return {
@@ -370,7 +376,7 @@ class GPXExportService {
       distance: `${(route.track.totalDistance / 1000).toFixed(1)} km`,
       duration: this.formatDuration(route.track.totalDuration),
       hasElevation,
-      hasInstructions
+      hasInstructions,
     };
   }
 

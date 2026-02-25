@@ -3,9 +3,22 @@
 
 import React, { useState, useCallback, useRef, useMemo } from 'react';
 import {
-  Zap, Wifi, Droplets, Bath, GlassWater, Trash2, Shirt,
-  UtensilsCrossed, ShoppingCart, Baby, Waves, Dog,
-  Phone, Mail, Globe, Info
+  Zap,
+  Wifi,
+  Droplets,
+  Bath,
+  GlassWater,
+  Trash2,
+  Shirt,
+  UtensilsCrossed,
+  ShoppingCart,
+  Baby,
+  Waves,
+  Dog,
+  Phone,
+  Mail,
+  Globe,
+  Info,
 } from 'lucide-react';
 import { FeatureFlags } from '../../config';
 import { type Campsite } from '../../services/CampsiteService';
@@ -34,18 +47,27 @@ const AMENITY_CONFIG: Record<string, { icon: React.FC<{ className?: string }>; l
   shop: { icon: ShoppingCart, label: 'Shop' },
   playground: { icon: Baby, label: 'Kids' },
   swimming_pool: { icon: Waves, label: 'Pool' },
-  pet_allowed: { icon: Dog, label: 'Pets OK' }
+  pet_allowed: { icon: Dog, label: 'Pets OK' },
 };
 
 // Key amenities to show at the top (most important for travelers)
-const KEY_AMENITIES = ['electricity', 'showers', 'wifi', 'toilets', 'drinking_water', 'waste_disposal', 'shop', 'restaurant'];
+const KEY_AMENITIES = [
+  'electricity',
+  'showers',
+  'wifi',
+  'toilets',
+  'drinking_water',
+  'waste_disposal',
+  'shop',
+  'restaurant',
+];
 
 const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
   campsite,
   onClose,
   onAddAsWaypoint,
   onExportData,
-  className
+  className,
 }) => {
   const [showAllAmenities, setShowAllAmenities] = useState(false);
   const [showContact, setShowContact] = useState(false);
@@ -56,9 +78,8 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
   const { addNotification } = useUIStore();
 
   // Check if campsite is already a waypoint
-  const isWaypoint = waypoints.some(wp =>
-    Math.abs(wp.lat - campsite.lat) < 0.0001 &&
-    Math.abs(wp.lng - campsite.lng) < 0.0001
+  const isWaypoint = waypoints.some(
+    wp => Math.abs(wp.lat - campsite.lat) < 0.0001 && Math.abs(wp.lng - campsite.lng) < 0.0001
   );
 
   // Handle adding campsite as waypoint
@@ -66,7 +87,7 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
     if (isWaypoint) {
       addNotification({
         type: 'warning',
-        message: 'This campsite is already in your route'
+        message: 'This campsite is already in your route',
       });
       return;
     }
@@ -76,7 +97,7 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
       lat: campsite.lat,
       lng: campsite.lng,
       name: campsite.name || `${campsite.type} #${campsite.id}`,
-      type: 'waypoint' as const
+      type: 'waypoint' as const,
     };
 
     addWaypoint(waypoint);
@@ -84,7 +105,7 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
 
     addNotification({
       type: 'success',
-      message: `Added ${waypoint.name} to your route`
+      message: `Added ${waypoint.name} to your route`,
     });
   }, [campsite, isWaypoint, addWaypoint, onAddAsWaypoint, addNotification]);
 
@@ -103,7 +124,7 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
     navigator.clipboard.writeText(coords);
     addNotification({
       type: 'success',
-      message: 'Coordinates copied to clipboard'
+      message: 'Coordinates copied to clipboard',
     });
   }, [campsite.lat, campsite.lng, addNotification]);
 
@@ -122,14 +143,14 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
         openingHours: campsite.opening_hours,
         amenities: campsite.amenities,
         access: campsite.access,
-        source: campsite.source
+        source: campsite.source,
       },
       exportedAt: new Date().toISOString(),
-      exportedBy: 'European Camper Trip Planner'
+      exportedBy: 'European Camper Trip Planner',
     };
 
     const blob = new Blob([JSON.stringify(exportData, null, 2)], {
-      type: 'application/json'
+      type: 'application/json',
     });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -143,7 +164,7 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
     onExportData?.(campsite);
     addNotification({
       type: 'success',
-      message: 'Campsite data exported successfully'
+      message: 'Campsite data exported successfully',
     });
   }, [campsite, onExportData, addNotification]);
 
@@ -159,21 +180,22 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
   };
 
   // Check if there are vehicle restrictions that conflict with user's vehicle
-  const hasRestrictions = campsite.access && (
-    campsite.access.max_height || campsite.access.max_length || campsite.access.max_weight
-  );
+  const hasRestrictions =
+    campsite.access &&
+    (campsite.access.max_height || campsite.access.max_length || campsite.access.max_weight);
 
-  const hasConflict = profile && hasRestrictions && (
-    (campsite.access?.max_height && profile.height > campsite.access.max_height) ||
-    (campsite.access?.max_length && profile.length > campsite.access.max_length) ||
-    (campsite.access?.max_weight && profile.weight > campsite.access.max_weight)
-  );
+  const hasConflict =
+    profile &&
+    hasRestrictions &&
+    ((campsite.access?.max_height && profile.height > campsite.access.max_height) ||
+      (campsite.access?.max_length && profile.length > campsite.access.max_length) ||
+      (campsite.access?.max_weight && profile.weight > campsite.access.max_weight));
 
   // Get available and unavailable amenities
   const allAmenities = campsite.amenities ? Object.entries(campsite.amenities) : [];
   const availableAmenities = allAmenities.filter(([_, available]) => available).map(([key]) => key);
-  const keyAmenitiesAvailable = KEY_AMENITIES.filter(key =>
-    campsite.amenities && campsite.amenities[key as keyof typeof campsite.amenities]
+  const keyAmenitiesAvailable = KEY_AMENITIES.filter(
+    key => campsite.amenities && campsite.amenities[key as keyof typeof campsite.amenities]
   );
 
   // Don't render if feature disabled
@@ -183,11 +205,13 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
 
   return (
-    <div className={cn(
-      'bg-white shadow-lg border border-neutral-200 overflow-hidden flex flex-col',
-      isMobile ? 'rounded-t-xl' : 'rounded-lg',
-      className
-    )}>
+    <div
+      className={cn(
+        'bg-white shadow-lg border border-neutral-200 overflow-hidden flex flex-col',
+        isMobile ? 'rounded-t-xl' : 'rounded-lg',
+        className
+      )}
+    >
       {/* Drag handle for mobile */}
       {isMobile && (
         <div className="flex justify-center py-2 bg-neutral-50">
@@ -204,12 +228,14 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
             </h2>
             <div className="flex items-center space-x-2 mt-1 text-sm text-green-100">
               <span className="capitalize">{campsite.type.replace('_', ' ')}</span>
-              <span className={cn(
-                'px-2 py-0.5 rounded-full text-xs font-medium',
-                campsite.access?.motorhome
-                  ? 'bg-green-700 text-green-100'
-                  : 'bg-orange-500 text-white'
-              )}>
+              <span
+                className={cn(
+                  'px-2 py-0.5 rounded-full text-xs font-medium',
+                  campsite.access?.motorhome
+                    ? 'bg-green-700 text-green-100'
+                    : 'bg-orange-500 text-white'
+                )}
+              >
                 {campsite.access?.motorhome ? '✓ Vehicle OK' : '⚠ Check Size'}
               </span>
             </div>
@@ -222,17 +248,19 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
               aria-label="Close details"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
           )}
         </div>
 
         {/* Primary action buttons */}
-        <div className={cn(
-          'flex items-center gap-2 mt-3',
-          isMobile && 'flex-col w-full'
-        )}>
+        <div className={cn('flex items-center gap-2 mt-3', isMobile && 'flex-col w-full')}>
           <button
             onClick={handleAddAsWaypoint}
             disabled={isWaypoint}
@@ -247,14 +275,24 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
             {isWaypoint ? (
               <>
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M5 13l4 4L19 7"
+                  />
                 </svg>
                 <span>In Route</span>
               </>
             ) : (
               <>
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                  />
                 </svg>
                 <span>Add to Route</span>
               </>
@@ -269,7 +307,12 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
             )}
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+              />
             </svg>
             <span>Book Now</span>
           </button>
@@ -291,7 +334,9 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
                     title={config?.label || amenity}
                   >
                     {config?.icon ? <config.icon className="w-4 h-4" /> : <span>•</span>}
-                    <span className="font-medium">{config?.label || amenity.replace(/_/g, ' ')}</span>
+                    <span className="font-medium">
+                      {config?.label || amenity.replace(/_/g, ' ')}
+                    </span>
                   </div>
                 );
               })}
@@ -304,9 +349,24 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
           {/* Address */}
           {campsite.address && (
             <div className="flex items-start gap-3">
-              <svg className="w-5 h-5 text-neutral-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              <svg
+                className="w-5 h-5 text-neutral-400 mt-0.5 flex-shrink-0"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                />
               </svg>
               <span className="text-sm text-neutral-700">{campsite.address}</span>
             </div>
@@ -315,8 +375,18 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
           {/* Opening hours */}
           {campsite.opening_hours && (
             <div className="flex items-start gap-3">
-              <svg className="w-5 h-5 text-neutral-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <svg
+                className="w-5 h-5 text-neutral-400 mt-0.5 flex-shrink-0"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
               </svg>
               <span className="text-sm text-neutral-700">{campsite.opening_hours}</span>
             </div>
@@ -325,13 +395,25 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
           {/* Campsite type description if no other info */}
           {!campsite.address && !campsite.opening_hours && (
             <div className="flex items-start gap-3">
-              <svg className="w-5 h-5 text-neutral-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+              <svg
+                className="w-5 h-5 text-neutral-400 mt-0.5 flex-shrink-0"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                />
               </svg>
               <span className="text-sm text-neutral-500 italic">
-                {campsite.type === 'aire' ? 'Motorhome service area with facilities' :
-                 campsite.type === 'caravan_site' ? 'Caravan and motorhome site' :
-                 'Camping site'}
+                {campsite.type === 'aire'
+                  ? 'Motorhome service area with facilities'
+                  : campsite.type === 'caravan_site'
+                    ? 'Caravan and motorhome site'
+                    : 'Camping site'}
               </span>
             </div>
           )}
@@ -339,38 +421,56 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
 
         {/* Vehicle Restrictions Warning */}
         {hasRestrictions && (
-          <div className={cn(
-            'p-4 border-b',
-            hasConflict ? 'bg-red-50 border-red-100' : 'bg-orange-50 border-orange-100'
-          )}>
+          <div
+            className={cn(
+              'p-4 border-b',
+              hasConflict ? 'bg-red-50 border-red-100' : 'bg-orange-50 border-orange-100'
+            )}
+          >
             <div className="flex items-start gap-3">
-              <svg className={cn(
-                'w-5 h-5 mt-0.5 flex-shrink-0',
-                hasConflict ? 'text-red-600' : 'text-orange-600'
-              )} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+              <svg
+                className={cn(
+                  'w-5 h-5 mt-0.5 flex-shrink-0',
+                  hasConflict ? 'text-red-600' : 'text-orange-600'
+                )}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
+                />
               </svg>
               <div>
-                <div className={cn(
-                  'text-sm font-medium',
-                  hasConflict ? 'text-red-800' : 'text-orange-800'
-                )}>
+                <div
+                  className={cn(
+                    'text-sm font-medium',
+                    hasConflict ? 'text-red-800' : 'text-orange-800'
+                  )}
+                >
                   {hasConflict ? 'Vehicle may not fit!' : 'Size restrictions'}
                 </div>
-                <div className={cn(
-                  'text-sm mt-1 space-y-0.5',
-                  hasConflict ? 'text-red-700' : 'text-orange-700'
-                )}>
+                <div
+                  className={cn(
+                    'text-sm mt-1 space-y-0.5',
+                    hasConflict ? 'text-red-700' : 'text-orange-700'
+                  )}
+                >
                   {campsite.access?.max_height && (
                     <div className="flex items-center gap-2">
                       <span>Max height: {campsite.access.max_height}m</span>
                       {profile && (
-                        <span className={cn(
-                          'text-xs px-1.5 py-0.5 rounded',
-                          profile.height > campsite.access.max_height
-                            ? 'bg-red-200 text-red-800'
-                            : 'bg-green-200 text-green-800'
-                        )}>
+                        <span
+                          className={cn(
+                            'text-xs px-1.5 py-0.5 rounded',
+                            profile.height > campsite.access.max_height
+                              ? 'bg-red-200 text-red-800'
+                              : 'bg-green-200 text-green-800'
+                          )}
+                        >
                           You: {profile.height}m
                         </span>
                       )}
@@ -380,12 +480,14 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
                     <div className="flex items-center gap-2">
                       <span>Max length: {campsite.access.max_length}m</span>
                       {profile && (
-                        <span className={cn(
-                          'text-xs px-1.5 py-0.5 rounded',
-                          profile.length > campsite.access.max_length
-                            ? 'bg-red-200 text-red-800'
-                            : 'bg-green-200 text-green-800'
-                        )}>
+                        <span
+                          className={cn(
+                            'text-xs px-1.5 py-0.5 rounded',
+                            profile.length > campsite.access.max_length
+                              ? 'bg-red-200 text-red-800'
+                              : 'bg-green-200 text-green-800'
+                          )}
+                        >
                           You: {profile.length}m
                         </span>
                       )}
@@ -395,12 +497,14 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
                     <div className="flex items-center gap-2">
                       <span>Max weight: {campsite.access.max_weight}t</span>
                       {profile && (
-                        <span className={cn(
-                          'text-xs px-1.5 py-0.5 rounded',
-                          profile.weight > campsite.access.max_weight
-                            ? 'bg-red-200 text-red-800'
-                            : 'bg-green-200 text-green-800'
-                        )}>
+                        <span
+                          className={cn(
+                            'text-xs px-1.5 py-0.5 rounded',
+                            profile.weight > campsite.access.max_weight
+                              ? 'bg-red-200 text-red-800'
+                              : 'bg-green-200 text-green-800'
+                          )}
+                        >
                           You: {profile.weight}t
                         </span>
                       )}
@@ -416,12 +520,25 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
         {campsite.access?.motorhome && profile && !hasRestrictions && (
           <div className="p-4 bg-green-50 border-b border-green-100">
             <div className="flex items-center gap-3">
-              <svg className="w-5 h-5 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              <svg
+                className="w-5 h-5 text-green-600 flex-shrink-0"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 13l4 4L19 7"
+                />
               </svg>
               <div className="text-sm text-green-800">
                 <span className="font-medium">Compatible</span>
-                <span className="text-green-700"> with your {profile.height}m × {profile.length}m vehicle</span>
+                <span className="text-green-700">
+                  {' '}
+                  with your {profile.height}m × {profile.length}m vehicle
+                </span>
               </div>
             </div>
           </div>
@@ -435,20 +552,38 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
               className="w-full p-4 flex items-center justify-between hover:bg-neutral-50 transition-colors"
             >
               <div className="flex items-center gap-3">
-                <svg className="w-5 h-5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                <svg
+                  className="w-5 h-5 text-neutral-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                  />
                 </svg>
                 <span className="text-sm font-medium text-neutral-700">
                   All Amenities ({availableAmenities.length}/{allAmenities.length} available)
                 </span>
               </div>
               <svg
-                className={cn('w-5 h-5 text-neutral-400 transition-transform', showAllAmenities && 'rotate-180')}
+                className={cn(
+                  'w-5 h-5 text-neutral-400 transition-transform',
+                  showAllAmenities && 'rotate-180'
+                )}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
               </svg>
             </button>
 
@@ -457,7 +592,8 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
                 {/* Note about data source */}
                 {availableAmenities.length === 0 && (
                   <div className="mb-3 p-2 bg-amber-50 border border-amber-200 rounded text-xs text-amber-700 flex items-start gap-1.5">
-                    <Info className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" /> Amenity data not available from OpenStreetMap. Check the campsite website for details.
+                    <Info className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" /> Amenity data not available
+                    from OpenStreetMap. Check the campsite website for details.
                   </div>
                 )}
                 <div className="grid grid-cols-2 gap-2">
@@ -475,14 +611,32 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
                             : 'bg-neutral-50 text-neutral-500 border border-neutral-200'
                         )}
                       >
-                        {config?.icon ? <config.icon className="w-4 h-4 flex-shrink-0" /> : <span>•</span>}
-                        <span className="flex-1 capitalize">{config?.label || amenity.replace(/_/g, ' ')}</span>
+                        {config?.icon ? (
+                          <config.icon className="w-4 h-4 flex-shrink-0" />
+                        ) : (
+                          <span>•</span>
+                        )}
+                        <span className="flex-1 capitalize">
+                          {config?.label || amenity.replace(/_/g, ' ')}
+                        </span>
                         {isConfirmed ? (
-                          <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          <svg
+                            className="w-4 h-4 text-green-600"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M5 13l4 4L19 7"
+                            />
                           </svg>
                         ) : (
-                          <span className="w-4 h-4 flex items-center justify-center text-neutral-400 font-medium text-xs">?</span>
+                          <span className="w-4 h-4 flex items-center justify-center text-neutral-400 font-medium text-xs">
+                            ?
+                          </span>
                         )}
                       </div>
                     );
@@ -501,18 +655,36 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
               className="w-full p-4 flex items-center justify-between hover:bg-neutral-50 transition-colors"
             >
               <div className="flex items-center gap-3">
-                <svg className="w-5 h-5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                <svg
+                  className="w-5 h-5 text-neutral-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                  />
                 </svg>
                 <span className="text-sm font-medium text-neutral-700">Contact Details</span>
               </div>
               <svg
-                className={cn('w-5 h-5 text-neutral-400 transition-transform', showContact && 'rotate-180')}
+                className={cn(
+                  'w-5 h-5 text-neutral-400 transition-transform',
+                  showContact && 'rotate-180'
+                )}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
               </svg>
             </button>
 
@@ -544,7 +716,9 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
                     className="flex items-center gap-3 text-primary-600 hover:text-primary-800 text-sm"
                   >
                     <Globe className="w-4 h-4 flex-shrink-0" />
-                    <span className="truncate">{campsite.contact.website.replace(/^https?:\/\//, '')}</span>
+                    <span className="truncate">
+                      {campsite.contact.website.replace(/^https?:\/\//, '')}
+                    </span>
                   </a>
                 )}
               </div>
@@ -555,8 +729,18 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
         {/* Booking Section */}
         <div ref={bookingSectionRef} className="p-4 border-b border-neutral-100">
           <h3 className="text-sm font-medium text-neutral-900 mb-3 flex items-center gap-2">
-            <svg className="w-5 h-5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            <svg
+              className="w-5 h-5 text-neutral-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+              />
             </svg>
             Book This Campsite
           </h3>
@@ -570,7 +754,12 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
               className="flex items-center justify-center gap-2 w-full px-4 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium mb-3"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                />
               </svg>
               <span>Visit Official Website</span>
             </a>
@@ -579,8 +768,10 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
           {/* Affiliate booking links — powered by BookingService */}
           {affiliateLinks.length > 0 && (
             <div className="space-y-2">
-              <div className="text-xs font-medium text-neutral-500 mb-2">Search on booking platforms:</div>
-              {affiliateLinks.map((link) => (
+              <div className="text-xs font-medium text-neutral-500 mb-2">
+                Search on booking platforms:
+              </div>
+              {affiliateLinks.map(link => (
                 <a
                   key={link.provider.id}
                   href={link.url}
@@ -593,7 +784,12 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
                 >
                   <span>{link.provider.name}</span>
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                    />
                   </svg>
                 </a>
               ))}
@@ -631,7 +827,12 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
             className="flex items-center justify-center gap-2 w-full px-4 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors text-sm font-medium"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"
+              />
             </svg>
             <span>Get Directions in Google Maps</span>
           </a>
@@ -649,7 +850,12 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
               title="Copy coordinates"
             >
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                />
               </svg>
               <span>Copy coords</span>
             </button>
@@ -661,7 +867,12 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
             className="w-full flex items-center justify-center gap-2 px-3 py-2 border border-neutral-300 rounded-lg text-sm text-neutral-600 hover:bg-neutral-100 transition-colors"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              />
             </svg>
             <span>Export Campsite Data</span>
           </button>

@@ -76,39 +76,39 @@ export const colors = {
     700: '#3d4754',
     800: '#2b333e',
     900: '#1a2029',
-  }
+  },
 };
 
 // Typography scale
 export const typography = {
   // Font sizes
   text: {
-    xs: 'text-xs',     // 12px
-    sm: 'text-sm',     // 14px
+    xs: 'text-xs', // 12px
+    sm: 'text-sm', // 14px
     base: 'text-base', // 16px
-    lg: 'text-lg',     // 18px
-    xl: 'text-xl',     // 20px
+    lg: 'text-lg', // 18px
+    xl: 'text-xl', // 20px
     '2xl': 'text-2xl', // 24px
     '3xl': 'text-3xl', // 30px
     '4xl': 'text-4xl', // 36px
   },
   // Font weights
   weight: {
-    normal: 'font-normal',     // 400
-    medium: 'font-medium',     // 500
+    normal: 'font-normal', // 400
+    medium: 'font-medium', // 500
     semibold: 'font-semibold', // 600
-    bold: 'font-bold',         // 700
+    bold: 'font-bold', // 700
     extrabold: 'font-extrabold', // 800
   },
   // Line heights
   leading: {
-    none: 'leading-none',       // 1
-    tight: 'leading-tight',     // 1.25
-    snug: 'leading-snug',       // 1.375
-    normal: 'leading-normal',   // 1.5
+    none: 'leading-none', // 1
+    tight: 'leading-tight', // 1.25
+    snug: 'leading-snug', // 1.375
+    normal: 'leading-normal', // 1.5
     relaxed: 'leading-relaxed', // 1.625
-    loose: 'leading-loose',     // 2
-  }
+    loose: 'leading-loose', // 2
+  },
 };
 
 // Spacing scale
@@ -150,7 +150,7 @@ export const spacing = {
     8: 'gap-8',
     10: 'gap-10',
     12: 'gap-12',
-  }
+  },
 };
 
 // Border radius scale
@@ -222,7 +222,7 @@ export const animations = {
     105: 'scale-105',
     110: 'scale-110',
     125: 'scale-125',
-  }
+  },
 };
 
 // Component style variants
@@ -249,7 +249,8 @@ export const variants = {
   card: {
     default: 'bg-white rounded-xl border border-neutral-200 shadow-soft',
     elevated: 'bg-white rounded-xl shadow-medium',
-    interactive: 'bg-white rounded-xl border border-neutral-200 shadow-soft hover:shadow-medium hover:-translate-y-0.5 transition-all duration-200 cursor-pointer',
+    interactive:
+      'bg-white rounded-xl border border-neutral-200 shadow-soft hover:shadow-medium hover:-translate-y-0.5 transition-all duration-200 cursor-pointer',
     danger: 'bg-red-50 border border-red-200 rounded-xl',
     warning: 'bg-warning-50 border border-warning-200 rounded-xl',
     success: 'bg-success-50 border border-success-200 rounded-xl',
@@ -264,7 +265,7 @@ export const variants = {
     warning: 'bg-warning-100 text-warning-800',
     danger: 'bg-red-100 text-red-800',
     info: 'bg-primary-100 text-primary-800',
-  }
+  },
 };
 
 // Responsive design utilities
@@ -295,7 +296,7 @@ export const responsive = {
     responsive: 'p-4 sm:p-6 lg:p-8',
     tight: 'p-2 sm:p-4',
     loose: 'p-6 sm:p-8 lg:p-12',
-  }
+  },
 };
 
 // Accessibility utilities
@@ -317,7 +318,7 @@ export const accessibility = {
     warning: 'text-warning-600',
     success: 'text-success-600',
     info: 'text-primary-600',
-  }
+  },
 };
 
 // Component sizing utilities
@@ -344,42 +345,49 @@ export const sizing = {
     lg: 'w-6 h-6',
     xl: 'w-8 h-8',
     '2xl': 'w-10 h-10',
-  }
+  },
 };
 
 // Common component combinations
 export const components = {
   // Standard button
-  button: (variant: keyof typeof variants.button = 'primary', size: keyof typeof sizing.button = 'md') => cn(
-    'inline-flex items-center justify-center font-display font-semibold rounded-lg',
-    'focus:outline-none focus:ring-2 focus:ring-offset-2',
-    'disabled:opacity-50 disabled:cursor-not-allowed',
-    'transition-all duration-200 active:scale-[0.98]',
-    variants.button[variant],
-    sizing.button[size]
-  ),
+  button: (
+    variant: keyof typeof variants.button = 'primary',
+    size: keyof typeof sizing.button = 'md'
+  ) =>
+    cn(
+      'inline-flex items-center justify-center font-display font-semibold rounded-lg',
+      'focus:outline-none focus:ring-2 focus:ring-offset-2',
+      'disabled:opacity-50 disabled:cursor-not-allowed',
+      'transition-all duration-200 active:scale-[0.98]',
+      variants.button[variant],
+      sizing.button[size]
+    ),
 
   // Standard input
-  input: (variant: keyof typeof variants.input = 'default', size: keyof typeof sizing.input = 'md') => cn(
-    'block w-full rounded-lg border-2',
-    'placeholder-neutral-400',
-    'focus:outline-none focus:ring-2',
-    'disabled:bg-neutral-50 disabled:text-neutral-500 disabled:cursor-not-allowed',
-    'transition-all duration-200',
-    variants.input[variant],
-    sizing.input[size]
-  ),
+  input: (
+    variant: keyof typeof variants.input = 'default',
+    size: keyof typeof sizing.input = 'md'
+  ) =>
+    cn(
+      'block w-full rounded-lg border-2',
+      'placeholder-neutral-400',
+      'focus:outline-none focus:ring-2',
+      'disabled:bg-neutral-50 disabled:text-neutral-500 disabled:cursor-not-allowed',
+      'transition-all duration-200',
+      variants.input[variant],
+      sizing.input[size]
+    ),
 
   // Standard card
-  card: (variant: keyof typeof variants.card = 'default') => cn(
-    variants.card[variant]
-  ),
+  card: (variant: keyof typeof variants.card = 'default') => cn(variants.card[variant]),
 
   // Standard badge
-  badge: (variant: keyof typeof variants.badge = 'default') => cn(
-    'inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-display font-medium',
-    variants.badge[variant]
-  ),
+  badge: (variant: keyof typeof variants.badge = 'default') =>
+    cn(
+      'inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-display font-medium',
+      variants.badge[variant]
+    ),
 
   // Form group
   formGroup: () => cn('space-y-1'),
@@ -394,30 +402,34 @@ export const components = {
   formHelp: () => cn('text-sm text-neutral-500'),
 
   // Loading spinner
-  spinner: (size: keyof typeof sizing.icon = 'md') => cn(
-    'animate-spin rounded-full border-2 border-neutral-300 border-t-primary-600',
-    sizing.icon[size]
-  ),
+  spinner: (size: keyof typeof sizing.icon = 'md') =>
+    cn(
+      'animate-spin rounded-full border-2 border-neutral-300 border-t-primary-600',
+      sizing.icon[size]
+    ),
 
   // Tab navigation
-  tab: (active: boolean = false) => cn(
-    'flex items-center space-x-2 py-4 px-1 border-b-2 font-display font-medium text-sm transition-colors',
-    active
-      ? 'border-primary-500 text-primary-600'
-      : 'border-transparent text-neutral-500 hover:text-neutral-700 hover:border-neutral-300'
-  ),
+  tab: (active: boolean = false) =>
+    cn(
+      'flex items-center space-x-2 py-4 px-1 border-b-2 font-display font-medium text-sm transition-colors',
+      active
+        ? 'border-primary-500 text-primary-600'
+        : 'border-transparent text-neutral-500 hover:text-neutral-700 hover:border-neutral-300'
+    ),
 
   // Modal overlay
-  modalOverlay: () => cn(
-    'fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50',
-    'transition-opacity duration-300'
-  ),
+  modalOverlay: () =>
+    cn(
+      'fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50',
+      'transition-opacity duration-300'
+    ),
 
   // Modal content
-  modalContent: () => cn(
-    'bg-white rounded-xl shadow-2xl max-w-md w-full mx-4 ring-1 ring-black/5',
-    'transform transition-all duration-300'
-  ),
+  modalContent: () =>
+    cn(
+      'bg-white rounded-xl shadow-2xl max-w-md w-full mx-4 ring-1 ring-black/5',
+      'transform transition-all duration-300'
+    ),
 
   // Toast notification
   toast: (variant: 'success' | 'error' | 'warning' | 'info' = 'info') => {
@@ -433,7 +445,7 @@ export const components = {
       'transform transition-all duration-300',
       variantStyles[variant]
     );
-  }
+  },
 };
 
 // Layout utilities
@@ -467,7 +479,7 @@ export const layout = {
     md: () => cn('space-y-4'),
     lg: () => cn('space-y-6'),
     xl: () => cn('space-y-8'),
-  }
+  },
 };
 
 // Utility function to get consistent styles

@@ -13,10 +13,11 @@ interface BlogSectionRendererProps {
 const BlogSectionRenderer: React.FC<BlogSectionRendererProps> = ({ section, index }) => {
   switch (section.type) {
     case 'heading': {
-      const id = section.content
-        ?.toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/^-|-$/g, '') ?? `section-${index}`;
+      const id =
+        section.content
+          ?.toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/^-|-$/g, '') ?? `section-${index}`;
       if (section.level === 3) {
         return (
           <h3 id={id} className="text-xl font-display font-bold text-neutral-900 mt-8 mb-3">
@@ -86,7 +87,7 @@ const BlogSectionRenderer: React.FC<BlogSectionRendererProps> = ({ section, inde
             alt={section.image.alt}
             className="w-full rounded-lg shadow-soft"
             loading="lazy"
-            onError={(e) => {
+            onError={e => {
               const img = e.target as HTMLImageElement;
               img.onerror = null;
               img.src = '/images/blog/fallback-hero.jpg';

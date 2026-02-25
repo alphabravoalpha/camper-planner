@@ -24,7 +24,7 @@ export const useMapKeyboardShortcuts = ({
   map,
   onToggleFullscreen,
   onToggleLayerControl,
-  onResetView
+  onResetView,
 }: MapKeyboardShortcutsOptions) => {
   const { waypoints } = useRouteStore();
 
@@ -45,8 +45,8 @@ export const useMapKeyboardShortcuts = ({
     if (map) {
       const center = map.getCenter();
       const zoom = map.getZoom();
-      const deltaLat = 180 / Math.pow(2, zoom) * 0.25; // Adjust pan distance based on zoom
-      // @ts-ignore - Leaflet panTo accepts array coordinates, type definitions are overly strict
+      const deltaLat = (180 / Math.pow(2, zoom)) * 0.25; // Adjust pan distance based on zoom
+      // @ts-expect-error - Leaflet panTo accepts array coordinates, type definitions are overly strict
       map.panTo([center.lat + deltaLat, center.lng]);
     }
   }, [map]);
@@ -55,8 +55,8 @@ export const useMapKeyboardShortcuts = ({
     if (map) {
       const center = map.getCenter();
       const zoom = map.getZoom();
-      const deltaLat = 180 / Math.pow(2, zoom) * 0.25;
-      // @ts-ignore - Leaflet panTo accepts array coordinates, type definitions are overly strict
+      const deltaLat = (180 / Math.pow(2, zoom)) * 0.25;
+      // @ts-expect-error - Leaflet panTo accepts array coordinates, type definitions are overly strict
       map.panTo([center.lat - deltaLat, center.lng]);
     }
   }, [map]);
@@ -65,8 +65,8 @@ export const useMapKeyboardShortcuts = ({
     if (map) {
       const center = map.getCenter();
       const zoom = map.getZoom();
-      const deltaLng = 360 / Math.pow(2, zoom) * 0.25;
-      // @ts-ignore - Leaflet panTo accepts array coordinates, type definitions are overly strict
+      const deltaLng = (360 / Math.pow(2, zoom)) * 0.25;
+      // @ts-expect-error - Leaflet panTo accepts array coordinates, type definitions are overly strict
       map.panTo([center.lat, center.lng - deltaLng]);
     }
   }, [map]);
@@ -75,8 +75,8 @@ export const useMapKeyboardShortcuts = ({
     if (map) {
       const center = map.getCenter();
       const zoom = map.getZoom();
-      const deltaLng = 360 / Math.pow(2, zoom) * 0.25;
-      // @ts-ignore - Leaflet panTo accepts array coordinates, type definitions are overly strict
+      const deltaLng = (360 / Math.pow(2, zoom)) * 0.25;
+      // @ts-expect-error - Leaflet panTo accepts array coordinates, type definitions are overly strict
       map.panTo([center.lat, center.lng + deltaLng]);
     }
   }, [map]);
@@ -87,7 +87,7 @@ export const useMapKeyboardShortcuts = ({
         padding: [50, 50],
         maxZoom: 15,
         animate: true,
-        duration: 1000
+        duration: 1000,
       });
     }
   }, [map, waypoints]);
@@ -265,7 +265,7 @@ export const useMapKeyboardShortcuts = ({
     zoomToFit,
     resetView,
     toggleFullscreen,
-    toggleLayerControl
+    toggleLayerControl,
   ]);
 
   // Return available shortcuts for display in UI
@@ -273,13 +273,33 @@ export const useMapKeyboardShortcuts = ({
     { key: '+/-', description: 'Zoom in/out', action: zoomIn, available: !!map },
     { key: '↑↓←→', description: 'Pan map', action: panUp, available: !!map },
     { key: 'WASD', description: 'Pan map (alternative)', action: panUp, available: !!map },
-    { key: 'Ctrl+F', description: 'Zoom to fit waypoints', action: zoomToFit, available: waypoints.length > 0 },
+    {
+      key: 'Ctrl+F',
+      description: 'Zoom to fit waypoints',
+      action: zoomToFit,
+      available: waypoints.length > 0,
+    },
     { key: 'Ctrl+R', description: 'Reset view', action: resetView, available: !!onResetView },
-    { key: 'Alt+F', description: 'Toggle fullscreen', action: toggleFullscreen, available: !!onToggleFullscreen },
-    { key: 'Ctrl+L', description: 'Toggle layer control', action: toggleLayerControl, available: !!onToggleLayerControl },
-    { key: 'Home', description: 'Zoom to fit waypoints', action: zoomToFit, available: waypoints.length > 0 },
+    {
+      key: 'Alt+F',
+      description: 'Toggle fullscreen',
+      action: toggleFullscreen,
+      available: !!onToggleFullscreen,
+    },
+    {
+      key: 'Ctrl+L',
+      description: 'Toggle layer control',
+      action: toggleLayerControl,
+      available: !!onToggleLayerControl,
+    },
+    {
+      key: 'Home',
+      description: 'Zoom to fit waypoints',
+      action: zoomToFit,
+      available: waypoints.length > 0,
+    },
     { key: 'End', description: 'Reset view', action: resetView, available: !!onResetView },
-    { key: '0', description: 'Reset view', action: resetView, available: !!onResetView }
+    { key: '0', description: 'Reset view', action: resetView, available: !!onResetView },
   ];
 
   return {
@@ -294,7 +314,7 @@ export const useMapKeyboardShortcuts = ({
       zoomToFit,
       resetView,
       toggleFullscreen,
-      toggleLayerControl
-    }
+      toggleLayerControl,
+    },
   };
 };

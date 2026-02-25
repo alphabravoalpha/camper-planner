@@ -76,7 +76,7 @@ const ToolsMenu: React.FC<ToolsMenuProps> = ({
   const hasAnyActivePanel = Object.values(activePanels).some(Boolean);
 
   const toggleMenu = useCallback(() => {
-    setIsOpen((prev) => {
+    setIsOpen(prev => {
       const willOpen = !prev;
       if (willOpen && onMenuOpen) {
         onMenuOpen();
@@ -223,8 +223,8 @@ const ToolsMenu: React.FC<ToolsMenuProps> = ({
     },
   ];
 
-  const visibleRouteItems = routeItems.filter((item) => item.visible);
-  const visibleDangerItems = dangerItems.filter((item) => item.visible);
+  const visibleRouteItems = routeItems.filter(item => item.visible);
+  const visibleDangerItems = dangerItems.filter(item => item.visible);
 
   const renderItem = (item: MenuItem) => {
     const Icon = item.icon;
@@ -237,9 +237,7 @@ const ToolsMenu: React.FC<ToolsMenuProps> = ({
         onClick={() => handleItemClick(item.onClick)}
         className={cn(
           'flex items-center gap-3 px-3 py-2 text-sm cursor-pointer transition-colors w-full text-left',
-          isDanger
-            ? 'text-red-600 hover:bg-red-50'
-            : 'text-neutral-700 hover:bg-neutral-50',
+          isDanger ? 'text-red-600 hover:bg-red-50' : 'text-neutral-700 hover:bg-neutral-50',
           isActive && item.activeColor && `border-l-[3px] ${item.activeColor}`,
           isActive && item.activeBg,
           isActive && 'pl-[9px]', // compensate for 3px border to keep alignment

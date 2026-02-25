@@ -20,15 +20,20 @@ const Button: React.FC<ButtonProps> = ({
   children,
   ...props
 }) => {
-  const baseStyles = 'inline-flex items-center justify-center rounded-lg font-display font-semibold transition-all duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98]';
+  const baseStyles =
+    'inline-flex items-center justify-center rounded-lg font-display font-semibold transition-all duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98]';
 
   const variants = {
-    primary: 'bg-primary-600 text-white hover:bg-primary-700 hover:shadow-medium focus-visible:ring-primary-500',
-    secondary: 'bg-neutral-100 text-neutral-800 hover:bg-neutral-200 focus-visible:ring-neutral-400',
-    outline: 'border-2 border-neutral-300 bg-transparent hover:bg-neutral-50 hover:border-neutral-400 focus-visible:ring-neutral-400',
+    primary:
+      'bg-primary-600 text-white hover:bg-primary-700 hover:shadow-medium focus-visible:ring-primary-500',
+    secondary:
+      'bg-neutral-100 text-neutral-800 hover:bg-neutral-200 focus-visible:ring-neutral-400',
+    outline:
+      'border-2 border-neutral-300 bg-transparent hover:bg-neutral-50 hover:border-neutral-400 focus-visible:ring-neutral-400',
     ghost: 'hover:bg-neutral-100 focus-visible:ring-neutral-400',
     danger: 'bg-red-600 text-white hover:bg-red-700 hover:shadow-medium focus-visible:ring-red-500',
-    accent: 'bg-accent-500 text-white hover:bg-accent-600 hover:shadow-medium focus-visible:ring-accent-500',
+    accent:
+      'bg-accent-500 text-white hover:bg-accent-600 hover:shadow-medium focus-visible:ring-accent-500',
   };
 
   const sizes = {
@@ -39,13 +44,7 @@ const Button: React.FC<ButtonProps> = ({
 
   return (
     <button
-      className={cn(
-        baseStyles,
-        variants[variant],
-        sizes[size],
-        loading && 'opacity-70',
-        className
-      )}
+      className={cn(baseStyles, variants[variant], sizes[size], loading && 'opacity-70', className)}
       disabled={disabled || loading}
       {...props}
     >

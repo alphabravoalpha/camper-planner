@@ -35,7 +35,7 @@ const DEMO_WAYPOINTS = [
   },
 ];
 
-const DEMO_VEHICLE = {
+const _DEMO_VEHICLE = {
   id: 'demo-vehicle',
   name: 'Hymer B550',
   type: 'motorhome',
@@ -52,7 +52,7 @@ const DEMO_VEHICLE = {
 // =============================================================================
 
 /** Click a button found by aria-label. Returns true if clicked. */
-function clickByAriaLabel(label: string): boolean {
+function _clickByAriaLabel(label: string): boolean {
   const el = document.querySelector(`[aria-label="${label}"]`) as HTMLElement | null;
   if (el) {
     el.click();
@@ -120,11 +120,11 @@ export const demoActions = {
 
     const route = useRouteStore.getState();
     // Add Lyon campsite (idempotent)
-    if (!route.waypoints.some((wp) => wp.id === 'demo-campsite-lyon')) {
+    if (!route.waypoints.some(wp => wp.id === 'demo-campsite-lyon')) {
       route.addWaypoint(DEMO_WAYPOINTS[1]);
     }
     // Add Nice campsite (idempotent)
-    if (!route.waypoints.some((wp) => wp.id === 'demo-campsite-nice')) {
+    if (!route.waypoints.some(wp => wp.id === 'demo-campsite-nice')) {
       route.addWaypoint(DEMO_WAYPOINTS[2]);
     }
     // Pan to show full route London → Lyon → Nice

@@ -9,7 +9,6 @@ import { useTripWizardStore, useRouteStore } from '../store';
 import { useOnboarding } from '../hooks/useOnboarding';
 import { Route as RouteIcon, X, MapPin, Tent, Download, BookOpen } from 'lucide-react';
 
-
 const HERO_DISMISSED_KEY = 'planner-hero-dismissed';
 
 const WelcomeHero: React.FC<{ onDismiss: () => void }> = ({ onDismiss }) => (

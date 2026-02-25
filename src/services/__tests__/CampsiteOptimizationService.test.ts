@@ -1,5 +1,8 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { CampsiteOptimizationService, type CampsiteOptimizationRequest } from '../CampsiteOptimizationService';
+import {
+  CampsiteOptimizationService,
+  type CampsiteOptimizationRequest,
+} from '../CampsiteOptimizationService';
 import { type Waypoint, type VehicleProfile } from '../../types';
 import { type Campsite } from '../CampsiteService';
 
@@ -28,6 +31,13 @@ vi.mock('../CampsiteService', () => ({
     }),
   },
 }));
+
+// Helper to access private static methods for testing
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- needed for accessing private static methods in tests
+const ServicePrivate = CampsiteOptimizationService as unknown as Record<
+  string,
+  (...args: any[]) => any
+>;
 
 describe('CampsiteOptimizationService', () => {
   let mockWaypoints: Waypoint[];
@@ -121,7 +131,14 @@ describe('CampsiteOptimizationService', () => {
       const { campsiteService } = await import('../CampsiteService');
       vi.mocked(campsiteService.searchCampsites).mockResolvedValue({
         campsites: [mockCampsite],
-        metadata: { results_count: 1, service: 'overpass', timestamp: Date.now(), query: {} as any, cache_hit: false, query_duration: 100 },
+        metadata: {
+          results_count: 1,
+          service: 'overpass',
+          timestamp: Date.now(),
+          query: {} as unknown as import('../CampsiteService').CampsiteRequest,
+          cache_hit: false,
+          query_duration: 100,
+        },
         cached: false,
         boundingBox: { north: 50, south: 40, east: 10, west: 0 },
       });
@@ -148,7 +165,14 @@ describe('CampsiteOptimizationService', () => {
       const { campsiteService } = await import('../CampsiteService');
       vi.mocked(campsiteService.searchCampsites).mockResolvedValue({
         campsites: [],
-        metadata: { results_count: 0, service: 'overpass', timestamp: Date.now(), query: {} as any, cache_hit: false, query_duration: 100 },
+        metadata: {
+          results_count: 0,
+          service: 'overpass',
+          timestamp: Date.now(),
+          query: {} as unknown as import('../CampsiteService').CampsiteRequest,
+          cache_hit: false,
+          query_duration: 100,
+        },
         cached: false,
         boundingBox: { north: 50, south: 40, east: 10, west: 0 },
       });
@@ -180,7 +204,14 @@ describe('CampsiteOptimizationService', () => {
       const { campsiteService } = await import('../CampsiteService');
       vi.mocked(campsiteService.searchCampsites).mockResolvedValue({
         campsites: [incompatibleCampsite],
-        metadata: { results_count: 1, service: 'overpass', timestamp: Date.now(), query: {} as any, cache_hit: false, query_duration: 100 },
+        metadata: {
+          results_count: 1,
+          service: 'overpass',
+          timestamp: Date.now(),
+          query: {} as unknown as import('../CampsiteService').CampsiteRequest,
+          cache_hit: false,
+          query_duration: 100,
+        },
         cached: false,
         boundingBox: { north: 50, south: 40, east: 10, west: 0 },
       });
@@ -214,7 +245,7 @@ describe('CampsiteOptimizationService', () => {
         preferredStopDuration: 8,
       };
 
-      const score = (CampsiteOptimizationService as any).calculateCampsiteSuitability(
+      const score = ServicePrivate.calculateCampsiteSuitability(
         mockCampsite,
         requirements,
         mockVehicleProfile
@@ -232,7 +263,7 @@ describe('CampsiteOptimizationService', () => {
         preferredStopDuration: 8,
       };
 
-      const score = (CampsiteOptimizationService as any).calculateCampsiteSuitability(
+      const score = ServicePrivate.calculateCampsiteSuitability(
         mockCampsite,
         requirements,
         undefined
@@ -255,7 +286,7 @@ describe('CampsiteOptimizationService', () => {
         preferredStopDuration: 8,
       };
 
-      const score = (CampsiteOptimizationService as any).calculateCampsiteSuitability(
+      const score = ServicePrivate.calculateCampsiteSuitability(
         campsiteWithContact,
         requirements,
         undefined
@@ -280,7 +311,7 @@ describe('CampsiteOptimizationService', () => {
         preferredStopDuration: 8,
       };
 
-      const score = (CampsiteOptimizationService as any).calculateCampsiteSuitability(
+      const score = ServicePrivate.calculateCampsiteSuitability(
         perfectCampsite,
         requirements,
         mockVehicleProfile
@@ -295,16 +326,22 @@ describe('CampsiteOptimizationService', () => {
       const paris = { id: '1', lat: 48.8566, lng: 2.3522, type: 'start' as const, name: 'Paris' };
       const lyon = { id: '2', lat: 45.764, lng: 4.8357, type: 'end' as const, name: 'Lyon' };
 
-      const distance = (CampsiteOptimizationService as any).calculateDistance(paris, lyon);
+      const distance = ServicePrivate.calculateDistance(paris, lyon);
 
       expect(distance).toBeGreaterThan(0);
       expect(distance).toBeCloseTo(392, -1); // ~392 km Paris to Lyon
     });
 
     it('should return 0 for same location', () => {
-      const waypoint = { id: '1', lat: 48.8566, lng: 2.3522, type: 'waypoint' as const, name: 'Paris' };
+      const waypoint = {
+        id: '1',
+        lat: 48.8566,
+        lng: 2.3522,
+        type: 'waypoint' as const,
+        name: 'Paris',
+      };
 
-      const distance = (CampsiteOptimizationService as any).calculateDistance(waypoint, waypoint);
+      const distance = ServicePrivate.calculateDistance(waypoint, waypoint);
 
       expect(distance).toBe(0);
     });
@@ -316,7 +353,7 @@ describe('CampsiteOptimizationService', () => {
       const end = { id: '2', lat: 46.0, lng: 4.0, type: 'end' as const, name: 'End' };
       const bufferKm = 10;
 
-      const bounds = (CampsiteOptimizationService as any).calculateSegmentBounds(start, end, bufferKm);
+      const bounds = ServicePrivate.calculateSegmentBounds(start, end, bufferKm);
 
       expect(bounds.north).toBeGreaterThan(Math.max(start.lat, end.lat));
       expect(bounds.south).toBeLessThan(Math.min(start.lat, end.lat));
@@ -333,10 +370,10 @@ describe('CampsiteOptimizationService', () => {
         { id: '3', lat: 40.0, lng: 0.0, type: 'end' as const, name: 'End' },
       ];
 
-      const segments = (CampsiteOptimizationService as any).identifyLongSegments(waypoints, 3);
+      const segments = ServicePrivate.identifyLongSegments(waypoints, 3);
 
       expect(segments.length).toBeGreaterThan(0);
-      expect(segments.every((s: any) => s.needsCampsite)).toBe(true);
+      expect(segments.every((s: { needsCampsite: boolean }) => s.needsCampsite)).toBe(true);
     });
 
     it('should not identify short segments', () => {
@@ -345,7 +382,7 @@ describe('CampsiteOptimizationService', () => {
         { id: '2', lat: 48.8606, lng: 2.3376, type: 'end' as const, name: 'Nearby' }, // ~1.5 km
       ];
 
-      const segments = (CampsiteOptimizationService as any).identifyLongSegments(waypoints, 3);
+      const segments = ServicePrivate.identifyLongSegments(waypoints, 3);
 
       expect(segments).toEqual([]);
     });
@@ -354,7 +391,9 @@ describe('CampsiteOptimizationService', () => {
   describe('Error Handling', () => {
     it('should handle campsite service errors gracefully', async () => {
       const { campsiteService } = await import('../CampsiteService');
-      vi.mocked(campsiteService.searchCampsites).mockRejectedValue(new Error('Service unavailable'));
+      vi.mocked(campsiteService.searchCampsites).mockRejectedValue(
+        new Error('Service unavailable')
+      );
 
       const request: CampsiteOptimizationRequest = {
         waypoints: mockWaypoints,

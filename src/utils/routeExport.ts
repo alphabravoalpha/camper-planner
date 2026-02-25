@@ -1,7 +1,7 @@
 // Route Export Utilities
 // Phase 3.4: Prepare route data for export (GPX format for Phase 6)
 
-import { type RouteResponse, type RouteData, type RouteStep } from '../services/RoutingService';
+import { type RouteResponse } from '../services/RoutingService';
 import { type Waypoint } from '../types';
 
 export interface ExportableRoute {
@@ -103,7 +103,7 @@ export function prepareRouteForExport(
     lng: wp.lng,
     elevation: undefined, // Could be extracted from route if available
     type: wp.type,
-    order: index
+    order: index,
   }));
 
   // Calculate bounds
@@ -112,60 +112,60 @@ export function prepareRouteForExport(
     north: Math.max(...allCoordinates.map(coord => coord[1])),
     south: Math.min(...allCoordinates.map(coord => coord[1])),
     east: Math.max(...allCoordinates.map(coord => coord[0])),
-    west: Math.min(...allCoordinates.map(coord => coord[0]))
+    west: Math.min(...allCoordinates.map(coord => coord[0])),
   };
 
   // Prepare track segments
-  const exportableSegments: ExportableTrackSegment[] = mainRoute.segments.map((segment, segmentIndex) => {
-    // Extract track points for this segment
-    const segmentPoints: ExportableTrackPoint[] = [];
+  const exportableSegments: ExportableTrackSegment[] = mainRoute.segments.map(
+    (segment, segmentIndex) => {
+      // Extract track points for this segment
+      const segmentPoints: ExportableTrackPoint[] = [];
 
-    // For now, we'll use the full route geometry and divide it by segments
-    // In a more sophisticated implementation, we'd have per-segment geometry
-    const pointsPerSegment = Math.floor(allCoordinates.length / mainRoute.segments.length);
-    const startIndex = segmentIndex * pointsPerSegment;
-    const endIndex = segmentIndex === mainRoute.segments.length - 1
-      ? allCoordinates.length
-      : (segmentIndex + 1) * pointsPerSegment;
+      // For now, we'll use the full route geometry and divide it by segments
+      // In a more sophisticated implementation, we'd have per-segment geometry
+      const pointsPerSegment = Math.floor(allCoordinates.length / mainRoute.segments.length);
+      const startIndex = segmentIndex * pointsPerSegment;
+      const endIndex =
+        segmentIndex === mainRoute.segments.length - 1
+          ? allCoordinates.length
+          : (segmentIndex + 1) * pointsPerSegment;
 
-    let cumulativeDistance = 0;
-    for (let i = startIndex; i < endIndex; i++) {
-      const coord = allCoordinates[i];
+      let cumulativeDistance = 0;
+      for (let i = startIndex; i < endIndex; i++) {
+        const coord = allCoordinates[i];
 
-      // Calculate cumulative distance (simple approximation)
-      if (i > startIndex) {
-        const prevCoord = allCoordinates[i - 1];
-        cumulativeDistance += calculateDistance(
-          prevCoord[1], prevCoord[0],
-          coord[1], coord[0]
-        );
+        // Calculate cumulative distance (simple approximation)
+        if (i > startIndex) {
+          const prevCoord = allCoordinates[i - 1];
+          cumulativeDistance += calculateDistance(prevCoord[1], prevCoord[0], coord[1], coord[0]);
+        }
+
+        segmentPoints.push({
+          lat: coord[1],
+          lng: coord[0],
+          // @ts-expect-error - Optional elevation coordinate access - third element may or may not exist
+          elevation: coord[2], // Third element if present
+          distance: cumulativeDistance,
+        });
       }
 
-      segmentPoints.push({
-        lat: coord[1],
-        lng: coord[0],
-        // @ts-ignore - Optional elevation coordinate access - third element may or may not exist, handled safely
-        elevation: coord[2], // Third element if present
-        distance: cumulativeDistance
-      });
+      // Prepare instructions
+      const instructions: ExportableInstruction[] = (segment.steps || []).map(step => ({
+        distance: step.distance,
+        duration: step.duration,
+        instruction: step.instruction,
+        streetName: step.name,
+        coordinates: step.wayPoints,
+      }));
+
+      return {
+        points: segmentPoints,
+        distance: segment.distance,
+        duration: segment.duration,
+        instructions: instructions.length > 0 ? instructions : undefined,
+      };
     }
-
-    // Prepare instructions
-    const instructions: ExportableInstruction[] = (segment.steps || []).map(step => ({
-      distance: step.distance,
-      duration: step.duration,
-      instruction: step.instruction,
-      streetName: step.name,
-      coordinates: step.wayPoints
-    }));
-
-    return {
-      points: segmentPoints,
-      distance: segment.distance,
-      duration: segment.duration,
-      instructions: instructions.length > 0 ? instructions : undefined
-    };
-  });
+  );
 
   // Prepare track
   const exportableTrack: ExportableTrack = {
@@ -173,7 +173,7 @@ export function prepareRouteForExport(
     segments: exportableSegments,
     totalDistance: mainRoute.summary.distance,
     totalDuration: mainRoute.summary.duration,
-    bounds
+    bounds,
   };
 
   // Prepare metadata
@@ -184,10 +184,12 @@ export function prepareRouteForExport(
     service: routeResponse.metadata.service,
     profile: routeResponse.metadata.profile,
     vehicleProfile: routeResponse.metadata.query.vehicleProfile,
-    restrictions: routeResponse.restrictions ? {
-      violatedDimensions: routeResponse.restrictions.violatedDimensions,
-      warnings: routeResponse.warnings || []
-    } : undefined
+    restrictions: routeResponse.restrictions
+      ? {
+          violatedDimensions: routeResponse.restrictions.violatedDimensions,
+          warnings: routeResponse.warnings || [],
+        }
+      : undefined,
   };
 
   return {
@@ -196,7 +198,7 @@ export function prepareRouteForExport(
     description: `Generated route with ${waypoints.length} waypoints. Distance: ${Math.round(mainRoute.summary.distance / 1000)} km, Duration: ${Math.round(mainRoute.summary.duration / 3600)}h ${Math.round((mainRoute.summary.duration % 3600) / 60)}m`,
     waypoints: exportableWaypoints,
     track: exportableTrack,
-    metadata: exportableMetadata
+    metadata: exportableMetadata,
   };
 }
 
@@ -205,13 +207,15 @@ export function prepareRouteForExport(
  */
 function calculateDistance(lat1: number, lng1: number, lat2: number, lng2: number): number {
   const R = 6371000; // Earth's radius in meters
-  const dLat = (lat2 - lat1) * Math.PI / 180;
-  const dLng = (lng2 - lng1) * Math.PI / 180;
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLng = ((lng2 - lng1) * Math.PI) / 180;
   const a =
-    Math.sin(dLat/2) * Math.sin(dLat/2) +
-    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-    Math.sin(dLng/2) * Math.sin(dLng/2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLng / 2) *
+      Math.sin(dLng / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   return R * c;
 }
 
@@ -262,8 +266,8 @@ export function getRouteStatistics(route: ExportableRoute) {
   const hasElevation = route.track.segments.some(segment =>
     segment.points.some(point => point.elevation !== undefined)
   );
-  const hasInstructions = route.track.segments.some(segment =>
-    segment.instructions && segment.instructions.length > 0
+  const hasInstructions = route.track.segments.some(
+    segment => segment.instructions && segment.instructions.length > 0
   );
 
   return {
@@ -275,7 +279,7 @@ export function getRouteStatistics(route: ExportableRoute) {
     hasElevation,
     hasInstructions,
     bounds: route.track.bounds,
-    vehicleCompatible: !route.metadata.restrictions?.violatedDimensions.length
+    vehicleCompatible: !route.metadata.restrictions?.violatedDimensions.length,
   };
 }
 
@@ -296,29 +300,29 @@ export const EXPORT_FORMATS: Record<string, ExportFormat> = {
     mimeType: 'application/gpx+xml',
     extension: '.gpx',
     supportsElevation: true,
-    supportsInstructions: true
+    supportsInstructions: true,
   },
   kml: {
     format: 'kml',
     mimeType: 'application/vnd.google-earth.kml+xml',
     extension: '.kml',
     supportsElevation: true,
-    supportsInstructions: false
+    supportsInstructions: false,
   },
   json: {
     format: 'json',
     mimeType: 'application/json',
     extension: '.json',
     supportsElevation: true,
-    supportsInstructions: true
+    supportsInstructions: true,
   },
   csv: {
     format: 'csv',
     mimeType: 'text/csv',
     extension: '.csv',
     supportsElevation: true,
-    supportsInstructions: false
-  }
+    supportsInstructions: false,
+  },
 };
 
 /**

@@ -26,8 +26,12 @@ export interface OptimizationVisualization {
 export function generateOptimizationVisualization(
   result: OptimizationResult
 ): OptimizationVisualization {
-  const originalPath = result.originalRoute.waypoints.map(wp => [wp.lat, wp.lng] as [number, number]);
-  const optimizedPath = result.optimizedRoute.waypoints.map(wp => [wp.lat, wp.lng] as [number, number]);
+  const originalPath = result.originalRoute.waypoints.map(
+    wp => [wp.lat, wp.lng] as [number, number]
+  );
+  const optimizedPath = result.optimizedRoute.waypoints.map(
+    wp => [wp.lat, wp.lng] as [number, number]
+  );
 
   // Map waypoint reordering
   const reorderedWaypoints = result.optimizedRoute.waypoints.map((optimizedWp, optimizedIndex) => {
@@ -35,7 +39,7 @@ export function generateOptimizationVisualization(
     return {
       original: originalIndex,
       optimized: optimizedIndex,
-      waypoint: optimizedWp
+      waypoint: optimizedWp,
     };
   });
 
@@ -47,8 +51,8 @@ export function generateOptimizationVisualization(
       distanceImprovement: result.improvements.distanceSaved,
       timeImprovement: result.improvements.timeSaved,
       costImprovement: result.improvements.costSaved,
-      efficiencyGain: result.improvements.percentageImprovement
-    }
+      efficiencyGain: result.improvements.percentageImprovement,
+    },
   };
 }
 
@@ -101,11 +105,14 @@ export function calculateTotalRouteDistance(waypoints: Waypoint[]): number {
  */
 function haversineDistance(lat1: number, lng1: number, lat2: number, lng2: number): number {
   const R = 6371; // Earth's radius in km
-  const dLat = (lat2 - lat1) * Math.PI / 180;
-  const dLng = (lng2 - lng1) * Math.PI / 180;
-  const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-    Math.sin(dLng / 2) * Math.sin(dLng / 2);
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLng = ((lng2 - lng1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLng / 2) *
+      Math.sin(dLng / 2);
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   return R * c;
 }
@@ -128,7 +135,7 @@ export function analyzeRouteOptimizationPotential(waypoints: Waypoint[]): {
       hasBacktracking: false,
       crossingPaths: false,
       inefficientSegments: [],
-      overallEfficiency: 1
+      overallEfficiency: 1,
     };
   }
 
@@ -148,7 +155,7 @@ export function analyzeRouteOptimizationPotential(waypoints: Waypoint[]): {
     hasBacktracking,
     crossingPaths,
     inefficientSegments,
-    overallEfficiency
+    overallEfficiency,
   };
 }
 
@@ -171,8 +178,18 @@ function checkForBacktracking(waypoints: Waypoint[]): boolean {
       // Check if we're actually going back towards a previous point
       for (let j = 0; j < i; j++) {
         const previousPoint = waypoints[j];
-        const distanceToNext = haversineDistance(afterNext.lat, afterNext.lng, previousPoint.lat, previousPoint.lng);
-        const distanceToCurrent = haversineDistance(current.lat, current.lng, previousPoint.lat, previousPoint.lng);
+        const distanceToNext = haversineDistance(
+          afterNext.lat,
+          afterNext.lng,
+          previousPoint.lat,
+          previousPoint.lng
+        );
+        const distanceToCurrent = haversineDistance(
+          current.lat,
+          current.lng,
+          previousPoint.lat,
+          previousPoint.lng
+        );
 
         if (distanceToNext < distanceToCurrent * 0.8) {
           return true;
@@ -215,15 +232,19 @@ function findInefficientSegments(waypoints: Waypoint[]): Array<{
     for (let j = i + 2; j < waypoints.length; j++) {
       // Calculate efficiency of going through intermediate points vs direct
       const directDistance = haversineDistance(
-        waypoints[i].lat, waypoints[i].lng,
-        waypoints[j].lat, waypoints[j].lng
+        waypoints[i].lat,
+        waypoints[i].lng,
+        waypoints[j].lat,
+        waypoints[j].lng
       );
 
       let throughDistance = 0;
       for (let k = i; k < j; k++) {
         throughDistance += haversineDistance(
-          waypoints[k].lat, waypoints[k].lng,
-          waypoints[k + 1].lat, waypoints[k + 1].lng
+          waypoints[k].lat,
+          waypoints[k].lng,
+          waypoints[k + 1].lat,
+          waypoints[k + 1].lng
         );
       }
 
@@ -234,7 +255,7 @@ function findInefficientSegments(waypoints: Waypoint[]): Array<{
         inefficientSegments.push({
           startIndex: i,
           endIndex: j,
-          inefficiencyRatio
+          inefficiencyRatio,
         });
       }
     }
@@ -247,14 +268,14 @@ function findInefficientSegments(waypoints: Waypoint[]): Array<{
  * Calculate bearing between two points
  */
 function calculateBearing(point1: Waypoint, point2: Waypoint): number {
-  const dLng = (point2.lng - point1.lng) * Math.PI / 180;
-  const lat1 = point1.lat * Math.PI / 180;
-  const lat2 = point2.lat * Math.PI / 180;
+  const dLng = ((point2.lng - point1.lng) * Math.PI) / 180;
+  const lat1 = (point1.lat * Math.PI) / 180;
+  const lat2 = (point2.lat * Math.PI) / 180;
 
   const y = Math.sin(dLng) * Math.cos(lat2);
   const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLng);
 
-  return (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
+  return ((Math.atan2(y, x) * 180) / Math.PI + 360) % 360;
 }
 
 /**
@@ -289,7 +310,7 @@ export function formatOptimizationSummary(result: OptimizationResult): string {
   const { improvements } = result;
 
   if (improvements.percentageImprovement < 1) {
-    return "Route is already well optimized";
+    return 'Route is already well optimized';
   }
 
   const parts = [];
@@ -312,5 +333,5 @@ export function formatOptimizationSummary(result: OptimizationResult): string {
     parts.push(`€${improvements.costSaved.toFixed(0)} cheaper`);
   }
 
-  return parts.length > 0 ? parts.join(', ') : "Minor improvements";
+  return parts.length > 0 ? parts.join(', ') : 'Minor improvements';
 }

@@ -3,9 +3,27 @@
 
 import React, { useState, useEffect } from 'react';
 import {
-  Save, Copy, Download, Upload, Search, Star, Calendar, MapPin,
-  Clock, Euro, Users, Trash2, ExternalLink, BarChart3, X,
-  Globe, Navigation, Mountain, Heart, Briefcase, Car
+  Save,
+  Copy,
+  Download,
+  Upload,
+  Search,
+  Star,
+  Calendar,
+  MapPin,
+  Clock,
+  Euro,
+  Users,
+  Trash2,
+  ExternalLink,
+  BarChart3,
+  X,
+  Globe,
+  Navigation,
+  Mountain,
+  Heart,
+  Briefcase,
+  Car,
 } from 'lucide-react';
 import { useRouteStore } from '../../store';
 import { useVehicleStore } from '../../store';
@@ -15,9 +33,11 @@ import {
   type Trip,
   type TripSummary,
   type TripMetadata,
-  type TripComparison
+  type TripComparison,
 } from '../../services/TripStorageService';
-import MultiFormatExportService, { type ExportOptions } from '../../services/MultiFormatExportService';
+import MultiFormatExportService, {
+  type ExportOptions,
+} from '../../services/MultiFormatExportService';
 import { type RouteResponse } from '../../services/RoutingService';
 // TripTemplatesService temporarily disabled for MVP
 
@@ -42,7 +62,7 @@ const TripManager: React.FC<TripManagerProps> = ({
   className = '',
   onTripLoad,
   onClose,
-  isVisible = true
+  isVisible = true,
 }) => {
   // Store hooks
   const { waypoints } = useRouteStore();
@@ -50,10 +70,16 @@ const TripManager: React.FC<TripManagerProps> = ({
   const { settings: tripSettings } = useTripSettingsStore();
   // Derive fuel settings from trip settings store for cost calculations
   const fuelConsumptionSettings = {
-    consumptionType: tripSettings.fuelConsumption.unit === 'l_per_100km' ? 'l_per_100km' as const
-      : tripSettings.fuelConsumption.unit === 'mpg_imperial' ? 'mpg_imperial' as const : 'mpg_us' as const,
+    consumptionType:
+      tripSettings.fuelConsumption.unit === 'l_per_100km'
+        ? ('l_per_100km' as const)
+        : tripSettings.fuelConsumption.unit === 'mpg_imperial'
+          ? ('mpg_imperial' as const)
+          : ('mpg_us' as const),
     consumption: tripSettings.fuelConsumption.value,
-    fuelType: (tripSettings.fuelConsumption.fuelType === 'electric' ? 'electricity' : tripSettings.fuelConsumption.fuelType) as 'petrol' | 'diesel' | 'lpg' | 'electricity',
+    fuelType: (tripSettings.fuelConsumption.fuelType === 'electric'
+      ? 'electricity'
+      : tripSettings.fuelConsumption.fuelType) as 'petrol' | 'diesel' | 'lpg' | 'electricity',
     tankCapacity: tripSettings.fuelConsumption.tankCapacity,
   };
   const fuelPriceSettings = {
@@ -64,7 +90,7 @@ const TripManager: React.FC<TripManagerProps> = ({
   // State
   const [viewMode, setViewMode] = useState<ViewMode>('my_trips');
   const [trips, setTrips] = useState<TripSummary[]>([]);
-  const [templates, setTemplates] = useState<any[]>([]);
+  const [templates, setTemplates] = useState<TripSummary[]>([]);
   const [recentTrips, setRecentTrips] = useState<TripSummary[]>([]);
   const [selectedTrips, setSelectedTrips] = useState<string[]>([]);
   const [comparison, setComparison] = useState<TripComparison | null>(null);
@@ -81,7 +107,7 @@ const TripManager: React.FC<TripManagerProps> = ({
     description: '',
     category: 'leisure',
     tags: [],
-    isPublic: false
+    isPublic: false,
   });
 
   // Import/Export state
@@ -98,7 +124,7 @@ const TripManager: React.FC<TripManagerProps> = ({
     includeInstructions: true,
     includeElevation: true,
     includeMetadata: true,
-    creator: 'European Camper Trip Planner'
+    creator: 'European Camper Trip Planner',
   });
 
   // Load data on component mount
@@ -110,17 +136,23 @@ const TripManager: React.FC<TripManagerProps> = ({
 
   // Filter trips and templates
   const filteredTrips = trips.filter(trip => {
-    const matchesSearch = trip.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    const matchesSearch =
+      trip.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       trip.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
     const matchesCategory = categoryFilter === 'all' || trip.category === categoryFilter;
     return matchesSearch && matchesCategory;
   });
 
   const filteredTemplates = templates.filter(template => {
-    const matchesSearch = template.metadata.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      template.metadata.tags.some((tag: string) => tag.toLowerCase().includes(searchQuery.toLowerCase()));
-    const matchesCategory = categoryFilter === 'all' || template.metadata.category === categoryFilter;
-    const matchesDifficulty = difficultyFilter === 'all' || template.metadata.difficulty === difficultyFilter;
+    const matchesSearch =
+      template.metadata.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      template.metadata.tags.some((tag: string) =>
+        tag.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    const matchesCategory =
+      categoryFilter === 'all' || template.metadata.category === categoryFilter;
+    const matchesDifficulty =
+      difficultyFilter === 'all' || template.metadata.difficulty === difficultyFilter;
     return matchesSearch && matchesCategory && matchesDifficulty;
   });
 
@@ -128,9 +160,9 @@ const TripManager: React.FC<TripManagerProps> = ({
     try {
       const summaries = await TripStorageService.getTripSummaries({ excludeTemplates: true });
       setTrips(summaries);
-    } catch (err) {
+    } catch (_err) {
       setError('Failed to load trips');
-      console.error('Load trips error:', err);
+      // Error already surfaced in UI via setError
     }
   };
 
@@ -138,9 +170,9 @@ const TripManager: React.FC<TripManagerProps> = ({
     try {
       // TripTemplatesService disabled for MVP
       setTemplates([]);
-    } catch (err) {
+    } catch (_err) {
       setError('Failed to load templates');
-      console.error('Load templates error:', err);
+      // Error already surfaced in UI via setError
     }
   };
 
@@ -148,8 +180,8 @@ const TripManager: React.FC<TripManagerProps> = ({
     try {
       const recent = await TripStorageService.getRecentTrips(10);
       setRecentTrips(recent);
-    } catch (err) {
-      console.error('Load recent trips error:', err);
+    } catch (_err) {
+      // Silently fail for recent trips — non-critical
     }
   };
 
@@ -191,7 +223,7 @@ const TripManager: React.FC<TripManagerProps> = ({
           estimatedCost,
           currency: 'EUR',
           isTemplate: false,
-          isPublic: saveData.isPublic
+          isPublic: saveData.isPublic,
         },
         data: {
           waypoints,
@@ -200,7 +232,7 @@ const TripManager: React.FC<TripManagerProps> = ({
             avoidTolls: false,
             avoidFerries: false,
             preferScenic: false,
-            fuelEfficient: true
+            fuelEfficient: true,
           },
           campsiteSelections: [],
           costCalculations: {
@@ -214,14 +246,14 @@ const TripManager: React.FC<TripManagerProps> = ({
               otherCosts: 0,
               currency: 'EUR',
               segments: [],
-              dailyBreakdown: []
+              dailyBreakdown: [],
             },
             fuelSettings: fuelConsumptionSettings,
             priceSettings: fuelPriceSettings,
-            lastCalculated: new Date()
+            lastCalculated: new Date(),
           },
           settings: useTripSettingsStore.getState().settings,
-        }
+        },
       };
 
       await TripStorageService.saveTrip(trip);
@@ -232,11 +264,11 @@ const TripManager: React.FC<TripManagerProps> = ({
         description: '',
         category: 'leisure',
         tags: [],
-        isPublic: false
+        isPublic: false,
       });
-    } catch (err) {
+    } catch (_err) {
       setError('Failed to save trip');
-      console.error('Save trip error:', err);
+      // Error already surfaced in UI via setError
     } finally {
       setIsLoading(false);
     }
@@ -254,9 +286,9 @@ const TripManager: React.FC<TripManagerProps> = ({
         }
         await loadRecentTrips(); // Update recent trips
       }
-    } catch (err) {
+    } catch (_err) {
       setError('Failed to load trip');
-      console.error('Load trip error:', err);
+      // Error already surfaced in UI via setError
     } finally {
       setIsLoading(false);
     }
@@ -267,9 +299,9 @@ const TripManager: React.FC<TripManagerProps> = ({
     try {
       await TripStorageService.duplicateTrip(tripId);
       await loadTrips();
-    } catch (err) {
+    } catch (_err) {
       setError('Failed to duplicate trip');
-      console.error('Duplicate trip error:', err);
+      // Error already surfaced in UI via setError
     } finally {
       setIsLoading(false);
     }
@@ -282,9 +314,9 @@ const TripManager: React.FC<TripManagerProps> = ({
     try {
       await TripStorageService.deleteTrip(tripId);
       await loadTrips();
-    } catch (err) {
+    } catch (_err) {
       setError('Failed to delete trip');
-      console.error('Delete trip error:', err);
+      // Error already surfaced in UI via setError
     } finally {
       setIsLoading(false);
     }
@@ -318,7 +350,7 @@ const TripManager: React.FC<TripManagerProps> = ({
         includeElevation: exportOptions.includeElevation ?? true,
         includeMetadata: exportOptions.includeMetadata ?? true,
         creator: exportOptions.creator || 'European Camper Trip Planner',
-        description: `${trip.metadata.name} - ${trip.metadata.description || 'Exported from Trip Manager'}`
+        description: `${trip.metadata.name} - ${trip.metadata.description || 'Exported from Trip Manager'}`,
       };
 
       // Use MultiFormatExportService to download the route
@@ -337,9 +369,9 @@ const TripManager: React.FC<TripManagerProps> = ({
       } else {
         throw new Error('Export download failed');
       }
-    } catch (err) {
+    } catch (_err) {
       setError('Failed to export trip');
-      console.error('Export trip error:', err);
+      // Error already surfaced in UI via setError
     } finally {
       setIsLoading(false);
     }
@@ -361,22 +393,22 @@ const TripManager: React.FC<TripManagerProps> = ({
       } else {
         setError('Invalid trip data format');
       }
-    } catch (err) {
+    } catch (_err) {
       setError('Failed to import trip');
-      console.error('Import trip error:', err);
+      // Error already surfaced in UI via setError
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleUseTemplate = async (_template: any) => {
+  const handleUseTemplate = async (_template: TripSummary) => {
     setIsLoading(true);
     try {
       // TripTemplatesService disabled for MVP
       setError('Templates not available in MVP version');
-    } catch (err) {
+    } catch (_err) {
       setError('Failed to create trip from template');
-      console.error('Template to trip error:', err);
+      // Error already surfaced in UI via setError
     } finally {
       setIsLoading(false);
     }
@@ -393,27 +425,33 @@ const TripManager: React.FC<TripManagerProps> = ({
       const comparisonResult = await TripStorageService.compareTrips(selectedTrips);
       setComparison(comparisonResult);
       setViewMode('comparison');
-    } catch (err) {
+    } catch (_err) {
       setError('Failed to compare trips');
-      console.error('Compare trips error:', err);
+      // Error already surfaced in UI via setError
     } finally {
       setIsLoading(false);
     }
   };
 
   // Helper function to calculate distance between waypoints
-  const calculateDistance = (waypoint1: any, waypoint2: any): number => {
+  const calculateDistance = (
+    waypoint1: { lat: number; lng: number },
+    waypoint2: { lat: number; lng: number }
+  ): number => {
     const R = 6371; // Earth's radius in km
-    const dLat = (waypoint2.lat - waypoint1.lat) * Math.PI / 180;
-    const dLng = (waypoint2.lng - waypoint1.lng) * Math.PI / 180;
-    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(waypoint1.lat * Math.PI / 180) * Math.cos(waypoint2.lat * Math.PI / 180) *
-      Math.sin(dLng / 2) * Math.sin(dLng / 2);
+    const dLat = ((waypoint2.lat - waypoint1.lat) * Math.PI) / 180;
+    const dLng = ((waypoint2.lng - waypoint1.lng) * Math.PI) / 180;
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos((waypoint1.lat * Math.PI) / 180) *
+        Math.cos((waypoint2.lat * Math.PI) / 180) *
+        Math.sin(dLng / 2) *
+        Math.sin(dLng / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
   };
 
-  const calculateTotalDistance = (waypoints: any[]): number => {
+  const calculateTotalDistance = (waypoints: { lat: number; lng: number }[]): number => {
     if (waypoints.length < 2) return 0;
     let total = 0;
     for (let i = 0; i < waypoints.length - 1; i++) {
@@ -428,44 +466,48 @@ const TripManager: React.FC<TripManagerProps> = ({
     return {
       id: `trip_${trip.metadata.id}`,
       status: 'success',
-      routes: [{
-        geometry: {
-          coordinates: waypoints.map(wp => [wp.lng, wp.lat]),
-          type: "LineString"
+      routes: [
+        {
+          geometry: {
+            coordinates: waypoints.map(wp => [wp.lng, wp.lat]),
+            type: 'LineString',
+          },
+          summary: {
+            distance: waypoints.length > 1 ? calculateTotalDistance(waypoints) * 1000 : 0,
+            duration: waypoints.length > 1 ? (calculateTotalDistance(waypoints) / 70) * 3600 : 0,
+          },
+          waypoints: waypoints.map((_, i) => i), // Waypoint indices in geometry
+          segments: [
+            {
+              distance: waypoints.length > 1 ? calculateTotalDistance(waypoints) * 1000 : 0,
+              duration: waypoints.length > 1 ? (calculateTotalDistance(waypoints) / 70) * 3600 : 0,
+              steps: waypoints.map((wp, index) => ({
+                instruction: index === 0 ? `Start at ${wp.name}` : `Continue to ${wp.name}`,
+                name: wp.name,
+                distance: index > 0 ? calculateDistance(waypoints[index - 1], wp) * 1000 : 0,
+                duration: index > 0 ? (calculateDistance(waypoints[index - 1], wp) / 70) * 3600 : 0,
+                geometry: { coordinates: [wp.lng, wp.lat] },
+                maneuver: { location: [wp.lng, wp.lat] },
+                wayPoints: [0, 1],
+              })),
+            },
+          ],
         },
-        summary: {
-          distance: waypoints.length > 1 ? calculateTotalDistance(waypoints) * 1000 : 0,
-          duration: waypoints.length > 1 ? calculateTotalDistance(waypoints) / 70 * 3600 : 0
-        },
-        waypoints: waypoints.map((_, i) => i), // Waypoint indices in geometry
-        segments: [{
-          distance: waypoints.length > 1 ? calculateTotalDistance(waypoints) * 1000 : 0,
-          duration: waypoints.length > 1 ? calculateTotalDistance(waypoints) / 70 * 3600 : 0,
-          steps: waypoints.map((wp, index) => ({
-            instruction: index === 0 ? `Start at ${wp.name}` : `Continue to ${wp.name}`,
-            name: wp.name,
-            distance: index > 0 ? calculateDistance(waypoints[index-1], wp) * 1000 : 0,
-            duration: index > 0 ? calculateDistance(waypoints[index-1], wp) / 70 * 3600 : 0,
-            geometry: { coordinates: [wp.lng, wp.lat] },
-            maneuver: { location: [wp.lng, wp.lat] },
-            wayPoints: [0, 1]
-          }))
-        }]
-      }],
+      ],
       metadata: {
         service: 'openrouteservice',
         profile: trip.data.vehicleProfile?.type || 'driving-hgv',
         timestamp: Date.now(),
         query: {
           waypoints: waypoints,
-          vehicleProfile: trip.data.vehicleProfile
+          vehicleProfile: trip.data.vehicleProfile,
         },
-        attribution: 'OpenRouteService'
-      }
+        attribution: 'OpenRouteService',
+      },
     };
   };
 
-  const estimateCountries = (waypoints: any[]): string[] => {
+  const estimateCountries = (waypoints: { lat: number; lng: number }[]): string[] => {
     // Simplified country estimation based on coordinates
     const countries = new Set<string>();
     waypoints.forEach(wp => {
@@ -483,26 +525,35 @@ const TripManager: React.FC<TripManagerProps> = ({
       style: 'currency',
       currency,
       minimumFractionDigits: 0,
-      maximumFractionDigits: 0
+      maximumFractionDigits: 0,
     }).format(amount);
   };
 
   const getCategoryIcon = (category: string) => {
     switch (category) {
-      case 'adventure': return <Mountain className="w-4 h-4" />;
-      case 'romantic': return <Heart className="w-4 h-4" />;
-      case 'business': return <Briefcase className="w-4 h-4" />;
-      case 'family': return <Users className="w-4 h-4" />;
-      default: return <Car className="w-4 h-4" />;
+      case 'adventure':
+        return <Mountain className="w-4 h-4" />;
+      case 'romantic':
+        return <Heart className="w-4 h-4" />;
+      case 'business':
+        return <Briefcase className="w-4 h-4" />;
+      case 'family':
+        return <Users className="w-4 h-4" />;
+      default:
+        return <Car className="w-4 h-4" />;
     }
   };
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
-      case 'easy': return 'text-green-600 bg-green-100';
-      case 'moderate': return 'text-yellow-600 bg-yellow-100';
-      case 'challenging': return 'text-red-600 bg-red-100';
-      default: return 'text-neutral-600 bg-neutral-100';
+      case 'easy':
+        return 'text-green-600 bg-green-100';
+      case 'moderate':
+        return 'text-yellow-600 bg-yellow-100';
+      case 'challenging':
+        return 'text-red-600 bg-red-100';
+      default:
+        return 'text-neutral-600 bg-neutral-100';
     }
   };
 
@@ -543,7 +594,7 @@ const TripManager: React.FC<TripManagerProps> = ({
         {[
           { id: 'my_trips', label: 'My Trips', icon: <Save className="w-4 h-4" /> },
           { id: 'templates', label: 'Templates', icon: <Star className="w-4 h-4" /> },
-          { id: 'recent', label: 'Recent', icon: <Clock className="w-4 h-4" /> }
+          { id: 'recent', label: 'Recent', icon: <Clock className="w-4 h-4" /> },
         ].map(tab => (
           <button
             key={tab.id}
@@ -566,10 +617,7 @@ const TripManager: React.FC<TripManagerProps> = ({
           <div className="flex items-center gap-2 text-red-700">
             <X className="w-4 h-4" />
             <span className="text-sm">{error}</span>
-            <button
-              onClick={() => setError(null)}
-              className="ml-auto p-1 hover:bg-red-100 rounded"
-            >
+            <button onClick={() => setError(null)} className="ml-auto p-1 hover:bg-red-100 rounded">
               <X className="w-3 h-3" />
             </button>
           </div>
@@ -586,7 +634,7 @@ const TripManager: React.FC<TripManagerProps> = ({
               type="text"
               placeholder="Search trips, tags, or countries..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={e => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-2 border rounded-lg text-sm"
             />
           </div>
@@ -595,7 +643,7 @@ const TripManager: React.FC<TripManagerProps> = ({
           <div className="flex gap-2">
             <select
               value={categoryFilter}
-              onChange={(e) => setCategoryFilter(e.target.value)}
+              onChange={e => setCategoryFilter(e.target.value)}
               className="px-3 py-2 border rounded-lg text-sm"
             >
               <option value="all">All Categories</option>
@@ -609,7 +657,7 @@ const TripManager: React.FC<TripManagerProps> = ({
             {viewMode === 'templates' && (
               <select
                 value={difficultyFilter}
-                onChange={(e) => setDifficultyFilter(e.target.value)}
+                onChange={e => setDifficultyFilter(e.target.value)}
                 className="px-3 py-2 border rounded-lg text-sm"
               >
                 <option value="all">All Difficulties</option>
@@ -659,13 +707,16 @@ const TripManager: React.FC<TripManagerProps> = ({
             ) : (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 {filteredTrips.map(trip => (
-                  <div key={trip.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+                  <div
+                    key={trip.id}
+                    className="border rounded-lg p-4 hover:shadow-md transition-shadow"
+                  >
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center gap-2">
                         <input
                           type="checkbox"
                           checked={selectedTrips.includes(trip.id)}
-                          onChange={(e) => {
+                          onChange={e => {
                             if (e.target.checked) {
                               setSelectedTrips([...selectedTrips, trip.id]);
                             } else {
@@ -769,14 +820,19 @@ const TripManager: React.FC<TripManagerProps> = ({
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               {filteredTemplates.map(template => (
-                <div key={template.metadata.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+                <div
+                  key={template.metadata.id}
+                  className="border rounded-lg p-4 hover:shadow-md transition-shadow"
+                >
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center gap-2">
                       {getCategoryIcon(template.metadata.category)}
                       <h4 className="font-semibold text-neutral-800">{template.metadata.name}</h4>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className={`px-2 py-1 rounded-full text-xs ${getDifficultyColor(template.metadata.difficulty)}`}>
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs ${getDifficultyColor(template.metadata.difficulty)}`}
+                      >
                         {template.metadata.difficulty}
                       </span>
                       <button
@@ -816,20 +872,28 @@ const TripManager: React.FC<TripManagerProps> = ({
 
                   <div className="text-sm mb-3">
                     <strong>Best months: </strong>
-                    {template.templateInfo.recommendedMonths.map((month: number) =>
-                      new Date(2024, month - 1, 1).toLocaleDateString('en', { month: 'short' })
-                    ).join(', ')}
+                    {template.templateInfo.recommendedMonths
+                      .map((month: number) =>
+                        new Date(2024, month - 1, 1).toLocaleDateString('en', { month: 'short' })
+                      )
+                      .join(', ')}
                   </div>
 
                   {template.templateInfo.highlights.length > 0 && (
                     <div className="text-sm">
                       <strong>Highlights:</strong>
                       <ul className="mt-1 space-y-1">
-                        {template.templateInfo.highlights.slice(0, 2).map((highlight: string, index: number) => (
-                          <li key={index} className="text-neutral-600">• {highlight}</li>
-                        ))}
+                        {template.templateInfo.highlights
+                          .slice(0, 2)
+                          .map((highlight: string, index: number) => (
+                            <li key={index} className="text-neutral-600">
+                              • {highlight}
+                            </li>
+                          ))}
                         {template.templateInfo.highlights.length > 2 && (
-                          <li className="text-neutral-500">• +{template.templateInfo.highlights.length - 2} more highlights</li>
+                          <li className="text-neutral-500">
+                            • +{template.templateInfo.highlights.length - 2} more highlights
+                          </li>
                         )}
                       </ul>
                     </div>
@@ -860,7 +924,15 @@ const TripManager: React.FC<TripManagerProps> = ({
                   <div
                     key={trip.id}
                     className="flex items-center justify-between p-3 border rounded-lg hover:bg-neutral-50 cursor-pointer"
+                    role="button"
+                    tabIndex={0}
                     onClick={() => handleLoadTrip(trip.id)}
+                    onKeyDown={e => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        handleLoadTrip(trip.id);
+                      }
+                    }}
                   >
                     <div className="flex items-center gap-3">
                       {getCategoryIcon(trip.category)}
@@ -887,9 +959,7 @@ const TripManager: React.FC<TripManagerProps> = ({
         {viewMode === 'comparison' && comparison && (
           <div>
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-display font-medium text-neutral-800">
-                Trip Comparison
-              </h3>
+              <h3 className="text-lg font-display font-medium text-neutral-800">Trip Comparison</h3>
               <button
                 onClick={() => setViewMode('my_trips')}
                 className="text-primary-600 hover:text-primary-700"
@@ -905,7 +975,8 @@ const TripManager: React.FC<TripManagerProps> = ({
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {comparison.trips.map(trip => {
                     const costs = comparison.comparison.costs[trip.metadata.id];
-                    const isChecapest = comparison.comparison.analysis.cheapest === trip.metadata.id;
+                    const isChecapest =
+                      comparison.comparison.analysis.cheapest === trip.metadata.id;
 
                     return (
                       <div
@@ -964,8 +1035,10 @@ const TripManager: React.FC<TripManagerProps> = ({
                     <tbody>
                       {comparison.trips.map(trip => {
                         const route = comparison.comparison.routes[trip.metadata.id];
-                        const isShortest = comparison.comparison.analysis.shortest === trip.metadata.id;
-                        const isFastest = comparison.comparison.analysis.fastest === trip.metadata.id;
+                        const isShortest =
+                          comparison.comparison.analysis.shortest === trip.metadata.id;
+                        const isFastest =
+                          comparison.comparison.analysis.fastest === trip.metadata.id;
 
                         return (
                           <tr key={trip.metadata.id} className="hover:bg-neutral-50">
@@ -979,15 +1052,21 @@ const TripManager: React.FC<TripManagerProps> = ({
                               <span className={isShortest ? 'font-semibold text-green-600' : ''}>
                                 {route.distance.toFixed(0)}km
                               </span>
-                              {isShortest && <span className="ml-1 text-xs text-green-600">(shortest)</span>}
+                              {isShortest && (
+                                <span className="ml-1 text-xs text-green-600">(shortest)</span>
+                              )}
                             </td>
                             <td className="border border-neutral-200 px-4 py-2">
                               <span className={isFastest ? 'font-semibold text-primary-600' : ''}>
                                 {route.duration.toFixed(1)}h
                               </span>
-                              {isFastest && <span className="ml-1 text-xs text-primary-600">(fastest)</span>}
+                              {isFastest && (
+                                <span className="ml-1 text-xs text-primary-600">(fastest)</span>
+                              )}
                             </td>
-                            <td className="border border-neutral-200 px-4 py-2">{route.waypointCount}</td>
+                            <td className="border border-neutral-200 px-4 py-2">
+                              {route.waypointCount}
+                            </td>
                             <td className="border border-neutral-200 px-4 py-2">
                               {route.countries.join(', ')}
                             </td>
@@ -1007,7 +1086,10 @@ const TripManager: React.FC<TripManagerProps> = ({
                     {comparison.comparison.analysis.recommendations.map((rec, index) => {
                       const trip = comparison.trips.find(t => t.metadata.id === rec.tripId);
                       return (
-                        <div key={index} className="p-4 bg-primary-50 rounded-lg border border-primary-200">
+                        <div
+                          key={index}
+                          className="p-4 bg-primary-50 rounded-lg border border-primary-200"
+                        >
                           <div className="flex items-center gap-2 mb-2">
                             {trip && getCategoryIcon(trip.metadata.category)}
                             <span className="font-medium text-primary-800">
@@ -1045,25 +1127,33 @@ const TripManager: React.FC<TripManagerProps> = ({
             </div>
             <div className="p-4 space-y-4">
               <div>
-                <label className="block text-sm font-medium text-neutral-700 mb-1">
+                <label
+                  htmlFor="trip-save-name"
+                  className="block text-sm font-medium text-neutral-700 mb-1"
+                >
                   Trip Name *
                 </label>
                 <input
+                  id="trip-save-name"
                   type="text"
                   value={saveData.name}
-                  onChange={(e) => setSaveData({ ...saveData, name: e.target.value })}
+                  onChange={e => setSaveData({ ...saveData, name: e.target.value })}
                   className="w-full px-3 py-2 border rounded-lg"
                   placeholder="My European Adventure"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-neutral-700 mb-1">
+                <label
+                  htmlFor="trip-save-description"
+                  className="block text-sm font-medium text-neutral-700 mb-1"
+                >
                   Description
                 </label>
                 <textarea
+                  id="trip-save-description"
                   value={saveData.description}
-                  onChange={(e) => setSaveData({ ...saveData, description: e.target.value })}
+                  onChange={e => setSaveData({ ...saveData, description: e.target.value })}
                   className="w-full px-3 py-2 border rounded-lg resize-none"
                   rows={3}
                   placeholder="Describe your trip..."
@@ -1071,12 +1161,21 @@ const TripManager: React.FC<TripManagerProps> = ({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-neutral-700 mb-1">
+                <label
+                  htmlFor="trip-save-category"
+                  className="block text-sm font-medium text-neutral-700 mb-1"
+                >
                   Category
                 </label>
                 <select
+                  id="trip-save-category"
                   value={saveData.category}
-                  onChange={(e) => setSaveData({ ...saveData, category: e.target.value as TripMetadata['category'] })}
+                  onChange={e =>
+                    setSaveData({
+                      ...saveData,
+                      category: e.target.value as TripMetadata['category'],
+                    })
+                  }
                   className="w-full px-3 py-2 border rounded-lg"
                 >
                   <option value="leisure">Leisure</option>
@@ -1088,16 +1187,25 @@ const TripManager: React.FC<TripManagerProps> = ({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-neutral-700 mb-1">
+                <label
+                  htmlFor="trip-save-tags"
+                  className="block text-sm font-medium text-neutral-700 mb-1"
+                >
                   Tags (comma-separated)
                 </label>
                 <input
+                  id="trip-save-tags"
                   type="text"
                   value={saveData.tags.join(', ')}
-                  onChange={(e) => setSaveData({
-                    ...saveData,
-                    tags: e.target.value.split(',').map(tag => tag.trim()).filter(Boolean)
-                  })}
+                  onChange={e =>
+                    setSaveData({
+                      ...saveData,
+                      tags: e.target.value
+                        .split(',')
+                        .map(tag => tag.trim())
+                        .filter(Boolean),
+                    })
+                  }
                   className="w-full px-3 py-2 border rounded-lg"
                   placeholder="scenic, historic, wine-tasting"
                 />
@@ -1108,7 +1216,7 @@ const TripManager: React.FC<TripManagerProps> = ({
                   type="checkbox"
                   id="isPublic"
                   checked={saveData.isPublic}
-                  onChange={(e) => setSaveData({ ...saveData, isPublic: e.target.checked })}
+                  onChange={e => setSaveData({ ...saveData, isPublic: e.target.checked })}
                   className="rounded"
                 />
                 <label htmlFor="isPublic" className="ml-2 text-sm text-neutral-700">
@@ -1143,12 +1251,16 @@ const TripManager: React.FC<TripManagerProps> = ({
               <h3 className="text-lg font-display font-semibold">Import Trip</h3>
             </div>
             <div className="p-4">
-              <label className="block text-sm font-medium text-neutral-700 mb-2">
+              <label
+                htmlFor="trip-import-data"
+                className="block text-sm font-medium text-neutral-700 mb-2"
+              >
                 Paste trip data (JSON format):
               </label>
               <textarea
+                id="trip-import-data"
                 value={importData}
-                onChange={(e) => setImportData(e.target.value)}
+                onChange={e => setImportData(e.target.value)}
                 className="w-full px-3 py-2 border rounded-lg resize-none font-mono text-sm"
                 rows={8}
                 placeholder="Paste the exported trip JSON data here..."
@@ -1183,30 +1295,40 @@ const TripManager: React.FC<TripManagerProps> = ({
             <div className="p-4 space-y-4">
               {/* Format Selection */}
               <div>
-                <label className="block text-sm font-medium text-neutral-700 mb-2">
+                <span className="block text-sm font-medium text-neutral-700 mb-2">
                   Export Format
-                </label>
+                </span>
                 <div className="grid grid-cols-2 gap-2">
                   {[
                     { id: 'gpx', label: 'GPX', desc: 'For GPS devices' },
                     { id: 'kml', label: 'KML', desc: 'For Google Earth' },
                     { id: 'json', label: 'JSON', desc: 'Complete trip data' },
-                    { id: 'csv', label: 'CSV', desc: 'For spreadsheets' }
+                    { id: 'csv', label: 'CSV', desc: 'For spreadsheets' },
                   ].map(format => (
-                    <label key={format.id} className="relative">
+                    <label
+                      key={format.id}
+                      htmlFor={`export-format-${format.id}`}
+                      className="relative"
+                    >
+                      <span className="sr-only">{format.label}</span>
                       <input
+                        id={`export-format-${format.id}`}
                         type="radio"
                         name="exportFormat"
                         value={format.id}
                         checked={exportFormat === format.id}
-                        onChange={(e) => setExportFormat(e.target.value as 'gpx' | 'kml' | 'json' | 'csv')}
+                        onChange={e =>
+                          setExportFormat(e.target.value as 'gpx' | 'kml' | 'json' | 'csv')
+                        }
                         className="sr-only"
                       />
-                      <div className={`p-2 border-2 rounded-lg cursor-pointer transition-all text-center ${
-                        exportFormat === format.id
-                          ? "border-primary-500 bg-primary-50"
-                          : "border-neutral-200 hover:border-neutral-300"
-                      }`}>
+                      <div
+                        className={`p-2 border-2 rounded-lg cursor-pointer transition-all text-center ${
+                          exportFormat === format.id
+                            ? 'border-primary-500 bg-primary-50'
+                            : 'border-neutral-200 hover:border-neutral-300'
+                        }`}
+                      >
                         <div className="font-medium text-sm">{format.label}</div>
                         <div className="text-xs text-neutral-500">{format.desc}</div>
                       </div>
@@ -1217,25 +1339,27 @@ const TripManager: React.FC<TripManagerProps> = ({
 
               {/* Export Options */}
               <div>
-                <label className="block text-sm font-medium text-neutral-700 mb-2">
+                <span className="block text-sm font-medium text-neutral-700 mb-2">
                   Include Data
-                </label>
+                </span>
                 <div className="space-y-2">
                   {[
                     { key: 'includeWaypoints', label: 'Route Waypoints' },
                     { key: 'includeTrackPoints', label: 'Track Points' },
                     { key: 'includeInstructions', label: 'Turn Instructions' },
                     { key: 'includeElevation', label: 'Elevation Data' },
-                    { key: 'includeMetadata', label: 'Trip Metadata' }
+                    { key: 'includeMetadata', label: 'Trip Metadata' },
                   ].map(option => (
                     <label key={option.key} className="flex items-center space-x-2">
                       <input
                         type="checkbox"
                         checked={exportOptions[option.key as keyof typeof exportOptions] as boolean}
-                        onChange={(e) => setExportOptions(prev => ({
-                          ...prev,
-                          [option.key]: e.target.checked
-                        }))}
+                        onChange={e =>
+                          setExportOptions(prev => ({
+                            ...prev,
+                            [option.key]: e.target.checked,
+                          }))
+                        }
                         className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-neutral-300 rounded"
                       />
                       <span className="text-sm font-medium text-neutral-900">{option.label}</span>
@@ -1246,13 +1370,17 @@ const TripManager: React.FC<TripManagerProps> = ({
 
               {/* Creator */}
               <div>
-                <label className="block text-sm font-medium text-neutral-700 mb-1">
+                <label
+                  htmlFor="trip-export-creator"
+                  className="block text-sm font-medium text-neutral-700 mb-1"
+                >
                   Creator
                 </label>
                 <input
+                  id="trip-export-creator"
                   type="text"
                   value={exportOptions.creator || ''}
-                  onChange={(e) => setExportOptions(prev => ({ ...prev, creator: e.target.value }))}
+                  onChange={e => setExportOptions(prev => ({ ...prev, creator: e.target.value }))}
                   placeholder="European Camper Trip Planner"
                   className="w-full px-3 py-2 border rounded-lg text-sm"
                 />

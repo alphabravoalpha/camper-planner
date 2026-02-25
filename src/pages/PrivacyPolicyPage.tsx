@@ -11,7 +11,10 @@ const PrivacyPolicyPage: React.FC = () => {
       {/* Header */}
       <div className="bg-gradient-to-br from-primary-600 to-primary-800 text-white">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
-          <Link to="/" className="inline-flex items-center gap-1 text-primary-200 hover:text-white text-sm mb-4 transition-colors">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-1 text-primary-200 hover:text-white text-sm mb-4 transition-colors"
+          >
             <ChevronLeft className="w-4 h-4" />
             Back to planner
           </Link>
@@ -26,19 +29,21 @@ const PrivacyPolicyPage: React.FC = () => {
       {/* Content */}
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="bg-white rounded-xl shadow-soft p-6 sm:p-8 space-y-8">
-
           {/* Intro */}
           <section>
             <p className="text-neutral-700 leading-relaxed">
-              European Camper Trip Planner (&quot;we&quot;, &quot;us&quot;, or &quot;the app&quot;) is committed to
-              protecting your privacy. This policy explains what data the app collects, how it is
-              used, and your rights. We designed this application with privacy as a core principle.
+              European Camper Trip Planner (&quot;we&quot;, &quot;us&quot;, or &quot;the app&quot;)
+              is committed to protecting your privacy. This policy explains what data the app
+              collects, how it is used, and your rights. We designed this application with privacy
+              as a core principle.
             </p>
           </section>
 
           {/* TL;DR */}
           <section className="bg-green-50 border border-green-200 rounded-lg p-5">
-            <h2 className="text-lg font-display font-semibold text-green-900 mb-2">The short version</h2>
+            <h2 className="text-lg font-display font-semibold text-green-900 mb-2">
+              The short version
+            </h2>
             <ul className="text-green-800 text-sm space-y-1 list-disc list-inside">
               <li>We do not collect, store, or sell your personal data</li>
               <li>All your trip data is stored locally in your browser</li>
@@ -50,11 +55,15 @@ const PrivacyPolicyPage: React.FC = () => {
 
           {/* Sections */}
           <section>
-            <h2 className="text-xl font-display font-semibold text-neutral-900 mb-3">1. Data We Collect</h2>
+            <h2 className="text-xl font-display font-semibold text-neutral-900 mb-3">
+              1. Data We Collect
+            </h2>
             <p className="text-neutral-700 leading-relaxed mb-3">
               We collect <strong>no personal data</strong>. The app runs entirely in your browser.
             </p>
-            <h3 className="text-base font-medium text-neutral-800 mb-2">Data stored locally on your device:</h3>
+            <h3 className="text-base font-medium text-neutral-800 mb-2">
+              Data stored locally on your device:
+            </h3>
             <ul className="text-neutral-600 text-sm space-y-1 list-disc list-inside ml-2">
               <li>Trip plans (waypoints, routes, itineraries)</li>
               <li>Vehicle profile settings (dimensions, fuel type)</li>
@@ -68,7 +77,9 @@ const PrivacyPolicyPage: React.FC = () => {
           </section>
 
           <section>
-            <h2 className="text-xl font-display font-semibold text-neutral-900 mb-3">2. Third-Party Services</h2>
+            <h2 className="text-xl font-display font-semibold text-neutral-900 mb-3">
+              2. Third-Party Services
+            </h2>
             <p className="text-neutral-700 leading-relaxed mb-3">
               The app uses the following external services to provide functionality. These services
               may receive limited, non-personal technical data (such as search coordinates) as part
@@ -76,14 +87,20 @@ const PrivacyPolicyPage: React.FC = () => {
             </p>
             <ul className="text-neutral-600 text-sm space-y-2 ml-2">
               <li>
-                <strong>OpenStreetMap / Leaflet</strong> &mdash; map tile rendering.
-                Subject to the{' '}
-                <a href="https://wiki.osmfoundation.org/wiki/Privacy_Policy" target="_blank" rel="noopener noreferrer" className="text-primary-600 underline">
+                <strong>OpenStreetMap / Leaflet</strong> &mdash; map tile rendering. Subject to the{' '}
+                <a
+                  href="https://wiki.osmfoundation.org/wiki/Privacy_Policy"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary-600 underline"
+                >
                   OSM Foundation Privacy Policy
-                </a>.
+                </a>
+                .
               </li>
               <li>
-                <strong>OpenRouteService</strong> &mdash; route calculation with vehicle restrictions.
+                <strong>OpenRouteService</strong> &mdash; route calculation with vehicle
+                restrictions.
               </li>
               <li>
                 <strong>Overpass API</strong> &mdash; campsite data from OpenStreetMap.
@@ -99,11 +116,13 @@ const PrivacyPolicyPage: React.FC = () => {
           </section>
 
           <section>
-            <h2 className="text-xl font-display font-semibold text-neutral-900 mb-3">3. Affiliate Links</h2>
+            <h2 className="text-xl font-display font-semibold text-neutral-900 mb-3">
+              3. Affiliate Links
+            </h2>
             <p className="text-neutral-700 leading-relaxed mb-3">
               The app may display links to third-party campsite booking platforms (such as
-              Booking.com, Pitchup, and ACSI). These links contain affiliate tracking parameters
-              so that we may earn a small commission if you make a booking.
+              Booking.com, Pitchup, and ACSI). These links contain affiliate tracking parameters so
+              that we may earn a small commission if you make a booking.
             </p>
             <p className="text-neutral-600 text-sm">
               Clicking an affiliate link will take you to the third party&apos;s website, which is
@@ -119,40 +138,55 @@ const PrivacyPolicyPage: React.FC = () => {
           <section>
             <h2 className="text-xl font-display font-semibold text-neutral-900 mb-3">4. Cookies</h2>
             <p className="text-neutral-700 leading-relaxed">
-              We do not use cookies. The app uses browser localStorage and IndexedDB for local
-              data storage. These are not cookies and are not transmitted to any server. Third-party
-              map tile providers may set their own cookies according to their privacy policies.
+              We do not use cookies. The app uses browser localStorage and IndexedDB for local data
+              storage. These are not cookies and are not transmitted to any server. Third-party map
+              tile providers may set their own cookies according to their privacy policies.
             </p>
           </section>
 
           <section>
-            <h2 className="text-xl font-display font-semibold text-neutral-900 mb-3">5. Your Rights (GDPR)</h2>
+            <h2 className="text-xl font-display font-semibold text-neutral-900 mb-3">
+              5. Your Rights (GDPR)
+            </h2>
             <p className="text-neutral-700 leading-relaxed mb-3">
               Since we do not collect or store any personal data on our servers, most GDPR data
-              subject requests do not apply. However, you have full control over your locally
-              stored data:
+              subject requests do not apply. However, you have full control over your locally stored
+              data:
             </p>
             <ul className="text-neutral-600 text-sm space-y-1 list-disc list-inside ml-2">
-              <li><strong>Access:</strong> All your data is visible in the app at all times</li>
-              <li><strong>Export:</strong> You can export your trips as GPX, JSON, KML, or CSV</li>
-              <li><strong>Deletion:</strong> Clear your browser data or use the app&apos;s data management tools</li>
-              <li><strong>Portability:</strong> Export your data in standard formats at any time</li>
+              <li>
+                <strong>Access:</strong> All your data is visible in the app at all times
+              </li>
+              <li>
+                <strong>Export:</strong> You can export your trips as GPX, JSON, KML, or CSV
+              </li>
+              <li>
+                <strong>Deletion:</strong> Clear your browser data or use the app&apos;s data
+                management tools
+              </li>
+              <li>
+                <strong>Portability:</strong> Export your data in standard formats at any time
+              </li>
             </ul>
           </section>
 
           <section>
-            <h2 className="text-xl font-display font-semibold text-neutral-900 mb-3">6. Children&apos;s Privacy</h2>
+            <h2 className="text-xl font-display font-semibold text-neutral-900 mb-3">
+              6. Children&apos;s Privacy
+            </h2>
             <p className="text-neutral-700 leading-relaxed">
-              The app does not knowingly collect any data from children or any other users.
-              No registration or personal information is required to use the app.
+              The app does not knowingly collect any data from children or any other users. No
+              registration or personal information is required to use the app.
             </p>
           </section>
 
           <section>
-            <h2 className="text-xl font-display font-semibold text-neutral-900 mb-3">7. Changes to This Policy</h2>
+            <h2 className="text-xl font-display font-semibold text-neutral-900 mb-3">
+              7. Changes to This Policy
+            </h2>
             <p className="text-neutral-700 leading-relaxed">
-              We may update this privacy policy from time to time. Any changes will be reflected
-              on this page with an updated &quot;last updated&quot; date. Since we do not collect email
+              We may update this privacy policy from time to time. Any changes will be reflected on
+              this page with an updated &quot;last updated&quot; date. Since we do not collect email
               addresses, we cannot notify you directly of changes.
             </p>
           </section>
@@ -168,7 +202,8 @@ const PrivacyPolicyPage: React.FC = () => {
                 className="text-primary-600 underline"
               >
                 GitHub repository
-              </a>.
+              </a>
+              .
             </p>
           </section>
         </div>

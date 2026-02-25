@@ -18,13 +18,14 @@ const BlogArticle: React.FC<BlogArticleProps> = ({ post }) => {
 
   // Extract headings for table of contents
   const headings = post.content
-    .filter((s) => s.type === 'heading' && s.level !== 3)
-    .map((s) => ({
+    .filter(s => s.type === 'heading' && s.level !== 3)
+    .map(s => ({
       text: s.content ?? '',
-      id: s.content
-        ?.toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/^-|-$/g, '') ?? '',
+      id:
+        s.content
+          ?.toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/^-|-$/g, '') ?? '',
     }));
 
   return (
@@ -57,7 +58,7 @@ const BlogArticle: React.FC<BlogArticleProps> = ({ post }) => {
             {/* Tags */}
             <div className="mt-10 pt-6 border-t border-neutral-200">
               <div className="flex flex-wrap gap-2">
-                {post.tags.map((tag) => (
+                {post.tags.map(tag => (
                   <span
                     key={tag}
                     className="px-3 py-1 bg-neutral-100 text-neutral-600 text-xs rounded-full"
@@ -77,7 +78,7 @@ const BlogArticle: React.FC<BlogArticleProps> = ({ post }) => {
                   Contents
                 </h4>
                 <nav className="space-y-1.5">
-                  {headings.map((h) => (
+                  {headings.map(h => (
                     <a
                       key={h.id}
                       href={`#${h.id}`}
@@ -97,11 +98,9 @@ const BlogArticle: React.FC<BlogArticleProps> = ({ post }) => {
       {related.length > 0 && (
         <div className="bg-neutral-50 border-t border-neutral-200">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <h2 className="text-xl font-display font-bold text-neutral-900 mb-6">
-              Related Guides
-            </h2>
+            <h2 className="text-xl font-display font-bold text-neutral-900 mb-6">Related Guides</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {related.map((p) => (
+              {related.map(p => (
                 <BlogCard key={p.slug} post={p} />
               ))}
             </div>

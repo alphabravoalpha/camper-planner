@@ -8,23 +8,16 @@ interface KeyboardShortcuts {
   'ctrl+z': () => void;
   'ctrl+y': () => void;
   'ctrl+shift+z': () => void;
-  'delete': () => void;
-  'backspace': () => void;
-  'escape': () => void;
+  delete: () => void;
+  backspace: () => void;
+  escape: () => void;
   'ctrl+a': () => void;
   'ctrl+shift+c': () => void;
 }
 
 export const useKeyboardShortcuts = () => {
-  const {
-    undo,
-    redo,
-    canUndo,
-    canRedo,
-    clearRoute,
-    waypoints,
-    isValidForRouting
-  } = useRouteStore();
+  const { undo, redo, canUndo, canRedo, clearRoute, waypoints, isValidForRouting } =
+    useRouteStore();
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -56,13 +49,13 @@ export const useKeyboardShortcuts = () => {
             redo();
           }
         },
-        'delete': () => {
+        delete: () => {
           // Delete all waypoints with confirmation would be handled by UI
         },
-        'backspace': () => {
+        backspace: () => {
           // Same as delete
         },
-        'escape': () => {
+        escape: () => {
           // Clear selection or close modals - handled by individual components
         },
         'ctrl+a': () => {
@@ -74,7 +67,7 @@ export const useKeyboardShortcuts = () => {
           if (waypoints.length > 0) {
             event.preventDefault();
           }
-        }
+        },
       };
 
       const getShortcutKey = (event: KeyboardEvent): string => {
@@ -114,6 +107,6 @@ export const useKeyboardShortcuts = () => {
       { key: 'Ctrl+Shift+C', description: 'Clear all waypoints', available: waypoints.length > 0 },
       { key: 'Escape', description: 'Close dialogs/deselect', available: true },
     ],
-    isValidForRouting: isValidForRouting()
+    isValidForRouting: isValidForRouting(),
   };
 };

@@ -3,7 +3,11 @@
 
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { type FuelConsumptionSettings, type FuelPriceSettings } from '../services/CostCalculationService';
+import {
+  type CostBreakdown,
+  type FuelConsumptionSettings,
+  type FuelPriceSettings,
+} from '../services/CostCalculationService';
 
 interface CostState {
   // Fuel consumption settings
@@ -32,7 +36,7 @@ interface CostState {
   // Last calculation cache
   lastCalculation: {
     routeHash?: string;
-    breakdown?: any;
+    breakdown?: CostBreakdown;
     timestamp?: number;
   };
   setLastCalculation: (data: CostState['lastCalculation']) => void;
@@ -43,14 +47,14 @@ const defaultFuelConsumption: FuelConsumptionSettings = {
   consumptionType: 'l_per_100km',
   consumption: 12.0,
   fuelType: 'diesel',
-  tankCapacity: 80
+  tankCapacity: 80,
 };
 
 // Default fuel price settings
 const defaultFuelPrices: FuelPriceSettings = {
   priceType: 'default_european',
   currency: 'EUR',
-  lastUpdated: new Date()
+  lastUpdated: new Date(),
 };
 
 // Default preferences
@@ -60,7 +64,7 @@ const defaultPreferences: CostState['preferences'] = {
   showOptimizationSuggestions: true,
   currency: 'EUR',
   includeAccommodationCosts: true,
-  includeTollEstimates: false // Framework only for now
+  includeTollEstimates: false, // Framework only for now
 };
 
 export const useCostStore = create<CostState>()(
@@ -68,7 +72,7 @@ export const useCostStore = create<CostState>()(
     (set, get) => ({
       // Fuel consumption settings
       fuelConsumptionSettings: defaultFuelConsumption,
-      setFuelConsumptionSettings: (settings) => {
+      setFuelConsumptionSettings: settings => {
         set({ fuelConsumptionSettings: settings });
         // Clear cache when settings change
         set({ lastCalculation: {} });
@@ -76,7 +80,7 @@ export const useCostStore = create<CostState>()(
 
       // Fuel price settings
       fuelPriceSettings: defaultFuelPrices,
-      setFuelPriceSettings: (settings) => {
+      setFuelPriceSettings: settings => {
         set({ fuelPriceSettings: settings });
         // Clear cache when settings change
         set({ lastCalculation: {} });
@@ -84,42 +88,46 @@ export const useCostStore = create<CostState>()(
 
       // Preferences
       preferences: defaultPreferences,
-      setPreferences: (newPreferences) => {
+      setPreferences: newPreferences => {
         set({
-          preferences: { ...get().preferences, ...newPreferences }
+          preferences: { ...get().preferences, ...newPreferences },
         });
       },
 
       // Auto-update settings
       autoUpdatePrices: false,
-      setAutoUpdatePrices: (enabled) => {
+      setAutoUpdatePrices: enabled => {
         set({ autoUpdatePrices: enabled });
       },
 
       // Last calculation cache
       lastCalculation: {},
-      setLastCalculation: (data) => {
+      setLastCalculation: data => {
         set({ lastCalculation: data });
-      }
+      },
     }),
     {
       name: 'camper-planner-cost-settings',
       // Only persist certain fields
-      partialize: (state) => ({
+      partialize: state => ({
         fuelConsumptionSettings: state.fuelConsumptionSettings,
         fuelPriceSettings: state.fuelPriceSettings,
         preferences: state.preferences,
-        autoUpdatePrices: state.autoUpdatePrices
-      })
+        autoUpdatePrices: state.autoUpdatePrices,
+      }),
     }
   )
 );
 
 // Helper function to create route hash for caching
-export function createRouteHash(waypoints: any[], vehicleProfile?: any): string {
+export function createRouteHash(
+  waypoints: Array<{ id: string }>,
+  vehicleProfile?: { type?: string; length?: number; weight?: number }
+): string {
   const waypointIds = waypoints.map(w => w.id).join('-');
-  const vehicleHash = vehicleProfile ?
-    `${vehicleProfile.type}-${vehicleProfile.length}-${vehicleProfile.weight}` : 'default';
+  const vehicleHash = vehicleProfile
+    ? `${vehicleProfile.type}-${vehicleProfile.length}-${vehicleProfile.weight}`
+    : 'default';
   return `${waypointIds}_${vehicleHash}`;
 }
 
@@ -128,5 +136,5 @@ export function isCacheValid(timestamp?: number, maxAgeMinutes: number = 30): bo
   if (!timestamp) return false;
   const now = Date.now();
   const maxAge = maxAgeMinutes * 60 * 1000; // Convert to milliseconds
-  return (now - timestamp) < maxAge;
+  return now - timestamp < maxAge;
 }

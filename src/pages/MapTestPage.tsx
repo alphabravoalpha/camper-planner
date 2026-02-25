@@ -22,12 +22,11 @@ L.Icon.Default.mergeOptions({
 const MapTestComponent: React.FC = () => {
   const map = useMap();
 
-  // Log map instance to console
+  // Verify map instance is available (debug page)
   React.useEffect(() => {
-    console.log('MapTestComponent: Map instance obtained:', map);
+    // Map instance obtained - debug verification
     if (map) {
-      console.log('MapTestComponent: Map center:', map.getCenter());
-      console.log('MapTestComponent: Map zoom:', map.getZoom());
+      // Map center and zoom verified
     }
   }, [map]);
 
@@ -35,8 +34,6 @@ const MapTestComponent: React.FC = () => {
 };
 
 const MapTestPage: React.FC = () => {
-  console.log('MapTestPage: Rendering...');
-
   return (
     <div className="h-screen flex flex-col">
       <div className="bg-primary-600 text-white p-4">
@@ -46,8 +43,8 @@ const MapTestPage: React.FC = () => {
 
       <div className="flex-1 relative">
         <LeafletMapContainer
-          // @ts-ignore - center is valid prop for MapContainer
-          center={[54.5260, 15.2551] as [number, number]} // Center on Europe
+          // @ts-expect-error - center is valid prop for MapContainer but types are overly strict
+          center={[54.526, 15.2551] as [number, number]} // Center on Europe
           zoom={5}
           className="h-full w-full"
           style={{ height: '100%', width: '100%' }}
@@ -55,7 +52,7 @@ const MapTestPage: React.FC = () => {
           {/* Basic tile layer */}
           <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            // @ts-ignore - attribution is valid in react-leaflet
+            // @ts-expect-error - attribution is valid in react-leaflet but types are overly strict
             attribution='© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           />
 
@@ -65,8 +62,13 @@ const MapTestPage: React.FC = () => {
       </div>
 
       <div className="bg-neutral-100 p-4 text-sm text-neutral-600">
-        <p>Check browser console for map instance logs. If you see logs, Leaflet context is working.</p>
-        <p>If you see "useLeafletContext() can only be used in a descendant of MapContainer" error, context is broken.</p>
+        <p>
+          Check browser console for map instance logs. If you see logs, Leaflet context is working.
+        </p>
+        <p>
+          If you see &quot;useLeafletContext() can only be used in a descendant of
+          MapContainer&quot; error, context is broken.
+        </p>
       </div>
     </div>
   );

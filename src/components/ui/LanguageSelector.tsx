@@ -31,13 +31,14 @@ interface LanguageSelectorProps {
 const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   variant = 'dropdown',
   size = 'md',
-  className
+  className,
 }) => {
   const { i18n } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const currentLanguage = supportedLanguages.find(lang => lang.code === i18n.language) || supportedLanguages[0];
+  const currentLanguage =
+    supportedLanguages.find(lang => lang.code === i18n.language) || supportedLanguages[0];
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -80,7 +81,11 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
           className
         )}
         disabled={!FeatureFlags.MULTI_LANGUAGE_COMPLETE}
-        title={FeatureFlags.MULTI_LANGUAGE_COMPLETE ? 'Select language' : 'Language selection coming soon'}
+        title={
+          FeatureFlags.MULTI_LANGUAGE_COMPLETE
+            ? 'Select language'
+            : 'Language selection coming soon'
+        }
       >
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
@@ -125,7 +130,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
       {isOpen && (
         <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 z-50">
           <div className="py-1" role="menu">
-            {supportedLanguages.map((language) => (
+            {supportedLanguages.map(language => (
               <button
                 key={language.code}
                 onClick={() => handleLanguageChange(language.code)}

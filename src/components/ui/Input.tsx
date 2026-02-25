@@ -27,10 +27,7 @@ const Input: React.FC<InputProps> = ({
   return (
     <div className="space-y-1">
       {label && (
-        <label
-          htmlFor={inputId}
-          className="block text-sm font-medium text-neutral-700"
-        >
+        <label htmlFor={inputId} className="block text-sm font-medium text-neutral-700">
           {label}
         </label>
       )}
@@ -38,9 +35,7 @@ const Input: React.FC<InputProps> = ({
       <div className="relative">
         {leftIcon && (
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <div className="h-5 w-5 text-neutral-400">
-              {leftIcon}
-            </div>
+            <div className="h-5 w-5 text-neutral-400">{leftIcon}</div>
           </div>
         )}
 
@@ -61,24 +56,14 @@ const Input: React.FC<InputProps> = ({
 
         {rightIcon && (
           <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-            <div className="h-5 w-5 text-neutral-400">
-              {rightIcon}
-            </div>
+            <div className="h-5 w-5 text-neutral-400">{rightIcon}</div>
           </div>
         )}
       </div>
 
-      {error && (
-        <p className="text-sm text-red-600">
-          {error}
-        </p>
-      )}
+      {error && <p className="text-sm text-red-600">{error}</p>}
 
-      {hint && !error && (
-        <p className="text-sm text-neutral-500">
-          {hint}
-        </p>
-      )}
+      {hint && !error && <p className="text-sm text-neutral-500">{hint}</p>}
     </div>
   );
 };

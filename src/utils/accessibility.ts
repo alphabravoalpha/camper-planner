@@ -93,39 +93,36 @@ export const keyboardNavigation = {
     }
   },
 
-  handleArrowKeys: (callbacks: {
-    up?: () => void;
-    down?: () => void;
-    left?: () => void;
-    right?: () => void;
-  }) => (event: React.KeyboardEvent) => {
-    switch (event.key) {
-      case 'ArrowUp':
-        if (callbacks.up) {
-          event.preventDefault();
-          callbacks.up();
-        }
-        break;
-      case 'ArrowDown':
-        if (callbacks.down) {
-          event.preventDefault();
-          callbacks.down();
-        }
-        break;
-      case 'ArrowLeft':
-        if (callbacks.left) {
-          event.preventDefault();
-          callbacks.left();
-        }
-        break;
-      case 'ArrowRight':
-        if (callbacks.right) {
-          event.preventDefault();
-          callbacks.right();
-        }
-        break;
-    }
-  },
+  handleArrowKeys:
+    (callbacks: { up?: () => void; down?: () => void; left?: () => void; right?: () => void }) =>
+    (event: React.KeyboardEvent) => {
+      switch (event.key) {
+        case 'ArrowUp':
+          if (callbacks.up) {
+            event.preventDefault();
+            callbacks.up();
+          }
+          break;
+        case 'ArrowDown':
+          if (callbacks.down) {
+            event.preventDefault();
+            callbacks.down();
+          }
+          break;
+        case 'ArrowLeft':
+          if (callbacks.left) {
+            event.preventDefault();
+            callbacks.left();
+          }
+          break;
+        case 'ArrowRight':
+          if (callbacks.right) {
+            event.preventDefault();
+            callbacks.right();
+          }
+          break;
+      }
+    },
 
   // Tab management
   trapFocus: (containerRef: React.RefObject<HTMLElement>) => {
@@ -153,7 +150,7 @@ export const keyboardNavigation = {
         }
       }
     };
-  }
+  },
 };
 
 // Focus management hooks
@@ -287,11 +284,13 @@ export const colorContrast = {
 
   hexToRgb: (hex: string): { r: number; g: number; b: number } | null => {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result ? {
-      r: parseInt(result[1], 16),
-      g: parseInt(result[2], 16),
-      b: parseInt(result[3], 16)
-    } : null;
+    return result
+      ? {
+          r: parseInt(result[1], 16),
+          g: parseInt(result[2], 16),
+          b: parseInt(result[3], 16),
+        }
+      : null;
   },
 };
 

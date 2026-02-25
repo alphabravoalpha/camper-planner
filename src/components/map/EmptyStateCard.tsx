@@ -12,10 +12,7 @@ interface EmptyStateCardProps {
  * and the onboarding tour has completed or been skipped.
  * Directs users to search for a starting location or use the Trip Wizard.
  */
-export const EmptyStateCard: React.FC<EmptyStateCardProps> = ({
-  onOpenWizard,
-  onSearchFocus,
-}) => {
+export const EmptyStateCard: React.FC<EmptyStateCardProps> = ({ onOpenWizard, onSearchFocus }) => {
   return (
     <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
       <div

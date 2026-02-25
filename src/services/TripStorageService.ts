@@ -3,7 +3,11 @@
 
 import { type Waypoint } from '../store';
 import { type VehicleProfile } from '../store';
-import { type CostBreakdown, type FuelConsumptionSettings, type FuelPriceSettings } from './CostCalculationService';
+import {
+  type CostBreakdown,
+  type FuelConsumptionSettings,
+  type FuelPriceSettings,
+} from './CostCalculationService';
 import { type OptimizationResult } from './RouteOptimizationService';
 import { type TripSettings } from '../types/tripSettings';
 
@@ -46,7 +50,7 @@ export interface TripData {
   };
   optimization?: {
     result: OptimizationResult;
-    settings: any;
+    settings: Record<string, unknown>;
     appliedAt: Date;
   };
   settings?: TripSettings; // Trip settings (dates, driving style, budget, fuel)
@@ -155,8 +159,8 @@ export class TripStorageService {
         created: existingTrip?.timestamps.created || now,
         modified: now,
         lastOpened: existingTrip?.timestamps.lastOpened || now,
-        version: CURRENT_VERSION
-      }
+        version: CURRENT_VERSION,
+      },
     };
 
     // Save to storage
@@ -209,19 +213,23 @@ export class TripStorageService {
           ...trip.timestamps,
           created: new Date(trip.timestamps.created),
           modified: new Date(trip.timestamps.modified),
-          lastOpened: new Date(trip.timestamps.lastOpened)
+          lastOpened: new Date(trip.timestamps.lastOpened),
         },
         data: {
           ...trip.data,
-          costCalculations: trip.data.costCalculations ? {
-            ...trip.data.costCalculations,
-            lastCalculated: new Date(trip.data.costCalculations.lastCalculated)
-          } : undefined,
-          optimization: trip.data.optimization ? {
-            ...trip.data.optimization,
-            appliedAt: new Date(trip.data.optimization.appliedAt)
-          } : undefined
-        }
+          costCalculations: trip.data.costCalculations
+            ? {
+                ...trip.data.costCalculations,
+                lastCalculated: new Date(trip.data.costCalculations.lastCalculated),
+              }
+            : undefined,
+          optimization: trip.data.optimization
+            ? {
+                ...trip.data.optimization,
+                appliedAt: new Date(trip.data.optimization.appliedAt),
+              }
+            : undefined,
+        },
       }));
     } catch (error) {
       console.error('Failed to load trips:', error);
@@ -255,20 +263,22 @@ export class TripStorageService {
       );
     }
 
-    return filteredTrips.map(trip => ({
-      id: trip.metadata.id,
-      name: trip.metadata.name,
-      category: trip.metadata.category,
-      tags: trip.metadata.tags,
-      duration: trip.metadata.duration,
-      estimatedCost: trip.metadata.estimatedCost,
-      currency: trip.metadata.currency,
-      waypointCount: trip.data.waypoints.length,
-      countries: trip.metadata.countries,
-      lastModified: trip.timestamps.modified,
-      lastOpened: trip.timestamps.lastOpened,
-      isTemplate: trip.metadata.isTemplate
-    })).sort((a, b) => b.lastModified.getTime() - a.lastModified.getTime());
+    return filteredTrips
+      .map(trip => ({
+        id: trip.metadata.id,
+        name: trip.metadata.name,
+        category: trip.metadata.category,
+        tags: trip.metadata.tags,
+        duration: trip.metadata.duration,
+        estimatedCost: trip.metadata.estimatedCost,
+        currency: trip.metadata.currency,
+        waypointCount: trip.data.waypoints.length,
+        countries: trip.metadata.countries,
+        lastModified: trip.timestamps.modified,
+        lastOpened: trip.timestamps.lastOpened,
+        isTemplate: trip.metadata.isTemplate,
+      }))
+      .sort((a, b) => b.lastModified.getTime() - a.lastModified.getTime());
   }
 
   /**
@@ -308,8 +318,8 @@ export class TripStorageService {
         id: newTripId,
         name: newName || `${originalTrip.metadata.name} (Copy)`,
         isTemplate: false, // Copies are never templates
-        isPublic: false
-      }
+        isPublic: false,
+      },
     };
 
     return await this.saveTrip(duplicatedTrip);
@@ -328,8 +338,8 @@ export class TripStorageService {
         exportedAt: new Date(),
         exportedBy: 'camper-planner',
         version: CURRENT_VERSION,
-        exportId: `export_${Date.now()}`
-      }
+        exportId: `export_${Date.now()}`,
+      },
     };
 
     return JSON.stringify(exportData, null, 2);
@@ -354,21 +364,23 @@ export class TripStorageService {
           id: newTripId,
           name: customName || `${importedData.metadata.name} (Imported)`,
           isTemplate: false,
-          isPublic: false
+          isPublic: false,
         },
         data: importedData.data,
         timestamps: {
           created: new Date(),
           modified: new Date(),
           lastOpened: new Date(),
-          version: CURRENT_VERSION
+          version: CURRENT_VERSION,
         },
         sharing: {
           originalTripId: importedData.metadata.id,
           sharedBy: importedData.exportInfo?.exportedBy || 'unknown',
-          sharedAt: importedData.exportInfo?.exportedAt ? new Date(importedData.exportInfo.exportedAt) : new Date(),
-          exportId: importedData.exportInfo?.exportId
-        }
+          sharedAt: importedData.exportInfo?.exportedAt
+            ? new Date(importedData.exportInfo.exportedAt)
+            : new Date(),
+          exportId: importedData.exportInfo?.exportId,
+        },
       };
 
       return await this.saveTrip(importedTrip);
@@ -397,10 +409,12 @@ export class TripStorageService {
       let history: Array<{ tripId: string; accessedAt: Date; tripName: string }> = [];
 
       if (stored) {
-        history = JSON.parse(stored).map((item: any) => ({
-          ...item,
-          accessedAt: new Date(item.accessedAt)
-        }));
+        history = JSON.parse(stored).map(
+          (item: { tripId: string; accessedAt: string; tripName: string }) => ({
+            ...item,
+            accessedAt: new Date(item.accessedAt),
+          })
+        );
       }
 
       // Remove existing entry for this trip
@@ -410,7 +424,7 @@ export class TripStorageService {
       history.unshift({
         tripId: trip.metadata.id,
         accessedAt: new Date(),
-        tripName: trip.metadata.name
+        tripName: trip.metadata.name,
       });
 
       // Keep only the most recent items
@@ -425,15 +439,19 @@ export class TripStorageService {
   /**
    * Get trip history
    */
-  static async getTripHistory(): Promise<Array<{ tripId: string; accessedAt: Date; tripName: string }>> {
+  static async getTripHistory(): Promise<
+    Array<{ tripId: string; accessedAt: Date; tripName: string }>
+  > {
     try {
       const stored = localStorage.getItem(TRIP_HISTORY_KEY);
       if (!stored) return [];
 
-      return JSON.parse(stored).map((item: any) => ({
-        ...item,
-        accessedAt: new Date(item.accessedAt)
-      }));
+      return JSON.parse(stored).map(
+        (item: { tripId: string; accessedAt: string; tripName: string }) => ({
+          ...item,
+          accessedAt: new Date(item.accessedAt),
+        })
+      );
     } catch (error) {
       console.error('Failed to load trip history:', error);
       return [];
@@ -460,9 +478,9 @@ export class TripStorageService {
             shortest: '',
             fastest: '',
             mostScenic: '',
-            recommendations: []
-          }
-        }
+            recommendations: [],
+          },
+        },
       };
 
       // Calculate comparisons
@@ -480,7 +498,7 @@ export class TripStorageService {
             total: costBreakdown.totalCost,
             fuel: costBreakdown.fuelCost,
             accommodation: costBreakdown.accommodationCost,
-            tolls: costBreakdown.tollCost
+            tolls: costBreakdown.tollCost,
           };
 
           if (costBreakdown.totalCost < cheapestCost) {
@@ -497,7 +515,7 @@ export class TripStorageService {
           distance: totalDistance,
           duration: estimatedDuration,
           waypointCount: trip.data.waypoints.length,
-          countries: trip.metadata.countries
+          countries: trip.metadata.countries,
         };
 
         if (totalDistance < shortestDistance) {
@@ -520,7 +538,7 @@ export class TripStorageService {
           recommendations.push({
             tripId,
             reason: 'Most cost-effective option',
-            advantage: `Lowest total cost: €${comparison.comparison.costs[tripId]?.total.toFixed(2) || 'N/A'}`
+            advantage: `Lowest total cost: €${comparison.comparison.costs[tripId]?.total.toFixed(2) || 'N/A'}`,
           });
         }
 
@@ -528,7 +546,7 @@ export class TripStorageService {
           recommendations.push({
             tripId,
             reason: 'Shortest distance',
-            advantage: `Least driving: ${shortestDistance.toFixed(0)}km`
+            advantage: `Least driving: ${shortestDistance.toFixed(0)}km`,
           });
         }
 
@@ -537,7 +555,7 @@ export class TripStorageService {
           recommendations.push({
             tripId,
             reason: 'Most scenic route',
-            advantage: 'Best for sightseeing and photography'
+            advantage: 'Best for sightseeing and photography',
           });
         }
 
@@ -565,10 +583,12 @@ export class TripStorageService {
       }
     });
 
-    return Array.from(categories.entries()).map(([category, count]) => ({
-      category,
-      count
-    })).sort((a, b) => b.count - a.count);
+    return Array.from(categories.entries())
+      .map(([category, count]) => ({
+        category,
+        count,
+      }))
+      .sort((a, b) => b.count - a.count);
   }
 
   /**
@@ -587,10 +607,12 @@ export class TripStorageService {
       }
     });
 
-    return Array.from(tags.entries()).map(([tag, count]) => ({
-      tag,
-      count
-    })).sort((a, b) => b.count - a.count);
+    return Array.from(tags.entries())
+      .map(([tag, count]) => ({
+        tag,
+        count,
+      }))
+      .sort((a, b) => b.count - a.count);
   }
 
   /**
@@ -600,10 +622,11 @@ export class TripStorageService {
     const allSummaries = await this.getTripSummaries();
     const searchTerm = query.toLowerCase();
 
-    return allSummaries.filter(trip =>
-      trip.name.toLowerCase().includes(searchTerm) ||
-      trip.tags.some(tag => tag.toLowerCase().includes(searchTerm)) ||
-      trip.countries.some(country => country.toLowerCase().includes(searchTerm))
+    return allSummaries.filter(
+      trip =>
+        trip.name.toLowerCase().includes(searchTerm) ||
+        trip.tags.some(tag => tag.toLowerCase().includes(searchTerm)) ||
+        trip.countries.some(country => country.toLowerCase().includes(searchTerm))
     );
   }
 
@@ -622,11 +645,14 @@ export class TripStorageService {
 
   private static calculateDistance(waypoint1: Waypoint, waypoint2: Waypoint): number {
     const R = 6371; // Earth's radius in km
-    const dLat = (waypoint2.lat - waypoint1.lat) * Math.PI / 180;
-    const dLng = (waypoint2.lng - waypoint1.lng) * Math.PI / 180;
-    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(waypoint1.lat * Math.PI / 180) * Math.cos(waypoint2.lat * Math.PI / 180) *
-      Math.sin(dLng / 2) * Math.sin(dLng / 2);
+    const dLat = ((waypoint2.lat - waypoint1.lat) * Math.PI) / 180;
+    const dLng = ((waypoint2.lng - waypoint1.lng) * Math.PI) / 180;
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos((waypoint1.lat * Math.PI) / 180) *
+        Math.cos((waypoint2.lat * Math.PI) / 180) *
+        Math.sin(dLng / 2) *
+        Math.sin(dLng / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
   }

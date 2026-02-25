@@ -3,7 +3,9 @@
 
 import React, { useState, useCallback, useMemo } from 'react';
 import { useRouteStore, useVehicleStore, useTripStore, useUIStore } from '../../store';
-import MultiFormatExportService, { type ExportOptions } from '../../services/MultiFormatExportService';
+import MultiFormatExportService, {
+  type ExportOptions,
+} from '../../services/MultiFormatExportService';
 import { type ExportResult } from '../../services/GPXExportService';
 import { type RouteResponse } from '../../services/RoutingService';
 import { cn } from '../../utils/cn';
@@ -59,7 +61,7 @@ const ExportOptionsPanel: React.FC<{
   options: ExportOptions;
   onChange: (options: ExportOptions) => void;
 }> = ({ options, onChange }) => {
-  const updateOption = (key: keyof ExportOptions, value: any) => {
+  const updateOption = (key: keyof ExportOptions, value: ExportOptions[keyof ExportOptions]) => {
     onChange({ ...options, [key]: value });
   };
 
@@ -73,24 +75,34 @@ const ExportOptionsPanel: React.FC<{
             { id: 'gpx', label: 'GPX', desc: 'For GPS devices' },
             { id: 'json', label: 'JSON', desc: 'Complete trip data' },
             { id: 'kml', label: 'KML', desc: 'For Google Earth' },
-            { id: 'csv', label: 'CSV', desc: 'For spreadsheets' }
+            { id: 'csv', label: 'CSV', desc: 'For spreadsheets' },
           ].map(format => (
-            <label key={format.id} className="relative">
+            <label
+              key={format.id}
+              htmlFor={`route-export-format-${format.id}`}
+              className="relative"
+            >
+              <span className="sr-only">{format.label}</span>
               <input
+                id={`route-export-format-${format.id}`}
                 type="radio"
                 name="format"
                 value={format.id}
                 checked={options.format === format.id}
-                onChange={(e) => updateOption('format', e.target.value)}
+                onChange={e => updateOption('format', e.target.value)}
                 className="sr-only"
               />
-              <div className={cn(
-                "p-3 border-2 rounded-lg cursor-pointer transition-all",
-                options.format === format.id
-                  ? "border-primary-500 bg-primary-50"
-                  : "border-neutral-200 hover:border-neutral-300"
-              )}>
-                <div className="font-medium text-sm">{format.label}</div>
+              <div
+                className={cn(
+                  'p-3 border-2 rounded-lg cursor-pointer transition-all',
+                  options.format === format.id
+                    ? 'border-primary-500 bg-primary-50'
+                    : 'border-neutral-200 hover:border-neutral-300'
+                )}
+              >
+                <div className="font-medium text-sm" aria-hidden="true">
+                  {format.label}
+                </div>
                 <div className="text-xs text-neutral-500">{format.desc}</div>
               </div>
             </label>
@@ -98,27 +110,54 @@ const ExportOptionsPanel: React.FC<{
         </div>
       </div>
 
-
       {/* Data Inclusion Options */}
       <div>
         <h4 className="text-sm font-medium text-neutral-900 mb-3">Include Data</h4>
         <div className="space-y-2">
           {[
-            { key: 'includeWaypoints', label: 'Route Waypoints', desc: 'All route points and navigation' },
-            { key: 'includeTrackPoints', label: 'Track Points', desc: 'Detailed route path and turns' },
-            { key: 'includeInstructions', label: 'Turn Instructions', desc: 'Step-by-step navigation instructions' },
-            { key: 'includeElevation', label: 'Elevation Data', desc: 'Height information for route points' },
-            { key: 'includeMetadata', label: 'Trip Metadata', desc: 'Creation date, author, descriptions' }
+            {
+              key: 'includeWaypoints',
+              label: 'Route Waypoints',
+              desc: 'All route points and navigation',
+            },
+            {
+              key: 'includeTrackPoints',
+              label: 'Track Points',
+              desc: 'Detailed route path and turns',
+            },
+            {
+              key: 'includeInstructions',
+              label: 'Turn Instructions',
+              desc: 'Step-by-step navigation instructions',
+            },
+            {
+              key: 'includeElevation',
+              label: 'Elevation Data',
+              desc: 'Height information for route points',
+            },
+            {
+              key: 'includeMetadata',
+              label: 'Trip Metadata',
+              desc: 'Creation date, author, descriptions',
+            },
           ].map(option => (
-            <label key={option.key} className="flex items-start space-x-3">
+            <label
+              key={option.key}
+              htmlFor={`export-option-${option.key}`}
+              className="flex items-start space-x-3"
+            >
+              <span className="sr-only">{option.label}</span>
               <input
+                id={`export-option-${option.key}`}
                 type="checkbox"
                 checked={options[option.key as keyof ExportOptions] as boolean}
-                onChange={(e) => updateOption(option.key as keyof ExportOptions, e.target.checked)}
+                onChange={e => updateOption(option.key as keyof ExportOptions, e.target.checked)}
                 className="mt-1 h-4 w-4 text-primary-600 focus:ring-primary-500 border-neutral-300 rounded"
               />
               <div className="flex-1 min-w-0">
-                <div className="text-sm font-medium text-neutral-900">{option.label}</div>
+                <div className="text-sm font-medium text-neutral-900" aria-hidden="true">
+                  {option.label}
+                </div>
                 <div className="text-xs text-neutral-500">{option.desc}</div>
               </div>
             </label>
@@ -131,31 +170,49 @@ const ExportOptionsPanel: React.FC<{
         <h4 className="text-sm font-medium text-neutral-900 mb-3">Custom Information</h4>
         <div className="space-y-3">
           <div>
-            <label className="block text-xs font-medium text-neutral-700 mb-1">Trip Name</label>
+            <label
+              htmlFor="export-trip-name"
+              className="block text-xs font-medium text-neutral-700 mb-1"
+            >
+              Trip Name
+            </label>
             <input
+              id="export-trip-name"
               type="text"
               value={options.description || ''}
-              onChange={(e) => updateOption('description', e.target.value)}
+              onChange={e => updateOption('description', e.target.value)}
               placeholder="My European Camper Trip"
               className="w-full p-2 text-sm border border-neutral-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-neutral-700 mb-1">Description</label>
+            <label
+              htmlFor="export-description"
+              className="block text-xs font-medium text-neutral-700 mb-1"
+            >
+              Description
+            </label>
             <textarea
+              id="export-description"
               value={options.description || ''}
-              onChange={(e) => updateOption('description', e.target.value)}
+              onChange={e => updateOption('description', e.target.value)}
               placeholder="A wonderful journey through Europe..."
               rows={2}
               className="w-full p-2 text-sm border border-neutral-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-neutral-700 mb-1">Creator</label>
+            <label
+              htmlFor="export-creator"
+              className="block text-xs font-medium text-neutral-700 mb-1"
+            >
+              Creator
+            </label>
             <input
+              id="export-creator"
               type="text"
               value={options.creator || ''}
-              onChange={(e) => updateOption('creator', e.target.value)}
+              onChange={e => updateOption('creator', e.target.value)}
               placeholder="European Camper Trip Planner"
               className="w-full p-2 text-sm border border-neutral-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
             />
@@ -168,57 +225,69 @@ const ExportOptionsPanel: React.FC<{
 
 // Import Panel Component
 const ImportPanel: React.FC<{
-  onImportComplete: (result: any) => void;
+  onImportComplete: (result: unknown) => void;
 }> = ({ onImportComplete }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
   const { addNotification } = useUIStore();
 
-  const handleFileUpload = useCallback(async (_file: File) => {
-    setIsImporting(true);
+  const handleFileUpload = useCallback(
+    async (_file: File) => {
+      setIsImporting(true);
 
-    try {
-      // Import functionality would need to be implemented in MultiFormatExportService
-      // For now, show a placeholder message
-      throw new Error('Import functionality not yet implemented in new export service');
-    } catch (error) {
-      addNotification({
-        type: 'error',
-        message: `Failed to import file: ${error instanceof Error ? error.message : 'Unknown error'}`
-      });
-    } finally {
-      setIsImporting(false);
-    }
-  }, [addNotification, onImportComplete]);
+      try {
+        // Import functionality would need to be implemented in MultiFormatExportService
+        // For now, show a placeholder message
+        throw new Error('Import functionality not yet implemented in new export service');
+      } catch (error) {
+        addNotification({
+          type: 'error',
+          message: `Failed to import file: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        });
+      } finally {
+        setIsImporting(false);
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    },
+    [addNotification, onImportComplete]
+  );
 
-  const handleDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
+  const handleDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
+      setIsDragging(false);
 
-    const files = Array.from(e.dataTransfer.files);
-    if (files.length > 0) {
-      handleFileUpload(files[0]);
-    }
-  }, [handleFileUpload]);
+      const files = Array.from(e.dataTransfer.files);
+      if (files.length > 0) {
+        handleFileUpload(files[0]);
+      }
+    },
+    [handleFileUpload]
+  );
 
-  const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
-    if (files.length > 0) {
-      handleFileUpload(files[0]);
-    }
-  }, [handleFileUpload]);
+  const handleFileSelect = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const files = Array.from(e.target.files || []);
+      if (files.length > 0) {
+        handleFileUpload(files[0]);
+      }
+    },
+    [handleFileUpload]
+  );
 
   return (
     <div>
       <div
         onDrop={handleDrop}
-        onDragOver={(e) => e.preventDefault()}
+        onDragOver={e => e.preventDefault()}
         onDragEnter={() => setIsDragging(true)}
         onDragLeave={() => setIsDragging(false)}
+        role="region"
+        aria-label="File drop zone for route import"
         className={cn(
-          "border-2 border-dashed rounded-lg p-8 text-center transition-colors",
-          isDragging ? "border-primary-500 bg-primary-50" : "border-neutral-300",
-          isImporting && "opacity-50 pointer-events-none"
+          'border-2 border-dashed rounded-lg p-8 text-center transition-colors',
+          isDragging ? 'border-primary-500 bg-primary-50' : 'border-neutral-300',
+          isImporting && 'opacity-50 pointer-events-none'
         )}
       >
         {isImporting ? (
@@ -228,12 +297,24 @@ const ImportPanel: React.FC<{
           </div>
         ) : (
           <div className="space-y-3">
-            <svg className="w-12 h-12 mx-auto text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+            <svg
+              className="w-12 h-12 mx-auto text-neutral-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+              />
             </svg>
             <div>
               <p className="text-lg font-medium text-neutral-900">Import Route</p>
-              <p className="text-sm text-neutral-600">Drag and drop a GPX, JSON, KML, or CSV file here</p>
+              <p className="text-sm text-neutral-600">
+                Drag and drop a GPX, JSON, KML, or CSV file here
+              </p>
             </div>
             <div>
               <label className="cursor-pointer">
@@ -274,7 +355,7 @@ const RouteExporter: React.FC<RouteExporterProps> = ({ className }) => {
     includeInstructions: true,
     includeElevation: true,
     includeMetadata: true,
-    creator: 'European Camper Trip Planner'
+    creator: 'European Camper Trip Planner',
   });
 
   // Check if export is possible
@@ -293,25 +374,34 @@ const RouteExporter: React.FC<RouteExporterProps> = ({ className }) => {
   }, [waypoints.length, exportOptions, calculatedRoute]);
 
   // Helper function to calculate distance between waypoints
-  const calculateDistance = useCallback((waypoint1: any, waypoint2: any): number => {
-    const R = 6371; // Earth's radius in km
-    const dLat = (waypoint2.lat - waypoint1.lat) * Math.PI / 180;
-    const dLng = (waypoint2.lng - waypoint1.lng) * Math.PI / 180;
-    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(waypoint1.lat * Math.PI / 180) * Math.cos(waypoint2.lat * Math.PI / 180) *
-      Math.sin(dLng / 2) * Math.sin(dLng / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c;
-  }, []);
+  const calculateDistance = useCallback(
+    (waypoint1: { lat: number; lng: number }, waypoint2: { lat: number; lng: number }): number => {
+      const R = 6371; // Earth's radius in km
+      const dLat = ((waypoint2.lat - waypoint1.lat) * Math.PI) / 180;
+      const dLng = ((waypoint2.lng - waypoint1.lng) * Math.PI) / 180;
+      const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos((waypoint1.lat * Math.PI) / 180) *
+          Math.cos((waypoint2.lat * Math.PI) / 180) *
+          Math.sin(dLng / 2) *
+          Math.sin(dLng / 2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      return R * c;
+    },
+    []
+  );
 
-  const calculateTotalDistance = useCallback((waypoints: any[]): number => {
-    if (waypoints.length < 2) return 0;
-    let total = 0;
-    for (let i = 0; i < waypoints.length - 1; i++) {
-      total += calculateDistance(waypoints[i], waypoints[i + 1]);
-    }
-    return total;
-  }, [calculateDistance]);
+  const calculateTotalDistance = useCallback(
+    (waypoints: { lat: number; lng: number }[]): number => {
+      if (waypoints.length < 2) return 0;
+      let total = 0;
+      for (let i = 0; i < waypoints.length - 1; i++) {
+        total += calculateDistance(waypoints[i], waypoints[i + 1]);
+      }
+      return total;
+    },
+    [calculateDistance]
+  );
 
   // Simulated export progress steps
   const executeExport = useCallback(async () => {
@@ -344,40 +434,46 @@ const RouteExporter: React.FC<RouteExporterProps> = ({ className }) => {
       const mockRouteResponse: RouteResponse = {
         id: `export_${Date.now()}`,
         status: 'success',
-        routes: [{
-          geometry: {
-            coordinates: waypoints.map(wp => [wp.lng, wp.lat]),
-            type: "LineString"
+        routes: [
+          {
+            geometry: {
+              coordinates: waypoints.map(wp => [wp.lng, wp.lat]),
+              type: 'LineString',
+            },
+            summary: {
+              distance: waypoints.length > 1 ? calculateTotalDistance(waypoints) * 1000 : 0,
+              duration: waypoints.length > 1 ? (calculateTotalDistance(waypoints) / 70) * 3600 : 0,
+            },
+            waypoints: waypoints.map((_, i) => i),
+            segments: [
+              {
+                distance: waypoints.length > 1 ? calculateTotalDistance(waypoints) * 1000 : 0,
+                duration:
+                  waypoints.length > 1 ? (calculateTotalDistance(waypoints) / 70) * 3600 : 0,
+                steps: waypoints.map((wp, index) => ({
+                  instruction: index === 0 ? `Start at ${wp.name}` : `Continue to ${wp.name}`,
+                  name: wp.name,
+                  distance: index > 0 ? calculateDistance(waypoints[index - 1], wp) * 1000 : 0,
+                  duration:
+                    index > 0 ? (calculateDistance(waypoints[index - 1], wp) / 70) * 3600 : 0,
+                  geometry: { coordinates: [wp.lng, wp.lat] },
+                  maneuver: { location: [wp.lng, wp.lat] },
+                  wayPoints: [0, 1],
+                })),
+              },
+            ],
           },
-          summary: {
-            distance: waypoints.length > 1 ? calculateTotalDistance(waypoints) * 1000 : 0,
-            duration: waypoints.length > 1 ? calculateTotalDistance(waypoints) / 70 * 3600 : 0
-          },
-          waypoints: waypoints.map((_, i) => i),
-          segments: [{
-            distance: waypoints.length > 1 ? calculateTotalDistance(waypoints) * 1000 : 0,
-            duration: waypoints.length > 1 ? calculateTotalDistance(waypoints) / 70 * 3600 : 0,
-            steps: waypoints.map((wp, index) => ({
-              instruction: index === 0 ? `Start at ${wp.name}` : `Continue to ${wp.name}`,
-              name: wp.name,
-              distance: index > 0 ? calculateDistance(waypoints[index-1], wp) * 1000 : 0,
-              duration: index > 0 ? calculateDistance(waypoints[index-1], wp) / 70 * 3600 : 0,
-              geometry: { coordinates: [wp.lng, wp.lat] },
-              maneuver: { location: [wp.lng, wp.lat] },
-              wayPoints: [0, 1]
-            }))
-          }]
-        }],
+        ],
         metadata: {
           service: 'openrouteservice',
           profile: vehicleProfile?.type || 'driving-hgv',
           timestamp: Date.now(),
           query: {
             waypoints: waypoints,
-            vehicleProfile: vehicleProfile || undefined
+            vehicleProfile: vehicleProfile || undefined,
           },
-          attribution: 'OpenRouteService'
-        }
+          attribution: 'OpenRouteService',
+        },
       };
 
       const routeName = exportOptions.description || 'Camper Route';
@@ -406,7 +502,7 @@ const RouteExporter: React.FC<RouteExporterProps> = ({ className }) => {
         if (success) {
           addNotification({
             type: 'success',
-            message: `Route exported successfully as ${result.filename}`
+            message: `Route exported successfully as ${result.filename}`,
           });
         } else {
           throw new Error('Download failed');
@@ -417,18 +513,20 @@ const RouteExporter: React.FC<RouteExporterProps> = ({ className }) => {
     } catch (error) {
       addNotification({
         type: 'error',
-        message: `Export failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        message: `Export failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       });
     } finally {
       setIsExporting(false);
       setExportProgress(0);
       setCurrentStep('');
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [waypoints, exportOptions, currentTrip, vehicleProfile, canExport, addNotification]);
 
   // Handle import completion
-  const handleImportComplete = useCallback((result: any) => {
+  const handleImportComplete = useCallback((result: unknown) => {
     // TODO: Integrate with route store to import waypoints
+    // eslint-disable-next-line no-console
     console.log('Import completed:', result);
   }, []);
 
@@ -436,8 +534,18 @@ const RouteExporter: React.FC<RouteExporterProps> = ({ className }) => {
     return (
       <div className={cn('bg-white rounded-lg border border-neutral-200 p-6', className)}>
         <div className="text-center text-neutral-500">
-          <svg className="w-12 h-12 mx-auto mb-3 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          <svg
+            className="w-12 h-12 mx-auto mb-3 text-neutral-300"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+            />
           </svg>
           <h3 className="text-lg font-medium text-neutral-900 mb-1">No Route to Export</h3>
           <p>Add waypoints to your route to enable export functionality</p>
@@ -453,11 +561,11 @@ const RouteExporter: React.FC<RouteExporterProps> = ({ className }) => {
         <nav className="-mb-px flex space-x-8 px-4">
           {[
             { id: 'export', label: 'Export Route', icon: '📤' },
-            { id: 'import', label: 'Import Route', icon: '📥' }
-          ].map((tab) => (
+            { id: 'import', label: 'Import Route', icon: '📥' },
+          ].map(tab => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id as any)}
+              onClick={() => setActiveTab(tab.id as 'export' | 'import')}
               className={cn(
                 'flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm transition-colors',
                 activeTab === tab.id
@@ -480,15 +588,13 @@ const RouteExporter: React.FC<RouteExporterProps> = ({ className }) => {
             <div>
               <h3 className="text-lg font-semibold text-neutral-900">Export Route</h3>
               <p className="text-sm text-neutral-600 mt-1">
-                Export your route with {waypoints.length} waypoints to various formats for GPS devices and trip planning
+                Export your route with {waypoints.length} waypoints to various formats for GPS
+                devices and trip planning
               </p>
             </div>
 
             {/* Export Options */}
-            <ExportOptionsPanel
-              options={exportOptions}
-              onChange={setExportOptions}
-            />
+            <ExportOptionsPanel options={exportOptions} onChange={setExportOptions} />
 
             {/* Export Summary */}
             <div className="bg-neutral-50 rounded-lg p-4">

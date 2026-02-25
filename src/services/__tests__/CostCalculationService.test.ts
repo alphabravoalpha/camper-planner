@@ -25,7 +25,7 @@ describe('CostCalculationService', () => {
       {
         id: '2',
         name: 'Lyon',
-        lat: 45.7640,
+        lat: 45.764,
         lng: 4.8357,
         type: 'waypoint',
       },
@@ -282,11 +282,7 @@ describe('CostCalculationService', () => {
       expect(mpgImperial).toBeGreaterThan(0);
 
       // L/100km to MPG US
-      const mpgUs = CostCalculationService.convertConsumption(
-        10,
-        'l_per_100km',
-        'mpg_us'
-      );
+      const mpgUs = CostCalculationService.convertConsumption(10, 'l_per_100km', 'mpg_us');
       expect(mpgUs).toBeGreaterThan(0);
 
       // MPG to L/100km should be inverse relationship
@@ -408,8 +404,8 @@ describe('CostCalculationService', () => {
       // Create longer route
       const longRoute: Waypoint[] = [
         { id: '1', name: 'Paris', lat: 48.8566, lng: 2.3522, type: 'start' },
-        { id: '2', name: 'Lyon', lat: 45.7640, lng: 4.8357, type: 'waypoint' },
-        { id: '3', name: 'Nice', lat: 43.7102, lng: 7.2620, type: 'waypoint' },
+        { id: '2', name: 'Lyon', lat: 45.764, lng: 4.8357, type: 'waypoint' },
+        { id: '3', name: 'Nice', lat: 43.7102, lng: 7.262, type: 'waypoint' },
         { id: '4', name: 'Barcelona', lat: 41.3851, lng: 2.1734, type: 'end' },
       ];
 

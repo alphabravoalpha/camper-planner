@@ -4,7 +4,7 @@ declare module 'leaflet.markercluster' {
   import * as L from 'leaflet';
 
   namespace L {
-    function markerClusterGroup(options?: any): any;
+    function markerClusterGroup(options?: Record<string, unknown>): L.LayerGroup;
   }
 }
 
@@ -28,31 +28,31 @@ declare module 'leaflet' {
     getSouth(): number;
     getEast(): number;
     getWest(): number;
-    contains(latlng: any): boolean;
-    extend(latlng: any): this;
+    contains(latlng: LatLng | [number, number]): boolean;
+    extend(latlng: LatLng | [number, number]): this;
     pad(ratio: number): LatLngBounds;
     intersects(bounds: LatLngBounds): boolean;
   }
 
   export class Map {
-    setView(center: [number, number], zoom: number, options?: any): this;
+    setView(center: [number, number], zoom: number, options?: Record<string, unknown>): this;
     getBounds(): LatLngBounds;
-    addLayer(layer: any): this;
-    removeLayer(layer: any): this;
-    hasLayer(layer: any): boolean;
-    getCenter(): any;
+    addLayer(layer: Layer): this;
+    removeLayer(layer: Layer): this;
+    hasLayer(layer: Layer): boolean;
+    getCenter(): LatLng;
     getZoom(): number;
-    setZoom(zoom: number, options?: any): this;
+    setZoom(zoom: number, options?: Record<string, unknown>): this;
     zoomIn(delta?: number): this;
     zoomOut(delta?: number): this;
-    fitBounds(bounds: LatLngBounds, options?: any): this;
-    latLngToContainerPoint(latlng: any): any;
+    fitBounds(bounds: LatLngBounds, options?: Record<string, unknown>): this;
+    latLngToContainerPoint(latlng: LatLng | [number, number]): Point;
     on(type: string, fn: (...args: unknown[]) => void): this;
     off(type: string, fn?: (...args: unknown[]) => void): this;
   }
 
   export function divIcon(options?: DivIconOptions): DivIcon;
-  export function marker(latlng: [number, number], options?: any): any;
+  export function marker(latlng: [number, number], options?: Record<string, unknown>): Marker;
   export function latLng(latitude: number, longitude: number, altitude?: number): LatLng;
   export function latLngBounds(corner1: [number, number], corner2: [number, number]): LatLngBounds;
   export function latLngBounds(latlngs: [number, number][]): LatLngBounds;
@@ -68,7 +68,7 @@ declare module 'leaflet' {
 
   const Icon: {
     Default: {
-      mergeOptions(options: any): void;
+      mergeOptions(options: Record<string, unknown>): void;
     };
   };
 }

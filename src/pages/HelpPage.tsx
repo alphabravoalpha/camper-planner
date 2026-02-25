@@ -6,65 +6,82 @@ import { Link } from 'react-router-dom';
 import { useOnboarding } from '../hooks/useOnboarding';
 import { useNavigate } from 'react-router-dom';
 import {
-  PlayCircle, ChevronRight, HelpCircle,
-  Compass, ChevronDown, MessageSquare, Heart
+  PlayCircle,
+  ChevronRight,
+  HelpCircle,
+  Compass,
+  ChevronDown,
+  MessageSquare,
+  Heart,
 } from 'lucide-react';
 
 const STEPS = [
   {
     number: '1',
     title: 'Set up your vehicle',
-    description: 'Click the vehicle badge in the header (or the vehicle button on the map) and enter your height, width, weight, and length. This ensures routes avoid low bridges, narrow roads, and weight-restricted areas.',
+    description:
+      'Click the vehicle badge in the header (or the vehicle button on the map) and enter your height, width, weight, and length. This ensures routes avoid low bridges, narrow roads, and weight-restricted areas.',
   },
   {
     number: '2',
     title: 'Plan your route',
-    description: 'Right-click on the map to add waypoints, or use the search bar to find cities and landmarks. Drag waypoints to reorder your stops. Routes calculate automatically.',
+    description:
+      'Right-click on the map to add waypoints, or use the search bar to find cities and landmarks. Drag waypoints to reorder your stops. Routes calculate automatically.',
   },
   {
     number: '3',
     title: 'Find campsites along the way',
-    description: 'Click the campsite toggle (tent icon) on the map to see nearby campsites, aires, and caravan parks. Use filters to narrow by amenities like electricity, WiFi, or waste disposal.',
+    description:
+      'Click the campsite toggle (tent icon) on the map to see nearby campsites, aires, and caravan parks. Use filters to narrow by amenities like electricity, WiFi, or waste disposal.',
   },
   {
     number: '4',
     title: 'Export & go',
-    description: 'Open the planning tools panel to export your route as GPX for your satnav, estimate fuel costs with the cost calculator, or save your trip for later.',
+    description:
+      'Open the planning tools panel to export your route as GPX for your satnav, estimate fuel costs with the cost calculator, or save your trip for later.',
   },
 ];
 
 const FAQ_ITEMS = [
   {
     question: 'How do I add stops to my route?',
-    answer: 'Right-click anywhere on the map to add a waypoint, or use the search bar at the top of the map to find a city, town, or point of interest. You can also click "Plan a Trip" to use the trip planning wizard.',
+    answer:
+      'Right-click anywhere on the map to add a waypoint, or use the search bar at the top of the map to find a city, town, or point of interest. You can also click "Plan a Trip" to use the trip planning wizard.',
   },
   {
     question: 'How do I reorder my stops?',
-    answer: 'Open the waypoint list (sidebar on desktop, or the list icon on mobile) and drag waypoints up or down to reorder them. You can also use the route optimizer in the planning tools to find the most efficient order automatically.',
+    answer:
+      'Open the waypoint list (sidebar on desktop, or the list icon on mobile) and drag waypoints up or down to reorder them. You can also use the route optimizer in the planning tools to find the most efficient order automatically.',
   },
   {
     question: 'Why should I set up a vehicle profile?',
-    answer: 'Your vehicle dimensions (height, width, weight, length) are sent to the routing engine so it can avoid roads with low bridges, weight restrictions, or narrow passages. Without a profile, you get standard car routing which may take you down unsuitable roads.',
+    answer:
+      'Your vehicle dimensions (height, width, weight, length) are sent to the routing engine so it can avoid roads with low bridges, weight restrictions, or narrow passages. Without a profile, you get standard car routing which may take you down unsuitable roads.',
   },
   {
     question: 'How do I export my route to a GPS device?',
-    answer: 'Open the planning tools panel (the tools icon on the right side of the map), then click "Export Route". You can download as GPX (for most satnavs), KML (for Google Earth), or JSON (for backup). Transfer the GPX file to your device via USB or Bluetooth.',
+    answer:
+      'Open the planning tools panel (the tools icon on the right side of the map), then click "Export Route". You can download as GPX (for most satnavs), KML (for Google Earth), or JSON (for backup). Transfer the GPX file to your device via USB or Bluetooth.',
   },
   {
     question: 'Is my data safe? Where is it stored?',
-    answer: 'All your data — trips, vehicle profiles, preferences — is stored locally in your browser using localStorage. Nothing is sent to any server. You can export a backup from the Settings page and clear your data at any time.',
+    answer:
+      'All your data — trips, vehicle profiles, preferences — is stored locally in your browser using localStorage. Nothing is sent to any server. You can export a backup from the Settings page and clear your data at any time.',
   },
   {
     question: 'How accurate are the campsite locations?',
-    answer: 'Campsite data comes from OpenStreetMap, which is community-maintained. Most major campsites are listed with accurate coordinates, but smaller or newer sites may be missing or have limited details. If you find an error, you can contribute to OpenStreetMap directly.',
+    answer:
+      'Campsite data comes from OpenStreetMap, which is community-maintained. Most major campsites are listed with accurate coordinates, but smaller or newer sites may be missing or have limited details. If you find an error, you can contribute to OpenStreetMap directly.',
   },
   {
     question: 'Can I plan trips across multiple countries?',
-    answer: 'Yes — the planner covers 40+ European countries. Add waypoints across borders and the routing engine handles the rest, including ferry crossings where available.',
+    answer:
+      'Yes — the planner covers 40+ European countries. Add waypoints across borders and the routing engine handles the rest, including ferry crossings where available.',
   },
   {
     question: 'Does it work offline?',
-    answer: 'The app loads in your browser and retains your saved data offline. However, map tiles, routing calculations, and campsite searches require an internet connection. Your saved trips and vehicle profile are always available offline.',
+    answer:
+      'The app loads in your browser and retains your saved data offline. However, map tiles, routing calculations, and campsite searches require an internet connection. Your saved trips and vehicle profile are always available offline.',
   },
 ];
 
@@ -106,7 +123,12 @@ const HelpPage: React.FC = () => {
     <div className="min-h-screen bg-neutral-50 animate-fade-in">
       {/* Hero Section */}
       <div className="relative overflow-hidden bg-gradient-to-br from-primary-700 to-primary-900 text-white">
-        <img src="/images/hero-help.jpg" alt="" className="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-overlay" loading="lazy" />
+        <img
+          src="/images/hero-help.jpg"
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-overlay"
+          loading="lazy"
+        />
         <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
           <div className="text-center">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/15 rounded-full text-sm font-medium mb-6 backdrop-blur-sm">
@@ -117,8 +139,8 @@ const HelpPage: React.FC = () => {
               How can we help?
             </h1>
             <p className="text-lg sm:text-xl text-primary-100 max-w-2xl mx-auto leading-relaxed">
-              Step-by-step guides and answers to common questions
-              about planning your European camper trip.
+              Step-by-step guides and answers to common questions about planning your European
+              camper trip.
             </p>
           </div>
         </div>
@@ -136,8 +158,8 @@ const HelpPage: React.FC = () => {
                 New here? Take the interactive tutorial
               </h2>
               <p className="text-accent-800 leading-relaxed">
-                Our guided walkthrough shows you how to plan a trip in under 2 minutes.
-                You can restart it any time.
+                Our guided walkthrough shows you how to plan a trip in under 2 minutes. You can
+                restart it any time.
               </p>
             </div>
             <button
@@ -156,7 +178,7 @@ const HelpPage: React.FC = () => {
             How it works
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {STEPS.map((step) => (
+            {STEPS.map(step => (
               <div
                 key={step.number}
                 className="bg-white rounded-xl shadow-soft p-6 hover:shadow-medium hover:-translate-y-1 transition-all duration-200 relative"
@@ -167,9 +189,7 @@ const HelpPage: React.FC = () => {
                 <h3 className="text-base font-display font-semibold text-neutral-900 mb-1.5">
                   {step.title}
                 </h3>
-                <p className="text-sm text-neutral-500 leading-relaxed">
-                  {step.description}
-                </p>
+                <p className="text-sm text-neutral-500 leading-relaxed">{step.description}</p>
               </div>
             ))}
           </div>
@@ -182,29 +202,32 @@ const HelpPage: React.FC = () => {
               <Compass className="w-6 h-6 text-primary-600" />
             </div>
             <div>
-              <h2 className="text-xl font-display font-bold text-neutral-900 mb-3">
-                Pro tips
-              </h2>
+              <h2 className="text-xl font-display font-bold text-neutral-900 mb-3">Pro tips</h2>
               <ul className="space-y-2.5 text-neutral-600 leading-relaxed">
                 <li className="flex items-start gap-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-primary-500 mt-2 flex-shrink-0" />
-                  Use the <strong>search bar</strong> to quickly find cities, towns, and points of interest.
+                  Use the <strong>search bar</strong> to quickly find cities, towns, and points of
+                  interest.
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-primary-500 mt-2 flex-shrink-0" />
-                  Set your <strong>vehicle profile</strong> before calculating routes — bridges and tunnels are checked against your dimensions.
+                  Set your <strong>vehicle profile</strong> before calculating routes — bridges and
+                  tunnels are checked against your dimensions.
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-primary-500 mt-2 flex-shrink-0" />
-                  Use <strong>route optimization</strong> to find the most efficient order for multiple stops.
+                  Use <strong>route optimization</strong> to find the most efficient order for
+                  multiple stops.
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-primary-500 mt-2 flex-shrink-0" />
-                  Filter campsites by <strong>amenities</strong> — electricity, WiFi, showers, water, and waste disposal.
+                  Filter campsites by <strong>amenities</strong> — electricity, WiFi, showers,
+                  water, and waste disposal.
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-primary-500 mt-2 flex-shrink-0" />
-                  Your data is <strong>saved locally</strong> in your browser — no account needed, nothing leaves your device.
+                  Your data is <strong>saved locally</strong> in your browser — no account needed,
+                  nothing leaves your device.
                 </li>
               </ul>
             </div>
@@ -217,7 +240,7 @@ const HelpPage: React.FC = () => {
             Frequently asked questions
           </h2>
           <div className="space-y-3 max-w-3xl mx-auto">
-            {FAQ_ITEMS.map((item) => (
+            {FAQ_ITEMS.map(item => (
               <FAQItem key={item.question} question={item.question} answer={item.answer} />
             ))}
           </div>
@@ -265,7 +288,9 @@ const HelpPage: React.FC = () => {
 
         {/* CTA */}
         <div className="text-center bg-white rounded-xl shadow-soft p-8">
-          <h2 className="text-2xl font-display font-bold text-neutral-900 mb-3">Ready to plan your trip?</h2>
+          <h2 className="text-2xl font-display font-bold text-neutral-900 mb-3">
+            Ready to plan your trip?
+          </h2>
           <p className="text-neutral-500 mb-6">
             Jump in and start adding waypoints — no sign-up, no fees, just open road ahead.
           </p>

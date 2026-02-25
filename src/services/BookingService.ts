@@ -41,7 +41,7 @@ class BookingService {
     booking: {
       id: 'booking',
       name: 'Booking.com',
-      description: 'World\'s largest accommodation booking platform',
+      description: "World's largest accommodation booking platform",
       baseUrl: 'https://www.booking.com',
       commissionRate: '3-5%',
       features: ['Instant booking', 'Free cancellation', 'Reviews', 'Mobile app'],
@@ -49,9 +49,9 @@ class BookingService {
         locationSearch: true,
         campsiteTypeFilter: true,
         amenityFilter: false,
-        availabilityCheck: true
+        availabilityCheck: true,
       },
-      enabled: !!import.meta.env.VITE_BOOKING_AFFILIATE_ID
+      enabled: !!import.meta.env.VITE_BOOKING_AFFILIATE_ID,
     },
     pitchup: {
       id: 'pitchup',
@@ -59,14 +59,19 @@ class BookingService {
       description: 'Specialist camping and glamping booking platform',
       baseUrl: 'https://www.pitchup.com',
       commissionRate: 'Up to 8%',
-      features: ['Camping specialist', 'Pitch selection', 'Local recommendations', 'Family-friendly'],
+      features: [
+        'Camping specialist',
+        'Pitch selection',
+        'Local recommendations',
+        'Family-friendly',
+      ],
       searchCapabilities: {
         locationSearch: true,
         campsiteTypeFilter: true,
         amenityFilter: true,
-        availabilityCheck: true
+        availabilityCheck: true,
       },
-      enabled: !!import.meta.env.VITE_PITCHUP_AFFILIATE_ID
+      enabled: !!import.meta.env.VITE_PITCHUP_AFFILIATE_ID,
     },
     acsi: {
       id: 'acsi',
@@ -79,10 +84,10 @@ class BookingService {
         locationSearch: true,
         campsiteTypeFilter: true,
         amenityFilter: true,
-        availabilityCheck: false
+        availabilityCheck: false,
       },
-      enabled: !!import.meta.env.VITE_ACSI_AFFILIATE_CODE
-    }
+      enabled: !!import.meta.env.VITE_ACSI_AFFILIATE_CODE,
+    },
   };
 
   /**
@@ -109,10 +114,7 @@ class BookingService {
   /**
    * Generate booking links for a campsite
    */
-  generateBookingLinks(
-    campsite: Campsite,
-    options: BookingSearchOptions = {}
-  ): BookingLink[] {
+  generateBookingLinks(campsite: Campsite, options: BookingSearchOptions = {}): BookingLink[] {
     const enabledProviders = this.getEnabledProviders();
     const links: BookingLink[] = [];
 
@@ -123,7 +125,7 @@ class BookingService {
           provider,
           url,
           searchParams: this.getSearchParams(provider, campsite, options),
-          description: this.getSearchDescription(provider, campsite, options)
+          description: this.getSearchDescription(provider, campsite, options),
         });
       }
     });
@@ -162,7 +164,7 @@ class BookingService {
           aid: import.meta.env.VITE_BOOKING_AFFILIATE_ID || '',
           label: 'camper-planner-search',
           utm_source: 'camper-planner',
-          utm_medium: 'affiliate'
+          utm_medium: 'affiliate',
         };
 
       case 'pitchup':
@@ -170,14 +172,14 @@ class BookingService {
           affiliate_id: import.meta.env.VITE_PITCHUP_AFFILIATE_ID || '',
           utm_source: 'camper-planner',
           utm_medium: 'referral',
-          utm_campaign: 'campsite-search'
+          utm_campaign: 'campsite-search',
         };
 
       case 'acsi':
         return {
           ref: import.meta.env.VITE_ACSI_AFFILIATE_CODE || '',
           utm_source: 'camper-planner',
-          partner: 'camper-planner'
+          partner: 'camper-planner',
         };
 
       default:
@@ -282,9 +284,10 @@ class BookingService {
     options: BookingSearchOptions
   ): string {
     const location = campsite.name || campsite.address || 'this location';
-    const dates = options.checkIn && options.checkOut
-      ? ` for ${options.checkIn.toLocaleDateString()} - ${options.checkOut.toLocaleDateString()}`
-      : '';
+    const dates =
+      options.checkIn && options.checkOut
+        ? ` for ${options.checkIn.toLocaleDateString()} - ${options.checkOut.toLocaleDateString()}`
+        : '';
 
     return `Search ${provider.name} for camping near ${location}${dates}`;
   }
@@ -292,21 +295,21 @@ class BookingService {
   /**
    * Get booking statistics and analytics
    */
-  getProviderStats(): Record<string, any> {
+  getProviderStats(): Record<string, unknown> {
     const stats = {
       totalProviders: Object.keys(this.providers).length,
       enabledProviders: this.getEnabledProviders().length,
       coverageByRegion: {
         europe: ['acsi', 'pitchup', 'booking'],
         worldwide: ['booking', 'pitchup'],
-        discount: ['acsi']
+        discount: ['acsi'],
       },
       features: {
         instantBooking: this.getProvidersByFeature('Instant booking'),
         freeCancellation: this.getProvidersByFeature('Free cancellation'),
         mobileApp: this.getProvidersByFeature('Mobile app'),
-        specialist: this.getProvidersByFeature('Camping specialist')
-      }
+        specialist: this.getProvidersByFeature('Camping specialist'),
+      },
     };
 
     return stats;
@@ -330,11 +333,7 @@ class BookingService {
       new URL(url);
 
       // Check if the domain is in our approved list
-      const approvedDomains = [
-        'booking.com',
-        'pitchup.com',
-        'acsi.eu'
-      ];
+      const approvedDomains = ['booking.com', 'pitchup.com', 'acsi.eu'];
 
       const domain = new URL(url).hostname.replace('www.', '');
       return approvedDomains.includes(domain);
@@ -347,14 +346,9 @@ class BookingService {
    * Track booking link clicks for analytics
    */
   trackBookingClick(providerId: string, campsiteId: string): void {
-    // Analytics tracking would go here
-    // For now, just log to console in development
-    if (import.meta.env.VITE_APP_ENV === 'development') {
-      console.log('Booking click tracked:', { providerId, campsiteId, timestamp: new Date() });
-    }
-
-    // Could integrate with analytics services like Google Analytics, Mixpanel, etc.
-    // Example: gtag('event', 'booking_click', { provider: providerId, campsite: campsiteId });
+    // Analytics tracking stub - would integrate with analytics services
+    void providerId;
+    void campsiteId;
   }
 }
 

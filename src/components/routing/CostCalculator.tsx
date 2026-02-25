@@ -40,11 +40,7 @@ const CostCalculator: React.FC<CostCalculatorProps> = ({
   const { waypoints } = useRouteStore();
   const { profile } = useVehicleStore();
   const { settings } = useTripSettingsStore();
-  const {
-    preferences,
-    lastCalculation,
-    setLastCalculation,
-  } = useCostStore();
+  const { preferences, lastCalculation, setLastCalculation } = useCostStore();
 
   const [isCalculating, setIsCalculating] = useState(false);
   const [costBreakdown, setCostBreakdown] = useState<CostBreakdown | null>(null);
@@ -52,30 +48,38 @@ const CostCalculator: React.FC<CostCalculatorProps> = ({
   const [error, setError] = useState<string | null>(null);
 
   // Derive fuel consumption settings from trip settings store
-  const fuelConsumptionSettings: FuelConsumptionSettings = useMemo(() => ({
-    consumptionType: settings.fuelConsumption.unit === 'l_per_100km'
-      ? 'l_per_100km'
-      : settings.fuelConsumption.unit === 'mpg_imperial'
-        ? 'mpg_imperial'
-        : 'mpg_us',
-    consumption: settings.fuelConsumption.value,
-    fuelType: settings.fuelConsumption.fuelType === 'electric'
-      ? 'electricity'
-      : settings.fuelConsumption.fuelType,
-    tankCapacity: settings.fuelConsumption.tankCapacity,
-  }), [settings.fuelConsumption]);
+  const fuelConsumptionSettings: FuelConsumptionSettings = useMemo(
+    () => ({
+      consumptionType:
+        settings.fuelConsumption.unit === 'l_per_100km'
+          ? 'l_per_100km'
+          : settings.fuelConsumption.unit === 'mpg_imperial'
+            ? 'mpg_imperial'
+            : 'mpg_us',
+      consumption: settings.fuelConsumption.value,
+      fuelType:
+        settings.fuelConsumption.fuelType === 'electric'
+          ? 'electricity'
+          : settings.fuelConsumption.fuelType,
+      tankCapacity: settings.fuelConsumption.tankCapacity,
+    }),
+    [settings.fuelConsumption]
+  );
 
   // Derive fuel price settings from trip settings store
-  const fuelPriceSettings: FuelPriceSettings = useMemo(() => ({
-    priceType: 'manual' as const,
-    currency: settings.currency,
-    manualPrices: {
-      petrol: settings.fuelPricePerLitre,
-      diesel: settings.fuelPricePerLitre,
-      lpg: settings.fuelPricePerLitre,
-      electricity: settings.fuelPricePerLitre,
-    },
-  }), [settings.currency, settings.fuelPricePerLitre]);
+  const fuelPriceSettings: FuelPriceSettings = useMemo(
+    () => ({
+      priceType: 'manual' as const,
+      currency: settings.currency,
+      manualPrices: {
+        petrol: settings.fuelPricePerLitre,
+        diesel: settings.fuelPricePerLitre,
+        lpg: settings.fuelPricePerLitre,
+        electricity: settings.fuelPricePerLitre,
+      },
+    }),
+    [settings.currency, settings.fuelPricePerLitre]
+  );
 
   // Calculate route hash for caching (includes settings so cache invalidates on budget changes)
   const routeHash = useMemo(() => {
@@ -103,6 +107,7 @@ const CostCalculator: React.FC<CostCalculatorProps> = ({
     }
 
     calculateCosts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [waypoints, profile, fuelConsumptionSettings, fuelPriceSettings, settings]);
 
   // Notify parent component of cost updates
@@ -124,7 +129,7 @@ const CostCalculator: React.FC<CostCalculatorProps> = ({
         waypoints,
         profile || undefined,
         fuelConsumptionSettings,
-        fuelPriceSettings,
+        fuelPriceSettings
       );
 
       // Enhance breakdown with trip settings budget costs
@@ -139,7 +144,7 @@ const CostCalculator: React.FC<CostCalculatorProps> = ({
 
       // Calculate accommodation cost from trip settings daily budget
       const accommodationNights = baseBreakdown.segments.filter(
-        (s) => s.segmentType === 'overnight',
+        s => s.segmentType === 'overnight'
       ).length;
       const accommodationCost =
         accommodationNights > 0
@@ -148,7 +153,7 @@ const CostCalculator: React.FC<CostCalculatorProps> = ({
 
       // Build enhanced daily breakdown with food costs
       const dailyFoodCost = settings.dailyBudget.food;
-      const enhancedDailyBreakdown = baseBreakdown.dailyBreakdown.map((day) => ({
+      const enhancedDailyBreakdown = baseBreakdown.dailyBreakdown.map(day => ({
         ...day,
         foodCost: dailyFoodCost,
         accommodationCost: settings.dailyBudget.campsite,
@@ -182,7 +187,7 @@ const CostCalculator: React.FC<CostCalculatorProps> = ({
       if (preferences.showOptimizationSuggestions) {
         const optimizationResult = await CostCalculationService.calculateCostOptimizations(
           enhancedBreakdown,
-          profile || undefined,
+          profile || undefined
         );
         setOptimization(optimizationResult);
       }
@@ -324,8 +329,12 @@ const CostCalculator: React.FC<CostCalculatorProps> = ({
                             {formatCurrency(day.totalDailyCost, costBreakdown.currency)}
                           </div>
                           <div className="text-xs text-neutral-500 space-x-2">
-                            <span>Fuel: {formatCurrency(day.fuelCost, costBreakdown.currency)}</span>
-                            <span>Food: {formatCurrency(day.foodCost, costBreakdown.currency)}</span>
+                            <span>
+                              Fuel: {formatCurrency(day.fuelCost, costBreakdown.currency)}
+                            </span>
+                            <span>
+                              Food: {formatCurrency(day.foodCost, costBreakdown.currency)}
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -363,7 +372,7 @@ const CostCalculator: React.FC<CostCalculatorProps> = ({
                           <div className="font-semibold">
                             {formatCurrency(
                               segment.fuelCost + (segment.accommodationCost || 0),
-                              costBreakdown.currency,
+                              costBreakdown.currency
                             )}
                           </div>
                           <div className="text-sm text-neutral-600">
@@ -411,7 +420,8 @@ const CostCalculator: React.FC<CostCalculatorProps> = ({
                             </div>
                             <div className="text-right ml-4">
                               <div className="font-semibold text-green-600">
-                                -{formatCurrency(suggestion.potentialSaving, costBreakdown.currency)}
+                                -
+                                {formatCurrency(suggestion.potentialSaving, costBreakdown.currency)}
                               </div>
                             </div>
                           </div>

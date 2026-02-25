@@ -92,18 +92,40 @@ export class RoutingError extends Error {
   public service: string;
   public recoverable: boolean;
 
-  constructor(
-    message: string,
-    code: string,
-    service: string,
-    recoverable: boolean = true
-  ) {
+  constructor(message: string, code: string, service: string, recoverable: boolean = true) {
     super(message);
     this.name = 'RoutingError';
     this.code = code;
     this.service = service;
     this.recoverable = recoverable;
   }
+}
+
+// ORS API response types
+interface ORSFeatureProperties {
+  summary: { distance: number; duration: number };
+  segments?: RouteSegment[];
+  way_points?: number[];
+}
+
+interface ORSFeature {
+  geometry: { coordinates: [number, number][]; type: 'LineString' };
+  properties: ORSFeatureProperties;
+}
+
+interface ORSResponse {
+  features?: ORSFeature[];
+}
+
+// OSRM API response types
+interface OSRMResponse {
+  routes: Array<{
+    geometry: { coordinates: [number, number][]; type: 'LineString' };
+    distance: number;
+    duration: number;
+    legs?: RouteSegment[];
+  }>;
+  waypoints?: Array<{ location: [number, number] }>;
 }
 
 export class RoutingService extends DataService {
@@ -173,8 +195,8 @@ export class RoutingService extends DataService {
           alternative_routes: true,
           elevation: true, // Request elevation data for profile display
           geometry: true,
-          instructions: true
-        }
+          instructions: true,
+        },
       };
 
       const result = await this.calculateRouteWithORS(enhancedRequest);
@@ -182,10 +204,7 @@ export class RoutingService extends DataService {
       // Add any pre-calculated restrictions to the result
       if (vehicleRestrictions) {
         result.restrictions = vehicleRestrictions;
-        result.warnings = [
-          ...(result.warnings || []),
-          ...vehicleRestrictions.suggestedActions
-        ];
+        result.warnings = [...(result.warnings || []), ...vehicleRestrictions.suggestedActions];
       }
 
       return result;
@@ -195,7 +214,7 @@ export class RoutingService extends DataService {
         throw error;
       }
 
-      console.warn('OpenRouteService failed, trying fallback:', error);
+      console.error('OpenRouteService failed, trying fallback:', error);
 
       // Try fallback service (OSRM) but warn about lack of vehicle restrictions
       try {
@@ -238,7 +257,7 @@ export class RoutingService extends DataService {
     const profile = this.determineProfile(vehicleProfile, options.profile);
 
     // Build request parameters
-    const params: Record<string, any> = {
+    const params: Record<string, unknown> = {
       coordinates: coordinates,
       format: 'geojson',
       geometry: options.geometry !== false,
@@ -248,13 +267,13 @@ export class RoutingService extends DataService {
 
     // Add vehicle restrictions if profile is available (following API spec format)
     if (vehicleProfile) {
-      params.height = vehicleProfile.height;      // meters
-      params.width = vehicleProfile.width;        // meters
-      params.weight = vehicleProfile.weight;      // tonnes
-      params.length = vehicleProfile.length;      // meters
-      params.axleload = Math.round(vehicleProfile.weight / 2 * 10) / 10; // estimated axle load
-      params.hazmat = false;                      // not carrying hazardous materials
-      params.surface_type = 'any';                // road surface requirements
+      params.height = vehicleProfile.height; // meters
+      params.width = vehicleProfile.width; // meters
+      params.weight = vehicleProfile.weight; // tonnes
+      params.length = vehicleProfile.length; // meters
+      params.axleload = Math.round((vehicleProfile.weight / 2) * 10) / 10; // estimated axle load
+      params.hazmat = false; // not carrying hazardous materials
+      params.surface_type = 'any'; // road surface requirements
     }
 
     // Request alternative routes for better restriction handling
@@ -262,7 +281,7 @@ export class RoutingService extends DataService {
       params.alternative_routes = {
         target_count: 2,
         weight_factor: 1.4,
-        share_factor: 0.6
+        share_factor: 0.6,
       };
     }
 
@@ -277,11 +296,12 @@ export class RoutingService extends DataService {
       endpoint: `/directions/${profile}/geojson`,
       body: params,
       headers: {
-        'Accept': 'application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8',
+        Accept:
+          'application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8',
       },
     };
 
-    const response = await this.request<any>(context);
+    const response = await this.request<ORSResponse>(context);
 
     // Transform ORS response to our format
     return this.transformORSResponse(response, request);
@@ -323,14 +343,14 @@ export class RoutingService extends DataService {
 
     // Temporarily override config for OSRM request
     const originalConfig = this.config;
-    (this as any).config = osrmConfig;
+    (this as unknown as { config: DataServiceConfig }).config = osrmConfig;
 
     try {
-      const response = await this.request<any>(context);
+      const response = await this.request<OSRMResponse>(context);
       return this.transformOSRMResponse(response, request);
     } finally {
       // Restore original config
-      (this as any).config = originalConfig;
+      (this as unknown as { config: DataServiceConfig }).config = originalConfig;
     }
   }
 
@@ -342,36 +362,44 @@ export class RoutingService extends DataService {
       violatedDimensions: [],
       restrictedSegments: [],
       cannotAccommodate: false,
-      suggestedActions: []
+      suggestedActions: [],
     };
 
     // EU standard limits for general roads
     const euLimits = {
-      height: 4.0,    // meters
-      width: 2.55,    // meters
-      weight: 40,     // tonnes (articulated trucks)
-      length: 18.75   // meters (articulated trucks)
+      height: 4.0, // meters
+      width: 2.55, // meters
+      weight: 40, // tonnes (articulated trucks)
+      length: 18.75, // meters (articulated trucks)
     };
 
     // Check vehicle dimensions against EU limits
     if (vehicleProfile.height > euLimits.height) {
       restrictions.violatedDimensions.push('height');
-      restrictions.suggestedActions.push(`Vehicle height ${vehicleProfile.height}m exceeds EU limit of ${euLimits.height}m`);
+      restrictions.suggestedActions.push(
+        `Vehicle height ${vehicleProfile.height}m exceeds EU limit of ${euLimits.height}m`
+      );
     }
 
     if (vehicleProfile.width > euLimits.width) {
       restrictions.violatedDimensions.push('width');
-      restrictions.suggestedActions.push(`Vehicle width ${vehicleProfile.width}m exceeds EU limit of ${euLimits.width}m`);
+      restrictions.suggestedActions.push(
+        `Vehicle width ${vehicleProfile.width}m exceeds EU limit of ${euLimits.width}m`
+      );
     }
 
     if (vehicleProfile.weight > euLimits.weight) {
       restrictions.violatedDimensions.push('weight');
-      restrictions.suggestedActions.push(`Vehicle weight ${vehicleProfile.weight}t exceeds EU limit of ${euLimits.weight}t`);
+      restrictions.suggestedActions.push(
+        `Vehicle weight ${vehicleProfile.weight}t exceeds EU limit of ${euLimits.weight}t`
+      );
     }
 
     if (vehicleProfile.length > euLimits.length) {
       restrictions.violatedDimensions.push('length');
-      restrictions.suggestedActions.push(`Vehicle length ${vehicleProfile.length}m exceeds EU limit of ${euLimits.length}m`);
+      restrictions.suggestedActions.push(
+        `Vehicle length ${vehicleProfile.length}m exceeds EU limit of ${euLimits.length}m`
+      );
     }
 
     // Determine if vehicle can be accommodated at all
@@ -387,11 +415,21 @@ export class RoutingService extends DataService {
     const { waypoints, vehicleProfile } = request;
 
     if (!waypoints || waypoints.length < 2) {
-      throw new RoutingError('At least 2 waypoints are required', 'INVALID_WAYPOINTS', 'validation', false);
+      throw new RoutingError(
+        'At least 2 waypoints are required',
+        'INVALID_WAYPOINTS',
+        'validation',
+        false
+      );
     }
 
     if (waypoints.length > 50) {
-      throw new RoutingError('Maximum 50 waypoints allowed', 'TOO_MANY_WAYPOINTS', 'validation', false);
+      throw new RoutingError(
+        'Maximum 50 waypoints allowed',
+        'TOO_MANY_WAYPOINTS',
+        'validation',
+        false
+      );
     }
 
     // Validate coordinates
@@ -409,16 +447,36 @@ export class RoutingService extends DataService {
     // Validate vehicle profile if provided
     if (vehicleProfile) {
       if (vehicleProfile.height <= 0 || vehicleProfile.height > 4.5) {
-        throw new RoutingError('Vehicle height must be between 0 and 4.5 meters', 'INVALID_VEHICLE', 'validation', false);
+        throw new RoutingError(
+          'Vehicle height must be between 0 and 4.5 meters',
+          'INVALID_VEHICLE',
+          'validation',
+          false
+        );
       }
       if (vehicleProfile.width <= 0 || vehicleProfile.width > 3.0) {
-        throw new RoutingError('Vehicle width must be between 0 and 3.0 meters', 'INVALID_VEHICLE', 'validation', false);
+        throw new RoutingError(
+          'Vehicle width must be between 0 and 3.0 meters',
+          'INVALID_VEHICLE',
+          'validation',
+          false
+        );
       }
       if (vehicleProfile.weight <= 0 || vehicleProfile.weight > 40) {
-        throw new RoutingError('Vehicle weight must be between 0 and 40 tonnes', 'INVALID_VEHICLE', 'validation', false);
+        throw new RoutingError(
+          'Vehicle weight must be between 0 and 40 tonnes',
+          'INVALID_VEHICLE',
+          'validation',
+          false
+        );
       }
       if (vehicleProfile.length <= 0 || vehicleProfile.length > 20) {
-        throw new RoutingError('Vehicle length must be between 0 and 20 meters', 'INVALID_VEHICLE', 'validation', false);
+        throw new RoutingError(
+          'Vehicle length must be between 0 and 20 meters',
+          'INVALID_VEHICLE',
+          'validation',
+          false
+        );
       }
     }
   }
@@ -451,7 +509,7 @@ export class RoutingService extends DataService {
   /**
    * Transform OpenRouteService response to our format
    */
-  private transformORSResponse(orsResponse: any, request: RouteRequest): RouteResponse {
+  private transformORSResponse(orsResponse: ORSResponse, request: RouteRequest): RouteResponse {
     const features = orsResponse.features || [];
     if (features.length === 0) {
       throw new RoutingError('No route found', 'NO_ROUTE', 'openrouteservice', true);
@@ -470,7 +528,7 @@ export class RoutingService extends DataService {
     };
 
     // Process alternative routes if available
-    const alternativeRoutes: RouteData[] = features.slice(1).map((feature: any) => ({
+    const alternativeRoutes: RouteData[] = features.slice(1).map((feature: ORSFeature) => ({
       geometry: feature.geometry,
       summary: {
         distance: feature.properties.summary.distance,
@@ -483,7 +541,9 @@ export class RoutingService extends DataService {
     // Analyze response for potential restrictions
     const warnings: string[] = [];
     if (request.vehicleProfile && routeData.summary.distance === 0) {
-      warnings.push('Route calculation returned empty result - vehicle may not fit on available roads');
+      warnings.push(
+        'Route calculation returned empty result - vehicle may not fit on available roads'
+      );
     }
 
     // Check if alternative routes were significantly different (indicating restrictions)
@@ -492,7 +552,9 @@ export class RoutingService extends DataService {
       const shortestAlt = Math.min(...alternativeRoutes.map(r => r.summary.distance));
 
       if (shortestAlt > mainDistance * 1.5) {
-        warnings.push('Alternative routes are significantly longer - possible vehicle restrictions on main route');
+        warnings.push(
+          'Alternative routes are significantly longer - possible vehicle restrictions on main route'
+        );
       }
     }
 
@@ -515,7 +577,7 @@ export class RoutingService extends DataService {
   /**
    * Transform OSRM response to our format
    */
-  private transformOSRMResponse(osrmResponse: any, request: RouteRequest): RouteResponse {
+  private transformOSRMResponse(osrmResponse: OSRMResponse, request: RouteRequest): RouteResponse {
     const route = osrmResponse.routes[0];
     if (!route) {
       throw new RoutingError('No route found', 'NO_ROUTE', 'osrm', true);
@@ -528,7 +590,7 @@ export class RoutingService extends DataService {
         duration: route.duration,
       },
       segments: route.legs || [],
-      waypoints: osrmResponse.waypoints?.map((_: any, index: number) => index) || [],
+      waypoints: osrmResponse.waypoints?.map((_wp, index) => index) || [],
     };
 
     return {
@@ -570,7 +632,7 @@ export class RoutingService extends DataService {
       await this.request(context);
       return true;
     } catch (error) {
-      console.warn('OpenRouteService health check failed:', error);
+      console.error('OpenRouteService health check failed:', error);
       return false;
     }
   }
@@ -583,7 +645,10 @@ export class RoutingService extends DataService {
     fallback: { name: string; available: boolean };
     rateLimitInfo: { remaining: number; resetTime: number };
   } {
-    const rateLimitState = this.rateLimitState.get('default') || { count: 0, resetTime: Date.now() };
+    const rateLimitState = this.rateLimitState.get('default') || {
+      count: 0,
+      resetTime: Date.now(),
+    };
 
     return {
       primary: {

@@ -1,8 +1,12 @@
 // Campsite-Aware Route Optimization Service
 // Phase 5.1: Integration of campsite stops with route optimization
 
-import { routeOptimizationService, type OptimizationCriteria, type OptimizationResult } from './RouteOptimizationService';
-import { campsiteService, type Campsite } from './CampsiteService';
+import {
+  routeOptimizationService,
+  type OptimizationCriteria,
+  type OptimizationResult,
+} from './RouteOptimizationService';
+import { campsiteService, type Campsite, type CampsiteType } from './CampsiteService';
 import { type Waypoint } from '../store';
 import { type VehicleProfile } from '../store';
 
@@ -86,8 +90,8 @@ export class CampsiteOptimizationService {
       campsiteIntegration: {
         suggestedCampsites,
         replacedWaypoints: [], // Would be populated in step 1
-        totalCampsiteStops: workingWaypoints.filter(w => w.type === 'campsite').length
-      }
+        totalCampsiteStops: workingWaypoints.filter(w => w.type === 'campsite').length,
+      },
     };
   }
 
@@ -98,11 +102,13 @@ export class CampsiteOptimizationService {
     waypoints: Waypoint[],
     requirements: NonNullable<CampsiteOptimizationRequest['campsiteRequirements']>,
     vehicleProfile?: VehicleProfile
-  ): Promise<Array<{
-    campsite: Campsite;
-    insertPosition: number;
-    routeImpact: { distanceAdded: number; timeAdded: number; suitabilityScore: number };
-  }>> {
+  ): Promise<
+    Array<{
+      campsite: Campsite;
+      insertPosition: number;
+      routeImpact: { distanceAdded: number; timeAdded: number; suitabilityScore: number };
+    }>
+  > {
     if (waypoints.length < 2) return [];
 
     const suggestions: Array<{
@@ -136,7 +142,7 @@ export class CampsiteOptimizationService {
               lat: bestCampsite.lat,
               lng: bestCampsite.lng,
               name: bestCampsite.name,
-              type: 'campsite'
+              type: 'campsite',
             },
             { objective: 'balanced', vehicleProfile }
           );
@@ -147,16 +153,25 @@ export class CampsiteOptimizationService {
             routeImpact: {
               distanceAdded: insertionResult.routeImpact.distanceAdded,
               timeAdded: insertionResult.routeImpact.timeAdded,
-              suitabilityScore: this.calculateCampsiteSuitability(bestCampsite, requirements, vehicleProfile)
-            }
+              suitabilityScore: this.calculateCampsiteSuitability(
+                bestCampsite,
+                requirements,
+                vehicleProfile
+              ),
+            },
           });
         }
       } catch (error) {
-        console.warn(`Failed to find campsites for segment ${segment.startIndex}-${segment.endIndex}:`, error);
+        console.error(
+          `Failed to find campsites for segment ${segment.startIndex}-${segment.endIndex}:`,
+          error
+        );
       }
     }
 
-    return suggestions.sort((a, b) => b.routeImpact.suitabilityScore - a.routeImpact.suitabilityScore);
+    return suggestions.sort(
+      (a, b) => b.routeImpact.suitabilityScore - a.routeImpact.suitabilityScore
+    );
   }
 
   /**
@@ -187,18 +202,19 @@ export class CampsiteOptimizationService {
             const betterOption = alternatives[0];
             const currentSuitability = 0.5; // Would need to calculate based on current campsite data
 
-            if (betterOption.suitability > currentSuitability + 0.2) { // 20% improvement threshold
+            if (betterOption.suitability > currentSuitability + 0.2) {
+              // 20% improvement threshold
               updatedWaypoints[i] = {
                 id: `campsite_${betterOption.campsite.id}`,
                 lat: betterOption.campsite.lat,
                 lng: betterOption.campsite.lng,
                 name: betterOption.campsite.name,
-                type: 'campsite'
+                type: 'campsite',
               };
             }
           }
         } catch (error) {
-          console.warn(`Failed to find alternatives for waypoint ${waypoint.id}:`, error);
+          console.error(`Failed to find alternatives for waypoint ${waypoint.id}:`, error);
         }
       }
     }
@@ -221,13 +237,14 @@ export class CampsiteOptimizationService {
       const end = waypoints[i + 1];
 
       const distance = this.calculateDistance(start, end);
-      const needsCampsite = distance > maxDailyDistance ||
+      const needsCampsite =
+        distance > maxDailyDistance ||
         (i > 0 && segments.length > 0 && segments.length % maxStopsPerDay === 0);
 
       segments.push({
         startIndex: i,
         endIndex: i + 1,
-        needsCampsite
+        needsCampsite,
       });
     }
 
@@ -249,16 +266,22 @@ export class CampsiteOptimizationService {
     try {
       const campsiteResponse = await campsiteService.searchCampsites({
         bounds,
-        types: requirements.preferredTypes as any[] || ['campsite', 'caravan_site', 'aire'],
+        types: (requirements.preferredTypes as CampsiteType[]) || [
+          'campsite',
+          'caravan_site',
+          'aire',
+        ],
         amenities: requirements.requiredAmenities,
         maxResults: 50,
-        vehicleFilter: vehicleProfile ? {
-          height: vehicleProfile.height,
-          length: vehicleProfile.length,
-          weight: vehicleProfile.weight,
-          motorhome: vehicleProfile.type === 'motorhome',
-          caravan: vehicleProfile.type === 'caravan'
-        } : undefined
+        vehicleFilter: vehicleProfile
+          ? {
+              height: vehicleProfile.height,
+              length: vehicleProfile.length,
+              weight: vehicleProfile.weight,
+              motorhome: vehicleProfile.type === 'motorhome',
+              caravan: vehicleProfile.type === 'caravan',
+            }
+          : undefined,
       });
 
       let campsites = campsiteResponse.campsites;
@@ -274,13 +297,12 @@ export class CampsiteOptimizationService {
       return campsites
         .map(campsite => ({
           ...campsite,
-          suitability: this.calculateCampsiteSuitability(campsite, requirements, vehicleProfile)
+          suitability: this.calculateCampsiteSuitability(campsite, requirements, vehicleProfile),
         }))
         .sort((a, b) => b.suitability - a.suitability)
         .slice(0, 10); // Top 10 candidates
-
     } catch (error) {
-      console.warn('Failed to search campsites:', error);
+      console.error('Failed to search campsites:', error);
       return [];
     }
   }
@@ -295,31 +317,38 @@ export class CampsiteOptimizationService {
   ): Promise<Array<{ campsite: Campsite; suitability: number }>> {
     const searchRadius = 10; // km
     const bounds = {
-      north: currentWaypoint.lat + (searchRadius / 111), // Rough conversion km to degrees
-      south: currentWaypoint.lat - (searchRadius / 111),
-      east: currentWaypoint.lng + (searchRadius / (111 * Math.cos(currentWaypoint.lat * Math.PI / 180))),
-      west: currentWaypoint.lng - (searchRadius / (111 * Math.cos(currentWaypoint.lat * Math.PI / 180)))
+      north: currentWaypoint.lat + searchRadius / 111, // Rough conversion km to degrees
+      south: currentWaypoint.lat - searchRadius / 111,
+      east:
+        currentWaypoint.lng +
+        searchRadius / (111 * Math.cos((currentWaypoint.lat * Math.PI) / 180)),
+      west:
+        currentWaypoint.lng -
+        searchRadius / (111 * Math.cos((currentWaypoint.lat * Math.PI) / 180)),
     };
 
     try {
       const campsiteResponse = await campsiteService.searchCampsites({
         bounds,
-        types: requirements.preferredTypes as any[] || ['campsite', 'caravan_site', 'aire'],
+        types: (requirements.preferredTypes as CampsiteType[]) || [
+          'campsite',
+          'caravan_site',
+          'aire',
+        ],
         amenities: requirements.requiredAmenities,
-        maxResults: 20
+        maxResults: 20,
       });
 
       return campsiteResponse.campsites
         .filter(campsite => campsite.id !== parseInt(currentWaypoint.id.replace('campsite_', '')))
         .map(campsite => ({
           campsite,
-          suitability: this.calculateCampsiteSuitability(campsite, requirements, vehicleProfile)
+          suitability: this.calculateCampsiteSuitability(campsite, requirements, vehicleProfile),
         }))
         .sort((a, b) => b.suitability - a.suitability)
         .slice(0, 5);
-
     } catch (error) {
-      console.warn('Failed to find alternatives:', error);
+      console.error('Failed to find alternatives:', error);
       return [];
     }
   }
@@ -376,18 +405,14 @@ export class CampsiteOptimizationService {
   /**
    * Calculate bounds for a route segment
    */
-  private static calculateSegmentBounds(
-    start: Waypoint,
-    end: Waypoint,
-    bufferKm: number
-  ) {
+  private static calculateSegmentBounds(start: Waypoint, end: Waypoint, bufferKm: number) {
     const bufferDegrees = bufferKm / 111; // Rough conversion
 
     return {
       north: Math.max(start.lat, end.lat) + bufferDegrees,
       south: Math.min(start.lat, end.lat) - bufferDegrees,
       east: Math.max(start.lng, end.lng) + bufferDegrees,
-      west: Math.min(start.lng, end.lng) - bufferDegrees
+      west: Math.min(start.lng, end.lng) - bufferDegrees,
     };
   }
 
@@ -396,11 +421,14 @@ export class CampsiteOptimizationService {
    */
   private static calculateDistance(waypoint1: Waypoint, waypoint2: Waypoint): number {
     const R = 6371; // Earth's radius in km
-    const dLat = (waypoint2.lat - waypoint1.lat) * Math.PI / 180;
-    const dLng = (waypoint2.lng - waypoint1.lng) * Math.PI / 180;
-    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(waypoint1.lat * Math.PI / 180) * Math.cos(waypoint2.lat * Math.PI / 180) *
-      Math.sin(dLng / 2) * Math.sin(dLng / 2);
+    const dLat = ((waypoint2.lat - waypoint1.lat) * Math.PI) / 180;
+    const dLng = ((waypoint2.lng - waypoint1.lng) * Math.PI) / 180;
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos((waypoint1.lat * Math.PI) / 180) *
+        Math.cos((waypoint2.lat * Math.PI) / 180) *
+        Math.sin(dLng / 2) *
+        Math.sin(dLng / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
   }

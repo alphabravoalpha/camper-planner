@@ -17,7 +17,7 @@ export const Skeleton: React.FC<SkeletonProps> = ({
   variant = 'rectangular',
   width,
   height,
-  animation = 'pulse'
+  animation = 'pulse',
 }) => {
   const baseClass = cn(
     'bg-neutral-200',
@@ -106,8 +106,18 @@ export const MapLoadingSkeleton: React.FC = () => (
       <div className="relative w-24 h-24 mx-auto">
         <Skeleton variant="circular" width={96} height={96} animation="wave" />
         <div className="absolute inset-0 flex items-center justify-center">
-          <svg className="w-12 h-12 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 01.553-.894L9 2l6 3 6-3v15l-6 3-6-3z" />
+          <svg
+            className="w-12 h-12 text-neutral-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 01.553-.894L9 2l6 3 6-3v15l-6 3-6-3z"
+            />
           </svg>
         </div>
       </div>

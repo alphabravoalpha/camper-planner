@@ -30,5 +30,7 @@ declare module 'leaflet' {
     getAllChildMarkers(): L.Marker[];
   }
 
-  function markerClusterGroup(options?: MarkerClusterGroup.MarkerClusterGroupOptions): MarkerClusterGroup;
+  function markerClusterGroup(
+    options?: MarkerClusterGroup.MarkerClusterGroupOptions
+  ): MarkerClusterGroup;
 }

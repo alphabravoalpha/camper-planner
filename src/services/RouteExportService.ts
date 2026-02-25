@@ -97,8 +97,26 @@ export interface JSONExportData {
   exportOptions: ExportOptions;
 }
 
+// Additional data that can be passed to export methods
+interface ExportAdditionalData {
+  trip?: Trip;
+  vehicle?: VehicleProfile;
+}
+
+// GPS symbol set for a specific device type
+interface GPSSymbolSet {
+  waypoint: string;
+  campsite: string;
+  poi: string;
+  fuel: string;
+  rest: string;
+  accommodation: string;
+  restaurant: string;
+  [key: string]: string;
+}
+
 // GPS device symbol mappings for compatibility
-const GPS_SYMBOLS = {
+const GPS_SYMBOLS: Record<string, GPSSymbolSet> = {
   garmin: {
     waypoint: 'Waypoint',
     campsite: 'Campground',
@@ -106,7 +124,7 @@ const GPS_SYMBOLS = {
     fuel: 'Gas Station',
     rest: 'Rest Area',
     accommodation: 'Lodging',
-    restaurant: 'Restaurant'
+    restaurant: 'Restaurant',
   },
   tomtom: {
     waypoint: 'Destination',
@@ -115,7 +133,7 @@ const GPS_SYMBOLS = {
     fuel: 'Petrol Station',
     rest: 'Rest Area',
     accommodation: 'Hotel',
-    restaurant: 'Restaurant'
+    restaurant: 'Restaurant',
   },
   smartphone: {
     waypoint: 'flag',
@@ -124,7 +142,7 @@ const GPS_SYMBOLS = {
     fuel: 'gas-station',
     rest: 'rest-area',
     accommodation: 'lodging',
-    restaurant: 'restaurant'
+    restaurant: 'restaurant',
   },
   universal: {
     waypoint: 'waypoint',
@@ -133,8 +151,8 @@ const GPS_SYMBOLS = {
     fuel: 'fuel',
     rest: 'rest',
     accommodation: 'accommodation',
-    restaurant: 'restaurant'
-  }
+    restaurant: 'restaurant',
+  },
 };
 
 export class RouteExportService {
@@ -152,7 +170,6 @@ export class RouteExportService {
     }
   ): Promise<ExportResult> {
     const warnings: string[] = [];
-    const errors: string[] = [];
 
     try {
       // Validate input data
@@ -172,8 +189,8 @@ export class RouteExportService {
             campsites: 0,
             totalPoints: 0,
             exportedAt: new Date(),
-            compatibility: []
-          }
+            compatibility: [],
+          },
         };
       }
 
@@ -207,7 +224,6 @@ export class RouteExportService {
 
       result.warnings.push(...warnings);
       return result;
-
     } catch (error) {
       console.error('Export error:', error);
       return {
@@ -222,8 +238,8 @@ export class RouteExportService {
           campsites: 0,
           totalPoints: 0,
           exportedAt: new Date(),
-          compatibility: []
-        }
+          compatibility: [],
+        },
       };
     }
   }
@@ -234,7 +250,7 @@ export class RouteExportService {
   static async exportToGPX(
     waypoints: Waypoint[],
     options: ExportOptions,
-    additionalData?: any
+    additionalData?: ExportAdditionalData
   ): Promise<ExportResult> {
     const warnings: string[] = [];
     const symbols = GPS_SYMBOLS[options.gpsDeviceCompatibility] || GPS_SYMBOLS.universal;
@@ -260,7 +276,7 @@ export class RouteExportService {
 
     // Add waypoints
     if (options.includeWaypoints || options.includeCampsites) {
-      waypoints.forEach((waypoint,_index) => {
+      waypoints.forEach((waypoint, _index) => {
         const symbol = this.getGPSSymbol(waypoint.type, symbols);
         const description = this.createWaypointDescription(waypoint, options, additionalData);
 
@@ -281,7 +297,7 @@ export class RouteExportService {
     <name>${this.escapeXML(options.customName || 'Camper Route')}</name>
     <desc>${this.escapeXML('Navigation route for GPS devices')}</desc>`;
 
-      waypoints.forEach((waypoint,_index) => {
+      waypoints.forEach((waypoint, _index) => {
         gpxRoute += `
     <rtept lat="${waypoint.lat}" lon="${waypoint.lng}">
       <name>${this.escapeXML(waypoint.name)}</name>
@@ -338,8 +354,8 @@ export class RouteExportService {
         campsites: waypoints.filter(w => w.type === 'campsite').length,
         totalPoints: waypoints.length,
         exportedAt: new Date(),
-        compatibility: compatibility.devices
-      }
+        compatibility: compatibility.devices,
+      },
     };
   }
 
@@ -349,7 +365,7 @@ export class RouteExportService {
   static async exportToJSON(
     waypoints: Waypoint[],
     options: ExportOptions,
-    additionalData?: any
+    additionalData?: ExportAdditionalData
   ): Promise<ExportResult> {
     const exportData: JSONExportData = {
       metadata: {
@@ -357,14 +373,14 @@ export class RouteExportService {
         exportedAt: new Date(),
         exportedBy: 'Camper Planner',
         format: 'json',
-        compatibility: ['Camper Planner', 'Generic GPS Applications']
+        compatibility: ['Camper Planner', 'Generic GPS Applications'],
       },
       route: {
         waypoints,
         totalDistance: this.calculateTotalDistance(waypoints),
-        estimatedDuration: this.calculateTotalDistance(waypoints) / 70 // Rough estimate
+        estimatedDuration: this.calculateTotalDistance(waypoints) / 70, // Rough estimate
       },
-      exportOptions: options
+      exportOptions: options,
     };
 
     // Add optional data based on export options
@@ -401,8 +417,8 @@ export class RouteExportService {
         campsites: waypoints.filter(w => w.type === 'campsite').length,
         totalPoints: waypoints.length,
         exportedAt: new Date(),
-        compatibility: ['Camper Planner', 'Generic Applications']
-      }
+        compatibility: ['Camper Planner', 'Generic Applications'],
+      },
     };
   }
 
@@ -412,7 +428,7 @@ export class RouteExportService {
   static async exportToKML(
     waypoints: Waypoint[],
     options: ExportOptions,
-    additionalData?: any
+    _additionalData?: ExportAdditionalData
   ): Promise<ExportResult> {
     const warnings: string[] = [];
 
@@ -447,7 +463,7 @@ export class RouteExportService {
     let kmlContent = kmlHeader;
 
     // Add placemarks for waypoints
-    waypoints.forEach((waypoint,_index) => {
+    waypoints.forEach((waypoint, _index) => {
       const styleId = waypoint.type === 'campsite' ? 'campsiteStyle' : 'waypointStyle';
       const description = this.createWaypointDescription(waypoint, options, additionalData);
 
@@ -503,8 +519,8 @@ export class RouteExportService {
         campsites: waypoints.filter(w => w.type === 'campsite').length,
         totalPoints: waypoints.length,
         exportedAt: new Date(),
-        compatibility: ['Google Earth', 'Google Maps', 'Many GPS Applications']
-      }
+        compatibility: ['Google Earth', 'Google Maps', 'Many GPS Applications'],
+      },
     };
   }
 
@@ -514,7 +530,7 @@ export class RouteExportService {
   static async exportToCSV(
     waypoints: Waypoint[],
     options: ExportOptions,
-    additionalData?: any
+    additionalData?: ExportAdditionalData
   ): Promise<ExportResult> {
     const headers = ['Name', 'Latitude', 'Longitude', 'Type'];
 
@@ -525,12 +541,12 @@ export class RouteExportService {
     let csvContent = headers.join(',') + '\n';
 
     let totalDistance = 0;
-    waypoints.forEach((waypoint,_index) => {
+    waypoints.forEach((waypoint, _index) => {
       const row = [
         `"${this.escapeCSV(waypoint.name)}"`,
         waypoint.lat.toString(),
         waypoint.lng.toString(),
-        `"${waypoint.type}"`
+        `"${waypoint.type}"`,
       ];
 
       if (options.includeMetadata) {
@@ -574,24 +590,24 @@ export class RouteExportService {
         campsites: waypoints.filter(w => w.type === 'campsite').length,
         totalPoints: waypoints.length,
         exportedAt: new Date(),
-        compatibility: ['Excel', 'Google Sheets', 'Numbers', 'Any Spreadsheet Application']
-      }
+        compatibility: ['Excel', 'Google Sheets', 'Numbers', 'Any Spreadsheet Application'],
+      },
     };
   }
 
   /**
    * Import trip data from various formats
    */
-  static async importRoute(fileContent: string, format: string): Promise<{
+  static async importRoute(
+    fileContent: string,
+    format: string
+  ): Promise<{
     success: boolean;
     waypoints: Waypoint[];
-    metadata?: any;
+    metadata?: Record<string, unknown>;
     warnings: string[];
     errors: string[];
   }> {
-    const warnings: string[] = [];
-    const errors: string[] = [];
-
     try {
       switch (format.toLowerCase()) {
         case 'gpx':
@@ -609,8 +625,8 @@ export class RouteExportService {
       return {
         success: false,
         waypoints: [],
-        warnings,
-        errors: [`Import failed: ${error instanceof Error ? error.message : 'Unknown error'}`]
+        warnings: [],
+        errors: [`Import failed: ${error instanceof Error ? error.message : 'Unknown error'}`],
       };
     }
   }
@@ -621,7 +637,7 @@ export class RouteExportService {
   static importFromGPX(gpxContent: string): {
     success: boolean;
     waypoints: Waypoint[];
-    metadata?: any;
+    metadata?: Record<string, unknown>;
     warnings: string[];
     errors: string[];
   } {
@@ -642,7 +658,7 @@ export class RouteExportService {
 
       // Extract waypoints
       const wpts = xmlDoc.querySelectorAll('wpt');
-      wpts.forEach((wpt,_index) => {
+      wpts.forEach((wpt, _index) => {
         const lat = parseFloat(wpt.getAttribute('lat') || '0');
         const lon = parseFloat(wpt.getAttribute('lon') || '0');
         const name = wpt.querySelector('name')?.textContent || `Waypoint ${_index + 1}`;
@@ -655,7 +671,7 @@ export class RouteExportService {
             lat,
             lng: lon,
             name,
-            type: type as any
+            type: type as Waypoint['type'],
           });
         }
       });
@@ -663,7 +679,7 @@ export class RouteExportService {
       // Extract route points if no waypoints found
       if (waypoints.length === 0) {
         const rtepts = xmlDoc.querySelectorAll('rtept');
-        rtepts.forEach((rtept,_index) => {
+        rtepts.forEach((rtept, _index) => {
           const lat = parseFloat(rtept.getAttribute('lat') || '0');
           const lon = parseFloat(rtept.getAttribute('lon') || '0');
           const name = rtept.querySelector('name')?.textContent || `Route Point ${_index + 1}`;
@@ -674,7 +690,7 @@ export class RouteExportService {
               lat,
               lng: lon,
               name,
-              type: 'waypoint'
+              type: 'waypoint',
             });
           }
         });
@@ -688,14 +704,14 @@ export class RouteExportService {
         success: true,
         waypoints,
         warnings,
-        errors
+        errors,
       };
     } catch (error) {
       return {
         success: false,
         waypoints: [],
         warnings,
-        errors: [`GPX import failed: ${error instanceof Error ? error.message : 'Unknown error'}`]
+        errors: [`GPX import failed: ${error instanceof Error ? error.message : 'Unknown error'}`],
       };
     }
   }
@@ -706,7 +722,7 @@ export class RouteExportService {
   static importFromJSON(jsonContent: string): {
     success: boolean;
     waypoints: Waypoint[];
-    metadata?: any;
+    metadata?: Record<string, unknown>;
     warnings: string[];
     errors: string[];
   } {
@@ -722,9 +738,9 @@ export class RouteExportService {
       }
 
       // Extract waypoints
-      const waypoints = data.route.waypoints.map((wp,_index) => ({
+      const waypoints = data.route.waypoints.map((wp, _index) => ({
         ...wp,
-        id: wp.id || `imported_${Date.now()}_${_index}`
+        id: wp.id || `imported_${Date.now()}_${_index}`,
       }));
 
       return {
@@ -732,14 +748,14 @@ export class RouteExportService {
         waypoints,
         metadata: data,
         warnings,
-        errors
+        errors,
       };
     } catch (error) {
       return {
         success: false,
         waypoints: [],
         warnings,
-        errors: [`JSON import failed: ${error instanceof Error ? error.message : 'Unknown error'}`]
+        errors: [`JSON import failed: ${error instanceof Error ? error.message : 'Unknown error'}`],
       };
     }
   }
@@ -750,7 +766,7 @@ export class RouteExportService {
   static importFromKML(kmlContent: string): {
     success: boolean;
     waypoints: Waypoint[];
-    metadata?: any;
+    metadata?: Record<string, unknown>;
     warnings: string[];
     errors: string[];
   } {
@@ -763,7 +779,7 @@ export class RouteExportService {
       const xmlDoc = parser.parseFromString(kmlContent, 'text/xml');
 
       const placemarks = xmlDoc.querySelectorAll('Placemark');
-      placemarks.forEach((placemark,_index) => {
+      placemarks.forEach((placemark, _index) => {
         const name = placemark.querySelector('name')?.textContent || `Waypoint ${_index + 1}`;
         const point = placemark.querySelector('Point coordinates');
 
@@ -779,7 +795,7 @@ export class RouteExportService {
                 lat,
                 lng,
                 name,
-                type: 'waypoint'
+                type: 'waypoint',
               });
             }
           }
@@ -794,14 +810,14 @@ export class RouteExportService {
         success: true,
         waypoints,
         warnings,
-        errors
+        errors,
       };
     } catch (error) {
       return {
         success: false,
         waypoints: [],
         warnings,
-        errors: [`KML import failed: ${error instanceof Error ? error.message : 'Unknown error'}`]
+        errors: [`KML import failed: ${error instanceof Error ? error.message : 'Unknown error'}`],
       };
     }
   }
@@ -812,7 +828,7 @@ export class RouteExportService {
   static importFromCSV(csvContent: string): {
     success: boolean;
     waypoints: Waypoint[];
-    metadata?: any;
+    metadata?: Record<string, unknown>;
     warnings: string[];
     errors: string[];
   } {
@@ -842,7 +858,8 @@ export class RouteExportService {
           const name = values[nameIndex]?.replace(/"/g, '') || `Waypoint ${i}`;
           const lat = parseFloat(values[latIndex] || '0');
           const lng = parseFloat(values[lngIndex] || '0');
-          const type = typeIndex >= 0 ? values[typeIndex]?.replace(/"/g, '') || 'waypoint' : 'waypoint';
+          const type =
+            typeIndex >= 0 ? values[typeIndex]?.replace(/"/g, '') || 'waypoint' : 'waypoint';
 
           if (!isNaN(lat) && !isNaN(lng) && lat !== 0 && lng !== 0) {
             waypoints.push({
@@ -850,7 +867,7 @@ export class RouteExportService {
               lat,
               lng,
               name,
-              type: type as any
+              type: type as Waypoint['type'],
             });
           }
         }
@@ -864,14 +881,14 @@ export class RouteExportService {
         success: true,
         waypoints,
         warnings,
-        errors
+        errors,
       };
     } catch (error) {
       return {
         success: false,
         waypoints: [],
         warnings,
-        errors: [`CSV import failed: ${error instanceof Error ? error.message : 'Unknown error'}`]
+        errors: [`CSV import failed: ${error instanceof Error ? error.message : 'Unknown error'}`],
       };
     }
   }
@@ -879,7 +896,10 @@ export class RouteExportService {
   /**
    * Helper methods
    */
-  static validateExportData(waypoints: Waypoint[], _options: ExportOptions): {
+  static validateExportData(
+    waypoints: Waypoint[],
+    _options: ExportOptions
+  ): {
     warnings: string[];
     errors: string[];
   } {
@@ -896,7 +916,7 @@ export class RouteExportService {
     }
 
     // Validate coordinates
-    waypoints.forEach((wp,_index) => {
+    waypoints.forEach((wp, _index) => {
       if (!wp.lat || !wp.lng || isNaN(wp.lat) || isNaN(wp.lng)) {
         errors.push(`Invalid coordinates for waypoint ${_index + 1}: ${wp.name}`);
       }
@@ -906,7 +926,7 @@ export class RouteExportService {
     });
 
     // Validate names
-    waypoints.forEach((wp,_index) => {
+    waypoints.forEach((wp, _index) => {
       if (!wp.name || wp.name.trim() === '') {
         warnings.push(`Waypoint ${_index + 1} has no name - will use default`);
       }
@@ -915,7 +935,10 @@ export class RouteExportService {
     return { warnings, errors };
   }
 
-  static validateGPXCompatibility(gpxContent: string, deviceType: string): {
+  static validateGPXCompatibility(
+    gpxContent: string,
+    deviceType: string
+  ): {
     warnings: string[];
     devices: string[];
   } {
@@ -943,14 +966,14 @@ export class RouteExportService {
     return { warnings, devices };
   }
 
-  static getGPSSymbol(waypointType: string, symbols: any): string {
+  static getGPSSymbol(waypointType: string, symbols: GPSSymbolSet): string {
     return symbols[waypointType] || symbols.waypoint || 'waypoint';
   }
 
   static createWaypointDescription(
     waypoint: Waypoint,
     options: ExportOptions,
-    additionalData?: any
+    _additionalData?: ExportAdditionalData
   ): string {
     let description = `${waypoint.type.charAt(0).toUpperCase() + waypoint.type.slice(1)}: ${waypoint.name}`;
 
@@ -977,11 +1000,14 @@ export class RouteExportService {
 
   static calculateDistance(waypoint1: Waypoint, waypoint2: Waypoint): number {
     const R = 6371; // Earth's radius in km
-    const dLat = (waypoint2.lat - waypoint1.lat) * Math.PI / 180;
-    const dLng = (waypoint2.lng - waypoint1.lng) * Math.PI / 180;
-    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(waypoint1.lat * Math.PI / 180) * Math.cos(waypoint2.lat * Math.PI / 180) *
-      Math.sin(dLng / 2) * Math.sin(dLng / 2);
+    const dLat = ((waypoint2.lat - waypoint1.lat) * Math.PI) / 180;
+    const dLng = ((waypoint2.lng - waypoint1.lng) * Math.PI) / 180;
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos((waypoint1.lat * Math.PI) / 180) *
+        Math.cos((waypoint2.lat * Math.PI) / 180) *
+        Math.sin(dLng / 2) *
+        Math.sin(dLng / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
   }

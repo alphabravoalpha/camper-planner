@@ -1,5 +1,10 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { TripStorageService, type Trip, type TripMetadata, type TripData } from '../TripStorageService';
+import {
+  TripStorageService,
+  type Trip,
+  type TripMetadata,
+  type TripData,
+} from '../TripStorageService';
 import { type Waypoint, type VehicleProfile } from '../../store';
 
 describe('TripStorageService', () => {
@@ -15,7 +20,7 @@ describe('TripStorageService', () => {
     // Create test waypoints
     testWaypoints = [
       { id: '1', name: 'Paris', lat: 48.8566, lng: 2.3522, type: 'start' },
-      { id: '2', name: 'Lyon', lat: 45.7640, lng: 4.8357, type: 'waypoint' },
+      { id: '2', name: 'Lyon', lat: 45.764, lng: 4.8357, type: 'waypoint' },
       { id: '3', name: 'Marseille', lat: 43.2965, lng: 5.3698, type: 'end' },
     ];
 
@@ -219,10 +224,7 @@ describe('TripStorageService', () => {
     it('should duplicate with custom name', async () => {
       await TripStorageService.saveTrip(testTrip);
 
-      const duplicated = await TripStorageService.duplicateTrip(
-        'test-trip-1',
-        'My Custom Copy'
-      );
+      const duplicated = await TripStorageService.duplicateTrip('test-trip-1', 'My Custom Copy');
 
       expect(duplicated?.metadata.name).toBe('My Custom Copy');
     });
@@ -269,10 +271,7 @@ describe('TripStorageService', () => {
       await TripStorageService.saveTrip(testTrip);
       const exported = await TripStorageService.exportTrip('test-trip-1');
 
-      const imported = await TripStorageService.importTrip(
-        exported!,
-        'Imported Tour'
-      );
+      const imported = await TripStorageService.importTrip(exported!, 'Imported Tour');
 
       expect(imported?.metadata.name).toBe('Imported Tour');
     });
@@ -341,10 +340,7 @@ describe('TripStorageService', () => {
       };
       await TripStorageService.saveTrip(trip2);
 
-      const comparison = await TripStorageService.compareTrips([
-        'test-trip-1',
-        'test-trip-2',
-      ]);
+      const comparison = await TripStorageService.compareTrips(['test-trip-1', 'test-trip-2']);
 
       expect(comparison).toBeDefined();
       expect(comparison?.trips).toHaveLength(2);
@@ -443,10 +439,7 @@ describe('TripStorageService', () => {
       };
       await TripStorageService.saveTrip(trip2);
 
-      const comparison = await TripStorageService.compareTrips([
-        'test-trip-1',
-        'test-trip-2',
-      ]);
+      const comparison = await TripStorageService.compareTrips(['test-trip-1', 'test-trip-2']);
 
       expect(comparison?.comparison.analysis.cheapest).toBe('test-trip-2');
     });
@@ -592,9 +585,7 @@ describe('TripStorageService', () => {
 
       const loaded = await TripStorageService.loadTrip('test-trip-1');
 
-      expect(loaded?.timestamps.lastOpened.getTime()).toBeGreaterThan(
-        originalLastOpened.getTime()
-      );
+      expect(loaded?.timestamps.lastOpened.getTime()).toBeGreaterThan(originalLastOpened.getTime());
     });
 
     it('should preserve created timestamp on updates', async () => {

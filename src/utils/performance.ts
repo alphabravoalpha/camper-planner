@@ -1,7 +1,7 @@
 // Performance Monitoring and Optimization
 // Phase 6.4: Comprehensive performance testing and production monitoring
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 
 // Performance metrics interface
 export interface PerformanceMetrics {
@@ -43,7 +43,7 @@ export class PerformanceMonitor {
 
     try {
       // Largest Contentful Paint
-      const lcpObserver = new PerformanceObserver((entryList) => {
+      const lcpObserver = new PerformanceObserver(entryList => {
         const entries = entryList.getEntries();
         const lastEntry = entries[entries.length - 1];
         this.metrics.lcp = lastEntry.startTime;
@@ -52,10 +52,11 @@ export class PerformanceMonitor {
       this.observers.set('lcp', lcpObserver);
 
       // First Input Delay
-      const fidObserver = new PerformanceObserver((entryList) => {
+      const fidObserver = new PerformanceObserver(entryList => {
         const entries = entryList.getEntries();
-        entries.forEach((entry: any) => {
-          this.metrics.fid = entry.processingStart - entry.startTime;
+        entries.forEach(entry => {
+          const fidEntry = entry as PerformanceEntry & { processingStart: number };
+          this.metrics.fid = fidEntry.processingStart - fidEntry.startTime;
         });
       });
       fidObserver.observe({ entryTypes: ['first-input'] });
@@ -63,11 +64,12 @@ export class PerformanceMonitor {
 
       // Cumulative Layout Shift
       let clsValue = 0;
-      const clsObserver = new PerformanceObserver((entryList) => {
+      const clsObserver = new PerformanceObserver(entryList => {
         const entries = entryList.getEntries();
-        entries.forEach((entry: any) => {
-          if (!entry.hadRecentInput) {
-            clsValue += entry.value;
+        entries.forEach(entry => {
+          const clsEntry = entry as PerformanceEntry & { hadRecentInput: boolean; value: number };
+          if (!clsEntry.hadRecentInput) {
+            clsValue += clsEntry.value;
             this.metrics.cls = clsValue;
           }
         });
@@ -76,17 +78,16 @@ export class PerformanceMonitor {
       this.observers.set('cls', clsObserver);
 
       // Long Tasks
-      const longTaskObserver = new PerformanceObserver((entryList) => {
+      const longTaskObserver = new PerformanceObserver(entryList => {
         const entries = entryList.getEntries();
-        entries.forEach((entry) => {
-          console.warn(`Long task detected: ${entry.duration}ms`);
+        entries.forEach(_entry => {
+          // Long task detected - metrics tracked silently
         });
       });
       longTaskObserver.observe({ entryTypes: ['longtask'] });
       this.observers.set('longtask', longTaskObserver);
-
-    } catch (error) {
-      console.warn('Performance monitoring not supported:', error);
+    } catch (_error) {
+      // Performance monitoring not supported in this browser
     }
   }
 
@@ -116,10 +117,10 @@ export class PerformanceMonitor {
     }
 
     // Bundle size estimation
-    const resourceEntries = performance.getEntriesByType('resource');
+    const resourceEntries = performance.getEntriesByType('resource') as PerformanceResourceTiming[];
     const jsSize = resourceEntries
-      .filter((entry: any) => entry.name.endsWith('.js'))
-      .reduce((total: number, entry: any) => total + (entry.transferSize || 0), 0);
+      .filter(entry => entry.name.endsWith('.js'))
+      .reduce((total: number, entry) => total + (entry.transferSize || 0), 0);
 
     this.metrics.bundleSize = jsSize;
   }
@@ -127,13 +128,14 @@ export class PerformanceMonitor {
   private collectCustomMetrics() {
     // Memory usage
     if ('memory' in performance) {
-      const memory = (performance as any).memory;
+      const memory = (performance as unknown as { memory: { usedJSHeapSize: number } }).memory;
       this.metrics.memoryUsage = memory.usedJSHeapSize;
     }
 
     // Connection type
     if ('connection' in navigator) {
-      const connection = (navigator as any).connection;
+      const connection = (navigator as unknown as { connection: { effectiveType?: string } })
+        .connection;
       this.metrics.connectionType = connection.effectiveType || 'unknown';
     }
 
@@ -154,19 +156,18 @@ export class PerformanceMonitor {
   }
 
   // Measure component render time
-  measureRenderTime(componentName: string, renderFn: () => void): number {
+  measureRenderTime(_componentName: string, renderFn: () => void): number {
     const startTime = performance.now();
     renderFn();
     const endTime = performance.now();
     const renderTime = endTime - startTime;
 
-    console.log(`${componentName} render time: ${renderTime.toFixed(2)}ms`);
     return renderTime;
   }
 
   // Measure async operation
   async measureAsyncOperation<T>(
-    operationName: string,
+    _operationName: string,
     operation: () => Promise<T>
   ): Promise<{ result: T; duration: number }> {
     const startTime = performance.now();
@@ -174,7 +175,6 @@ export class PerformanceMonitor {
     const endTime = performance.now();
     const duration = endTime - startTime;
 
-    console.log(`${operationName} duration: ${duration.toFixed(2)}ms`);
     return { result, duration };
   }
 
@@ -200,7 +200,7 @@ export class PerformanceMonitor {
 
   // Clean up observers
   disconnect() {
-    this.observers.forEach((observer) => observer.disconnect());
+    this.observers.forEach(observer => observer.disconnect());
     this.observers.clear();
   }
 }
@@ -263,13 +263,6 @@ export const performanceTesting = {
     const maxRenderTime = Math.max(...renderTimes);
     const minRenderTime = Math.min(...renderTimes);
 
-    console.log(`Performance test for ${componentName}:`, {
-      iterations,
-      avgRenderTime: avgRenderTime.toFixed(2),
-      maxRenderTime: maxRenderTime.toFixed(2),
-      minRenderTime: minRenderTime.toFixed(2),
-    });
-
     return {
       avgRenderTime,
       maxRenderTime,
@@ -285,23 +278,12 @@ export const performanceTesting = {
 
     const collectMemory = () => {
       if ('memory' in performance) {
-        const memory = (performance as any).memory;
+        const memory = (performance as unknown as { memory: { usedJSHeapSize: number } }).memory;
         memoryUsage.push(memory.usedJSHeapSize);
       }
 
       if (Date.now() - startTime < duration) {
         setTimeout(collectMemory, 1000);
-      } else {
-        const avgMemory = memoryUsage.reduce((sum, mem) => sum + mem, 0) / memoryUsage.length;
-        const maxMemory = Math.max(...memoryUsage);
-        const memoryGrowth = memoryUsage[memoryUsage.length - 1] - memoryUsage[0];
-
-        console.log('Memory usage test:', {
-          duration: duration / 1000,
-          avgMemory: (avgMemory / 1024 / 1024).toFixed(2),
-          maxMemory: (maxMemory / 1024 / 1024).toFixed(2),
-          memoryGrowth: (memoryGrowth / 1024 / 1024).toFixed(2),
-        });
       }
     };
 
@@ -319,7 +301,7 @@ export const performanceTesting = {
       fontSize: 0,
     };
 
-    resourceEntries.forEach((entry: any) => {
+    (resourceEntries as PerformanceResourceTiming[]).forEach(entry => {
       const size = entry.transferSize || 0;
       analysis.totalSize += size;
 
@@ -335,11 +317,12 @@ export const performanceTesting = {
     });
 
     // Convert to KB
-    Object.keys(analysis).forEach((key) => {
-      analysis[key as keyof typeof analysis] = Math.round(analysis[key as keyof typeof analysis] / 1024);
+    Object.keys(analysis).forEach(key => {
+      analysis[key as keyof typeof analysis] = Math.round(
+        analysis[key as keyof typeof analysis] / 1024
+      );
     });
 
-    console.log('Bundle size analysis (KB):', analysis);
     return analysis;
   },
 };
@@ -349,8 +332,8 @@ export const performanceOptimization = {
   // Lazy load images
   setupLazyLoading: () => {
     if ('IntersectionObserver' in window) {
-      const imageObserver = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
+      const imageObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
           if (entry.isIntersecting) {
             const img = entry.target as HTMLImageElement;
             const src = img.dataset.src;
@@ -364,13 +347,13 @@ export const performanceOptimization = {
       });
 
       const lazyImages = document.querySelectorAll('img[data-src]');
-      lazyImages.forEach((img) => imageObserver.observe(img));
+      lazyImages.forEach(img => imageObserver.observe(img));
     }
   },
 
   // Preload critical resources
   preloadResources: (resources: string[]) => {
-    resources.forEach((resource) => {
+    resources.forEach(resource => {
       const link = document.createElement('link');
       link.rel = 'preload';
       link.href = resource;
@@ -391,10 +374,10 @@ export const performanceOptimization = {
   },
 
   // Debounce expensive operations
-  debounce: <T extends (...args: any[]) => void>(
+  debounce: <T extends (...args: unknown[]) => void>(
     func: T,
     delay: number
-  ): (...args: Parameters<T>) => void => {
+  ): ((...args: Parameters<T>) => void) => {
     let timeoutId: number;
     return (...args: Parameters<T>) => {
       clearTimeout(timeoutId);
@@ -403,10 +386,10 @@ export const performanceOptimization = {
   },
 
   // Throttle high-frequency events
-  throttle: <T extends (...args: any[]) => void>(
+  throttle: <T extends (...args: unknown[]) => void>(
     func: T,
     limit: number
-  ): (...args: Parameters<T>) => void => {
+  ): ((...args: Parameters<T>) => void) => {
     let inThrottle: boolean;
     return (...args: Parameters<T>) => {
       if (!inThrottle) {
@@ -418,8 +401,12 @@ export const performanceOptimization = {
   },
 
   // Optimize component re-renders
-  shouldComponentUpdate: (prevProps: any, nextProps: any, keys: string[]): boolean => {
-    return keys.some((key) => prevProps[key] !== nextProps[key]);
+  shouldComponentUpdate: (
+    prevProps: Record<string, unknown>,
+    nextProps: Record<string, unknown>,
+    keys: string[]
+  ): boolean => {
+    return keys.some(key => prevProps[key] !== nextProps[key]);
   },
 };
 

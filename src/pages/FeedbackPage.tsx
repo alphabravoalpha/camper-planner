@@ -4,13 +4,21 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  MessageSquare, ChevronLeft, Lightbulb, Bug, Star, ExternalLink, ChevronRight
+  MessageSquare,
+  ChevronLeft,
+  Lightbulb,
+  Bug,
+  Star,
+  ExternalLink,
+  ChevronRight,
 } from 'lucide-react';
 
 // Replace this with your actual Google Form embed URL
 // To get the embed URL: Open your Google Form → click "Send" → click the embed icon (<>) → copy the src URL
-const GOOGLE_FORM_EMBED_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfSdsNTLk6LhzYoWsPoRNyWvlp8EsyZb-b1NzOpgKIIO1SDhg/viewform?embedded=true';
-const GOOGLE_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfSdsNTLk6LhzYoWsPoRNyWvlp8EsyZb-b1NzOpgKIIO1SDhg/viewform';
+const GOOGLE_FORM_EMBED_URL =
+  'https://docs.google.com/forms/d/e/1FAIpQLSfSdsNTLk6LhzYoWsPoRNyWvlp8EsyZb-b1NzOpgKIIO1SDhg/viewform?embedded=true';
+const GOOGLE_FORM_URL =
+  'https://docs.google.com/forms/d/e/1FAIpQLSfSdsNTLk6LhzYoWsPoRNyWvlp8EsyZb-b1NzOpgKIIO1SDhg/viewform';
 
 const FEEDBACK_TYPES = [
   {
@@ -21,7 +29,7 @@ const FEEDBACK_TYPES = [
   {
     icon: Bug,
     title: 'Bug reports',
-    description: 'Let us know if something isn\'t working as expected.',
+    description: "Let us know if something isn't working as expected.",
   },
   {
     icon: Star,
@@ -47,7 +55,12 @@ const FeedbackPage: React.FC = () => {
     <div className="min-h-screen bg-neutral-50 animate-fade-in">
       {/* Hero */}
       <div className="relative overflow-hidden bg-gradient-to-br from-primary-600 to-primary-800 text-white">
-        <img src="/images/hero-feedback.jpg" alt="" className="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-overlay" loading="lazy" />
+        <img
+          src="/images/hero-feedback.jpg"
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-overlay"
+          loading="lazy"
+        />
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
           <button
             onClick={handleBack}
@@ -64,22 +77,21 @@ const FeedbackPage: React.FC = () => {
               Share Your Feedback
             </h1>
             <p className="text-primary-100 text-lg max-w-2xl mx-auto leading-relaxed">
-              Your suggestions help shape the future of European Camper Trip Planner.
-              Every piece of feedback is read and considered.
+              Your suggestions help shape the future of European Camper Trip Planner. Every piece of
+              feedback is read and considered.
             </p>
           </div>
         </div>
       </div>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
-
         {/* What we're looking for */}
         <div className="bg-white rounded-xl shadow-soft p-6 sm:p-8 -mt-8 relative z-10">
           <h2 className="text-xl font-display font-bold text-neutral-900 mb-5 text-center">
             What you can share
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-            {FEEDBACK_TYPES.map((type) => {
+            {FEEDBACK_TYPES.map(type => {
               const Icon = type.icon;
               return (
                 <div key={type.title} className="text-center">
@@ -89,9 +101,7 @@ const FeedbackPage: React.FC = () => {
                   <h3 className="text-sm font-display font-semibold text-neutral-900 mb-1">
                     {type.title}
                   </h3>
-                  <p className="text-xs text-neutral-500 leading-relaxed">
-                    {type.description}
-                  </p>
+                  <p className="text-xs text-neutral-500 leading-relaxed">{type.description}</p>
                 </div>
               );
             })}
@@ -101,9 +111,7 @@ const FeedbackPage: React.FC = () => {
         {/* Embedded Google Form */}
         <div className="bg-white rounded-xl shadow-soft overflow-hidden">
           <div className="p-6 pb-0">
-            <h2 className="text-2xl font-display font-bold text-neutral-900 mb-1">
-              Feedback Form
-            </h2>
+            <h2 className="text-2xl font-display font-bold text-neutral-900 mb-1">Feedback Form</h2>
             <p className="text-neutral-500 text-sm mb-4">
               Fill in the form below, or{' '}
               <a
@@ -128,9 +136,12 @@ const FeedbackPage: React.FC = () => {
             )}
             {iframeError && (
               <div className="p-8 text-center">
-                <p className="text-neutral-700 font-medium mb-2">Unable to load the feedback form</p>
+                <p className="text-neutral-700 font-medium mb-2">
+                  Unable to load the feedback form
+                </p>
                 <p className="text-sm text-neutral-500 mb-4">
-                  Your browser may be blocking embedded content. You can still submit feedback directly.
+                  Your browser may be blocking embedded content. You can still submit feedback
+                  directly.
                 </p>
                 <a
                   href={GOOGLE_FORM_URL}
@@ -192,7 +203,9 @@ const FeedbackPage: React.FC = () => {
 
         {/* CTA */}
         <div className="text-center bg-white rounded-xl shadow-soft p-8">
-          <h2 className="text-2xl font-display font-bold text-neutral-900 mb-3">Thanks for helping us improve</h2>
+          <h2 className="text-2xl font-display font-bold text-neutral-900 mb-3">
+            Thanks for helping us improve
+          </h2>
           <p className="text-neutral-500 mb-6">
             Your input directly shapes the tools that thousands of camper travellers rely on.
           </p>

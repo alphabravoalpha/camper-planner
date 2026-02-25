@@ -51,9 +51,10 @@ const ResponsiveIssuesDetector: React.FC = () => {
 
       // Check for elements outside viewport
       const elements = document.querySelectorAll('*');
-      elements.forEach((element) => {
+      elements.forEach(element => {
         const rect = element.getBoundingClientRect();
-        if (rect.right > window.innerWidth + 10) { // 10px tolerance
+        if (rect.right > window.innerWidth + 10) {
+          // 10px tolerance
           foundIssues.push(`Element extends beyond viewport: ${element.tagName.toLowerCase()}`);
         }
       });
@@ -61,17 +62,19 @@ const ResponsiveIssuesDetector: React.FC = () => {
       // Check for touch target sizes on mobile
       if (responsive.isMobile) {
         const interactiveElements = document.querySelectorAll('button, a, input, select, textarea');
-        interactiveElements.forEach((element) => {
+        interactiveElements.forEach(element => {
           const rect = element.getBoundingClientRect();
           if (rect.width < 44 || rect.height < 44) {
-            foundIssues.push(`Touch target too small: ${element.tagName.toLowerCase()} (${Math.round(rect.width)}×${Math.round(rect.height)})`);
+            foundIssues.push(
+              `Touch target too small: ${element.tagName.toLowerCase()} (${Math.round(rect.width)}×${Math.round(rect.height)})`
+            );
           }
         });
       }
 
       // Check for text readability
       const textElements = document.querySelectorAll('p, span, div, h1, h2, h3, h4, h5, h6');
-      textElements.forEach((element) => {
+      textElements.forEach(element => {
         const computedStyle = window.getComputedStyle(element);
         const fontSize = parseFloat(computedStyle.fontSize);
 
@@ -124,7 +127,10 @@ const ViewportInfo: React.FC = () => {
   const responsive = useResponsive();
 
   const info = [
-    { label: 'Screen Size', value: `${responsive.windowSize.width} × ${responsive.windowSize.height}` },
+    {
+      label: 'Screen Size',
+      value: `${responsive.windowSize.width} × ${responsive.windowSize.height}`,
+    },
     { label: 'Breakpoint', value: responsive.currentBreakpoint },
     { label: 'Device Category', value: responsive.deviceCategory },
     { label: 'Orientation', value: responsive.orientation },
@@ -135,7 +141,7 @@ const ViewportInfo: React.FC = () => {
     <div className="bg-primary-50 border border-primary-200 rounded-lg p-4">
       <h4 className="font-medium text-primary-900 mb-3">Current Viewport</h4>
       <div className="grid grid-cols-2 gap-3 text-sm">
-        {info.map((item) => (
+        {info.map(item => (
           <div key={item.label}>
             <span className="text-primary-700 font-medium">{item.label}:</span>
             <span className="ml-2 text-primary-800">{item.value}</span>
@@ -273,15 +279,17 @@ const ComponentStressTest: React.FC = () => {
     const longListsTest = document.querySelectorAll('[data-testid="long-list"]').length > 0;
 
     // Test deep nesting
-    const maxDepth = Math.max(...Array.from(document.querySelectorAll('*')).map(el => {
-      let depth = 0;
-      let parent = el.parentElement;
-      while (parent) {
-        depth++;
-        parent = parent.parentElement;
-      }
-      return depth;
-    }));
+    const maxDepth = Math.max(
+      ...Array.from(document.querySelectorAll('*')).map(el => {
+        let depth = 0;
+        let parent = el.parentElement;
+        while (parent) {
+          depth++;
+          parent = parent.parentElement;
+        }
+        return depth;
+      })
+    );
 
     setTestResults({
       manyElements: manyElementsTime < 100, // Good if under 100ms
@@ -365,7 +373,7 @@ const ResponsiveTestSuite: React.FC<ResponsiveTestSuiteProps> = ({ className }) 
         <div>
           <h4 className="font-medium text-neutral-900 mb-3">Device Presets</h4>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-            {Object.keys(commonDevices).map((device) => (
+            {Object.keys(commonDevices).map(device => (
               <DevicePreview
                 key={device}
                 device={device as keyof typeof commonDevices}
@@ -377,8 +385,8 @@ const ResponsiveTestSuite: React.FC<ResponsiveTestSuiteProps> = ({ className }) 
           {activeDevice && (
             <div className="mt-3 p-3 bg-primary-50 border border-primary-200 rounded">
               <div className="text-sm text-primary-800">
-                <strong>Note:</strong> Device presets are for reference only.
-                Use browser dev tools to actually simulate device viewports.
+                <strong>Note:</strong> Device presets are for reference only. Use browser dev tools
+                to actually simulate device viewports.
               </div>
             </div>
           )}

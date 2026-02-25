@@ -30,7 +30,7 @@ export interface VehicleProfile {
   createdAt?: string;
   type?: string;
   height: number; // meters
-  width: number;  // meters
+  width: number; // meters
   weight: number; // tonnes
   length: number; // meters
   fuelType?: string;
@@ -51,9 +51,9 @@ export interface Waypoint {
   name: string;
 
   // V2 fields (optional, added later)
-  visitDate?: string;   // ISO date string
-  duration?: number;    // planned stay duration in hours
-  notes?: string;       // user notes
+  visitDate?: string; // ISO date string
+  duration?: number; // planned stay duration in hours
+  notes?: string; // user notes
 }
 
 // V2 Data Structures (future)

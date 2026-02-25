@@ -19,7 +19,7 @@ interface LocationSearchProps {
 const LocationSearch: React.FC<LocationSearchProps> = ({
   onLocationSelect,
   placeholder = 'Search for a location...',
-  className
+  className,
 }) => {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<GeocodeResult[]>([]);
@@ -55,7 +55,7 @@ const LocationSearch: React.FC<LocationSearchProps> = ({
           setShowResults(true);
           setSelectedIndex(-1);
         }
-      } catch (err) {
+      } catch (_err) {
         if (currentSearchRef.current === searchQuery) {
           setError('Search failed. Try again.');
           setResults([]);
@@ -71,57 +71,63 @@ const LocationSearch: React.FC<LocationSearchProps> = ({
   }, [query]);
 
   // Handle result selection
-  const handleSelect = useCallback((result: GeocodeResult) => {
-    onLocationSelect(result);
-    setQuery('');
-    setResults([]);
-    setShowResults(false);
-    setSelectedIndex(-1);
-  }, [onLocationSelect]);
+  const handleSelect = useCallback(
+    (result: GeocodeResult) => {
+      onLocationSelect(result);
+      setQuery('');
+      setResults([]);
+      setShowResults(false);
+      setSelectedIndex(-1);
+    },
+    [onLocationSelect]
+  );
 
   // Keyboard navigation
-  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
-    e.stopPropagation();
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      e.stopPropagation();
 
-    if (!showResults || results.length === 0) return;
+      if (!showResults || results.length === 0) return;
 
-    switch (e.key) {
-      case 'ArrowDown':
-        e.preventDefault();
-        setSelectedIndex(prev => Math.min(prev + 1, results.length - 1));
-        break;
-      case 'ArrowUp':
-        e.preventDefault();
-        setSelectedIndex(prev => Math.max(prev - 1, -1));
-        break;
-      case 'Enter':
-        e.preventDefault();
-        if (selectedIndex >= 0 && selectedIndex < results.length) {
-          handleSelect(results[selectedIndex]);
-        }
-        break;
-      case 'Escape':
-        e.preventDefault();
-        setShowResults(false);
-        setSelectedIndex(-1);
-        break;
-    }
-  }, [showResults, results, selectedIndex, handleSelect]);
+      switch (e.key) {
+        case 'ArrowDown':
+          e.preventDefault();
+          setSelectedIndex(prev => Math.min(prev + 1, results.length - 1));
+          break;
+        case 'ArrowUp':
+          e.preventDefault();
+          setSelectedIndex(prev => Math.max(prev - 1, -1));
+          break;
+        case 'Enter':
+          e.preventDefault();
+          if (selectedIndex >= 0 && selectedIndex < results.length) {
+            handleSelect(results[selectedIndex]);
+          }
+          break;
+        case 'Escape':
+          e.preventDefault();
+          setShowResults(false);
+          setSelectedIndex(-1);
+          break;
+      }
+    },
+    [showResults, results, selectedIndex, handleSelect]
+  );
 
   // Truncate display name for compact dropdown
   const getDisplayName = (result: GeocodeResult): { primary: string; secondary: string } => {
     const primary = result.name || result.display_name.split(',')[0].trim();
     const parts = result.display_name.split(',');
-    const secondary = parts.length > 1
-      ? parts.slice(1, 3).join(',').trim()
-      : '';
+    const secondary = parts.length > 1 ? parts.slice(1, 3).join(',').trim() : '';
     return { primary, secondary };
   };
 
   return (
     <div
       className={cn('relative', className)}
-      onClick={(e) => e.stopPropagation()}
+      onClick={e => e.stopPropagation()}
+      onKeyDown={e => e.stopPropagation()}
+      role="presentation"
     >
       {/* Search input */}
       <div className="relative">
@@ -129,9 +135,9 @@ const LocationSearch: React.FC<LocationSearchProps> = ({
           ref={inputRef}
           type="text"
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          onClick={(e) => e.stopPropagation()}
-          onFocus={(e) => {
+          onChange={e => setQuery(e.target.value)}
+          onClick={e => e.stopPropagation()}
+          onFocus={e => {
             e.stopPropagation();
             if (results.length > 0) setShowResults(true);
           }}
@@ -142,20 +148,45 @@ const LocationSearch: React.FC<LocationSearchProps> = ({
         {/* Search icon / spinner */}
         <div className="absolute left-2 top-1/2 -translate-y-1/2">
           {isSearching ? (
-            <svg className="w-3.5 h-3.5 text-primary-500 animate-spin" fill="none" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+            <svg
+              className="w-3.5 h-3.5 text-primary-500 animate-spin"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              />
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+              />
             </svg>
           ) : (
-            <svg className="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            <svg
+              className="w-3.5 h-3.5 text-neutral-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
             </svg>
           )}
         </div>
         {/* Clear button */}
         {query && (
           <button
-            onClick={(e) => {
+            onClick={e => {
               e.stopPropagation();
               e.preventDefault();
               setQuery('');
@@ -166,7 +197,12 @@ const LocationSearch: React.FC<LocationSearchProps> = ({
             className="absolute right-1.5 top-1/2 -translate-y-1/2 w-4 h-4 flex items-center justify-center text-neutral-400 hover:text-neutral-600"
           >
             <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
         )}
@@ -176,7 +212,9 @@ const LocationSearch: React.FC<LocationSearchProps> = ({
       {showResults && (
         <div
           className="absolute left-0 right-0 mt-1 bg-white border border-neutral-200 rounded-lg shadow-lg z-50 max-h-[150px] overflow-y-auto"
-          onMouseDown={(e) => e.preventDefault()} // Prevent popup close on click
+          onMouseDown={e => e.preventDefault()} // Prevent popup close on click
+          role="listbox"
+          tabIndex={-1}
         >
           {results.length > 0 ? (
             results.map((result, idx) => {
@@ -184,7 +222,7 @@ const LocationSearch: React.FC<LocationSearchProps> = ({
               return (
                 <button
                   key={`${result.lat}-${result.lng}-${idx}`}
-                  onClick={(e) => {
+                  onClick={e => {
                     e.stopPropagation();
                     e.preventDefault();
                     handleSelect(result);
@@ -198,17 +236,13 @@ const LocationSearch: React.FC<LocationSearchProps> = ({
                   <span className="text-neutral-400 mt-0.5 flex-shrink-0">📍</span>
                   <div className="min-w-0">
                     <div className="font-medium text-neutral-900 truncate">{primary}</div>
-                    {secondary && (
-                      <div className="text-neutral-500 truncate">{secondary}</div>
-                    )}
+                    {secondary && <div className="text-neutral-500 truncate">{secondary}</div>}
                   </div>
                 </button>
               );
             })
           ) : (
-            <div className="px-3 py-2 text-xs text-neutral-500 text-center">
-              No locations found
-            </div>
+            <div className="px-3 py-2 text-xs text-neutral-500 text-center">No locations found</div>
           )}
         </div>
       )}
@@ -219,7 +253,7 @@ const LocationSearch: React.FC<LocationSearchProps> = ({
           <AlertTriangle className="w-3 h-3 flex-shrink-0" />
           <span>{error}</span>
           <button
-            onClick={(e) => {
+            onClick={e => {
               e.stopPropagation();
               e.preventDefault();
               setError(null);
