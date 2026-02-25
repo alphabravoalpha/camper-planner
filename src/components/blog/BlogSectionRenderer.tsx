@@ -86,6 +86,9 @@ const BlogSectionRenderer: React.FC<BlogSectionRendererProps> = ({ section, inde
             alt={section.image.alt}
             className="w-full rounded-lg shadow-soft"
             loading="lazy"
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = '/images/blog/fallback-hero.jpg';
+            }}
           />
           <figcaption className="mt-2 text-xs text-neutral-500 text-center">
             {section.image.alt}
