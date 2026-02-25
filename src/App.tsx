@@ -3,7 +3,15 @@
 
 import React, { Suspense } from 'react';
 import { createBrowserRouter, RouterProvider, useLocation, Outlet } from 'react-router-dom';
-import { ErrorBoundary, Header, Footer, LoadingSpinner, MainLayout, Sidebar } from './components/layout';
+import {
+  ErrorBoundary,
+  Header,
+  Footer,
+  LoadingSpinner,
+  MainLayout,
+  Sidebar,
+} from './components/layout';
+import OfflineNotice from './components/ui/OfflineNotice';
 import { useUIStore } from './store';
 import { useOnboarding } from './hooks/useOnboarding';
 import OnboardingFlow from './components/onboarding/OnboardingFlow';
@@ -25,7 +33,9 @@ const BlogPostPage = React.lazy(() => import('./pages/BlogPostPage'));
 
 // Debug pages - only loaded in development
 const MapTestPage = import.meta.env.DEV ? React.lazy(() => import('./pages/MapTestPage')) : null;
-const PlannerPageDebug = import.meta.env.DEV ? React.lazy(() => import('./pages/PlannerPageDebug')) : null;
+const PlannerPageDebug = import.meta.env.DEV
+  ? React.lazy(() => import('./pages/PlannerPageDebug'))
+  : null;
 
 // Root Layout Component (now uses Outlet)
 const RootLayout: React.FC = () => {
@@ -44,13 +54,19 @@ const RootLayout: React.FC = () => {
 
   return (
     <ErrorBoundary>
-      <div className={shouldShowFooter ? 'min-h-screen flex flex-col bg-neutral-50' : 'h-screen flex flex-col bg-neutral-50'}>
+      <div
+        className={
+          shouldShowFooter
+            ? 'min-h-screen flex flex-col bg-neutral-50'
+            : 'h-screen flex flex-col bg-neutral-50'
+        }
+      >
+        {/* Offline Notice */}
+        <OfflineNotice />
+
         {/* Onboarding Flow - Show for first-time users */}
         {showOnboarding && location.pathname === '/' && (
-          <OnboardingFlow
-            onComplete={completeOnboarding}
-            onSkip={skipOnboarding}
-          />
+          <OnboardingFlow onComplete={completeOnboarding} onSkip={skipOnboarding} />
         )}
 
         {/* Header */}
@@ -109,10 +125,7 @@ const RootLayout: React.FC = () => {
         )}
 
         {/* Main Layout */}
-        <MainLayout
-          sidebar={shouldShowSidebar ? <Sidebar /> : undefined}
-          sidebarOpen={sidebarOpen}
-        >
+        <MainLayout sidebar={shouldShowSidebar ? <Sidebar /> : undefined} sidebarOpen={sidebarOpen}>
           <Suspense
             fallback={
               <div className="h-full flex items-center justify-center">
@@ -135,7 +148,7 @@ const RootLayout: React.FC = () => {
 const router = createBrowserRouter(
   [
     {
-      path: "/",
+      path: '/',
       element: <RootLayout />,
       children: [
         {
@@ -143,56 +156,64 @@ const router = createBrowserRouter(
           element: <PlannerPage />,
         },
         {
-          path: "about",
+          path: 'about',
           element: <AboutPage />,
         },
         {
-          path: "help",
+          path: 'help',
           element: <HelpPage />,
         },
         {
-          path: "settings",
+          path: 'settings',
           element: <SettingsPage />,
         },
         {
-          path: "support",
+          path: 'support',
           element: <SupportPage />,
         },
         {
-          path: "privacy",
+          path: 'privacy',
           element: <PrivacyPolicyPage />,
         },
         {
-          path: "terms",
+          path: 'terms',
           element: <TermsPage />,
         },
         {
-          path: "affiliate-disclosure",
+          path: 'affiliate-disclosure',
           element: <AffiliateDisclosurePage />,
         },
         {
-          path: "feedback",
+          path: 'feedback',
           element: <FeedbackPage />,
         },
         {
-          path: "guides",
+          path: 'guides',
           element: <BlogListPage />,
         },
         {
-          path: "guides/:slug",
+          path: 'guides/:slug',
           element: <BlogPostPage />,
         },
         // Debug routes - only available in development
-        ...(import.meta.env.DEV && MapTestPage ? [{
-          path: "test-map",
-          element: <MapTestPage />,
-        }] : []),
-        ...(import.meta.env.DEV && PlannerPageDebug ? [{
-          path: "debug",
-          element: <PlannerPageDebug />,
-        }] : []),
+        ...(import.meta.env.DEV && MapTestPage
+          ? [
+              {
+                path: 'test-map',
+                element: <MapTestPage />,
+              },
+            ]
+          : []),
+        ...(import.meta.env.DEV && PlannerPageDebug
+          ? [
+              {
+                path: 'debug',
+                element: <PlannerPageDebug />,
+              },
+            ]
+          : []),
         {
-          path: "*",
+          path: '*',
           element: <NotFoundPage />,
         },
       ],
@@ -200,7 +221,7 @@ const router = createBrowserRouter(
   ],
   {
     // Custom domain: no basename needed (was "/camper-planner" for GitHub Pages subdirectory)
-    basename: "/",
+    basename: '/',
   }
 );
 

@@ -1,10 +1,110 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import path from 'node:path'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import { VitePWA } from 'vite-plugin-pwa';
+import path from 'node:path';
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    VitePWA({
+      registerType: 'autoUpdate',
+      includeAssets: ['favicon.png', 'favicon.svg', 'apple-touch-icon.png', 'og-image.png'],
+      manifest: {
+        name: 'European Camper Planner',
+        short_name: 'Camper Planner',
+        description: 'Free trip planning for European motorhome and campervan travel',
+        theme_color: '#1e7a8d',
+        background_color: '#ffffff',
+        display: 'standalone',
+        scope: '/',
+        start_url: '/',
+        icons: [
+          {
+            src: 'pwa-192x192.png',
+            sizes: '192x192',
+            type: 'image/png',
+          },
+          {
+            src: 'pwa-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+          },
+          {
+            src: 'pwa-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'any maskable',
+          },
+        ],
+      },
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+        runtimeCaching: [
+          {
+            // OSM map tiles — stale-while-revalidate for offline map viewing
+            urlPattern: /^https:\/\/[abc]\.tile\.openstreetmap\.org\/.*/i,
+            handler: 'StaleWhileRevalidate',
+            options: {
+              cacheName: 'map-tiles',
+              expiration: {
+                maxEntries: 500,
+                maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+              },
+            },
+          },
+          {
+            // Nominatim geocoding — network-first so fresh results preferred
+            urlPattern: /^https:\/\/nominatim\.openstreetmap\.org\/.*/i,
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'geocoding-cache',
+              expiration: {
+                maxEntries: 100,
+                maxAgeSeconds: 60 * 60 * 24 * 7, // 7 days
+              },
+            },
+          },
+          {
+            // Unsplash blog images — cache-first since URLs are immutable
+            urlPattern: /^https:\/\/images\.unsplash\.com\/.*/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'blog-images',
+              expiration: {
+                maxEntries: 20,
+                maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+              },
+            },
+          },
+          {
+            // Google Fonts stylesheets — stale-while-revalidate
+            urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
+            handler: 'StaleWhileRevalidate',
+            options: {
+              cacheName: 'google-fonts-stylesheets',
+              expiration: {
+                maxEntries: 5,
+                maxAgeSeconds: 60 * 60 * 24 * 365, // 1 year
+              },
+            },
+          },
+          {
+            // Google Fonts webfont files — cache-first (immutable URLs)
+            urlPattern: /^https:\/\/fonts\.gstatic\.com\/.*/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'google-fonts-webfonts',
+              expiration: {
+                maxEntries: 20,
+                maxAgeSeconds: 60 * 60 * 24 * 365, // 1 year
+              },
+            },
+          },
+        ],
+      },
+    }),
+  ],
 
   // Custom domain deployment (camperplanning.com)
   // Previously: '/camper-planner/' for GitHub Pages subdirectory
@@ -78,7 +178,7 @@ export default defineConfig({
       '/api/ors': {
         target: 'https://api.openrouteservice.org',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/ors/, ''),
+        rewrite: path => path.replace(/^\/api\/ors/, ''),
         secure: true,
         configure: (proxy, _options) => {
           proxy.on('error', (err, _req, _res) => {
@@ -92,7 +192,7 @@ export default defineConfig({
       '/api/osrm': {
         target: 'https://router.project-osrm.org',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/osrm/, ''),
+        rewrite: path => path.replace(/^\/api\/osrm/, ''),
         secure: true,
         configure: (proxy, _options) => {
           proxy.on('error', (err, _req, _res) => {
@@ -103,7 +203,7 @@ export default defineConfig({
       '/api/overpass': {
         target: 'https://overpass-api.de/api/interpreter',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/overpass/, ''),
+        rewrite: path => path.replace(/^\/api\/overpass/, ''),
         secure: true,
         configure: (proxy, _options) => {
           proxy.on('error', (err, _req, _res) => {
@@ -117,7 +217,7 @@ export default defineConfig({
       '/api/geocode': {
         target: 'https://nominatim.openstreetmap.org',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/geocode/, '/search'),
+        rewrite: path => path.replace(/^\/api\/geocode/, '/search'),
         secure: true,
         configure: (proxy, _options) => {
           proxy.on('error', (err, _req, _res) => {
@@ -126,7 +226,10 @@ export default defineConfig({
           proxy.on('proxyReq', (proxyReq, req, _res) => {
             console.log('Nominatim proxy request:', req.method, req.url);
             // Add required User-Agent header for Nominatim
-            proxyReq.setHeader('User-Agent', 'EuropeanCamperPlanner/1.0 (https://github.com/user/camper-planner)');
+            proxyReq.setHeader(
+              'User-Agent',
+              'EuropeanCamperPlanner/1.0 (https://github.com/user/camper-planner)'
+            );
           });
         },
       },
@@ -162,7 +265,6 @@ export default defineConfig({
     },
   },
 
-
   // Optimization
   optimizeDeps: {
     include: [
@@ -173,7 +275,7 @@ export default defineConfig({
       'react-leaflet',
       'zustand',
       'react-i18next',
-      'i18next'
+      'i18next',
     ],
   },
 
@@ -200,4 +302,4 @@ export default defineConfig({
   //     ],
   //   },
   // },
-})
+});
