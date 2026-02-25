@@ -122,7 +122,7 @@ export const IMAGES = {
 
   europeanAmenities: {
     hero: {
-      src: '/images/blog/european-amenities-hero.jpg',
+      src: '/images/blog/campsite.jpg',
       alt: 'Modern European campsite with facilities',
       credit: 'Scott Goodwill',
       creditUrl: 'https://unsplash.com/@scottagoodwill',
@@ -140,7 +140,7 @@ export const IMAGES = {
 
   // Homepage welcome hero
   homepageHero: {
-    src: '/images/blog/homepage-hero.jpg',
+    src: '/images/blog/driving.jpg',
     alt: 'Camper van driving along a scenic European mountain road',
     credit: 'Dino Reichmuth',
     creditUrl: 'https://unsplash.com/@dinoreichmuth',

@@ -26,7 +26,9 @@ const BlogCard: React.FC<BlogCardProps> = ({ post }) => {
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           loading="lazy"
           onError={(e) => {
-            (e.target as HTMLImageElement).src = '/images/blog/fallback-hero.jpg';
+            const img = e.target as HTMLImageElement;
+            img.onerror = null;
+            img.src = '/images/blog/fallback-hero.jpg';
           }}
         />
         <span className="absolute top-3 left-3 px-2.5 py-1 bg-primary-500/90 text-white text-xs font-display font-semibold rounded-full">
