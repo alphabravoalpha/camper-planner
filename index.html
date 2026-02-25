@@ -58,17 +58,27 @@
     }
     </script>
 
-    <!-- Fonts -->
+    <!-- Fonts (async to avoid render-blocking) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet" />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500&display=swap" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500&display=swap" /></noscript>
+    <!-- JetBrains Mono loaded lazily — only used for coordinates/code display -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap" media="print" onload="this.media='all'" />
+
+    <!-- Preconnect to tile servers for faster map loads -->
+    <link rel="preconnect" href="https://tile.openstreetmap.org" crossorigin />
+    <link rel="dns-prefetch" href="https://tile.openstreetmap.org" />
+    <link rel="dns-prefetch" href="https://nominatim.openstreetmap.org" />
+    <link rel="dns-prefetch" href="https://api.openrouteservice.org" />
 
     <!-- Theme color for mobile browsers -->
     <meta name="theme-color" content="#1e7a8d" />
-    <script type="module" crossorigin src="/assets/index-BlBFuN8d.js"></script>
+    <script type="module" crossorigin src="/assets/index-CZmNdPfp.js"></script>
     <link rel="modulepreload" crossorigin href="/assets/react-vendor-BKsxK57A.js">
     <link rel="modulepreload" crossorigin href="/assets/state-vendor-E9RzGJqF.js">
-    <link rel="stylesheet" crossorigin href="/assets/index-B2kyPtCH.css">
+    <link rel="stylesheet" crossorigin href="/assets/index-DJ9S2Fci.css">
   </head>
   <body>
     <div id="root"></div>
