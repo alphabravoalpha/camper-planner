@@ -1,5 +1,4 @@
-// Playwright Cross-Browser Testing Configuration
-// Phase 6.4: Comprehensive cross-browser testing setup
+// Playwright cross-browser and device testing configuration for camperplanning.com
 
 import { defineConfig, devices } from '@playwright/test';
 
