@@ -4,10 +4,16 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Shield, ChevronLeft } from 'lucide-react';
+import SEOHead from '../components/seo/SEOHead';
 
 const PrivacyPolicyPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-neutral-50 animate-fade-in">
+      <SEOHead
+        title="Privacy Policy — European Camper Trip Planner"
+        description="Privacy policy for European Camper Trip Planner. No tracking, no cookies, your data stays on your device."
+        url="https://camperplanning.com/privacy"
+      />
       {/* Header */}
       <div className="bg-gradient-to-br from-primary-600 to-primary-800 text-white">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">

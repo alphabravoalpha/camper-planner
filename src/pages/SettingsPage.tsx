@@ -5,6 +5,7 @@ import React, { useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Trash2, Download, Database, Shield } from 'lucide-react';
 import { useVehicleStore, useRouteStore, useTripStore, useUIStore } from '../store';
+import SEOHead from '../components/seo/SEOHead';
 
 const SettingsPage: React.FC = () => {
   const [showConfirmClear, setShowConfirmClear] = useState(false);
@@ -70,6 +71,12 @@ const SettingsPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-neutral-50 animate-fade-in">
+      <SEOHead
+        title="Settings — European Camper Trip Planner"
+        description="Manage your data, export trips, and configure European Camper Trip Planner settings."
+        url="https://camperplanning.com/settings"
+        noindex
+      />
       {/* Hero Section */}
       <div className="relative overflow-hidden bg-gradient-to-br from-primary-700 to-primary-900 text-white">
         <img

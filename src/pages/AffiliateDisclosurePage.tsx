@@ -4,10 +4,16 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { HandCoins, ChevronLeft } from 'lucide-react';
+import SEOHead from '../components/seo/SEOHead';
 
 const AffiliateDisclosurePage: React.FC = () => {
   return (
     <div className="min-h-screen bg-neutral-50 animate-fade-in">
+      <SEOHead
+        title="Affiliate Disclosure — European Camper Trip Planner"
+        description="Affiliate disclosure for European Camper Trip Planner. Transparency about how we recommend travel services."
+        url="https://camperplanning.com/affiliate-disclosure"
+      />
       {/* Header */}
       <div className="bg-gradient-to-br from-primary-600 to-primary-800 text-white">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">

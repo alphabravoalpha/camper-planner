@@ -4,6 +4,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Heart, Coffee, ChevronLeft, Code, Globe, Shield, Zap, ExternalLink } from 'lucide-react';
+import SEOHead from '../components/seo/SEOHead';
 
 const KOFI_URL = 'https://ko-fi.com/camperplanning';
 
@@ -36,6 +37,11 @@ const SUPPORT_REASONS = [
 const SupportPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-neutral-50 animate-fade-in">
+      <SEOHead
+        title="Support Us — European Camper Trip Planner"
+        description="Support the development of European Camper Trip Planner. Help keep this free tool running for the campervan community."
+        url="https://camperplanning.com/support"
+      />
       {/* Hero */}
       <div className="relative overflow-hidden bg-gradient-to-br from-primary-600 to-primary-800 text-white">
         <img

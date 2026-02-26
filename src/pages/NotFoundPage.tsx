@@ -5,12 +5,18 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui';
+import SEOHead from '../components/seo/SEOHead';
 
 const NotFoundPage: React.FC = () => {
   const _i18n = useTranslation();
 
   return (
     <div className="min-h-screen bg-neutral-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+      <SEOHead
+        title="Page Not Found — European Camper Trip Planner"
+        description="The page you're looking for doesn't exist."
+        noindex
+      />
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10 text-center">
           {/* 404 Illustration */}

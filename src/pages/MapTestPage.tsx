@@ -10,6 +10,7 @@ import L from 'leaflet';
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 import markerRetina from 'leaflet/dist/images/marker-icon-2x.png';
+import SEOHead from '../components/seo/SEOHead';
 
 // Fix default marker icons
 L.Icon.Default.mergeOptions({
@@ -36,6 +37,11 @@ const MapTestComponent: React.FC = () => {
 const MapTestPage: React.FC = () => {
   return (
     <div className="h-screen flex flex-col">
+      <SEOHead
+        title="Map Test — European Camper Trip Planner"
+        description="Internal map testing page."
+        noindex
+      />
       <div className="bg-primary-600 text-white p-4">
         <h1 className="text-xl font-bold">Leaflet Context Test Page</h1>
         <p className="text-sm">Testing basic MapContainer and useMap hook</p>

@@ -11,13 +11,14 @@ const __dirname = path.dirname(__filename);
 const BASE_URL = 'https://camperplanning.com';
 
 // Static pages with their priorities and change frequencies
+// Excludes noindex pages: /settings, /test-map, 404
 const staticPages = [
   { path: '/', changefreq: 'weekly', priority: '1.0' },
-  { path: '/guides', changefreq: 'weekly', priority: '0.9' },
-  { path: '/about', changefreq: 'monthly', priority: '0.8' },
-  { path: '/help', changefreq: 'monthly', priority: '0.7' },
-  { path: '/support', changefreq: 'monthly', priority: '0.6' },
-  { path: '/feedback', changefreq: 'monthly', priority: '0.6' },
+  { path: '/guides', changefreq: 'weekly', priority: '0.7' },
+  { path: '/about', changefreq: 'monthly', priority: '0.6' },
+  { path: '/help', changefreq: 'monthly', priority: '0.6' },
+  { path: '/support', changefreq: 'monthly', priority: '0.5' },
+  { path: '/feedback', changefreq: 'monthly', priority: '0.5' },
   { path: '/privacy', changefreq: 'yearly', priority: '0.3' },
   { path: '/terms', changefreq: 'yearly', priority: '0.3' },
   { path: '/affiliate-disclosure', changefreq: 'yearly', priority: '0.3' },
@@ -52,7 +53,7 @@ function generateSitemap(): string {
     xml += `    <loc>${BASE_URL}/guides/${slug}</loc>\n`;
     xml += `    <lastmod>${today}</lastmod>\n`;
     xml += `    <changefreq>monthly</changefreq>\n`;
-    xml += `    <priority>0.8</priority>\n`;
+    xml += `    <priority>0.7</priority>\n`;
     xml += '  </url>\n';
   }
 

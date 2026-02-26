@@ -12,6 +12,7 @@ import {
   ExternalLink,
   ChevronRight,
 } from 'lucide-react';
+import SEOHead from '../components/seo/SEOHead';
 
 // Replace this with your actual Google Form embed URL
 // To get the embed URL: Open your Google Form → click "Send" → click the embed icon (<>) → copy the src URL
@@ -53,6 +54,11 @@ const FeedbackPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-neutral-50 animate-fade-in">
+      <SEOHead
+        title="Share Feedback — European Camper Trip Planner"
+        description="Share your feedback, report bugs, or suggest features for European Camper Trip Planner."
+        url="https://camperplanning.com/feedback"
+      />
       {/* Hero */}
       <div className="relative overflow-hidden bg-gradient-to-br from-primary-600 to-primary-800 text-white">
         <img

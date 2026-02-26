@@ -1,13 +1,15 @@
 // Main Trip Planner Page
 // Phase 1: Basic page structure, Phase 2: Map integration
 
-import React, { Suspense, useState } from 'react';
+import React, { Suspense, useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import MapContainer from '../components/map/MapContainer';
 const TripWizard = React.lazy(() => import('../components/wizard/TripWizard'));
 import { useTripWizardStore, useRouteStore } from '../store';
 import { useOnboarding } from '../hooks/useOnboarding';
 import { Route as RouteIcon, X, MapPin, Tent, Download, BookOpen } from 'lucide-react';
+import SEOHead from '../components/seo/SEOHead';
+import { useAnalytics } from '../utils/analytics';
 
 const HERO_DISMISSED_KEY = 'planner-hero-dismissed';
 
@@ -60,9 +62,25 @@ const WelcomeHero: React.FC<{ onDismiss: () => void }> = ({ onDismiss }) => (
 
 const PlannerPage: React.FC = () => {
   const { openWizard, wizardOpen } = useTripWizardStore();
-  const { waypoints } = useRouteStore();
+  const { waypoints, calculatedRoute } = useRouteStore();
   const { showOnboarding } = useOnboarding();
+  const { trackFeature } = useAnalytics();
   const hasWaypoints = waypoints.length > 0;
+
+  // Track route calculations
+  const prevRouteRef = useRef(calculatedRoute);
+  useEffect(() => {
+    if (calculatedRoute && calculatedRoute !== prevRouteRef.current) {
+      const route = calculatedRoute.routes?.[0];
+      if (route) {
+        trackFeature('route_calculation', 'completed', {
+          waypoints: waypoints.length,
+          distance: route.summary?.distance ? Math.round(route.summary.distance / 1000) : 0,
+        });
+      }
+    }
+    prevRouteRef.current = calculatedRoute;
+  }, [calculatedRoute, waypoints.length, trackFeature]);
 
   const [showHero, setShowHero] = useState(() => {
     return !localStorage.getItem(HERO_DISMISSED_KEY);
@@ -78,6 +96,11 @@ const PlannerPage: React.FC = () => {
 
   return (
     <div className="h-full flex flex-col">
+      <SEOHead
+        title="Plan Your European Camper Trip — Free Route Planner"
+        description="Interactive route planner with vehicle-safe routing, campsite discovery, and GPX export for 40+ European countries. Free, no account required."
+        url="https://camperplanning.com/"
+      />
       {/* Welcome Hero — compact, dismissible */}
       {heroVisible && <WelcomeHero onDismiss={dismissHero} />}
 

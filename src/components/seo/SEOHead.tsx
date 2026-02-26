@@ -10,6 +10,7 @@ interface SEOHeadProps {
   type?: 'website' | 'article';
   publishedDate?: string;
   updatedDate?: string;
+  noindex?: boolean;
 }
 
 const DEFAULT_IMAGE = 'https://camperplanning.com/og-image.png';
@@ -45,6 +46,7 @@ const SEOHead: React.FC<SEOHeadProps> = ({
   type = 'website',
   publishedDate,
   updatedDate,
+  noindex = false,
 }) => {
   useEffect(() => {
     // Set document title
@@ -52,6 +54,14 @@ const SEOHead: React.FC<SEOHeadProps> = ({
 
     // Update meta tags
     setMeta('description', description);
+
+    // Handle noindex
+    if (noindex) {
+      setMeta('robots', 'noindex, nofollow');
+    } else {
+      const robotsMeta = document.querySelector('meta[name="robots"]');
+      if (robotsMeta) robotsMeta.remove();
+    }
     setMeta('og:title', title);
     setMeta('og:description', description);
     setMeta('og:type', type);
@@ -114,7 +124,7 @@ const SEOHead: React.FC<SEOHeadProps> = ({
         script.remove();
       };
     }
-  }, [title, description, url, image, type, publishedDate, updatedDate]);
+  }, [title, description, url, image, type, publishedDate, updatedDate, noindex]);
 
   return null;
 };

@@ -16,6 +16,7 @@ import {
   Heart,
   ExternalLink,
 } from 'lucide-react';
+import SEOHead from '../components/seo/SEOHead';
 
 const FEATURES = [
   {
@@ -68,6 +69,11 @@ const COUNTRIES = [
 const AboutPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-neutral-50 animate-fade-in">
+      <SEOHead
+        title="About — European Camper Trip Planner"
+        description="Learn about European Camper Trip Planner, the free privacy-first tool for planning campervan and motorhome trips across Europe."
+        url="https://camperplanning.com/about"
+      />
       {/* Hero Section */}
       <div className="relative overflow-hidden bg-gradient-to-br from-primary-600 to-primary-800 text-white">
         <img

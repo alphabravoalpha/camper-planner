@@ -4,10 +4,16 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { FileText, ChevronLeft } from 'lucide-react';
+import SEOHead from '../components/seo/SEOHead';
 
 const TermsPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-neutral-50 animate-fade-in">
+      <SEOHead
+        title="Terms of Use — European Camper Trip Planner"
+        description="Terms of use for European Camper Trip Planner. Governed by the laws of England and Wales."
+        url="https://camperplanning.com/terms"
+      />
       {/* Header */}
       <div className="bg-gradient-to-br from-primary-600 to-primary-800 text-white">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">

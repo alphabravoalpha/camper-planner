@@ -14,6 +14,7 @@ import {
   MessageSquare,
   Heart,
 } from 'lucide-react';
+import SEOHead from '../components/seo/SEOHead';
 
 const STEPS = [
   {
@@ -121,6 +122,11 @@ const HelpPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-neutral-50 animate-fade-in">
+      <SEOHead
+        title="Help & FAQ — European Camper Trip Planner"
+        description="Get help with route planning, campsite search, vehicle setup, and GPX export. Frequently asked questions about European Camper Trip Planner."
+        url="https://camperplanning.com/help"
+      />
       {/* Hero Section */}
       <div className="relative overflow-hidden bg-gradient-to-br from-primary-700 to-primary-900 text-white">
         <img
