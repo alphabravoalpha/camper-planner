@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import MapContainer from '../components/map/MapContainer';
 const TripWizard = React.lazy(() => import('../components/wizard/TripWizard'));
 import { useTripWizardStore, useRouteStore } from '../store';
+import { useAnalytics } from '../utils/analytics';
 import { useOnboarding } from '../hooks/useOnboarding';
 import { Route as RouteIcon, X, MapPin, Tent, Download, BookOpen } from 'lucide-react';
 import SEOHead from '../components/seo/SEOHead';

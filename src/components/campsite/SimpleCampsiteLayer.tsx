@@ -9,6 +9,7 @@ import { campsiteService } from '../../services/CampsiteService';
 import { CampsiteFilterService } from '../../services/CampsiteFilterService';
 import { useRouteStore, useVehicleStore, useUIStore } from '../../store';
 import { FeatureFlags } from '../../config';
+import { useAnalytics } from '../../utils/analytics';
 import {
   type Campsite,
   type CampsiteRequest,
@@ -151,6 +152,7 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
   const { calculatedRoute, waypoints, addWaypoint } = useRouteStore();
   const { profile } = useVehicleStore();
   const { addNotification } = useUIStore();
+  const { trackFeature } = useAnalytics();
 
   // Check if a campsite is already in the route
   const isCampsiteInRoute = useCallback(
@@ -445,6 +447,7 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
       if (response.status === 'success') {
         setCampsites(response.campsites);
         onCampsitesLoaded?.(response.campsites.length, response.campsites);
+        trackFeature('campsite_search', 'completed', { results: response.campsites.length });
       } else {
         // Show error but keep existing campsites visible
         const errorInfo = classifyError(new Error(response.error || 'Failed to load campsites'));
@@ -457,7 +460,16 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
     } finally {
       setIsLoading(false);
     }
-  }, [map, visibleTypes, maxResults, profile, isVisible, onCampsitesLoaded, classifyError]);
+  }, [
+    map,
+    visibleTypes,
+    maxResults,
+    profile,
+    isVisible,
+    onCampsitesLoaded,
+    classifyError,
+    trackFeature,
+  ]);
 
   // Auto-load campsites around route, splitting large bboxes into tiles
   const loadCampsitesAroundRoute = useCallback(async () => {
