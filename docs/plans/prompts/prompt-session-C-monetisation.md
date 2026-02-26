@@ -72,9 +72,9 @@ Article structure:
   electrical/solar, navigation, comfort items, country-specific requirements
   (warning triangles, vignettes, etc.)
 - **Gear links:** Use placeholder Amazon affiliate URLs in this format:
-  `https://www.amazon.co.uk/dp/ASIN?tag=AMAZON_ASSOCIATE_TAG`. Use real ASINs
-  where possible by searching for popular items (e.g., portable gas stove, solar
-  panel, levelling ramps). Use `AMAZON_ASSOCIATE_TAG` as the literal placeholder
+  `https://www.amazon.co.uk/dp/ASIN?tag=camperplann04-21`. Use real ASINs where
+  possible by searching for popular items (e.g., portable gas stove, solar
+  panel, levelling ramps). Use `camperplann04-21` as the literal placeholder
   tag.
 - **Tone:** Practical, experienced, budget-conscious — like advice from a fellow
   traveller

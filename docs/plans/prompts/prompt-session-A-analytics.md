@@ -20,32 +20,24 @@ to add analytics and measurement to a site that currently has zero tracking.
 
 ### 1. Cloudflare Web Analytics
 
-Add this script tag to `index.html` just before `</body>`:
+Add this exact script tag to `index.html` just before `</body>`:
 
 ```html
+<!-- Cloudflare Web Analytics — privacy-first, no cookies, GDPR-compliant -->
 <script
   defer
   src="https://static.cloudflareinsights.com/beacon.min.js"
-  data-cf-beacon='{"token": "CLOUDFLARE_BEACON_TOKEN"}'
+  data-cf-beacon='{"token": "19fb0222c2df46d5a5a1ca1ee0accc92"}'
 ></script>
 ```
 
-**Important:** Use the literal string `CLOUDFLARE_BEACON_TOKEN` as a
-placeholder. The user will replace it manually with their actual token. Add a
-comment above the script:
-`<!-- Cloudflare Web Analytics — privacy-first, no cookies, GDPR-compliant -->`.
+This is the real production token — use it exactly as shown.
 
-### 2. Google Search Console Verification
+### 2. Google Search Console
 
-Add this meta tag to `index.html` inside `<head>`, after the existing meta tags:
-
-```html
-<!-- Google Search Console verification — replace TOKEN with actual verification code -->
-<meta name="google-site-verification" content="GSC_VERIFICATION_TOKEN" />
-```
-
-Use the literal placeholder `GSC_VERIFICATION_TOKEN`. The user will replace it
-manually.
+Google Search Console has been verified via DNS TXT record (through
+Squarespace). **No meta tag is needed in index.html.** Skip this step entirely —
+do NOT add any google-site-verification meta tag.
 
 ### 3. Enable V2 Analytics Framework
 
@@ -111,7 +103,7 @@ d) **`src/pages/SettingsPage.tsx`**:
 
 ## File Ownership (DO NOT modify files outside this list)
 
-- `index.html` — add Cloudflare script + GSC meta tag
+- `index.html` — add Cloudflare script only (no GSC meta tag needed)
 - `src/config/features.ts` — add ANALYTICS flag
 - `src/utils/analytics.ts` — moved from v2-features
 - `src/components/ui/ConsentBanner.tsx` — new file
@@ -136,4 +128,4 @@ Work on branch: `feature/analytics-measurement`
 ## Commit
 
 When done, commit with message:
-`feat: add Cloudflare Web Analytics, GSC verification, and enable V2 analytics framework`
+`feat: add Cloudflare Web Analytics and enable V2 analytics framework with consent`
