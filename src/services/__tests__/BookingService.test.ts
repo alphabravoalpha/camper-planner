@@ -9,8 +9,8 @@ describe('BookingService', () => {
   beforeEach(() => {
     // Set env vars before constructing service (reads import.meta.env at init)
     vi.stubEnv('VITE_BOOKING_AFFILIATE_ID', 'test-booking-123');
-    vi.stubEnv('VITE_PITCHUP_AFFILIATE_ID', 'test-pitchup-456');
-    vi.stubEnv('VITE_ACSI_AFFILIATE_CODE', 'test-acsi-789');
+    vi.stubEnv('VITE_EUROCAMPINGS_AFFILIATE_ID', 'test-eurocampings-456');
+    vi.stubEnv('VITE_CAMPINGINFO_AFFILIATE_ID', 'test-campinginfo-789');
 
     service = new BookingService();
 
@@ -50,8 +50,8 @@ describe('BookingService', () => {
 
       expect(providers).toHaveLength(3);
       expect(providers.some(p => p.id === 'booking')).toBe(true);
-      expect(providers.some(p => p.id === 'pitchup')).toBe(true);
-      expect(providers.some(p => p.id === 'acsi')).toBe(true);
+      expect(providers.some(p => p.id === 'eurocampings')).toBe(true);
+      expect(providers.some(p => p.id === 'campinginfo')).toBe(true);
     });
 
     it('should return enabled providers only', () => {
@@ -78,13 +78,21 @@ describe('BookingService', () => {
       expect(unknown).toBeNull();
     });
 
-    it('should have correct provider details', () => {
-      const pitchup = service.getProvider('pitchup');
+    it('should have correct Eurocampings provider details', () => {
+      const eurocampings = service.getProvider('eurocampings');
 
-      expect(pitchup?.name).toBe('Pitchup');
-      expect(pitchup?.baseUrl).toBe('https://www.pitchup.com');
-      expect(pitchup?.searchCapabilities.campsiteTypeFilter).toBe(true);
-      expect(pitchup?.searchCapabilities.amenityFilter).toBe(true);
+      expect(eurocampings?.name).toBe('Eurocampings');
+      expect(eurocampings?.baseUrl).toBe('https://www.eurocampings.co.uk');
+      expect(eurocampings?.searchCapabilities.campsiteTypeFilter).toBe(true);
+      expect(eurocampings?.searchCapabilities.amenityFilter).toBe(true);
+    });
+
+    it('should have correct camping.info provider details', () => {
+      const campinginfo = service.getProvider('campinginfo');
+
+      expect(campinginfo?.name).toBe('camping.info');
+      expect(campinginfo?.baseUrl).toBe('https://www.camping.info');
+      expect(campinginfo?.commissionRate).toBe('5.8%');
     });
   });
 
@@ -137,17 +145,6 @@ describe('BookingService', () => {
       expect(bookingLink?.searchParams.group_adults).toBe('4');
     });
 
-    it('should include vehicle type when provided', () => {
-      const options: BookingSearchOptions = {
-        vehicleType: 'motorhome',
-      };
-
-      const links = service.generateBookingLinks(mockCampsite, options);
-      const pitchupLink = links.find(l => l.provider.id === 'pitchup');
-
-      expect(pitchupLink?.searchParams.accommodation_type).toBe('motorhome');
-    });
-
     it('should generate valid URLs', () => {
       const links = service.generateBookingLinks(mockCampsite);
 
@@ -163,8 +160,8 @@ describe('BookingService', () => {
       const bookingLink = links.find(l => l.provider.id === 'booking');
       expect(bookingLink?.url).toContain('utm_source=camper-planner');
 
-      const pitchupLink = links.find(l => l.provider.id === 'pitchup');
-      expect(pitchupLink?.url).toContain('utm_source=camper-planner');
+      const eurocampingsLink = links.find(l => l.provider.id === 'eurocampings');
+      expect(eurocampingsLink?.url).toContain('utm_source=camper-planner');
     });
 
     it('should generate description with location', () => {
@@ -213,17 +210,16 @@ describe('BookingService', () => {
       expect(link).toContain('accommodation_type=camping');
     });
 
-    it('should generate correct Pitchup URL', () => {
-      const link = service.generateProviderLink(service.getProvider('pitchup')!, mockCampsite);
+    it('should generate correct Eurocampings URL', () => {
+      const link = service.generateProviderLink(service.getProvider('eurocampings')!, mockCampsite);
 
-      expect(link).toContain('https://www.pitchup.com/search');
+      expect(link).toContain('https://www.eurocampings.co.uk/search');
     });
 
-    it('should generate correct ACSI URL', () => {
-      const link = service.generateProviderLink(service.getProvider('acsi')!, mockCampsite);
+    it('should generate correct camping.info URL', () => {
+      const link = service.generateProviderLink(service.getProvider('campinginfo')!, mockCampsite);
 
-      expect(link).toContain('https://www.acsi.eu/en/search-and-book');
-      expect(link).toContain('lon=2.3522'); // ACSI uses 'lon' not 'lng'
+      expect(link).toContain('https://www.camping.info/en/search');
     });
 
     it('should return null for disabled provider', () => {
@@ -253,6 +249,38 @@ describe('BookingService', () => {
 
       expect(bookingLink?.searchParams.checkin).toBe('2025-07-01');
       expect(bookingLink?.searchParams.checkout).toBe('2025-07-07');
+    });
+
+    it('should include Eurocampings date params', () => {
+      const checkIn = new Date('2025-07-01T12:00:00Z');
+      const checkOut = new Date('2025-07-07T12:00:00Z');
+
+      const options: BookingSearchOptions = {
+        checkIn,
+        checkOut,
+      };
+
+      const links = service.generateBookingLinks(mockCampsite, options);
+      const eurocampingsLink = links.find(l => l.provider.id === 'eurocampings');
+
+      expect(eurocampingsLink?.searchParams.arrival).toBe('2025-07-01');
+      expect(eurocampingsLink?.searchParams.departure).toBe('2025-07-07');
+    });
+
+    it('should include camping.info date params', () => {
+      const checkIn = new Date('2025-07-01T12:00:00Z');
+      const checkOut = new Date('2025-07-07T12:00:00Z');
+
+      const options: BookingSearchOptions = {
+        checkIn,
+        checkOut,
+      };
+
+      const links = service.generateBookingLinks(mockCampsite, options);
+      const campinginfoLink = links.find(l => l.provider.id === 'campinginfo');
+
+      expect(campinginfoLink?.searchParams.dateFrom).toBe('2025-07-01');
+      expect(campinginfoLink?.searchParams.dateTo).toBe('2025-07-07');
     });
 
     it('should handle vehicle length option', () => {

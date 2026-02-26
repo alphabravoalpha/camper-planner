@@ -138,6 +138,15 @@ export const IMAGES = {
     } as BlogImage,
   },
 
+  campervanGear: {
+    hero: {
+      src: '/images/blog/campervan-gear-hero.jpg',
+      alt: 'Campervan interior with neatly organised gear and equipment',
+      credit: 'Unsplash',
+      creditUrl: 'https://unsplash.com',
+    } as BlogImage,
+  },
+
   // Homepage welcome hero
   homepageHero: {
     src: '/images/blog/driving.jpg',

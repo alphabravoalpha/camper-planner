@@ -1,5 +1,5 @@
 // Booking Service
-// Phase 1.3: Campsite booking integration with affiliate platforms
+// Campsite booking integration with affiliate platforms
 
 import { type Campsite } from './CampsiteService';
 
@@ -53,40 +53,35 @@ class BookingService {
       },
       enabled: !!import.meta.env.VITE_BOOKING_AFFILIATE_ID,
     },
-    pitchup: {
-      id: 'pitchup',
-      name: 'Pitchup',
-      description: 'Specialist camping and glamping booking platform',
-      baseUrl: 'https://www.pitchup.com',
-      commissionRate: 'Up to 8%',
-      features: [
-        'Camping specialist',
-        'Pitch selection',
-        'Local recommendations',
-        'Family-friendly',
-      ],
+    eurocampings: {
+      id: 'eurocampings',
+      name: 'Eurocampings',
+      description: "Europe's largest campsite search and booking platform",
+      baseUrl: 'https://www.eurocampings.co.uk',
+      commissionRate: '3%',
+      features: ['European focus', 'Campsite reviews', 'Detailed filters', 'Booking integration'],
       searchCapabilities: {
         locationSearch: true,
         campsiteTypeFilter: true,
         amenityFilter: true,
         availabilityCheck: true,
       },
-      enabled: !!import.meta.env.VITE_PITCHUP_AFFILIATE_ID,
+      enabled: !!import.meta.env.VITE_EUROCAMPINGS_AFFILIATE_ID,
     },
-    acsi: {
-      id: 'acsi',
-      name: 'ACSI Camping Card',
-      description: 'European camping discount card and booking platform',
-      baseUrl: 'https://www.acsi.eu',
-      commissionRate: 'Variable',
-      features: ['Discount rates', 'European focus', 'Quality assured', 'Inspection reports'],
+    campinginfo: {
+      id: 'campinginfo',
+      name: 'camping.info',
+      description: 'European campsite directory with online booking',
+      baseUrl: 'https://www.camping.info',
+      commissionRate: '5.8%',
+      features: ['European directory', 'Online booking', 'Campsite ratings', 'Mobile app'],
       searchCapabilities: {
         locationSearch: true,
         campsiteTypeFilter: true,
         amenityFilter: true,
-        availabilityCheck: false,
+        availabilityCheck: true,
       },
-      enabled: !!import.meta.env.VITE_ACSI_AFFILIATE_CODE,
+      enabled: !!import.meta.env.VITE_CAMPINGINFO_AFFILIATE_ID,
     },
   };
 
@@ -167,19 +162,18 @@ class BookingService {
           utm_medium: 'affiliate',
         };
 
-      case 'pitchup':
+      case 'eurocampings':
         return {
-          affiliate_id: import.meta.env.VITE_PITCHUP_AFFILIATE_ID || '',
           utm_source: 'camper-planner',
-          utm_medium: 'referral',
+          utm_medium: 'affiliate',
           utm_campaign: 'campsite-search',
         };
 
-      case 'acsi':
+      case 'campinginfo':
         return {
-          ref: import.meta.env.VITE_ACSI_AFFILIATE_CODE || '',
           utm_source: 'camper-planner',
-          partner: 'camper-planner',
+          utm_medium: 'affiliate',
+          utm_campaign: 'campsite-search',
         };
 
       default:
@@ -225,33 +219,33 @@ class BookingService {
         }
         break;
 
-      case 'pitchup':
-        // Pitchup parameters
-        if (campsite.address) {
-          params.location = campsite.address;
+      case 'eurocampings':
+        // Eurocampings parameters
+        if (campsite.name) {
+          params.q = campsite.name;
+        } else if (campsite.address) {
+          params.q = campsite.address;
         }
-        if (options.vehicleType) {
-          params.accommodation_type = options.vehicleType;
+        if (options.checkIn) {
+          params.arrival = options.checkIn.toISOString().split('T')[0];
         }
-        if (options.checkIn && options.checkOut) {
-          params.start_date = options.checkIn.toISOString().split('T')[0];
-          params.end_date = options.checkOut.toISOString().split('T')[0];
-        }
-        if (options.guests) {
-          params.guests = options.guests.toString();
+        if (options.checkOut) {
+          params.departure = options.checkOut.toISOString().split('T')[0];
         }
         break;
 
-      case 'acsi':
-        // ACSI parameters
-        if (campsite.address) {
-          params.search_location = campsite.address;
+      case 'campinginfo':
+        // camping.info parameters
+        if (campsite.name) {
+          params.q = campsite.name;
+        } else if (campsite.address) {
+          params.q = campsite.address;
         }
-        params.lon = campsite.lng.toString(); // ACSI uses 'lon' instead of 'lng'
-
-        // ACSI focuses on dates for discount eligibility
         if (options.checkIn) {
-          params.arrival_date = options.checkIn.toISOString().split('T')[0];
+          params.dateFrom = options.checkIn.toISOString().split('T')[0];
+        }
+        if (options.checkOut) {
+          params.dateTo = options.checkOut.toISOString().split('T')[0];
         }
         break;
     }
@@ -266,10 +260,10 @@ class BookingService {
     switch (providerId) {
       case 'booking':
         return '/searchresults.html';
-      case 'pitchup':
+      case 'eurocampings':
         return '/search';
-      case 'acsi':
-        return '/en/search-and-book';
+      case 'campinginfo':
+        return '/en/search';
       default:
         return '/search';
     }
@@ -300,15 +294,15 @@ class BookingService {
       totalProviders: Object.keys(this.providers).length,
       enabledProviders: this.getEnabledProviders().length,
       coverageByRegion: {
-        europe: ['acsi', 'pitchup', 'booking'],
-        worldwide: ['booking', 'pitchup'],
-        discount: ['acsi'],
+        europe: ['booking', 'eurocampings', 'campinginfo'],
+        worldwide: ['booking'],
+        specialist: ['eurocampings', 'campinginfo'],
       },
       features: {
         instantBooking: this.getProvidersByFeature('Instant booking'),
         freeCancellation: this.getProvidersByFeature('Free cancellation'),
         mobileApp: this.getProvidersByFeature('Mobile app'),
-        specialist: this.getProvidersByFeature('Camping specialist'),
+        europeanFocus: this.getProvidersByFeature('European focus'),
       },
     };
 
@@ -333,7 +327,7 @@ class BookingService {
       new URL(url);
 
       // Check if the domain is in our approved list
-      const approvedDomains = ['booking.com', 'pitchup.com', 'acsi.eu'];
+      const approvedDomains = ['booking.com', 'eurocampings.co.uk', 'camping.info'];
 
       const domain = new URL(url).hostname.replace('www.', '');
       return approvedDomains.includes(domain);

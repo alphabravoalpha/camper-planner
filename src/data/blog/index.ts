@@ -12,6 +12,7 @@ import spainRoutes from './spain-camper-routes';
 import norwayFjords from './norway-fjords-campervan';
 import europeanAmenities from './european-campsite-amenities-guide';
 import croatiaCamping from './croatia-coastal-camping';
+import essentialGear from './essential-campervan-gear';
 
 export const blogPosts: BlogPost[] = [
   bestCamperRoutesSouthernFrance,
@@ -24,6 +25,7 @@ export const blogPosts: BlogPost[] = [
   norwayFjords,
   europeanAmenities,
   croatiaCamping,
+  essentialGear,
 ];
 
 export const getPostBySlug = (slug: string): BlogPost | undefined =>
