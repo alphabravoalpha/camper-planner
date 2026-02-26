@@ -86,6 +86,8 @@ const BlogSectionRenderer: React.FC<BlogSectionRendererProps> = ({ section, inde
             src={section.image.src}
             alt={section.image.alt}
             className="w-full rounded-lg shadow-soft"
+            width={1200}
+            height={800}
             loading="lazy"
             onError={e => {
               const img = e.target as HTMLImageElement;
@@ -112,21 +114,34 @@ const BlogSectionRenderer: React.FC<BlogSectionRendererProps> = ({ section, inde
         </figure>
       );
 
-    case 'cta':
+    case 'cta': {
+      const hasWaypoints = !!section.waypoints?.length;
+      const plannerUrl = hasWaypoints
+        ? `/?waypoints=${encodeURIComponent(JSON.stringify(section.waypoints))}`
+        : '/';
+      const linkClass =
+        'inline-flex items-center gap-2 px-5 py-2.5 bg-primary-600 text-white rounded-lg hover:bg-primary-700 font-display font-semibold text-sm transition-colors';
+
       return (
         <div className="bg-primary-50 border border-primary-200 rounded-lg p-6 my-8 text-center">
           <p className="text-primary-900 font-display font-semibold mb-3">
             {section.content ?? 'Ready to plan this route?'}
           </p>
-          <Link
-            to="/"
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary-600 text-white rounded-lg hover:bg-primary-700 font-display font-semibold text-sm transition-colors"
-          >
-            Open the Trip Planner
-            <ArrowRight className="w-4 h-4" />
-          </Link>
+          {/* Waypoint CTAs use <a> to force full page load (ensures clean planner state) */}
+          {hasWaypoints ? (
+            <a href={plannerUrl} className={linkClass}>
+              Start Planning This Route
+              <ArrowRight className="w-4 h-4" />
+            </a>
+          ) : (
+            <Link to={plannerUrl} className={linkClass}>
+              Open the Trip Planner
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          )}
         </div>
       );
+    }
 
     case 'quote':
       return (

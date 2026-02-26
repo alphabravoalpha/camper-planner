@@ -26,6 +26,8 @@ const BlogHero: React.FC<BlogHeroProps> = ({ post }) => {
           src={post.heroImage.src}
           alt={post.heroImage.alt}
           className="w-full h-full object-cover"
+          width={1200}
+          height={800}
           onError={e => {
             const img = e.target as HTMLImageElement;
             img.onerror = null;

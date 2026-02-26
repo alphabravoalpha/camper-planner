@@ -157,7 +157,7 @@ const Footer: React.FC = () => {
       {/* Bottom Bar — Affiliate Disclosure + Copyright */}
       <div className="border-t border-neutral-800">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-neutral-500">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-neutral-400">
             <p>&copy; {currentYear} European Camper Trip Planner. Free and open source.</p>
             <p className="text-center sm:text-right">
               Some links may earn us a small commission at no extra cost to you.{' '}
@@ -165,7 +165,7 @@ const Footer: React.FC = () => {
                 to="/affiliate-disclosure"
                 className="underline hover:text-neutral-300 transition-colors"
               >
-                Learn more
+                Read our affiliate disclosure
               </Link>
             </p>
           </div>

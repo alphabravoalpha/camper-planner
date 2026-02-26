@@ -292,6 +292,11 @@ const post: BlogPost = {
       type: 'cta',
       content:
         'Plan your Norway fjord route with CamperPlanning. Map your stops from Bergen to Lofoten, estimate driving times including ferry crossings, and find campsites along the way. Enter your vehicle dimensions and the planner will flag any height or weight restrictions. Free, private, and works offline once loaded.',
+      waypoints: [
+        { name: 'Bergen', lat: 60.3913, lng: 5.3221 },
+        { name: 'Geirangerfjord', lat: 62.1008, lng: 7.0944 },
+        { name: 'Lofoten', lat: 68.2094, lng: 14.5632 },
+      ],
     },
   ],
 };

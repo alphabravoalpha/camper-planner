@@ -20,7 +20,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({
   fullHeight = true,
 }) => {
   return (
-    <div className={cn('flex', fullHeight ? 'h-full' : 'min-h-screen', className)}>
+    <div className={cn('flex flex-1', fullHeight ? 'h-full' : 'min-h-screen', className)}>
       {/* Sidebar */}
       {sidebar && (
         <>

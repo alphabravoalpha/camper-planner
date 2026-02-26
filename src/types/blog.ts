@@ -20,6 +20,7 @@ export interface BlogSection {
   items?: string[];
   level?: 2 | 3;
   image?: BlogImage;
+  waypoints?: Array<{ name: string; lat: number; lng: number }>;
 }
 
 export interface BlogPost {
