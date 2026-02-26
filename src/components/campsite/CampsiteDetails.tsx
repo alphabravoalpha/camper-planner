@@ -1,7 +1,7 @@
 // Campsite Details Component
 // Redesigned: Single scrollable layout with complete traveler information + booking
 
-import React, { useState, useCallback, useRef, useMemo } from 'react';
+import React, { useState, useCallback, useRef, useMemo, useEffect } from 'react';
 import {
   Zap,
   Wifi,
@@ -25,6 +25,7 @@ import { type Campsite } from '../../services/CampsiteService';
 import { bookingService, type BookingLink } from '../../services/BookingService';
 import { useRouteStore, useVehicleStore, useUIStore } from '../../store';
 import { cn } from '../../utils/cn';
+import { useAnalytics } from '../../utils/analytics';
 
 export interface CampsiteDetailsProps {
   campsite: Campsite;
@@ -76,6 +77,12 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
   const { addWaypoint, waypoints } = useRouteStore();
   const { profile } = useVehicleStore();
   const { addNotification } = useUIStore();
+  const { trackFeature } = useAnalytics();
+
+  // Track campsite details viewed
+  useEffect(() => {
+    trackFeature('campsite_details', 'viewed');
+  }, [campsite.id, trackFeature]);
 
   // Check if campsite is already a waypoint
   const isWaypoint = waypoints.some(
@@ -780,6 +787,9 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
                   className="w-full flex items-center justify-between p-3 border border-primary-200 bg-primary-50 text-primary-800 hover:bg-primary-100 rounded-lg text-sm transition-colors"
                   onClick={() => {
                     bookingService.trackBookingClick(link.provider.id, String(campsite.id));
+                    trackFeature('affiliate_link', 'clicked', {
+                      provider: link.provider.id === 'booking_com' ? 'booking' : 'other',
+                    });
                   }}
                 >
                   <span>{link.provider.name}</span>

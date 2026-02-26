@@ -14,6 +14,7 @@ export const FeatureFlags = {
   PLANNING_TOOLS: true, // Phase 5: Duration estimation and itinerary planning
   DATA_EXPORT: true, // Phase 6: GPX/JSON export (MVP REQUIRED)
   AFFILIATE_LINKS: true, // Phase 6: Affiliate booking links in campsite details
+  ANALYTICS: true, // Privacy-compliant localStorage analytics with consent
 
   // Language Support
   MULTI_LANGUAGE_FRAMEWORK: true, // Phase 1: i18n framework ready
