@@ -53,7 +53,8 @@ const PrivacyPolicyPage: React.FC = () => {
             <ul className="text-green-800 text-sm space-y-1 list-disc list-inside">
               <li>We do not collect, store, or sell your personal data</li>
               <li>All your trip data is stored locally in your browser</li>
-              <li>No user accounts, no tracking cookies, no analytics</li>
+              <li>No user accounts, no tracking cookies</li>
+              <li>Anonymous analytics only with your consent (data stays on your device)</li>
               <li>We do not share your information with third parties</li>
               <li>You can export or delete your data at any time</li>
             </ul>
@@ -75,10 +76,20 @@ const PrivacyPolicyPage: React.FC = () => {
               <li>Vehicle profile settings (dimensions, fuel type)</li>
               <li>App preferences (language, map settings)</li>
               <li>Onboarding progress</li>
+              <li>Anonymous usage analytics (with your consent only)</li>
             </ul>
             <p className="text-neutral-600 text-sm mt-3">
               This data is stored in your browser&apos;s localStorage and IndexedDB. It never leaves
               your device unless you explicitly export it.
+            </p>
+            <p className="text-neutral-600 text-sm mt-2">
+              With your consent, we collect anonymous usage data stored locally on your device. This
+              data never leaves your browser and can be viewed, exported, or deleted at any time
+              from the{' '}
+              <Link to="/settings" className="text-primary-600 underline">
+                Settings page
+              </Link>
+              .
             </p>
           </section>
 
@@ -114,6 +125,12 @@ const PrivacyPolicyPage: React.FC = () => {
               <li>
                 <strong>Nominatim</strong> &mdash; location search / geocoding.
               </li>
+              <li>
+                <strong>Cloudflare Web Analytics</strong> &mdash; we use Cloudflare Web Analytics to
+                understand how visitors use our site. This service does not use cookies, does not
+                track individuals, and does not collect personal data. It provides aggregate
+                statistics only (page views, referrers, countries).
+              </li>
             </ul>
             <p className="text-neutral-600 text-sm mt-3">
               We do not send personal information to any of these services. Only technical data
@@ -126,9 +143,10 @@ const PrivacyPolicyPage: React.FC = () => {
               3. Affiliate Links
             </h2>
             <p className="text-neutral-700 leading-relaxed mb-3">
-              The app may display links to third-party campsite booking platforms (such as
-              Booking.com, Pitchup, and ACSI). These links contain affiliate tracking parameters so
-              that we may earn a small commission if you make a booking.
+              The app may display links to third-party booking platforms (such as Booking.com,
+              Eurocampings, and camping.info) and product retailers (such as Amazon). These links
+              contain affiliate tracking parameters so that we may earn a small commission if you
+              make a booking or purchase.
             </p>
             <p className="text-neutral-600 text-sm">
               Clicking an affiliate link will take you to the third party&apos;s website, which is
@@ -145,8 +163,9 @@ const PrivacyPolicyPage: React.FC = () => {
             <h2 className="text-xl font-display font-semibold text-neutral-900 mb-3">4. Cookies</h2>
             <p className="text-neutral-700 leading-relaxed">
               We do not use cookies. The app uses browser localStorage and IndexedDB for local data
-              storage. These are not cookies and are not transmitted to any server. Third-party map
-              tile providers may set their own cookies according to their privacy policies.
+              storage. These are not cookies and are not transmitted to any server. Our analytics
+              provider (Cloudflare Web Analytics) also does not use cookies. Third-party map tile
+              providers may set their own cookies according to their privacy policies.
             </p>
           </section>
 

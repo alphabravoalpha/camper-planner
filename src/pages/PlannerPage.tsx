@@ -10,7 +10,6 @@ import { useAnalytics } from '../utils/analytics';
 import { useOnboarding } from '../hooks/useOnboarding';
 import { Route as RouteIcon, X, MapPin, Tent, Download, BookOpen } from 'lucide-react';
 import SEOHead from '../components/seo/SEOHead';
-import { useAnalytics } from '../utils/analytics';
 
 const HERO_DISMISSED_KEY = 'planner-hero-dismissed';
 

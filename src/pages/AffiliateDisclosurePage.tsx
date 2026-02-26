@@ -42,9 +42,9 @@ const AffiliateDisclosurePage: React.FC = () => {
             </h2>
             <p className="text-primary-800 text-sm leading-relaxed">
               European Camper Trip Planner is free to use. To help cover development costs, some
-              links in the app go to campsite booking websites. If you book through one of these
-              links, we may earn a small commission at no extra cost to you. This does not influence
-              which campsites we show or how they are ranked.
+              links in the app go to campsite booking websites or product retailers. If you book or
+              purchase through one of these links, we may earn a small commission at no extra cost
+              to you. This does not influence which campsites we show or how they are ranked.
             </p>
           </section>
 
@@ -65,7 +65,7 @@ const AffiliateDisclosurePage: React.FC = () => {
               Our affiliate partners
             </h2>
             <p className="text-neutral-700 leading-relaxed mb-4">
-              We may earn commissions from the following booking platforms when you book through
+              We may earn commissions from the following platforms when you book or purchase through
               links in the app:
             </p>
             <div className="space-y-3">
@@ -77,17 +77,25 @@ const AffiliateDisclosurePage: React.FC = () => {
                 </p>
               </div>
               <div className="p-4 bg-neutral-50 rounded-lg border border-neutral-200">
-                <h3 className="font-semibold text-neutral-900 text-sm">Pitchup</h3>
+                <h3 className="font-semibold text-neutral-900 text-sm">Eurocampings</h3>
                 <p className="text-neutral-600 text-sm mt-1">
-                  A specialist camping and glamping booking platform focused on outdoor
-                  accommodation across Europe.
+                  Europe&apos;s largest campsite search and booking platform with reviews and
+                  ratings across the continent.
                 </p>
               </div>
               <div className="p-4 bg-neutral-50 rounded-lg border border-neutral-200">
-                <h3 className="font-semibold text-neutral-900 text-sm">ACSI</h3>
+                <h3 className="font-semibold text-neutral-900 text-sm">camping.info</h3>
                 <p className="text-neutral-600 text-sm mt-1">
-                  European camping card and booking platform with quality-inspected campsites and
-                  discount rates.
+                  European campsite directory with online booking, campsite ratings, and detailed
+                  filters.
+                </p>
+              </div>
+              <div className="p-4 bg-neutral-50 rounded-lg border border-neutral-200">
+                <h3 className="font-semibold text-neutral-900 text-sm">Amazon</h3>
+                <p className="text-neutral-600 text-sm mt-1">
+                  Some links on our site are affiliate links to Amazon. When you purchase camping
+                  gear or accessories through these links, we may earn a small commission at no
+                  extra cost to you.
                 </p>
               </div>
             </div>
@@ -109,7 +117,10 @@ const AffiliateDisclosurePage: React.FC = () => {
               Our commitment to you
             </h2>
             <ul className="text-neutral-600 text-sm space-y-2 list-disc list-inside ml-2">
-              <li>Affiliate relationships do not influence which campsites are displayed</li>
+              <li>
+                Affiliate relationships do not influence which campsites are displayed or which
+                products are recommended
+              </li>
               <li>Campsite data comes from OpenStreetMap, not from affiliate partners</li>
               <li>Affiliate links are clearly labelled in the app</li>
               <li>You are never required to use affiliate links</li>

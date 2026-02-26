@@ -14,8 +14,9 @@ zero-cost, privacy-first solution.
 
 **Current Status:** LIVE IN PRODUCTION at camperplanning.com **Custom Domain:**
 camperplanning.com (GitHub Pages, DNS via Squarespace) — live with HTTPS
-**Monetization:** Booking.com affiliate (via CJ, pending approval) + Ko-fi
-donations (live, embedded on Support page) **Last Updated:** February 25, 2026
+**Monetization:** Booking.com (via CJ, pending), Eurocampings (via
+TradeTracker), camping.info (via Awin), Amazon Associates UK + Ko-fi donations
+(live, embedded on Support page) **Last Updated:** February 26, 2026
 
 ## Technology Stack (Implemented)
 
@@ -34,7 +35,10 @@ donations (live, embedded on Support page) **Last Updated:** February 25, 2026
 - **Hosting:** GitHub Pages at camperplanning.com (custom domain via Squarespace
   DNS)
 - **Monetization:** BookingService (affiliate links) + Ko-fi (donations)
-- **SEO:** Open Graph, Twitter Cards, JSON-LD structured data, sitemap.xml
+- **Analytics:** Cloudflare Web Analytics (server-side) + localStorage analytics
+  with consent
+- **SEO:** Open Graph, Twitter Cards, JSON-LD structured data, SEOHead per page,
+  sitemap.xml
 
 ## Development Commands
 
@@ -147,8 +151,8 @@ All external APIs are abstracted through service classes:
 - **GPXExportService** - GPX export for GPS devices
 - **RouteExportService** - Multi-format route export (29KB)
 - **MultiFormatExportService** - JSON/KML/other formats
-- **BookingService** - Affiliate link generation (Booking.com via CJ) — wired to
-  CampsiteDetails UI
+- **BookingService** - Affiliate link generation (Booking.com, Eurocampings,
+  camping.info) — wired to CampsiteDetails UI
 - **TripWizardService** - Trip planning wizard with itinerary generation
 - **DataService** - Base service with caching and rate limiting
 
@@ -349,17 +353,24 @@ Core feature differentiator - routes must respect:
 - `src/pages/AffiliateDisclosurePage.tsx` - FTC/ASA affiliate disclosure
 - `src/components/layout/Footer.tsx` - Site footer (hidden on planner, shown on
   content pages)
-- `src/config/features.ts` - Feature flags (AFFILIATE_LINKS: true,
-  ADVANCED_BOOKING: false)
-- `src/services/BookingService.ts` - Affiliate link generation (Booking.com via
-  CJ — pending approval)
+- `src/config/features.ts` - Feature flags (AFFILIATE_LINKS: true, ANALYTICS:
+  true, ADVANCED_BOOKING: false)
+- `src/services/BookingService.ts` - Affiliate link generation (Booking.com,
+  Eurocampings, camping.info)
+- `src/utils/analytics.ts` - Privacy-first localStorage analytics with consent
+- `src/components/ui/ConsentBanner.tsx` - GDPR-compliant analytics consent
+  banner
+- `src/components/blog/GearLink.tsx` - Affiliate product link component
 
 ### SEO & Domain
 
-- `index.html` - Meta tags, OG tags, Twitter Cards, JSON-LD structured data
+- `index.html` - Meta tags, OG tags, Twitter Cards, JSON-LD structured data,
+  Cloudflare Web Analytics script
+- `src/components/seo/SEOHead.tsx` - Per-page dynamic meta tags (title,
+  description, canonical, noindex, article JSON-LD)
 - `public/CNAME` - Custom domain: camperplanning.com
-- `public/sitemap.xml` - 19 URLs (auto-generated at build via
-  `scripts/generate-sitemap.ts`)
+- `public/sitemap.xml` - 20 URLs (auto-generated at build via
+  `scripts/generate-sitemap.ts`); excludes noindex pages
 - `public/robots.txt` - Allow all, disallow /settings
 - `.env.local.example` - Documented affiliate env var template
 
@@ -393,10 +404,12 @@ Core feature differentiator - routes must respect:
    approval
 5. ⏳ **Add `BOOKING_AFFILIATE_ID` as GitHub Secret** — once CJ/Booking.com
    approves
-6. 📋 **Pitchup** — no public affiliate programme; revisit when site has traffic
-   to approach directly
-7. ❌ **ACSI** — not a fit (sells guides/cards, not bookings)
-8. 📋 **Create OG social sharing image** (1200x630px) at `public/og-image.png`
+6. 📋 **Amazon Associates UK** — sign up, add tag to gear guide links
+7. 📋 **camping.info via Awin** — sign up for Awin, apply to camping.info
+   campaign (5.8% commission)
+8. 📋 **Eurocampings via TradeTracker** — sign up, apply to Eurocampings
+   campaign (3% commission)
+9. 📋 **Create OG social sharing image** (1200x630px) at `public/og-image.png`
 
 ### Post-Launch Priorities
 
@@ -422,7 +435,49 @@ Core feature differentiator - routes must respect:
 - Multi-language content pages
 - ~~Progressive Web App (PWA) support~~ ✅ Implemented (Feb 25, 2026)
 
-## Recent Updates (February 25, 2026)
+## Recent Updates (February 26, 2026)
+
+### Analytics & Measurement
+
+- Cloudflare Web Analytics integrated in `index.html` (privacy-first, no
+  cookies, GDPR-compliant aggregate stats only)
+- V2 localStorage analytics framework enabled (`src/utils/analytics.ts`) with
+  GDPR consent banner (`src/components/ui/ConsentBanner.tsx`)
+- Feature tracking wired into PlannerPage (route calculations),
+  SimpleCampsiteLayer (campsite searches), CampsiteDetails (affiliate clicks)
+- `ANALYTICS: true` feature flag added to `src/config/features.ts`
+- Analytics data viewable, exportable, and clearable in Settings page
+- All analytics data stays in browser localStorage — never sent to any server
+
+### SEO Completeness
+
+- `SEOHead` component added to all 13 pages with unique title, description, and
+  canonical URL per page
+- `noindex` set on Settings, NotFound, and MapTest pages
+- Sitemap priorities updated: blog posts 0.7, legal pages 0.3
+- Sitemap excludes noindex pages (Settings, NotFound, MapTest)
+- SEOHead supports `type: 'article'` with JSON-LD Article schema for blog posts
+
+### Monetisation Expansion
+
+- Monetisation research completed (`docs/plans/monetisation-research.md`):
+  identified 5 viable affiliate programmes (Eurocampings via TradeTracker,
+  camping.info via Awin, Amazon Associates UK, Awin general travel, Booking.com
+  via CJ)
+- Non-viable programmes removed: Pitchup (no public programme), ACSI (sells
+  guides not bookings), Campsy (acquired/defunct)
+- BookingService updated: removed Pitchup and ACSI providers, added Eurocampings
+  and camping.info with affiliate link generation
+- New blog article: "Essential Gear for Your European Campervan Adventure"
+  (`src/data/blog/essential-campervan-gear.ts`) — 11th blog post
+- New `GearLink` component (`src/components/blog/GearLink.tsx`) for affiliate
+  product links with `rel="sponsored noopener noreferrer"`
+- Privacy Policy updated with Cloudflare Analytics and localStorage analytics
+  disclosures
+- Affiliate Disclosure updated: removed Pitchup/ACSI, added Eurocampings,
+  camping.info, and Amazon Associates
+
+## Previous Updates (February 25, 2026)
 
 ### Quality & Infrastructure Improvements (Batches 1-5)
 
