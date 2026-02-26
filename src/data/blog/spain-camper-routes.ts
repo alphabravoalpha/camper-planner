@@ -280,6 +280,11 @@ const post: BlogPost = {
       type: 'cta',
       content:
         'Map your Spanish camper route with CamperPlanning. Add your stops from Galicia to Andalusia, set your vehicle profile, and get distance and time estimates for each day. Find campsites and service areas along your route. Completely free, no account required.',
+      waypoints: [
+        { name: 'Barcelona', lat: 41.3874, lng: 2.1686 },
+        { name: 'Valencia', lat: 39.4699, lng: -0.3763 },
+        { name: 'Granada', lat: 37.1773, lng: -3.5986 },
+      ],
     },
   ],
 };

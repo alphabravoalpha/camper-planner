@@ -3,9 +3,9 @@
 
 import React, { Suspense, useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import MapContainer from '../components/map/MapContainer';
+const MapContainer = React.lazy(() => import('../components/map/MapContainer'));
 const TripWizard = React.lazy(() => import('../components/wizard/TripWizard'));
-import { useTripWizardStore, useRouteStore } from '../store';
+import { useTripWizardStore, useRouteStore, useUIStore } from '../store';
 import { useAnalytics } from '../utils/analytics';
 import { useOnboarding } from '../hooks/useOnboarding';
 import { Route as RouteIcon, X, MapPin, Tent, Download, BookOpen } from 'lucide-react';
@@ -67,6 +67,57 @@ const PlannerPage: React.FC = () => {
   const { trackFeature } = useAnalytics();
   const hasWaypoints = waypoints.length > 0;
 
+  // Load waypoints from URL query parameter (from blog CTAs)
+  const waypointsLoaded = useRef(false);
+  useEffect(() => {
+    if (waypointsLoaded.current) return;
+
+    const params = new URLSearchParams(window.location.search);
+    const waypointsParam = params.get('waypoints');
+    if (!waypointsParam) return;
+
+    waypointsLoaded.current = true;
+
+    // Clear the query parameter immediately so it's not re-read on remount
+    window.history.replaceState({}, '', '/');
+
+    const loadFromUrl = () => {
+      try {
+        const parsed: Array<{ name: string; lat: number; lng: number }> =
+          JSON.parse(waypointsParam);
+        if (!Array.isArray(parsed) || parsed.length === 0) return;
+
+        // Use getState() to bypass stale closures and persist rehydration races
+        const routeStore = useRouteStore.getState();
+        parsed.forEach((wp, i) => {
+          const type: 'start' | 'waypoint' | 'end' =
+            i === 0 ? 'start' : i === parsed.length - 1 ? 'end' : 'waypoint';
+          routeStore.addWaypoint({
+            id: `guide-${Date.now()}-${i}`,
+            lat: wp.lat,
+            lng: wp.lng,
+            type,
+            name: wp.name,
+          });
+        });
+
+        useUIStore.getState().addNotification({
+          type: 'success',
+          message: 'Route loaded from travel guide',
+        });
+      } catch {
+        // Invalid waypoints param — ignore silently
+      }
+    };
+
+    // Wait for Zustand persist rehydration before writing to store
+    if (useRouteStore.persist.hasHydrated()) {
+      loadFromUrl();
+    } else {
+      useRouteStore.persist.onFinishHydration(loadFromUrl);
+    }
+  }, []);
+
   // Track route calculations
   const prevRouteRef = useRef(calculatedRoute);
   useEffect(() => {
@@ -106,7 +157,18 @@ const PlannerPage: React.FC = () => {
 
       {/* Map Area - Full height */}
       <div className="flex-1 relative">
-        <MapContainer />
+        <Suspense
+          fallback={
+            <div className="absolute inset-0 flex items-center justify-center bg-neutral-100">
+              <div className="text-center">
+                <div className="w-10 h-10 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin mx-auto mb-3" />
+                <p className="text-sm text-neutral-500 font-medium">Loading map...</p>
+              </div>
+            </div>
+          }
+        >
+          <MapContainer />
+        </Suspense>
 
         {/* "Continue Planning" button — only when waypoints exist */}
         {hasWaypoints && !wizardOpen && !showOnboarding && (

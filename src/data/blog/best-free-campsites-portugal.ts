@@ -412,6 +412,11 @@ const bestFreeCampsitesPortugal: BlogPost = {
       type: 'cta',
       content:
         'Start planning your Portugal camper trip with our free route planner. Add your waypoints, find campsites along your route, calculate fuel costs, and export your itinerary to your GPS -- all without creating an account or spending a penny.',
+      waypoints: [
+        { name: 'Lisbon', lat: 38.7223, lng: -9.1393 },
+        { name: 'Alentejo Coast', lat: 37.8389, lng: -8.7919 },
+        { name: 'Algarve', lat: 37.0179, lng: -7.9304 },
+      ],
     },
   ],
 };

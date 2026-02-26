@@ -280,6 +280,11 @@ const post: BlogPost = {
       type: 'cta',
       content:
         'Plan your Italian coastal adventure with CamperPlanning. Set your vehicle dimensions, add your waypoints from Salerno to La Spezia, and the planner will calculate a route that avoids height restrictions and narrow roads. Explore nearby campsites and soste along your route. Free, private, no account needed.',
+      waypoints: [
+        { name: 'Genoa', lat: 44.4056, lng: 8.9463 },
+        { name: 'Cinque Terre', lat: 44.1268, lng: 9.7098 },
+        { name: 'Amalfi', lat: 40.634, lng: 14.6027 },
+      ],
     },
   ],
 };

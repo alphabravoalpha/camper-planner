@@ -20,6 +20,19 @@ export const useOnboarding = () => {
     // Check if user has completed onboarding
     const checkOnboardingStatus = () => {
       try {
+        // Skip onboarding when arriving from a blog CTA with pre-loaded waypoints
+        if (new URLSearchParams(window.location.search).has('waypoints')) {
+          const autoComplete: OnboardingState = {
+            isComplete: true,
+            version: ONBOARDING_VERSION,
+            completedAt: new Date().toISOString(),
+          };
+          localStorage.setItem(ONBOARDING_STORAGE_KEY, JSON.stringify(autoComplete));
+          setShowOnboarding(false);
+          setIsLoading(false);
+          return;
+        }
+
         const stored = localStorage.getItem(ONBOARDING_STORAGE_KEY);
 
         if (!stored) {

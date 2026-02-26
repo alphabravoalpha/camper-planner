@@ -24,6 +24,8 @@ const BlogCard: React.FC<BlogCardProps> = ({ post }) => {
           src={post.heroImage.src}
           alt={post.heroImage.alt}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          width={600}
+          height={400}
           loading="lazy"
           onError={e => {
             const img = e.target as HTMLImageElement;
@@ -38,9 +40,9 @@ const BlogCard: React.FC<BlogCardProps> = ({ post }) => {
 
       {/* Content */}
       <div className="p-5">
-        <h3 className="font-display font-bold text-neutral-900 mb-2 group-hover:text-primary-700 transition-colors line-clamp-2">
+        <h2 className="font-display font-bold text-neutral-900 mb-2 group-hover:text-primary-700 transition-colors line-clamp-2 text-base">
           {post.title}
-        </h3>
+        </h2>
         <p className="text-sm text-neutral-600 mb-3 line-clamp-2">{post.description}</p>
         <div className="flex items-center gap-3 text-xs text-neutral-500">
           <span className="flex items-center gap-1">

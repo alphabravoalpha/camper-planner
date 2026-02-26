@@ -443,6 +443,11 @@ const post: BlogPost = {
       type: 'cta',
       content:
         'Start planning your Southern France camper trip with CamperPlanning. Add your waypoints, set your vehicle dimensions, and let the planner calculate a safe, scenic route. It is free, works offline, and respects your privacy -- no account required.',
+      waypoints: [
+        { name: 'Avignon', lat: 43.9493, lng: 4.8055 },
+        { name: 'Gorges du Verdon', lat: 43.7369, lng: 6.3261 },
+        { name: 'Nice', lat: 43.7102, lng: 7.262 },
+      ],
     },
   ],
 };
