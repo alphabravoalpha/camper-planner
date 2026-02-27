@@ -14,7 +14,7 @@ const SettingsPage: React.FC = () => {
   const { profile, clearProfile } = useVehicleStore();
   const { waypoints, clearRoute } = useRouteStore();
   const savedTrips = useTripStore(state => state.savedTrips);
-  const { hasConsent, updateConsent } = useAnalytics();
+  useAnalytics();
   const analyticsInstance = PrivacyAnalytics.getInstance();
   const analyticsData = analyticsInstance.getAnalyticsData();
 
@@ -229,30 +229,6 @@ const SettingsPage: React.FC = () => {
               Local usage analytics help us improve the app. All data stays in your browser.
             </p>
 
-            {/* Consent toggle */}
-            <div className="flex items-center justify-between p-3 bg-neutral-50 rounded-lg mb-4">
-              <div>
-                <div className="text-sm font-medium text-neutral-700">Analytics consent</div>
-                <div className="text-xs text-neutral-500">
-                  {hasConsent ? 'Analytics are enabled' : 'Analytics are disabled'}
-                </div>
-              </div>
-              <button
-                onClick={() => updateConsent(!hasConsent)}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                  hasConsent ? 'bg-primary-600' : 'bg-neutral-300'
-                }`}
-                role="switch"
-                aria-checked={hasConsent}
-              >
-                <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    hasConsent ? 'translate-x-6' : 'translate-x-1'
-                  }`}
-                />
-              </button>
-            </div>
-
             {/* Stats */}
             <div className="grid grid-cols-3 gap-3 mb-4">
               <div className="bg-neutral-50 rounded-lg p-3 text-center">
@@ -307,7 +283,7 @@ const SettingsPage: React.FC = () => {
               </li>
               <li className="flex items-start gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-green-500 flex-shrink-0 mt-1.5" />
-                No user accounts, no tracking cookies — optional local analytics with your consent
+                No user accounts, no tracking cookies — local analytics never leave your browser
               </li>
               <li className="flex items-start gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-green-500 flex-shrink-0 mt-1.5" />

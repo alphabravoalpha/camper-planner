@@ -138,17 +138,6 @@ const Footer: React.FC = () => {
                   <ExternalLink className="w-3 h-3" />
                 </a>
               </li>
-              <li>
-                <a
-                  href="https://github.com/AlphaBravoAlpha/camper-planner"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm text-neutral-400 hover:text-white hover:underline transition-colors inline-flex items-center gap-1"
-                >
-                  GitHub
-                  <ExternalLink className="w-3 h-3" />
-                </a>
-              </li>
             </ul>
           </div>
         </div>
@@ -158,7 +147,7 @@ const Footer: React.FC = () => {
       <div className="border-t border-neutral-800">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-neutral-400">
-            <p>&copy; {currentYear} European Camper Trip Planner. Free and open source.</p>
+            <p>&copy; {currentYear} European Camper Trip Planner. All rights reserved.</p>
             <p className="text-center sm:text-right">
               Some links may earn us a small commission at no extra cost to you.{' '}
               <Link

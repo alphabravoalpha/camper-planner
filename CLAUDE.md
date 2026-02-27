@@ -347,6 +347,8 @@ Core feature differentiator - routes must respect:
 
 ### Monetization & Legal Pages
 
+- `src/pages/HelpPage.tsx` - User guide with 4-step walkthrough, 8 FAQs, pro
+  tips, tutorial restart
 - `src/pages/SupportPage.tsx` - Ko-fi donation page (embedded iframe widget)
 - `src/pages/PrivacyPolicyPage.tsx` - GDPR-compliant privacy policy
 - `src/pages/TermsPage.tsx` - Terms of use (England & Wales law)
@@ -357,9 +359,8 @@ Core feature differentiator - routes must respect:
   true, ADVANCED_BOOKING: false)
 - `src/services/BookingService.ts` - Affiliate link generation (Booking.com,
   Eurocampings, camping.info)
-- `src/utils/analytics.ts` - Privacy-first localStorage analytics with consent
-- `src/components/ui/ConsentBanner.tsx` - GDPR-compliant analytics consent
-  banner
+- `src/utils/analytics.ts` - Privacy-first localStorage analytics (enabled by
+  default, data never leaves browser)
 - `src/components/blog/GearLink.tsx` - Affiliate product link component
 
 ### SEO & Domain
@@ -379,11 +380,13 @@ Core feature differentiator - routes must respect:
 - `.github/workflows/gh-pages.yml` - Deploys to GitHub Pages with affiliate
   secrets from GitHub Secrets
 
-### UX Audit Documentation
+### UX Audit & Quality Documentation
 
 - `docs/plans/ux-audit-issues.md` - Full UX audit issue log (8 issues across
   desktop/mobile/tablet)
 - `docs/plans/ux-audit-summary.md` - Fix summary with verification results
+- `docs/plans/lighthouse-results.md` - Lighthouse audit results (Perf 76, A11y
+  100, Best Practices 96, SEO 100)
 
 ## Current Development Priority: Post-Launch Growth
 
@@ -410,12 +413,14 @@ Core feature differentiator - routes must respect:
    approval
 5. ⏳ **Add `BOOKING_AFFILIATE_ID` as GitHub Secret** — once CJ/Booking.com
    approves
-6. 📋 **Amazon Associates UK** — sign up, add tag to gear guide links
+6. ✅ **Amazon Associates UK** — tag `camperplann04-21` wired into gear guide
+   links
 7. 📋 **camping.info via Awin** — sign up for Awin, apply to camping.info
    campaign (5.8% commission)
 8. 📋 **Eurocampings via TradeTracker** — sign up, apply to Eurocampings
    campaign (3% commission)
-9. 📋 **Create OG social sharing image** (1200x630px) at `public/og-image.png`
+9. ✅ **OG social sharing image** created (1200×633px PNG) at
+   `public/og-image.png`, wired into `index.html` OG and Twitter Card tags
 
 ### Post-Launch Priorities
 
@@ -423,14 +428,16 @@ Core feature differentiator - routes must respect:
 
 - Monitor for bugs via GitHub Issues
 - Add Booking.com affiliate ID once CJ approval comes through
-- Check Google Search Console for indexing
+- ~~Check Google Search Console for indexing~~ ✅ Set up
 - Drive initial traffic to build stats for future partnerships
 
 **Short-term:**
 
-- Performance audit with Lighthouse (target >85)
-- Full WCAG AA compliance validation
-- User guide / FAQ documentation
+- ~~Performance audit with Lighthouse~~ ✅ Done — Perf 76 (structural, map tile
+  LCP), A11y 100, BP 96, SEO 100. See `docs/plans/lighthouse-results.md`
+- ~~Full WCAG AA compliance validation~~ ✅ Lighthouse Accessibility 100/100
+- ~~User guide / FAQ documentation~~ ✅ Done — `HelpPage.tsx` with step-by-step
+  guide, 8 FAQs, pro tips, tutorial restart
 - Monitor Ko-fi donations and affiliate conversion
 - Approach Pitchup directly once traffic numbers are established
 
@@ -442,6 +449,25 @@ Core feature differentiator - routes must respect:
 - ~~Progressive Web App (PWA) support~~ ✅ Implemented (Feb 25, 2026)
 
 ## Recent Updates (February 27, 2026)
+
+### Lighthouse Audit & Fixes (PR #13)
+
+- Full Lighthouse audit: Performance 76, Accessibility 100, Best Practices 96,
+  SEO 100
+- Performance gap is structural (map tile LCP 5.8s — inherent to map-centric SPA
+  on GitHub Pages)
+- Fixes applied: lazy-loaded MapContainer, preconnect to tile subdomains, DNS
+  prefetch for Overpass, image width/height attributes, font display:optional
+- Accessibility fixes: heading order in BlogCard, footer contrast, descriptive
+  link text
+- Results documented in `docs/plans/lighthouse-results.md`
+
+### Brand Identity Refresh (PR #14)
+
+- Replaced all logos, favicons, and illustration assets with consistent brand
+  identity
+- Updated `public/og-image.png` (1200×633), `public/logo.png`,
+  `public/favicon.png`, PWA icons (`pwa-192x192.png`, `pwa-512x512.png`)
 
 ### UX Audit & Fixes (PR #15)
 
@@ -470,7 +496,7 @@ End-to-end UX audit across desktop (1280×800), mobile (375×812), and tablet
 - Cloudflare Web Analytics integrated in `index.html` (privacy-first, no
   cookies, GDPR-compliant aggregate stats only)
 - V2 localStorage analytics framework enabled (`src/utils/analytics.ts`) with
-  GDPR consent banner (`src/components/ui/ConsentBanner.tsx`)
+  localStorage analytics (`src/utils/analytics.ts`)
 - Feature tracking wired into PlannerPage (route calculations),
   SimpleCampsiteLayer (campsite searches), CampsiteDetails (affiliate clicks)
 - `ANALYTICS: true` feature flag added to `src/config/features.ts`

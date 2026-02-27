@@ -54,7 +54,7 @@ const PrivacyPolicyPage: React.FC = () => {
               <li>We do not collect, store, or sell your personal data</li>
               <li>All your trip data is stored locally in your browser</li>
               <li>No user accounts, no tracking cookies</li>
-              <li>Anonymous analytics only with your consent (data stays on your device)</li>
+              <li>Local analytics data never leaves your device</li>
               <li>We do not share your information with third parties</li>
               <li>You can export or delete your data at any time</li>
             </ul>
@@ -76,16 +76,16 @@ const PrivacyPolicyPage: React.FC = () => {
               <li>Vehicle profile settings (dimensions, fuel type)</li>
               <li>App preferences (language, map settings)</li>
               <li>Onboarding progress</li>
-              <li>Anonymous usage analytics (with your consent only)</li>
+              <li>Anonymous usage analytics (stored locally, never sent to any server)</li>
             </ul>
             <p className="text-neutral-600 text-sm mt-3">
               This data is stored in your browser&apos;s localStorage and IndexedDB. It never leaves
               your device unless you explicitly export it.
             </p>
             <p className="text-neutral-600 text-sm mt-2">
-              With your consent, we collect anonymous usage data stored locally on your device. This
-              data never leaves your browser and can be viewed, exported, or deleted at any time
-              from the{' '}
+              We collect anonymous usage data stored locally on your device to help improve the app.
+              This data never leaves your browser and can be viewed, exported, or deleted at any
+              time from the{' '}
               <Link to="/settings" className="text-primary-600 underline">
                 Settings page
               </Link>
@@ -219,15 +219,10 @@ const PrivacyPolicyPage: React.FC = () => {
           <section>
             <h2 className="text-xl font-display font-semibold text-neutral-900 mb-3">8. Contact</h2>
             <p className="text-neutral-700 leading-relaxed">
-              If you have questions about this privacy policy, you can open an issue on our{' '}
-              <a
-                href="https://github.com/AlphaBravoAlpha/camper-planner"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary-600 underline"
-              >
-                GitHub repository
-              </a>
+              If you have questions about this privacy policy, please{' '}
+              <Link to="/feedback" className="text-primary-600 underline">
+                send us feedback
+              </Link>
               .
             </p>
           </section>

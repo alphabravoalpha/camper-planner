@@ -39,7 +39,7 @@ export default defineConfig({
         ],
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+        globPatterns: ['**/*.{js,css,html,ico,svg,woff2}'],
         runtimeCaching: [
           {
             // OSM map tiles — stale-while-revalidate for offline map viewing
@@ -48,8 +48,8 @@ export default defineConfig({
             options: {
               cacheName: 'map-tiles',
               expiration: {
-                maxEntries: 500,
-                maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+                maxEntries: 150,
+                maxAgeSeconds: 60 * 60 * 24 * 7, // 7 days
               },
             },
           },

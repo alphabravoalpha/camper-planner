@@ -3,7 +3,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Heart, Coffee, ChevronLeft, Code, Globe, Shield, Zap, ExternalLink } from 'lucide-react';
+import { Heart, Coffee, ChevronLeft, ExternalLink, Globe, Shield, Zap, Wrench } from 'lucide-react';
 import SEOHead from '../components/seo/SEOHead';
 
 const KOFI_URL = 'https://ko-fi.com/camperplanning';
@@ -28,8 +28,8 @@ const SUPPORT_REASONS = [
       'We choose not to run ads or sell data. Your donations help sustain this approach.',
   },
   {
-    icon: Code,
-    title: 'Open source maintenance',
+    icon: Wrench,
+    title: 'Ongoing maintenance',
     description: 'Bug fixes, security updates, and keeping third-party API integrations working.',
   },
 ];
@@ -145,30 +145,6 @@ const SupportPage: React.FC = () => {
           </h2>
           <div className="space-y-4">
             <div className="flex items-start gap-4">
-              <div className="w-10 h-10 bg-primary-50 rounded-lg flex items-center justify-center flex-shrink-0">
-                <svg className="w-5 h-5 text-primary-600" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0012 2z" />
-                </svg>
-              </div>
-              <div>
-                <h3 className="font-display font-semibold text-neutral-900 text-sm">
-                  Star us on GitHub
-                </h3>
-                <p className="text-neutral-500 text-sm mt-0.5">
-                  Stars help others discover the project.{' '}
-                  <a
-                    href="https://github.com/AlphaBravoAlpha/camper-planner"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-primary-600 underline"
-                  >
-                    View on GitHub
-                  </a>
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-4">
               <div className="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center flex-shrink-0">
                 <svg
                   className="w-5 h-5 text-green-600"
@@ -216,15 +192,10 @@ const SupportPage: React.FC = () => {
                   Report bugs and suggest features
                 </h3>
                 <p className="text-neutral-500 text-sm mt-0.5">
-                  Found a problem or have an idea? Open an issue on{' '}
-                  <a
-                    href="https://github.com/AlphaBravoAlpha/camper-planner/issues"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-primary-600 underline"
-                  >
-                    GitHub Issues
-                  </a>
+                  Found a problem or have an idea?{' '}
+                  <Link to="/feedback" className="text-primary-600 underline">
+                    Send us feedback
+                  </Link>
                   .
                 </p>
               </div>
