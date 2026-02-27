@@ -150,6 +150,7 @@ const MapContainer: React.FC = () => {
   const [layerControlCollapsed, setLayerControlCollapsed] = useState(true);
   const [showRouteInfo, setShowRouteInfo] = useState(false);
   const [routeInfoTab, setRouteInfoTab] = useState<'info' | 'comparison'>('info');
+  const [isSearchActive, setIsSearchActive] = useState(false);
   const mapRef = useRef<L.Map | null>(null);
   const [mapInstance, setMapInstance] = useState<L.Map | null>(null);
 
@@ -901,13 +902,14 @@ const MapContainer: React.FC = () => {
       )}
 
       {/* Empty State Card — shown when no waypoints and tour not active */}
-      {!isTourActive && waypoints.length === 0 && (
+      {!isTourActive && waypoints.length === 0 && !isSearchActive && (
         <EmptyStateCard
           onOpenWizard={() => {
             closeAllPanels();
             openWizard();
           }}
           onSearchFocus={() => {
+            setIsSearchActive(true);
             const searchInput = document.querySelector(
               '[data-tour-id="search-bar"] input'
             ) as HTMLInputElement;

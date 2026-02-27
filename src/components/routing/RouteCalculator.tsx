@@ -25,7 +25,7 @@ const RouteCalculator: React.FC<RouteCalculatorProps> = ({ className, autoCalcul
   const { addNotification } = useUIStore();
 
   const [isCalculating, setIsCalculating] = useState(false);
-  const [lastCalculationTime, setLastCalculationTime] = useState<number | null>(null);
+  const [_lastCalculationTime, setLastCalculationTime] = useState<number | null>(null);
   const [calculationError, setCalculationError] = useState<string | null>(null);
   const [routeStats, setRouteStats] = useState<{
     distance: number;
@@ -262,14 +262,9 @@ const RouteCalculator: React.FC<RouteCalculatorProps> = ({ className, autoCalcul
               <strong>{routeStats.distance} km</strong> • {Math.floor(routeStats.duration / 60)}h{' '}
               {routeStats.duration % 60}m
             </span>
-            <span
-              className={cn(
-                'capitalize',
-                restrictions?.violatedDimensions.length ? 'text-amber-600' : 'text-green-600'
-              )}
-            >
-              {routeStats.service === 'openrouteservice' ? 'OpenRoute' : routeStats.service}
-            </span>
+            {restrictions?.violatedDimensions.length ? (
+              <span className="text-amber-600">⚠</span>
+            ) : null}
           </div>
           {profile && (
             <div
@@ -538,13 +533,6 @@ const RouteCalculator: React.FC<RouteCalculatorProps> = ({ className, autoCalcul
           <span>Auto-calculate</span>
         </label>
       </div>
-
-      {/* Service status */}
-      {lastCalculationTime && (
-        <div className="mt-2 text-xs text-neutral-500">
-          Last updated: {new Date(lastCalculationTime).toLocaleTimeString()}
-        </div>
-      )}
 
       {/* Route Export Info */}
       {routeStats && (

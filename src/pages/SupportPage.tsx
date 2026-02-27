@@ -92,7 +92,7 @@ const SupportPage: React.FC = () => {
               <iframe
                 id="kofiframe"
                 src="https://ko-fi.com/camperplanning/?hidefeed=true&widget=true&embed=true&preview=true"
-                className="border-0 w-full max-w-[400px] rounded-lg"
+                className="border-0 w-full max-w-[480px] rounded-lg"
                 style={{ height: '712px' }}
                 title="Support on Ko-fi"
               />

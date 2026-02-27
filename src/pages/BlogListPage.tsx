@@ -58,7 +58,7 @@ const BlogListPage: React.FC = () => {
       </div>
 
       {/* Category Tabs */}
-      <div className="bg-white border-b border-neutral-200 sticky top-16 z-20">
+      <div className="bg-white border-b border-neutral-200 sticky top-16 z-20 overflow-x-hidden">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex gap-1 overflow-x-auto py-3 -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-hide">
             {ALL_CATEGORIES.map(cat => {
