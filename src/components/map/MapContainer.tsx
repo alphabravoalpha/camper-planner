@@ -55,8 +55,8 @@ L.Icon.Default.mergeOptions({
 
 // Map configuration following API specifications
 const MAP_CONFIG = {
-  // Center on Europe (from API docs)
-  defaultCenter: [54.526, 15.2551] as [number, number],
+  // Center on Western/Central Europe (France-Germany region)
+  defaultCenter: [48.5, 10.0] as [number, number],
   defaultZoom: 5,
   minZoom: 3,
   maxZoom: 19,
@@ -554,8 +554,8 @@ const MapContainer: React.FC = () => {
         <VehicleProfileSidebar />
       </ComponentErrorBoundary>
 
-      {/* Route Calculator Panel - only show when user has waypoints to avoid dead space */}
-      {FeatureFlags.BASIC_ROUTING && !isTourActive && waypoints.length >= 1 && (
+      {/* Route Calculator Panel - only show when route is calculable (2+ waypoints) */}
+      {FeatureFlags.BASIC_ROUTING && !isTourActive && waypoints.length >= 2 && (
         <div className="absolute top-4 right-14 z-20 w-64 hidden lg:block">
           <ComponentErrorBoundary componentName="RouteCalculator">
             <RouteCalculator />
@@ -910,10 +910,12 @@ const MapContainer: React.FC = () => {
           }}
           onSearchFocus={() => {
             setIsSearchActive(true);
-            const searchInput = document.querySelector(
-              '[data-tour-id="search-bar"] input'
-            ) as HTMLInputElement;
-            searchInput?.focus();
+            setTimeout(() => {
+              const searchInput = document.querySelector(
+                '[data-tour-id="search-bar"] input'
+              ) as HTMLInputElement;
+              searchInput?.focus();
+            }, 50);
           }}
         />
       )}
@@ -1305,7 +1307,7 @@ const MapContainer: React.FC = () => {
       <ConfirmDialog
         isOpen={showConfirmClear}
         title="Clear All Waypoints"
-        message={`Are you sure you want to remove all ${waypoints.length} waypoints? This action can be undone with Ctrl+Z.`}
+        message={`Are you sure you want to remove all ${waypoints.length} waypoints? This can be undone.`}
         confirmLabel="Clear All"
         confirmVariant="danger"
         onConfirm={() => {

@@ -367,12 +367,13 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
         message: `Added "${result.name}" to your route`,
       });
 
-      // Navigate to the location as well
+      // Navigate to the location and clear search
       setCenter([result.lat, result.lng]);
       setZoom(10);
       if (map) {
         map.setView([result.lat, result.lng], 10);
       }
+      setQuery('');
       setShowResults(false);
     },
     [addWaypoint, addNotification, waypoints, map, setCenter, setZoom]
@@ -407,6 +408,7 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
         type: 'success',
         message: `Added "${result.name}" to your route`,
       });
+      setQuery('');
       setShowResults(false);
     },
     [addWaypoint, addNotification, isCampsiteInRoute]

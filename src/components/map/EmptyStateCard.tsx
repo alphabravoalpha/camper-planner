@@ -1,5 +1,5 @@
 import React from 'react';
-import { MapPin, Search } from 'lucide-react';
+import { MapPin, Search, Wand2 } from 'lucide-react';
 import { cn } from '../../utils/cn';
 
 interface EmptyStateCardProps {
@@ -10,7 +10,8 @@ interface EmptyStateCardProps {
 /**
  * EmptyStateCard — shown centered on the map when there are 0 waypoints
  * and the onboarding tour has completed or been skipped.
- * Directs users to search for a starting location or use the Trip Wizard.
+ * Compact card that directs users to the top search bar or Trip Wizard.
+ * No duplicate search input — just a clear CTA.
  */
 export const EmptyStateCard: React.FC<EmptyStateCardProps> = ({ onOpenWizard, onSearchFocus }) => {
   return (
@@ -18,54 +19,49 @@ export const EmptyStateCard: React.FC<EmptyStateCardProps> = ({ onOpenWizard, on
       <div
         className={cn(
           'pointer-events-auto',
-          'bg-white rounded-xl shadow-lg p-8 max-w-md w-full mx-4',
-          'flex flex-col items-center gap-5'
+          'bg-white rounded-xl shadow-lg',
+          'p-5 sm:p-8 max-w-sm sm:max-w-md w-full mx-4',
+          'flex flex-col items-center gap-3 sm:gap-4'
         )}
       >
-        {/* Map icon in light blue circle */}
-        <div className="flex items-center justify-center w-16 h-16 rounded-full bg-blue-50">
-          <MapPin className="w-8 h-8 text-blue-500" />
+        {/* Map icon — smaller on mobile */}
+        <div className="flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-blue-50">
+          <MapPin className="w-6 h-6 sm:w-8 sm:h-8 text-blue-500" />
         </div>
 
         {/* Headline */}
-        <h2 className="text-xl font-semibold text-neutral-900 text-center">
+        <h2 className="text-lg sm:text-xl font-semibold text-neutral-900 text-center">
           Where are you starting from?
         </h2>
 
-        {/* Subtext */}
-        <p className="text-sm text-neutral-500 text-center">
+        {/* Subtext — hidden on very small screens to save space */}
+        <p className="text-sm text-neutral-500 text-center hidden sm:block">
           Search for an address, city, or campsite to begin planning your trip
         </p>
 
-        {/* Fake search input — clicking it focuses the real search bar */}
+        {/* Primary CTA — focuses the real search bar */}
         <button
           type="button"
           onClick={onSearchFocus}
           className={cn(
-            'flex items-center gap-2 px-4 py-3',
-            'bg-neutral-50 border border-neutral-200 rounded-lg',
-            'cursor-pointer hover:border-neutral-300 transition-colors w-full',
-            'text-left'
+            'flex items-center justify-center gap-2 w-full',
+            'px-4 py-3 rounded-lg',
+            'bg-primary-600 hover:bg-primary-700 text-white',
+            'text-sm font-medium transition-colors'
           )}
         >
-          <Search className="w-4 h-4 text-neutral-400 flex-shrink-0" />
-          <span className="text-sm text-neutral-400">Search locations...</span>
+          <Search className="w-4 h-4" />
+          Search for a location
         </button>
-
-        {/* "or" divider */}
-        <div className="flex items-center gap-3 w-full text-xs text-neutral-400">
-          <div className="flex-1 border-t border-neutral-200" />
-          <span>or</span>
-          <div className="flex-1 border-t border-neutral-200" />
-        </div>
 
         {/* Trip Wizard link */}
         <button
           type="button"
           onClick={onOpenWizard}
-          className="text-sm text-primary-600 hover:text-primary-700 cursor-pointer text-center"
+          className="flex items-center justify-center gap-1.5 text-sm text-primary-600 hover:text-primary-700 cursor-pointer"
         >
-          Use the Trip Wizard for a guided setup
+          <Wand2 className="w-3.5 h-3.5" />
+          Use the Trip Wizard instead
         </button>
 
         {/* Right-click / long-press hint */}

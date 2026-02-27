@@ -182,29 +182,31 @@ const MobileToolbar: React.FC<MobileToolbarProps> = ({
             </div>
           </div>
 
-          {/* Tool buttons */}
+          {/* Tool buttons with labels */}
           <div className="flex items-center gap-0.5">
             {/* Vehicle */}
             <button
               onClick={onOpenVehicleSidebar}
-              className="w-10 h-10 flex items-center justify-center rounded-lg text-neutral-600 active:bg-neutral-100 transition-colors"
+              className="flex flex-col items-center justify-center gap-0.5 w-12 h-10 rounded-lg text-neutral-600 active:bg-neutral-100 transition-colors"
               aria-label="Vehicle settings"
             >
-              <Truck className="w-5 h-5" />
+              <Truck className="w-4 h-4" />
+              <span className="text-[9px] leading-none">Vehicle</span>
             </button>
 
             {/* Campsites */}
             <button
               onClick={onToggleCampsiteControls}
               className={cn(
-                'w-10 h-10 flex items-center justify-center rounded-lg transition-colors',
+                'flex flex-col items-center justify-center gap-0.5 w-12 h-10 rounded-lg transition-colors',
                 campsiteActive
                   ? 'bg-green-100 text-green-700'
                   : 'text-neutral-600 active:bg-neutral-100'
               )}
               aria-label="Campsite controls"
             >
-              <MapPin className="w-5 h-5" />
+              <MapPin className="w-4 h-4" />
+              <span className="text-[9px] leading-none">Sites</span>
             </button>
 
             {/* Route Info */}
@@ -212,14 +214,15 @@ const MobileToolbar: React.FC<MobileToolbarProps> = ({
               <button
                 onClick={onToggleRouteInfo}
                 className={cn(
-                  'w-10 h-10 flex items-center justify-center rounded-lg transition-colors',
+                  'flex flex-col items-center justify-center gap-0.5 w-12 h-10 rounded-lg transition-colors',
                   showRouteInfo
                     ? 'bg-primary-100 text-primary-700'
                     : 'text-neutral-600 active:bg-neutral-100'
                 )}
                 aria-label="Route information"
               >
-                <FileText className="w-5 h-5" />
+                <FileText className="w-4 h-4" />
+                <span className="text-[9px] leading-none">Route</span>
               </button>
             )}
 
@@ -227,7 +230,7 @@ const MobileToolbar: React.FC<MobileToolbarProps> = ({
             <button
               onClick={() => setShowTools(!showTools)}
               className={cn(
-                'w-10 h-10 flex items-center justify-center rounded-lg transition-colors',
+                'flex flex-col items-center justify-center gap-0.5 w-12 h-10 rounded-lg transition-colors',
                 showTools ||
                   showTripSettings ||
                   showTripManager ||
@@ -238,17 +241,19 @@ const MobileToolbar: React.FC<MobileToolbarProps> = ({
               )}
               aria-label="Trip plan"
             >
-              <Wrench className="w-5 h-5" />
+              <Wrench className="w-4 h-4" />
+              <span className="text-[9px] leading-none">Tools</span>
             </button>
 
             {/* Clear */}
             {waypointCount > 0 && (
               <button
                 onClick={onClearWaypoints}
-                className="w-10 h-10 flex items-center justify-center rounded-lg text-red-500 active:bg-red-50 transition-colors"
+                className="flex flex-col items-center justify-center gap-0.5 w-12 h-10 rounded-lg text-red-500 active:bg-red-50 transition-colors"
                 aria-label="Clear waypoints"
               >
-                <Trash2 className="w-5 h-5" />
+                <Trash2 className="w-4 h-4" />
+                <span className="text-[9px] leading-none">Clear</span>
               </button>
             )}
           </div>

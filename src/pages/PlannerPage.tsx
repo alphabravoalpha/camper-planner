@@ -14,8 +14,8 @@ import SEOHead from '../components/seo/SEOHead';
 const HERO_DISMISSED_KEY = 'planner-hero-dismissed';
 
 const WelcomeHero: React.FC<{ onDismiss: () => void }> = ({ onDismiss }) => (
-  <div className="relative overflow-hidden bg-gradient-to-r from-primary-800 to-primary-700">
-    {/* Content — slim single-line bar */}
+  <div className="relative overflow-hidden bg-gradient-to-r from-primary-800 to-primary-700 hidden sm:block">
+    {/* Content — slim single-line bar, hidden on mobile to save vertical space */}
     <div className="relative px-4 sm:px-6 py-2.5">
       <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
         <div className="flex items-center gap-4 min-w-0">
@@ -30,7 +30,7 @@ const WelcomeHero: React.FC<{ onDismiss: () => void }> = ({ onDismiss }) => (
             ].map(({ icon: Icon, label }) => (
               <span
                 key={label}
-                className="inline-flex items-center gap-1 px-2 py-0.5 bg-white/15 text-white/90 text-xs font-medium rounded-full"
+                className="inline-flex items-center gap-1 px-2 py-0.5 bg-white/15 text-white/90 text-xs font-medium rounded-full whitespace-nowrap"
               >
                 <Icon className="w-3 h-3" />
                 {label}

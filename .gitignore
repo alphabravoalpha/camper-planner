@@ -60,3 +60,7 @@ audit-screenshots/
 
 # Git worktrees
 .worktrees/
+
+# Claude Code / Playwright MCP config
+.claude/
+.playwright-mcp/

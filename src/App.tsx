@@ -65,8 +65,8 @@ const RootLayout: React.FC = () => {
         {/* Offline Notice */}
         <OfflineNotice />
 
-        {/* Analytics Consent Banner */}
-        <ConsentBanner />
+        {/* Analytics Consent Banner — hidden during onboarding to avoid z-index conflicts */}
+        {!showOnboarding && <ConsentBanner />}
 
         {/* Onboarding Flow - Show for first-time users */}
         {showOnboarding && location.pathname === '/' && (

@@ -117,7 +117,7 @@ interface UIState {
 export const useMapStore = create<MapState>()(
   devtools(
     set => ({
-      center: [54.526, 15.2551], // Center of Europe
+      center: [48.5, 10.0], // Central Europe (France-Germany region)
       zoom: 5,
       selectedWaypoint: null,
       setCenter: center => set({ center }),
