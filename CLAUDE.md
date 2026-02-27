@@ -16,7 +16,7 @@ zero-cost, privacy-first solution.
 camperplanning.com (GitHub Pages, DNS via Squarespace) — live with HTTPS
 **Monetization:** Booking.com (via CJ, pending), Eurocampings (via
 TradeTracker), camping.info (via Awin), Amazon Associates UK + Ko-fi donations
-(live, embedded on Support page) **Last Updated:** February 26, 2026
+(live, embedded on Support page) **Last Updated:** February 27, 2026
 
 ## Technology Stack (Implemented)
 
@@ -379,6 +379,12 @@ Core feature differentiator - routes must respect:
 - `.github/workflows/gh-pages.yml` - Deploys to GitHub Pages with affiliate
   secrets from GitHub Secrets
 
+### UX Audit Documentation
+
+- `docs/plans/ux-audit-issues.md` - Full UX audit issue log (8 issues across
+  desktop/mobile/tablet)
+- `docs/plans/ux-audit-summary.md` - Fix summary with verification results
+
 ## Current Development Priority: Post-Launch Growth
 
 ### Current Status: LIVE IN PRODUCTION
@@ -435,7 +441,29 @@ Core feature differentiator - routes must respect:
 - Multi-language content pages
 - ~~Progressive Web App (PWA) support~~ ✅ Implemented (Feb 25, 2026)
 
-## Recent Updates (February 26, 2026)
+## Recent Updates (February 27, 2026)
+
+### UX Audit & Fixes (PR #15)
+
+End-to-end UX audit across desktop (1280×800), mobile (375×812), and tablet
+(768×1024) viewports. 8 issues identified, 7 fixed:
+
+- **EmptyStateCard overlap** (Major): Card now hides when search bar is focused
+  via `isSearchActive` state in `MapContainer.tsx`
+- **Ko-fi iframe clipping** (Major): Widened max-width from 400px to 480px in
+  `SupportPage.tsx`
+- **Blog horizontal overflow** (Major): Fixed flexbox min-width bug with
+  `min-w-0 overflow-x-hidden` on `<main>` in `MainLayout.tsx` +
+  `overflow-x-hidden` on category tabs in `BlogListPage.tsx`
+- **Planning Tools tab truncation** (Minor): Renamed "Analysis" → "Stats",
+  reduced padding `px-4` → `px-3` in `PlanningTools.tsx`
+- **Route debug info exposed** (Minor): Removed service name ("Osrm") and
+  timestamp from `RouteCalculator.tsx` and `RouteInformation.tsx`
+- **Mobile menu missing Support** (Minor): Added Support link to hamburger menu
+  in `Header.tsx`
+- **Deferred:** UX-007 campsite control bar overlap (low-impact cosmetic)
+
+## Previous Updates (February 26, 2026)
 
 ### Analytics & Measurement
 
