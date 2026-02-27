@@ -63,7 +63,6 @@ const RouteSummary: React.FC<{ route: RouteResponse; compact?: boolean }> = ({
     <div className="bg-white rounded-lg border border-neutral-200 p-4">
       <div className="flex items-center justify-between mb-3">
         <h3 className="text-lg font-semibold text-neutral-900">Route Summary</h3>
-        <span className="text-sm text-neutral-500 capitalize">{route.metadata.service}</span>
       </div>
 
       <div className="grid grid-cols-2 gap-4 mb-4">

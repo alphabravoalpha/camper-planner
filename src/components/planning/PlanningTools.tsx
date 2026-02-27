@@ -244,12 +244,12 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
           { id: 'overview', label: 'Overview', icon: <BarChart3 className="w-4 h-4" /> },
           { id: 'calendar', label: 'Daily Plan', icon: <Calendar className="w-4 h-4" /> },
           { id: 'recommendations', label: 'Tips', icon: <CheckCircle className="w-4 h-4" /> },
-          { id: 'metrics', label: 'Analysis', icon: <TrendingUp className="w-4 h-4" /> },
+          { id: 'metrics', label: 'Stats', icon: <TrendingUp className="w-4 h-4" /> },
         ].map(tab => (
           <button
             key={tab.id}
             onClick={() => setViewMode(tab.id as ViewMode)}
-            className={`flex items-center gap-2 px-4 py-3 text-sm font-medium transition-colors ${
+            className={`flex items-center gap-2 px-3 py-3 text-sm font-medium whitespace-nowrap transition-colors ${
               viewMode === tab.id
                 ? 'text-purple-600 border-b-2 border-purple-600 bg-white'
                 : 'text-neutral-500 hover:text-neutral-700'

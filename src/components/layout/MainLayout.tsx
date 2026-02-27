@@ -76,7 +76,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({
       {/* Main Content */}
       <main
         className={cn(
-          'flex-1 flex flex-col',
+          'flex-1 flex flex-col min-w-0 overflow-x-hidden',
           sidebar && 'lg:pl-80' // Offset for fixed sidebar
         )}
       >

@@ -214,6 +214,18 @@ const Header: React.FC = () => {
                     {item.label}
                   </Link>
                 ))}
+                <Link
+                  to="/support"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={cn(
+                    'block px-3 py-2 rounded-lg text-base font-display font-medium transition-all duration-200',
+                    isActivePath('/support')
+                      ? 'text-primary-700 bg-primary-50'
+                      : 'text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50'
+                  )}
+                >
+                  Support
+                </Link>
                 {location.pathname !== '/' && (
                   <Link
                     to="/"
