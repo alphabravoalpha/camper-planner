@@ -179,15 +179,10 @@ const TermsPage: React.FC = () => {
               10. Contact
             </h2>
             <p className="text-neutral-700 leading-relaxed">
-              For questions about these terms, please open an issue on our{' '}
-              <a
-                href="https://github.com/AlphaBravoAlpha/camper-planner"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary-600 underline"
-              >
-                GitHub repository
-              </a>
+              For questions about these terms, please{' '}
+              <Link to="/feedback" className="text-primary-600 underline">
+                send us feedback
+              </Link>
               .
             </p>
           </section>

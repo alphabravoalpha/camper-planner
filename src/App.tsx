@@ -12,7 +12,6 @@ import {
   Sidebar,
 } from './components/layout';
 import OfflineNotice from './components/ui/OfflineNotice';
-import ConsentBanner from './components/ui/ConsentBanner';
 import { useUIStore } from './store';
 import { useOnboarding } from './hooks/useOnboarding';
 import OnboardingFlow from './components/onboarding/OnboardingFlow';
@@ -64,9 +63,6 @@ const RootLayout: React.FC = () => {
       >
         {/* Offline Notice */}
         <OfflineNotice />
-
-        {/* Analytics Consent Banner — hidden during onboarding to avoid z-index conflicts */}
-        {!showOnboarding && <ConsentBanner />}
 
         {/* Onboarding Flow - Show for first-time users */}
         {showOnboarding && location.pathname === '/' && (

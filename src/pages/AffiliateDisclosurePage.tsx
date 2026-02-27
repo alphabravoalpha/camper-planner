@@ -142,15 +142,10 @@ const AffiliateDisclosurePage: React.FC = () => {
           <section>
             <h2 className="text-xl font-display font-semibold text-neutral-900 mb-3">Questions?</h2>
             <p className="text-neutral-700 leading-relaxed">
-              If you have questions about our affiliate relationships, please open an issue on our{' '}
-              <a
-                href="https://github.com/AlphaBravoAlpha/camper-planner"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary-600 underline"
-              >
-                GitHub repository
-              </a>{' '}
+              If you have questions about our affiliate relationships, please{' '}
+              <Link to="/feedback" className="text-primary-600 underline">
+                send us feedback
+              </Link>{' '}
               or visit the{' '}
               <Link to="/support" className="text-primary-600 underline">
                 Support page

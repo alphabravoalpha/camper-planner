@@ -66,8 +66,7 @@ export class PrivacyAnalytics {
   private events: AnalyticsEvent[] = [];
   private errors: ErrorEvent[] = [];
   private performance: PerformanceEvent[] = [];
-  private isEnabled: boolean = false;
-  private hasConsent: boolean = false;
+  private isEnabled: boolean = true;
 
   static getInstance(): PrivacyAnalytics {
     if (!PrivacyAnalytics.instance) {
@@ -78,7 +77,6 @@ export class PrivacyAnalytics {
 
   constructor() {
     this.session = this.createSession();
-    this.checkConsent();
     this.loadStoredData();
     this.setupErrorHandling();
     this.setupPerformanceMonitoring();
@@ -118,13 +116,6 @@ export class PrivacyAnalytics {
     return `${browser} on ${os}`;
   }
 
-  private checkConsent(): void {
-    // Check for stored consent preference
-    const consent = localStorage.getItem('analytics-consent');
-    this.hasConsent = consent === 'true';
-    this.isEnabled = this.hasConsent;
-  }
-
   private loadStoredData(): void {
     try {
       const storedEvents = localStorage.getItem('analytics-events');
@@ -138,22 +129,17 @@ export class PrivacyAnalytics {
     }
   }
 
-  // Consent management
-  setConsent(hasConsent: boolean): void {
-    this.hasConsent = hasConsent;
-    this.isEnabled = hasConsent;
+  // Enable or disable analytics
+  setEnabled(enabled: boolean): void {
+    this.isEnabled = enabled;
 
-    localStorage.setItem('analytics-consent', hasConsent.toString());
-
-    if (!hasConsent) {
+    if (!enabled) {
       this.clearStoredData();
     }
-
-    this.track('consent_updated', 'user_action', { hasConsent });
   }
 
-  getConsent(): boolean {
-    return this.hasConsent;
+  getEnabled(): boolean {
+    return this.isEnabled;
   }
 
   private clearStoredData(): void {
@@ -404,7 +390,6 @@ export class PrivacyAnalytics {
 // React hook for analytics
 export const useAnalytics = () => {
   const [analytics] = useState(() => PrivacyAnalytics.getInstance());
-  const [hasConsent, setHasConsent] = useState(analytics.getConsent());
 
   const track = useCallback(
     (
@@ -431,14 +416,6 @@ export const useAnalytics = () => {
     [analytics]
   );
 
-  const updateConsent = useCallback(
-    (consent: boolean) => {
-      analytics.setConsent(consent);
-      setHasConsent(consent);
-    },
-    [analytics]
-  );
-
   // Track page views automatically
   useEffect(() => {
     analytics.trackPageView(window.location.pathname);
@@ -448,38 +425,7 @@ export const useAnalytics = () => {
     track,
     trackFeature,
     trackError,
-    hasConsent,
-    updateConsent,
     analytics,
-  };
-};
-
-// Consent banner component hook
-export const useConsentBanner = () => {
-  const [showBanner, setShowBanner] = useState(false);
-  const { hasConsent, updateConsent } = useAnalytics();
-
-  useEffect(() => {
-    // Show banner if no consent decision has been made
-    const consentDecision = localStorage.getItem('analytics-consent');
-    setShowBanner(consentDecision === null);
-  }, []);
-
-  const acceptConsent = useCallback(() => {
-    updateConsent(true);
-    setShowBanner(false);
-  }, [updateConsent]);
-
-  const rejectConsent = useCallback(() => {
-    updateConsent(false);
-    setShowBanner(false);
-  }, [updateConsent]);
-
-  return {
-    showBanner,
-    acceptConsent,
-    rejectConsent,
-    hasConsent,
   };
 };
 
