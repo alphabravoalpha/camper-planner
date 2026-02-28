@@ -19,6 +19,11 @@ import {
   Mail,
   Globe,
   Info,
+  Star,
+  ExternalLink,
+  Flame,
+  Search,
+  Camera,
 } from 'lucide-react';
 import { FeatureFlags } from '../../config';
 import { type Campsite } from '../../services/CampsiteService';
@@ -49,6 +54,11 @@ const AMENITY_CONFIG: Record<string, { icon: React.FC<{ className?: string }>; l
   playground: { icon: Baby, label: 'Kids' },
   swimming_pool: { icon: Waves, label: 'Pool' },
   pet_allowed: { icon: Dog, label: 'Pets OK' },
+  sanitary_dump_station: { icon: Trash2, label: 'Dump Station' },
+  hot_water: { icon: Droplets, label: 'Hot Water' },
+  kitchen: { icon: UtensilsCrossed, label: 'Kitchen' },
+  picnic_table: { icon: UtensilsCrossed, label: 'Picnic' },
+  bbq: { icon: Flame, label: 'BBQ' },
 };
 
 // Key amenities to show at the top (most important for travelers)
@@ -58,9 +68,43 @@ const KEY_AMENITIES = [
   'wifi',
   'toilets',
   'drinking_water',
+  'sanitary_dump_station',
   'waste_disposal',
   'shop',
   'restaurant',
+];
+
+// External information platforms (NOT booking — those use affiliate links)
+const FIND_ON_PLATFORMS = [
+  {
+    id: 'park4night',
+    name: 'Park4Night',
+    icon: '\uD83C\uDFD5\uFE0F',
+    buildUrl: (campsite: Campsite) =>
+      `https://park4night.com/search?lat=${campsite.lat}&lng=${campsite.lng}`,
+    description: 'Reviews & photos',
+  },
+  {
+    id: 'google_maps',
+    name: 'Google Maps',
+    icon: '\uD83D\uDCCD',
+    buildUrl: (campsite: Campsite) => {
+      const query =
+        campsite.name && !/^\w+\s+\d+$/.test(campsite.name)
+          ? encodeURIComponent(campsite.name)
+          : `${campsite.lat},${campsite.lng}`;
+      return `https://www.google.com/maps/search/${query}/@${campsite.lat},${campsite.lng},15z`;
+    },
+    description: 'Photos & Street View',
+  },
+  {
+    id: 'pincamp',
+    name: 'PiNCAMP (ADAC)',
+    icon: '\u2B50',
+    buildUrl: (campsite: Campsite) =>
+      `https://www.pincamp.de/suche?lat=${campsite.lat}&lng=${campsite.lng}`,
+    description: 'Inspection ratings',
+  },
 ];
 
 const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
@@ -246,6 +290,14 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
                 {campsite.access?.motorhome ? '✓ Vehicle OK' : '⚠ Check Size'}
               </span>
             </div>
+            {campsite.stars != null && campsite.stars > 0 && (
+              <div className="flex items-center gap-0.5 mt-1">
+                {Array.from({ length: campsite.stars }).map((_, i) => (
+                  <Star key={i} className="w-3.5 h-3.5 fill-yellow-300 text-yellow-300" />
+                ))}
+                <span className="text-xs text-green-200 ml-1">{campsite.stars} star</span>
+              </div>
+            )}
           </div>
 
           {onClose && (
@@ -328,6 +380,42 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
 
       {/* Scrollable content */}
       <div className="flex-1 overflow-y-auto">
+        {/* Hero image (Wikimedia Commons) */}
+        {campsite.imageUrl && (
+          <div className="relative w-full h-40 bg-neutral-100 overflow-hidden">
+            <img
+              src={campsite.imageUrl}
+              alt={campsite.name}
+              className="w-full h-full object-cover"
+              loading="lazy"
+              onError={e => {
+                (e.target as HTMLImageElement).parentElement!.style.display = 'none';
+              }}
+            />
+            <div className="absolute bottom-2 right-2 bg-black/50 text-white text-[10px] px-1.5 py-0.5 rounded flex items-center gap-0.5">
+              <Camera className="w-3 h-3" /> Wikimedia Commons
+            </div>
+          </div>
+        )}
+
+        {/* Limited data warning */}
+        {campsite.dataCompleteness === 'minimal' && (
+          <div className="p-3 bg-amber-50 border-b border-amber-200 flex items-start gap-2">
+            <Info className="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0" />
+            <div className="text-xs text-amber-800">
+              <span className="font-medium">Limited data available.</span>{' '}
+              <a
+                href={`https://www.openstreetmap.org/edit?node=${campsite.osmId || campsite.id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:text-amber-900"
+              >
+                Help improve this listing on OpenStreetMap
+              </a>
+            </div>
+          </div>
+        )}
+
         {/* Key Amenities Grid - Quick visual scan */}
         {keyAmenitiesAvailable.length > 0 && (
           <div className="p-4 border-b border-neutral-100">
@@ -351,8 +439,27 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
           </div>
         )}
 
-        {/* Quick Facts - Address, Hours */}
+        {/* Quick Facts - Description, Operator, Address, Hours */}
         <div className="p-4 space-y-3 border-b border-neutral-100">
+          {/* Description */}
+          {campsite.description && (
+            <div className="text-sm text-neutral-700 leading-relaxed">
+              {campsite.description.length > 200
+                ? `${campsite.description.slice(0, 200)}...`
+                : campsite.description}
+            </div>
+          )}
+
+          {/* Operator */}
+          {campsite.operator && (
+            <div className="flex items-center gap-3">
+              <Info className="w-5 h-5 text-neutral-400 flex-shrink-0" />
+              <span className="text-sm text-neutral-700">
+                Operated by <span className="font-medium">{campsite.operator}</span>
+              </span>
+            </div>
+          )}
+
           {/* Address */}
           {campsite.address && (
             <div className="flex items-start gap-3">
@@ -551,8 +658,55 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
           </div>
         )}
 
+        {/* Policies */}
+        {campsite.policies &&
+          (campsite.policies.dogs ||
+            campsite.policies.fires ||
+            campsite.policies.bbq ||
+            campsite.policies.nudism) && (
+            <div className="p-4 border-b border-neutral-100">
+              <div className="text-xs font-medium text-neutral-500 mb-2">Policies</div>
+              <div className="flex flex-wrap gap-2">
+                {campsite.policies.dogs && (
+                  <span
+                    className={cn(
+                      'flex items-center gap-1 px-2 py-1 rounded text-xs font-medium',
+                      campsite.policies.dogs === 'no'
+                        ? 'bg-red-50 text-red-700'
+                        : 'bg-green-50 text-green-700'
+                    )}
+                  >
+                    <Dog className="w-3.5 h-3.5" />
+                    {campsite.policies.dogs === 'yes'
+                      ? 'Dogs welcome'
+                      : campsite.policies.dogs === 'leashed'
+                        ? 'Dogs on leash'
+                        : campsite.policies.dogs === 'no'
+                          ? 'No dogs'
+                          : `Dogs: ${campsite.policies.dogs}`}
+                  </span>
+                )}
+                {campsite.policies.fires && (
+                  <span className="flex items-center gap-1 px-2 py-1 bg-orange-50 text-orange-700 rounded text-xs font-medium">
+                    <Flame className="w-3.5 h-3.5" /> Open fires OK
+                  </span>
+                )}
+                {campsite.policies.bbq && (
+                  <span className="flex items-center gap-1 px-2 py-1 bg-green-50 text-green-700 rounded text-xs font-medium">
+                    BBQ allowed
+                  </span>
+                )}
+                {campsite.policies.nudism && (
+                  <span className="px-2 py-1 bg-blue-50 text-blue-700 rounded text-xs font-medium">
+                    Naturist
+                  </span>
+                )}
+              </div>
+            </div>
+          )}
+
         {/* All Amenities - Expandable */}
-        {allAmenities.length > 0 && (
+        {availableAmenities.length > 0 && (
           <div className="border-b border-neutral-100">
             <button
               onClick={() => setShowAllAmenities(!showAllAmenities)}
@@ -733,100 +887,123 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
           </div>
         )}
 
-        {/* Booking Section */}
-        <div ref={bookingSectionRef} className="p-4 border-b border-neutral-100">
+        {/* Research this campsite — information-only platforms */}
+        <div className="p-4 border-b border-neutral-100">
           <h3 className="text-sm font-medium text-neutral-900 mb-3 flex items-center gap-2">
-            <svg
-              className="w-5 h-5 text-neutral-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-              />
-            </svg>
-            Book This Campsite
+            <Search className="w-4 h-4 text-neutral-400" />
+            Research This Campsite
           </h3>
+          <div className="space-y-2">
+            {FIND_ON_PLATFORMS.map(platform => (
+              <a
+                key={platform.id}
+                href={platform.buildUrl(campsite)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-between p-2.5 border border-neutral-200 rounded-lg hover:bg-neutral-50 transition-colors text-sm"
+              >
+                <div className="flex items-center gap-2">
+                  <span>{platform.icon}</span>
+                  <div>
+                    <div className="font-medium text-neutral-800">{platform.name}</div>
+                    <div className="text-xs text-neutral-500">{platform.description}</div>
+                  </div>
+                </div>
+                <ExternalLink className="w-4 h-4 text-neutral-400" />
+              </a>
+            ))}
+          </div>
+        </div>
 
-          {/* Direct booking link if website available — always shown first */}
-          {campsite.contact?.website && (
-            <a
-              href={campsite.contact.website}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2 w-full px-4 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium mb-3"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        {/* Booking Section */}
+        {(campsite.contact?.website || affiliateLinks.length > 0) && (
+          <div ref={bookingSectionRef} className="p-4 border-b border-neutral-100">
+            <h3 className="text-sm font-medium text-neutral-900 mb-3 flex items-center gap-2">
+              <svg
+                className="w-5 h-5 text-neutral-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={2}
-                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                 />
               </svg>
-              <span>Visit Official Website</span>
-            </a>
-          )}
+              Book This Campsite
+            </h3>
 
-          {/* Affiliate booking links — powered by BookingService */}
-          {affiliateLinks.length > 0 && (
-            <div className="space-y-2">
-              <div className="text-xs font-medium text-neutral-500 mb-2">
-                Search on booking platforms:
+            {/* Direct booking link if website available — always shown first */}
+            {campsite.contact?.website && (
+              <a
+                href={campsite.contact.website}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2 w-full px-4 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium mb-3"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                  />
+                </svg>
+                <span>Visit Official Website</span>
+              </a>
+            )}
+
+            {/* Affiliate booking links — powered by BookingService */}
+            {affiliateLinks.length > 0 && (
+              <div className="space-y-2">
+                <div className="text-xs font-medium text-neutral-500 mb-2">
+                  Search on booking platforms:
+                </div>
+                {affiliateLinks.map(link => (
+                  <a
+                    key={link.provider.id}
+                    href={link.url}
+                    target="_blank"
+                    rel="sponsored noopener noreferrer"
+                    className="w-full flex items-center justify-between p-3 border border-primary-200 bg-primary-50 text-primary-800 hover:bg-primary-100 rounded-lg text-sm transition-colors"
+                    onClick={() => {
+                      bookingService.trackBookingClick(link.provider.id, String(campsite.id));
+                      trackFeature('affiliate_link', 'clicked', {
+                        provider: link.provider.id === 'booking_com' ? 'booking' : 'other',
+                      });
+                    }}
+                  >
+                    <span>{link.provider.name}</span>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                      />
+                    </svg>
+                  </a>
+                ))}
+                {/* Affiliate disclosure */}
+                <p className="text-[10px] text-neutral-400 mt-1.5 leading-relaxed">
+                  We may earn a small commission from bookings at no extra cost to you.
+                </p>
               </div>
-              {affiliateLinks.map(link => (
-                <a
-                  key={link.provider.id}
-                  href={link.url}
-                  target="_blank"
-                  rel="sponsored noopener noreferrer"
-                  className="w-full flex items-center justify-between p-3 border border-primary-200 bg-primary-50 text-primary-800 hover:bg-primary-100 rounded-lg text-sm transition-colors"
-                  onClick={() => {
-                    bookingService.trackBookingClick(link.provider.id, String(campsite.id));
-                    trackFeature('affiliate_link', 'clicked', {
-                      provider: link.provider.id === 'booking_com' ? 'booking' : 'other',
-                    });
-                  }}
-                >
-                  <span>{link.provider.name}</span>
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                    />
-                  </svg>
-                </a>
-              ))}
-              {/* Affiliate disclosure */}
-              <p className="text-[10px] text-neutral-400 mt-1.5 leading-relaxed">
-                We may earn a small commission from bookings at no extra cost to you.
-              </p>
+            )}
+
+            {/* Booking tips */}
+            <div className="mt-4 p-3 bg-primary-50 border border-primary-200 rounded-lg text-xs text-primary-800">
+              <div className="font-medium mb-1">Booking Tips:</div>
+              <ul className="space-y-0.5">
+                <li>Check availability directly with the campsite</li>
+                <li>Book in advance during peak season</li>
+                <li>Confirm vehicle size restrictions</li>
+              </ul>
             </div>
-          )}
-
-          {/* Show non-affiliate fallback if no affiliate links configured */}
-          {affiliateLinks.length === 0 && !campsite.contact?.website && (
-            <p className="text-sm text-neutral-500 italic">
-              No booking links available. Try searching for this campsite online.
-            </p>
-          )}
-
-          {/* Booking tips */}
-          <div className="mt-4 p-3 bg-primary-50 border border-primary-200 rounded-lg text-xs text-primary-800">
-            <div className="font-medium mb-1">Booking Tips:</div>
-            <ul className="space-y-0.5">
-              <li>Check availability directly with the campsite</li>
-              <li>Book in advance during peak season</li>
-              <li>Confirm vehicle size restrictions</li>
-            </ul>
           </div>
-        </div>
+        )}
 
         {/* Directions Section */}
         <div className="p-4 border-b border-neutral-100">
