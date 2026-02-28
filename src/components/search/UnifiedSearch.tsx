@@ -77,7 +77,6 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const currentSearchRef = useRef<string>('');
-  const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pendingAutoSelectRef = useRef(false);
 
   // Load search history
@@ -310,22 +309,12 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
     [map, visibleTypes, profile, calculateDistance, isSearching]
   );
 
-  // Debounced search
+  // Clear results when query is emptied (no auto-search on typing)
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (query.trim()) {
-        performSearch(query);
-      } else {
-        setResults([]);
-        currentSearchRef.current = '';
-      }
-    }, 300);
-
-    // Store timer ref so Enter key handler can cancel it
-    debounceTimerRef.current = timer;
-
-    return () => clearTimeout(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (!query.trim()) {
+      setResults([]);
+      currentSearchRef.current = '';
+    }
   }, [query]);
 
   // Handle input change
@@ -496,25 +485,14 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
           break;
         case 'Enter':
           e.preventDefault();
-          if (isSearching || (results.length === 0 && query.trim().length >= 2)) {
-            // Search is in progress or hasn't started yet — trigger immediate search
-            // Cancel pending debounce timer
-            if (debounceTimerRef.current) {
-              clearTimeout(debounceTimerRef.current);
-              debounceTimerRef.current = null;
-            }
-            // Set flag to auto-select first result when search completes
+          if (selectedIndex >= 0 && selectedIndex < results.length) {
+            // User has arrow-keyed to a specific result — select it
+            handleResultSelect(results[selectedIndex]);
+          } else if (query.trim().length >= 2) {
+            // Trigger search and auto-select first result when it arrives
             pendingAutoSelectRef.current = true;
-            // Force clear the isSearching guard so performSearch runs
             currentSearchRef.current = '';
             performSearch(query);
-            return;
-          }
-          // Results exist — select highlighted or first
-          if (selectedIndex >= 0 && selectedIndex < results.length) {
-            handleResultSelect(results[selectedIndex]);
-          } else if (results.length > 0) {
-            handleResultSelect(results[0]);
           }
           break;
         case 'Escape':
@@ -524,7 +502,7 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
           break;
       }
     },
-    [showResults, results, selectedIndex, handleResultSelect, isSearching, query, performSearch]
+    [showResults, results, selectedIndex, handleResultSelect, query, performSearch]
   );
 
   // Clear search
