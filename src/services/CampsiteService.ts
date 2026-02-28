@@ -334,6 +334,10 @@ export class CampsiteService extends DataService {
   // Nominatim rate limiting (1 request per second policy)
   private lastNominatimRequest = 0;
 
+  // Track last successfully loaded bounds for overlap-aware cache
+  private lastLoadedBounds: BoundingBox | null = null;
+  private lastLoadedCampsites: Campsite[] = [];
+
   constructor() {
     // Overpass API configuration
     const config: DataServiceConfig = {
@@ -660,9 +664,11 @@ export class CampsiteService extends DataService {
     startTime: number
   ): Promise<CampsiteResponse> {
     try {
-      // Check cache first
+      // Check IndexedDB cache first
       const cached = await this.getCachedCampsites(request);
       if (cached) {
+        this.lastLoadedBounds = request.bounds;
+        this.lastLoadedCampsites = cached.campsites;
         return {
           ...cached,
           metadata: {
@@ -673,12 +679,66 @@ export class CampsiteService extends DataService {
         };
       }
 
-      // Try primary service (Overpass API)
+      // Overlap-aware loading: if we have recent in-memory data that mostly covers
+      // the new request, reuse it and only fetch the gap regions
+      if (this.lastLoadedBounds && this.lastLoadedCampsites.length > 0) {
+        const overlapRatio = this.getOverlapRatio(request.bounds, this.lastLoadedBounds);
+        if (overlapRatio >= 0.7) {
+          // 70%+ overlap — reuse existing data, fetch only gap strips
+          const gaps = this.computeGapRegions(request.bounds, this.lastLoadedBounds);
+          const gapCampsites: Campsite[] = [];
+
+          if (gaps.length > 0) {
+            const gapResults = await Promise.allSettled(
+              gaps.map(gapBounds => this.searchWithOverpass({ ...request, bounds: gapBounds }))
+            );
+            for (const result of gapResults) {
+              if (result.status === 'fulfilled' && result.value.status === 'success') {
+                gapCampsites.push(...result.value.campsites);
+                // Cache gap results in IndexedDB
+                this.cacheManager.storeCampsites(result.value.campsites).catch(() => {});
+              }
+            }
+          }
+
+          // Combine: campsites from previous load that are within new bounds + gap data
+          const reusable = this.lastLoadedCampsites.filter(c =>
+            this.isCampsiteInBounds(c, request.bounds)
+          );
+          const allCampsites = this.deduplicateCampsites([...reusable, ...gapCampsites]);
+          const filteredCampsites = this.filterAndScoreCampsites(allCampsites, request);
+
+          // Update tracking
+          this.lastLoadedBounds = request.bounds;
+          this.lastLoadedCampsites = filteredCampsites;
+
+          return {
+            status: 'success',
+            campsites: filteredCampsites,
+            metadata: {
+              service: 'overpass' as const,
+              timestamp: Date.now(),
+              query: request,
+              results_count: filteredCampsites.length,
+              cache_hit: false,
+              query_duration: Date.now() - startTime,
+            },
+            cached: false,
+            boundingBox: request.bounds,
+          };
+        }
+      }
+
+      // Full fetch from Overpass API
       const result = await this.searchWithOverpass(request);
 
       // Cache the result
       await this.cacheManager.storeCampsites(result.campsites);
       await this.setCacheMetadata(request);
+
+      // Update tracking
+      this.lastLoadedBounds = request.bounds;
+      this.lastLoadedCampsites = result.campsites;
 
       return {
         ...result,
@@ -727,8 +787,8 @@ export class CampsiteService extends DataService {
   private async searchWithOverpass(request: CampsiteRequest): Promise<CampsiteResponse> {
     const { bounds, types = ['campsite', 'aire', 'caravan_site'], maxResults = 1000 } = request;
 
-    // Build Overpass QL query
-    const query = this.buildOverpassQuery(bounds, types);
+    // Build primary Overpass QL query (core types only for speed)
+    const query = this.buildOverpassQuery(bounds, types, 'primary');
 
     const context: RequestContext = {
       method: 'POST',
@@ -757,6 +817,11 @@ export class CampsiteService extends DataService {
 
     // Filter and score results
     const filteredCampsites = this.filterAndScoreCampsites(campsites, request).slice(0, maxResults);
+
+    // Fire secondary/niche types in background after a delay to respect Overpass 2 req/s rate limit
+    setTimeout(() => {
+      this.fetchSecondaryTypes(bounds, types, request).catch(() => {});
+    }, 2000);
 
     return {
       status: 'success',
@@ -842,9 +907,15 @@ export class CampsiteService extends DataService {
   }
 
   /**
-   * Build Overpass QL query for campsites
+   * Build Overpass QL query for campsites.
+   * 'primary' fetches core types (campsite, caravan_site nodes+ways) for fast initial load.
+   * 'secondary' fetches niche types (aires, relations) and loads lazily in background.
    */
-  private buildOverpassQuery(bounds: BoundingBox, types: CampsiteType[]): string {
+  private buildOverpassQuery(
+    bounds: BoundingBox,
+    types: CampsiteType[],
+    priority: 'primary' | 'secondary' = 'primary'
+  ): string {
     const { south, west, north, east } = bounds;
 
     // Validate coordinates
@@ -868,30 +939,86 @@ export class CampsiteService extends DataService {
     const bbox = `${south.toFixed(6)},${west.toFixed(6)},${north.toFixed(6)},${east.toFixed(6)}`;
     const statements: string[] = [];
 
-    if (types.includes('campsite')) {
+    if (priority === 'primary') {
+      // Core types — nodes + ways only (fast, covers 90%+ of campsites)
+      if (types.includes('campsite')) {
+        statements.push(`node["tourism"="camp_site"](${bbox});`);
+        statements.push(`way["tourism"="camp_site"](${bbox});`);
+      }
+      if (types.includes('caravan_site')) {
+        statements.push(`node["tourism"="caravan_site"](${bbox});`);
+        statements.push(`way["tourism"="caravan_site"](${bbox});`);
+      }
+      // Include main aire types in primary for user expectation
+      if (types.includes('aire')) {
+        statements.push(`node["amenity"="parking"]["motorhome"="yes"](${bbox});`);
+        statements.push(`way["amenity"="parking"]["motorhome"="yes"](${bbox});`);
+      }
+    } else {
+      // Niche types — relations, secondary tags (loaded lazily)
+      if (types.includes('campsite')) {
+        statements.push(`relation["tourism"="camp_site"](${bbox});`);
+      }
+      if (types.includes('caravan_site')) {
+        statements.push(`relation["tourism"="caravan_site"](${bbox});`);
+      }
+      if (types.includes('aire')) {
+        statements.push(`node["amenity"="parking"]["caravan"="yes"](${bbox});`);
+        statements.push(`way["amenity"="parking"]["caravan"="yes"](${bbox});`);
+        statements.push(`node["tourism"="wilderness_hut"](${bbox});`);
+        statements.push(`node["highway"="services"]["motorhome"="yes"](${bbox});`);
+        statements.push(`way["highway"="services"]["motorhome"="yes"](${bbox});`);
+      }
+    }
+
+    if (statements.length === 0) {
+      // Fallback: query everything (shouldn't happen normally)
       statements.push(`node["tourism"="camp_site"](${bbox});`);
-      statements.push(`way["tourism"="camp_site"](${bbox});`);
-      statements.push(`relation["tourism"="camp_site"](${bbox});`);
-    }
-
-    if (types.includes('caravan_site')) {
-      statements.push(`node["tourism"="caravan_site"](${bbox});`);
-      statements.push(`way["tourism"="caravan_site"](${bbox});`);
-      statements.push(`relation["tourism"="caravan_site"](${bbox});`);
-    }
-
-    if (types.includes('aire')) {
-      statements.push(`node["amenity"="parking"]["motorhome"="yes"](${bbox});`);
-      statements.push(`way["amenity"="parking"]["motorhome"="yes"](${bbox});`);
-      statements.push(`node["amenity"="parking"]["caravan"="yes"](${bbox});`);
-      statements.push(`way["amenity"="parking"]["caravan"="yes"](${bbox});`);
-      statements.push(`node["tourism"="wilderness_hut"](${bbox});`);
-      statements.push(`node["highway"="services"]["motorhome"="yes"](${bbox});`);
-      statements.push(`way["highway"="services"]["motorhome"="yes"](${bbox});`);
     }
 
     // Limit to 1000 results to prevent timeouts
     return `[out:json][timeout:30];(${statements.join('')});out center meta 1000;`;
+  }
+
+  /**
+   * Fetch secondary/niche campsite types in the background.
+   * Results are stored in IndexedDB cache for future use.
+   */
+  private async fetchSecondaryTypes(
+    bounds: BoundingBox,
+    types: CampsiteType[],
+    request: CampsiteRequest
+  ): Promise<void> {
+    try {
+      const secondaryQuery = this.buildOverpassQuery(bounds, types, 'secondary');
+      const context: RequestContext = {
+        method: 'POST',
+        endpoint: '',
+        body: secondaryQuery,
+        headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+      };
+
+      let response = await this.request<Record<string, unknown> | string>(context);
+      if (typeof response === 'string') {
+        response = JSON.parse(response) as Record<string, unknown>;
+      }
+
+      const campsites = this.parseOverpassResponse(response as OverpassResponse);
+      const filtered = this.filterAndScoreCampsites(campsites, request);
+
+      // Store in IndexedDB for future requests
+      await this.cacheManager.storeCampsites(filtered);
+
+      // Merge into last loaded data so next overlap check picks them up
+      if (this.lastLoadedCampsites.length > 0) {
+        this.lastLoadedCampsites = this.deduplicateCampsites([
+          ...this.lastLoadedCampsites,
+          ...filtered,
+        ]);
+      }
+    } catch {
+      // Secondary types are non-critical — silently ignore failures
+    }
   }
 
   /**
@@ -1239,6 +1366,143 @@ export class CampsiteService extends DataService {
     } catch (error) {
       console.error('Failed to set cache metadata:', error);
     }
+  }
+
+  /**
+   * Calculate what fraction of requestBounds is covered by cachedBounds (0 to 1)
+   */
+  private getOverlapRatio(requestBounds: BoundingBox, cachedBounds: BoundingBox): number {
+    const overlapSouth = Math.max(requestBounds.south, cachedBounds.south);
+    const overlapNorth = Math.min(requestBounds.north, cachedBounds.north);
+    const overlapWest = Math.max(requestBounds.west, cachedBounds.west);
+    const overlapEast = Math.min(requestBounds.east, cachedBounds.east);
+
+    if (overlapNorth <= overlapSouth || overlapEast <= overlapWest) return 0;
+
+    const overlapArea = (overlapNorth - overlapSouth) * (overlapEast - overlapWest);
+    const requestArea =
+      (requestBounds.north - requestBounds.south) * (requestBounds.east - requestBounds.west);
+
+    return requestArea > 0 ? overlapArea / requestArea : 0;
+  }
+
+  /**
+   * Check if a campsite falls within the given bounds
+   */
+  private isCampsiteInBounds(campsite: Campsite, bounds: BoundingBox): boolean {
+    return (
+      campsite.lat >= bounds.south &&
+      campsite.lat <= bounds.north &&
+      campsite.lng >= bounds.west &&
+      campsite.lng <= bounds.east
+    );
+  }
+
+  /**
+   * Compute the gap regions between a request and cached bounds
+   */
+  private computeGapRegions(requestBounds: BoundingBox, cachedBounds: BoundingBox): BoundingBox[] {
+    const gaps: BoundingBox[] = [];
+    // North strip
+    if (requestBounds.north > cachedBounds.north) {
+      gaps.push({
+        south: cachedBounds.north,
+        north: requestBounds.north,
+        west: requestBounds.west,
+        east: requestBounds.east,
+      });
+    }
+    // South strip
+    if (requestBounds.south < cachedBounds.south) {
+      gaps.push({
+        south: requestBounds.south,
+        north: cachedBounds.south,
+        west: requestBounds.west,
+        east: requestBounds.east,
+      });
+    }
+    // East strip (within overlapping lat range only)
+    if (requestBounds.east > cachedBounds.east) {
+      gaps.push({
+        south: Math.max(requestBounds.south, cachedBounds.south),
+        north: Math.min(requestBounds.north, cachedBounds.north),
+        west: cachedBounds.east,
+        east: requestBounds.east,
+      });
+    }
+    // West strip (within overlapping lat range only)
+    if (requestBounds.west < cachedBounds.west) {
+      gaps.push({
+        south: Math.max(requestBounds.south, cachedBounds.south),
+        north: Math.min(requestBounds.north, cachedBounds.north),
+        west: requestBounds.west,
+        east: cachedBounds.west,
+      });
+    }
+    // Filter out degenerate regions
+    return gaps.filter(g => g.north - g.south > 0.01 && g.east - g.west > 0.01);
+  }
+
+  /**
+   * Deduplicate campsites by ID
+   */
+  private deduplicateCampsites(campsites: Campsite[]): Campsite[] {
+    const seen = new Set<number>();
+    return campsites.filter(c => {
+      if (seen.has(c.id)) return false;
+      seen.add(c.id);
+      return true;
+    });
+  }
+
+  /**
+   * Prefetch campsites along a route corridor (fire-and-forget).
+   * Called during route calculation so data is cached before the campsite layer needs it.
+   */
+  async prefetchForRoute(geometry: { coordinates: [number, number][] }): Promise<void> {
+    let minLat = Infinity,
+      maxLat = -Infinity;
+    let minLng = Infinity,
+      maxLng = -Infinity;
+
+    for (const [lng, lat] of geometry.coordinates) {
+      minLat = Math.min(minLat, lat);
+      maxLat = Math.max(maxLat, lat);
+      minLng = Math.min(minLng, lng);
+      maxLng = Math.max(maxLng, lng);
+    }
+
+    const buffer = 0.1;
+    const bounds: BoundingBox = {
+      south: minLat - buffer,
+      north: maxLat + buffer,
+      west: minLng - buffer,
+      east: maxLng + buffer,
+    };
+
+    const maxSpan = 4.5;
+    const tiles: BoundingBox[] = [];
+    for (let latStart = bounds.south; latStart < bounds.north; latStart += maxSpan) {
+      for (let lngStart = bounds.west; lngStart < bounds.east; lngStart += maxSpan) {
+        tiles.push({
+          south: latStart,
+          north: Math.min(latStart + maxSpan, bounds.north),
+          west: lngStart,
+          east: Math.min(lngStart + maxSpan, bounds.east),
+        });
+      }
+    }
+
+    await Promise.allSettled(
+      tiles.map(tileBounds =>
+        this.searchCampsites({
+          bounds: tileBounds,
+          types: ['campsite', 'caravan_site'],
+          maxResults: 1000,
+          includeDetails: true,
+        })
+      )
+    );
   }
 
   /**

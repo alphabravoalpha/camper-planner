@@ -41,14 +41,18 @@ interface ClusteredCampsite extends Campsite {
   location?: { lat: number; lng: number };
 }
 
-// Simple clustering algorithm - reduced distances so markers stay separate longer
+// Grid-based clustering algorithm — O(n) instead of O(n²)
+// Uses a spatial grid where each cell maps to the pixel-distance threshold,
+// then merges adjacent cells to form clusters.
 function clusterCampsites(
   campsites: Campsite[],
   zoom: number,
   isMobile: boolean = false
 ): ClusteredCampsite[] {
-  // Reduced clustering distances - only cluster when markers would truly overlap
-  const maxDistance = isMobile
+  if (campsites.length === 0) return [];
+
+  // Clustering distance in pixels — only cluster when markers would truly overlap
+  const maxDistancePx = isMobile
     ? zoom > 12
       ? 15
       : zoom > 10
@@ -58,81 +62,76 @@ function clusterCampsites(
       ? 20
       : zoom > 10
         ? 30
-        : 50; // pixels - reduced from previous values
+        : 50;
 
-  const clusters: ClusteredCampsite[] = [];
-  const processed = new Set<number>();
+  // Convert pixel distance to approximate degrees for grid cell sizing
+  // metersPerPixel at equator = 156543.03392 / 2^zoom, adjusted by avg latitude
+  const avgLat = campsites.reduce((sum, c) => sum + c.lat, 0) / campsites.length;
+  const metersPerPixel = (156543.03392 * Math.cos((avgLat * Math.PI) / 180)) / Math.pow(2, zoom);
+  const cellSizeMeters = maxDistancePx * metersPerPixel;
+  const cellSizeDeg = cellSizeMeters / 111320; // approximate meters per degree
 
+  if (cellSizeDeg <= 0) return campsites;
+
+  // Build spatial grid — each campsite goes into exactly one cell
+  const grid = new Map<string, Campsite[]>();
   for (const campsite of campsites) {
-    if (processed.has(campsite.id)) continue;
+    const cellX = Math.floor(campsite.lng / cellSizeDeg);
+    const cellY = Math.floor(campsite.lat / cellSizeDeg);
+    const key = `${cellX}_${cellY}`;
+    const cell = grid.get(key);
+    if (cell) {
+      cell.push(campsite);
+    } else {
+      grid.set(key, [campsite]);
+    }
+  }
 
-    const cluster: Campsite[] = [campsite];
-    processed.add(campsite.id);
+  // Merge each cell with its 8 neighbors to form clusters
+  const clusters: ClusteredCampsite[] = [];
+  const processedCells = new Set<string>();
 
-    // Find nearby campsites
-    for (const other of campsites) {
-      if (processed.has(other.id) || other.id === campsite.id) continue;
+  for (const [key, cellCampsites] of grid) {
+    if (processedCells.has(key)) continue;
+    processedCells.add(key);
 
-      const distance = calculatePixelDistance(
-        campsite.lat,
-        campsite.lng,
-        other.lat,
-        other.lng,
-        zoom
-      );
+    const [cellXStr, cellYStr] = key.split('_');
+    const cellX = parseInt(cellXStr);
+    const cellY = parseInt(cellYStr);
 
-      if (distance < maxDistance) {
-        cluster.push(other);
-        processed.add(other.id);
+    // Gather campsites from this cell and unprocessed neighbors
+    const clusterMembers = [...cellCampsites];
+    for (let dx = -1; dx <= 1; dx++) {
+      for (let dy = -1; dy <= 1; dy++) {
+        if (dx === 0 && dy === 0) continue;
+        const neighborKey = `${cellX + dx}_${cellY + dy}`;
+        if (processedCells.has(neighborKey)) continue;
+        const neighborCampsites = grid.get(neighborKey);
+        if (neighborCampsites) {
+          clusterMembers.push(...neighborCampsites);
+          processedCells.add(neighborKey);
+        }
       }
     }
 
-    if (cluster.length > 1) {
-      // Create cluster marker
-      const centerLat = cluster.reduce((sum, c) => sum + c.lat, 0) / cluster.length;
-      const centerLng = cluster.reduce((sum, c) => sum + c.lng, 0) / cluster.length;
-
+    if (clusterMembers.length > 1) {
+      const centerLat = clusterMembers.reduce((sum, c) => sum + c.lat, 0) / clusterMembers.length;
+      const centerLng = clusterMembers.reduce((sum, c) => sum + c.lng, 0) / clusterMembers.length;
       clusters.push({
-        ...campsite,
+        ...clusterMembers[0],
         id: Date.now() + clusters.length,
         location: { lat: centerLat, lng: centerLng },
-        name: `${cluster.length} campsites`,
+        name: `${clusterMembers.length} campsites`,
         isCluster: true,
-        clusterCount: cluster.length,
-        clusterCampsites: cluster,
+        clusterCount: clusterMembers.length,
+        clusterCampsites: clusterMembers,
       });
     } else {
-      // Single campsite
-      clusters.push(campsite);
+      clusters.push(clusterMembers[0]);
     }
   }
 
   return clusters;
-}
-
-// Calculate pixel distance for clustering
-function calculatePixelDistance(
-  lat1: number,
-  lng1: number,
-  lat2: number,
-  lng2: number,
-  zoom: number
-): number {
-  const earthRadius = 6371000; // meters
-  const lat1Rad = (lat1 * Math.PI) / 180;
-  const lat2Rad = (lat2 * Math.PI) / 180;
-  const deltaLat = ((lat2 - lat1) * Math.PI) / 180;
-  const deltaLng = ((lng2 - lng1) * Math.PI) / 180;
-
-  const a =
-    Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
-    Math.cos(lat1Rad) * Math.cos(lat2Rad) * Math.sin(deltaLng / 2) * Math.sin(deltaLng / 2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  const distanceMeters = earthRadius * c;
-
-  // Convert to pixels at current zoom level
-  const metersPerPixel = (156543.03392 * Math.cos(lat1Rad)) / Math.pow(2, zoom);
-  return distanceMeters / metersPerPixel;
 }
 
 const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
@@ -204,6 +203,10 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
   } | null>(null);
   // const [selectedCampsiteId, setSelectedCampsiteId] = useState<number | null>(null); // Unused for now
   const [zoom, setZoom] = useState(map.getZoom());
+
+  // Progressive rendering — show markers in batches for faster perceived load
+  const BATCH_SIZE = 80;
+  const [visibleBatchCount, setVisibleBatchCount] = useState(0);
 
   // Track zoom changes for clustering
   useEffect(() => {
@@ -394,6 +397,44 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
     return result;
   }, [filteredCampsites, zoom, isVisible, isMobile]);
 
+  // Progressive rendering: show first batch immediately, then fill in the rest
+  useEffect(() => {
+    if (clusteredCampsites.length === 0) {
+      setVisibleBatchCount(0);
+      return;
+    }
+
+    // Show first batch immediately
+    setVisibleBatchCount(BATCH_SIZE);
+
+    if (clusteredCampsites.length <= BATCH_SIZE) return;
+
+    // Render remaining batches using requestAnimationFrame
+    let currentBatch = BATCH_SIZE;
+    let rafId: number;
+
+    const renderNextBatch = () => {
+      currentBatch += BATCH_SIZE;
+      setVisibleBatchCount(Math.min(currentBatch, clusteredCampsites.length));
+
+      if (currentBatch < clusteredCampsites.length) {
+        rafId = requestAnimationFrame(renderNextBatch);
+      }
+    };
+
+    rafId = requestAnimationFrame(renderNextBatch);
+
+    return () => {
+      if (rafId) cancelAnimationFrame(rafId);
+    };
+  }, [clusteredCampsites]);
+
+  // Slice campsites to current visible batch
+  const visibleCampsites = useMemo(
+    () => clusteredCampsites.slice(0, visibleBatchCount),
+    [clusteredCampsites, visibleBatchCount]
+  );
+
   // Load campsites for current map bounds
   const loadCampsites = useCallback(async () => {
     if (!map || !FeatureFlags.CAMPSITE_DISPLAY || !isVisible) return;
@@ -434,8 +475,17 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
         return;
       }
 
+      // Add a 10% buffer around viewport for smoother panning
+      const latBuffer = (north - south) * 0.1;
+      const lngBuffer = (east - west) * 0.1;
+
       const request: CampsiteRequest = {
-        bounds: { north, south, east, west },
+        bounds: {
+          north: north + latBuffer,
+          south: south - latBuffer,
+          east: east + lngBuffer,
+          west: west - lngBuffer,
+        },
         types: visibleTypes,
         maxResults,
         includeDetails: true,
@@ -581,7 +631,7 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
         const lastBounds = lastLoadedBoundsRef.current;
         const lastZoom = lastLoadedZoomRef.current;
         if (lastBounds && Math.abs(currentZoom - lastZoom) < 1) {
-          const boundsExpansion = 0.3; // 30% threshold — skip small pans, reload on significant moves
+          const boundsExpansion = 0.2; // 20% threshold — overlap-aware cache handles the rest
           const latDiff =
             Math.abs(currentBounds.getSouth() - lastBounds.getSouth()) +
             Math.abs(currentBounds.getNorth() - lastBounds.getNorth());
@@ -629,11 +679,31 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
       {/* Loading indicator */}
       {isLoading && (
         <div
-          className="fixed top-24 right-4 z-50 bg-white shadow-lg rounded-lg px-4 py-2 flex items-center space-x-2 animate-fade-in"
+          className="fixed top-24 right-4 z-50 bg-white shadow-lg rounded-lg px-4 py-3 flex items-center space-x-3 animate-fade-in"
           style={{ pointerEvents: 'none' }}
         >
-          <div className="animate-spin h-4 w-4 border-2 border-primary-500 border-t-transparent rounded-full"></div>
-          <span className="text-sm text-neutral-700">Loading campsites...</span>
+          <div className="animate-spin h-5 w-5 border-[2.5px] border-primary-200 border-t-primary-600 rounded-full"></div>
+          <div>
+            <span className="text-sm font-medium text-neutral-800">Loading campsites...</span>
+            {campsites.length > 0 && (
+              <div className="text-xs text-neutral-500 mt-0.5">{campsites.length} found so far</div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Progressive rendering indicator */}
+      {!isLoading && visibleBatchCount > 0 && visibleBatchCount < clusteredCampsites.length && (
+        <div
+          className="fixed top-24 right-4 z-50 bg-white/90 backdrop-blur-sm shadow-md rounded-lg px-3 py-2 animate-fade-in"
+          style={{ pointerEvents: 'none' }}
+        >
+          <div className="flex items-center space-x-2">
+            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+            <span className="text-xs text-neutral-600">
+              Showing {visibleBatchCount} of {clusteredCampsites.length}...
+            </span>
+          </div>
         </div>
       )}
 
@@ -707,7 +777,7 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
         </div>
       )}
 
-      {clusteredCampsites.map(campsite => {
+      {visibleCampsites.map(campsite => {
         const isHighlighted = highlightedCampsiteId === campsite.id.toString();
         const isSelected = selectedCampsiteId === campsite.id.toString();
         const isCluster = (campsite as ClusteredCampsite).isCluster;

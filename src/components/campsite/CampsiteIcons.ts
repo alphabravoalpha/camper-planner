@@ -108,7 +108,24 @@ export interface CampsiteMarkerOptions {
   showTooltip?: boolean;
 }
 
+// Icon cache — keyed by visual properties, avoids rebuilding SVG HTML per render
+const iconCache = new Map<string, L.DivIcon>();
+const MAX_ICON_CACHE_SIZE = 200;
+
+function getIconCacheKey(options: CampsiteMarkerOptions): string {
+  const { campsite, vehicleCompatible, isSelected, isHighlighted, isInRoute, isMobile, size } =
+    options;
+  // Key only on properties that change the visual output
+  const amenityKey = campsite.amenities
+    ? Object.entries(campsite.amenities).find(([, v]) => v)?.[0] || 'none'
+    : 'none';
+  return `${campsite.type}_${amenityKey}_${vehicleCompatible}_${isSelected}_${isHighlighted}_${isInRoute}_${isMobile}_${size || 'medium'}`;
+}
+
 export function createCampsiteIcon(options: CampsiteMarkerOptions): L.DivIcon {
+  const cacheKey = getIconCacheKey(options);
+  const cached = iconCache.get(cacheKey);
+  if (cached) return cached;
   const {
     campsite,
     vehicleCompatible = true,
@@ -295,21 +312,35 @@ export function createCampsiteIcon(options: CampsiteMarkerOptions): L.DivIcon {
     </div>
   `;
 
-  return L.divIcon({
+  const icon = L.divIcon({
     className: `campsite-marker-icon ${isSelected ? 'selected' : ''} ${isHighlighted ? 'highlighted' : ''} ${isInRoute ? 'in-route' : ''}`,
     html: iconHtml,
     iconSize: [pinWidth, pinHeight],
     iconAnchor: [pinWidth / 2, pinHeight], // Anchor at the bottom point
     popupAnchor: [0, -pinHeight + 10],
   });
+
+  // Cache the icon — evict oldest if full
+  if (iconCache.size >= MAX_ICON_CACHE_SIZE) {
+    const firstKey = iconCache.keys().next().value;
+    if (firstKey) iconCache.delete(firstKey);
+  }
+  iconCache.set(cacheKey, icon);
+  return icon;
 }
+
+// Cluster icon cache — keyed by child count
+const clusterIconCache = new Map<number, L.DivIcon>();
 
 // Cluster icon creation for marker clustering
 export function createClusterIcon(cluster: { getChildCount: () => number }): L.DivIcon {
   const childCount = cluster.getChildCount();
+  const cachedCluster = clusterIconCache.get(childCount);
+  if (cachedCluster) return cachedCluster;
+
   const size = childCount < 10 ? 30 : childCount < 100 ? 40 : 50;
 
-  return L.divIcon({
+  const icon = L.divIcon({
     html: `
       <div style="
         width: ${size}px;
@@ -333,6 +364,9 @@ export function createClusterIcon(cluster: { getChildCount: () => number }): L.D
     iconSize: [size, size],
     iconAnchor: [size / 2, size / 2],
   });
+
+  clusterIconCache.set(childCount, icon);
+  return icon;
 }
 
 // Get icon config for campsite type

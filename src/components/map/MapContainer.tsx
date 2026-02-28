@@ -167,7 +167,7 @@ const MapContainer: React.FC = () => {
   const [showCampsiteFilter, setShowCampsiteFilter] = useState(false);
   const [showCampsiteDetails, setShowCampsiteDetails] = useState(false);
   const [showCampsiteRecommendations, setShowCampsiteRecommendations] = useState(false);
-  const [campsitesVisible, setCampsitesVisible] = useState<boolean>(false);
+  const [campsitesVisible, setCampsitesVisible] = useState<boolean>(true);
   const [campsiteCount, setCampsiteCount] = useState(0);
   const [campsiteFilterState, setCampsiteFilterState] =
     useState<CampsiteFilterState>(getDefaultFilterState);

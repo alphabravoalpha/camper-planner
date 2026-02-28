@@ -4,6 +4,7 @@
 import React, { useCallback, useEffect, useState, useMemo } from 'react';
 import { useRouteStore, useVehicleStore, useUIStore, useTripWizardStore } from '../../store';
 import { routingService } from '../../services/RoutingService';
+import { campsiteService } from '../../services/CampsiteService';
 import { needsChannelCrossing } from '../../data/channelCrossings';
 import { FeatureFlags } from '../../config';
 import { cn } from '../../utils/cn';
@@ -131,6 +132,12 @@ const RouteCalculator: React.FC<RouteCalculatorProps> = ({ className, autoCalcul
 
       // Update store with calculated route
       setCalculatedRoute(routeResponse);
+
+      // Prefetch campsite data along the route corridor (fire-and-forget)
+      // This warms the cache so campsites appear faster when the map settles
+      if (routeResponse.routes[0]?.geometry) {
+        campsiteService.prefetchForRoute(routeResponse.routes[0].geometry).catch(() => {});
+      }
 
       // Update stats
       if (routeResponse.routes.length > 0) {
