@@ -17,7 +17,7 @@ interface EmptyStateCardProps {
 export const EmptyStateCard: React.FC<EmptyStateCardProps> = ({ onOpenWizard, children }) => {
   const { t } = useTranslation();
   return (
-    <div className="absolute top-2 md:top-4 left-1/2 -translate-x-1/2 z-30 w-full max-w-[calc(100%-1.5rem)] md:max-w-md px-2 md:px-4 pointer-events-none animate-in fade-in duration-300">
+    <div className="absolute top-2 md:top-4 left-1/2 -translate-x-1/2 z-20 w-full max-w-[calc(100%-7.5rem)] sm:max-w-sm md:max-w-md pointer-events-none animate-in fade-in duration-300">
       <div
         className={cn(
           'pointer-events-auto',
