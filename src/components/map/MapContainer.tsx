@@ -37,7 +37,7 @@ import { UnifiedSearch } from '../search';
 import ToolsMenu from './ToolsMenu';
 import EmptyStateCard from './EmptyStateCard';
 import ContextualNudge from '../ui/ContextualNudge';
-import { type Campsite } from '../../services/CampsiteService';
+import { campsiteService, type Campsite } from '../../services/CampsiteService';
 import 'leaflet/dist/leaflet.css';
 import '../../styles/animations.css';
 
@@ -431,7 +431,8 @@ const MapContainer: React.FC = () => {
   };
 
   // Campsite handlers
-  const handleCampsiteClick = (campsite: Campsite) => {
+  const handleCampsiteClick = async (campsite: Campsite) => {
+    // Show immediately, then enrich if needed
     setSelectedCampsite(campsite);
     closeAllPanels();
     setShowCampsiteDetails(true);
@@ -440,6 +441,12 @@ const MapContainer: React.FC = () => {
       type: 'info',
       message: `Selected ${campsite.name || campsite.type}`,
     });
+
+    // Enrich unnamed/addressless campsites with reverse geocoding (non-blocking)
+    const enriched = await campsiteService.enrichCampsiteWithLocation(campsite);
+    if (enriched !== campsite) {
+      setSelectedCampsite(enriched);
+    }
   };
 
   const handleCampsiteDetailsClose = () => {

@@ -17,7 +17,7 @@ import {
 } from '../../services/CampsiteService';
 import { type CampsiteFilterState } from './CampsiteFilter';
 import { createCampsiteIcon, createClusterIcon } from './CampsiteIcons';
-import { CheckCircle, AlertTriangle } from 'lucide-react';
+import { Star } from 'lucide-react';
 
 export interface SimpleCampsiteLayerProps {
   visibleTypes: CampsiteType[];
@@ -859,130 +859,90 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
                   </div>
                 </div>
               ) : (
-                <div className="campsite-popup-content p-3 min-w-0">
-                  {/* Enhanced popup content same as before */}
-                  <div className="flex items-start justify-between mb-2">
+                <div className="campsite-popup-content p-3 min-w-0 max-w-[260px]">
+                  {/* Photo thumbnail */}
+                  {campsite.imageUrl && (
+                    <div className="w-full h-24 rounded overflow-hidden mb-2 bg-neutral-100">
+                      <img
+                        src={campsite.imageUrl}
+                        alt={campsite.name}
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                        onError={e => {
+                          (e.target as HTMLImageElement).parentElement!.style.display = 'none';
+                        }}
+                      />
+                    </div>
+                  )}
+
+                  {/* Name + stars */}
+                  <div className="flex items-start justify-between mb-1">
                     <h3 className="font-medium text-neutral-900 text-sm leading-tight pr-2">
                       {campsite.name || `${campsite.type.replace('_', ' ')} #${campsite.id}`}
                     </h3>
-                    <span
-                      className={`px-2 py-1 rounded text-xs font-medium whitespace-nowrap ${
-                        campsite.vehicleCompatible
-                          ? 'bg-green-100 text-green-800'
-                          : 'bg-red-100 text-red-800'
-                      }`}
-                    >
-                      {campsite.vehicleCompatible ? (
-                        <>
-                          <CheckCircle className="inline-block w-3 h-3 mr-1" /> Compatible
-                        </>
-                      ) : (
-                        <>
-                          <AlertTriangle className="inline-block w-3 h-3 mr-1" /> Check Size
-                        </>
-                      )}
-                    </span>
-                  </div>
-
-                  <div className="mb-2">
-                    <div className="text-xs text-neutral-600 capitalize mb-1">
-                      {campsite.type.replace('_', ' ')}
-                    </div>
-
-                    {campsite.address && (
-                      <div className="text-xs text-neutral-700 mb-1">📍 {campsite.address}</div>
-                    )}
-                    {campsite.phone && (
-                      <div className="text-xs text-neutral-700 mb-1">📞 {campsite.phone}</div>
-                    )}
-                    {campsite.website && (
-                      <div className="text-xs text-neutral-700 mb-1">
-                        🌐{' '}
-                        <a
-                          href={campsite.website}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-primary-600 hover:text-primary-800 underline"
-                        >
-                          Website
-                        </a>
-                      </div>
-                    )}
-                    {campsite.opening_hours && (
-                      <div className="text-xs text-neutral-700 mb-1">
-                        🕒 {campsite.opening_hours}
+                    {campsite.stars && campsite.stars > 0 && (
+                      <div className="flex items-center gap-0.5 flex-shrink-0">
+                        {Array.from({ length: Math.min(campsite.stars, 5) }).map((_, i) => (
+                          <Star key={i} className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                        ))}
                       </div>
                     )}
                   </div>
 
-                  {/* Amenities */}
-                  {campsite.amenities && Object.keys(campsite.amenities).length > 0 && (
-                    <div className="mb-2">
-                      <div className="text-xs font-medium text-neutral-900 mb-1">Amenities:</div>
-                      <div className="flex flex-wrap gap-1">
+                  {/* Location */}
+                  {campsite.address && (
+                    <div className="text-xs text-neutral-600 mb-2">{campsite.address}</div>
+                  )}
+
+                  {/* Amenity icons (compact — max 6 chips) */}
+                  {campsite.amenities &&
+                    Object.entries(campsite.amenities).filter(([_, available]) => available)
+                      .length > 0 && (
+                      <div className="flex flex-wrap gap-1 mb-2">
                         {Object.entries(campsite.amenities)
                           .filter(([_, available]) => available)
+                          .slice(0, 6)
                           .map(([amenity]) => (
                             <span
                               key={amenity}
-                              className="px-1.5 py-0.5 bg-primary-100 text-primary-800 text-xs rounded"
+                              className="px-1.5 py-0.5 bg-green-100 text-green-800 text-[10px] rounded font-medium"
                             >
                               {amenity.replace(/_/g, ' ')}
                             </span>
                           ))}
                       </div>
+                    )}
+
+                  {/* Minimal data hint */}
+                  {campsite.dataCompleteness === 'minimal' && (
+                    <div className="text-xs text-amber-600 mb-2">
+                      Limited data — check Park4Night for more info
                     </div>
                   )}
 
-                  {/* Vehicle restrictions */}
-                  {!campsite.vehicleCompatible && campsite.restrictions && (
-                    <div className="mt-2 p-2 bg-red-50 border border-red-200 rounded">
-                      <div className="text-xs font-medium text-red-800 mb-1">
-                        <AlertTriangle className="inline-block w-3 h-3 mr-1" /> Vehicle
-                        Restrictions:
-                      </div>
-                      <div className="text-xs text-red-700">{campsite.restrictions}</div>
-                    </div>
-                  )}
-
-                  {/* Add to Route button */}
-                  <div className="mt-3 pt-2 border-t border-neutral-200">
+                  {/* Actions */}
+                  <div className="flex gap-2 pt-2 border-t border-neutral-200">
                     {isCampsiteInRoute(campsite) ? (
-                      <div className="flex items-center justify-center py-2 px-3 bg-green-50 text-green-700 rounded-md text-xs font-medium">
-                        <svg className="w-4 h-4 mr-1.5" fill="currentColor" viewBox="0 0 20 20">
-                          <path
-                            fillRule="evenodd"
-                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                        Already in route
+                      <div className="flex-1 flex items-center justify-center py-1.5 bg-green-50 text-green-700 rounded text-xs font-medium">
+                        ✓ In route
                       </div>
                     ) : (
                       <button
                         onClick={e => handleAddToRoute(campsite, e)}
-                        className="w-full flex items-center justify-center py-2 px-3 bg-primary-600 hover:bg-primary-700 text-white rounded-md text-sm font-medium transition-colors"
+                        className="flex-1 py-1.5 bg-primary-600 hover:bg-primary-700 text-white rounded text-xs font-medium transition-colors"
                       >
-                        <svg
-                          className="w-4 h-4 mr-1.5"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                          />
-                        </svg>
-                        Add to Route
+                        + Add to Route
                       </button>
                     )}
-                  </div>
-
-                  <div className="mt-2 text-xs text-neutral-500">
-                    Data from {campsite.source} • ID: {campsite.osmId || campsite.id}
+                    <button
+                      onClick={e => {
+                        e.stopPropagation();
+                        onCampsiteClick?.(campsite);
+                      }}
+                      className="flex-1 py-1.5 border border-neutral-300 text-neutral-700 hover:bg-neutral-50 rounded text-xs font-medium transition-colors"
+                    >
+                      View Details →
+                    </button>
                   </div>
                 </div>
               )}
