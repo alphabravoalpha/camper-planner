@@ -3,6 +3,7 @@
 
 import React, { Suspense, useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 const MapContainer = React.lazy(() => import('../components/map/MapContainer'));
 const TripWizard = React.lazy(() => import('../components/wizard/TripWizard'));
 import { useTripWizardStore, useRouteStore, useUIStore } from '../store';
@@ -13,52 +14,55 @@ import SEOHead from '../components/seo/SEOHead';
 
 const HERO_DISMISSED_KEY = 'planner-hero-dismissed';
 
-const WelcomeHero: React.FC<{ onDismiss: () => void }> = ({ onDismiss }) => (
-  <div className="relative overflow-hidden bg-gradient-to-r from-primary-800 to-primary-700 hidden sm:block">
-    {/* Content — slim single-line bar, hidden on mobile to save vertical space */}
-    <div className="relative px-4 sm:px-6 py-2.5">
-      <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
-        <div className="flex items-center gap-4 min-w-0">
-          <h2 className="text-sm sm:text-base font-display font-bold text-white whitespace-nowrap">
-            Plan Your European Camper Adventure
-          </h2>
-          <div className="hidden sm:flex items-center gap-2">
-            {[
-              { icon: MapPin, label: 'Vehicle-Safe Routing' },
-              { icon: Tent, label: 'Campsite Finder' },
-              { icon: Download, label: 'GPX Export' },
-            ].map(({ icon: Icon, label }) => (
-              <span
-                key={label}
-                className="inline-flex items-center gap-1 px-2 py-0.5 bg-white/15 text-white/90 text-xs font-medium rounded-full whitespace-nowrap"
-              >
-                <Icon className="w-3 h-3" />
-                {label}
-              </span>
-            ))}
+const WelcomeHero: React.FC<{ onDismiss: () => void }> = ({ onDismiss }) => {
+  const { t } = useTranslation();
+  return (
+    <div className="relative overflow-hidden bg-gradient-to-r from-primary-800 to-primary-700 hidden sm:block">
+      {/* Content — slim single-line bar, hidden on mobile to save vertical space */}
+      <div className="relative px-4 sm:px-6 py-2.5">
+        <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
+          <div className="flex items-center gap-4 min-w-0">
+            <h2 className="text-sm sm:text-base font-display font-bold text-white whitespace-nowrap">
+              {t('hero.title', 'Plan Your European Camper Adventure')}
+            </h2>
+            <div className="hidden sm:flex items-center gap-2">
+              {[
+                { icon: MapPin, label: t('hero.vehicleSafeRouting', 'Vehicle-Safe Routing') },
+                { icon: Tent, label: t('hero.campsiteFinder', 'Campsite Finder') },
+                { icon: Download, label: t('hero.gpxExport', 'GPX Export') },
+              ].map(({ icon: Icon, label }) => (
+                <span
+                  key={label}
+                  className="inline-flex items-center gap-1 px-2 py-0.5 bg-white/15 text-white/90 text-xs font-medium rounded-full whitespace-nowrap"
+                >
+                  <Icon className="w-3 h-3" />
+                  {label}
+                </span>
+              ))}
+            </div>
           </div>
-        </div>
 
-        <div className="flex items-center gap-3 flex-shrink-0">
-          <Link
-            to="/guides"
-            className="hidden md:inline-flex items-center gap-1 text-xs text-primary-200 hover:text-white transition-colors"
-          >
-            <BookOpen className="w-3.5 h-3.5" />
-            Travel guides
-          </Link>
-          <button
-            onClick={onDismiss}
-            className="p-1 text-white/60 hover:text-white hover:bg-white/10 rounded transition-colors"
-            aria-label="Dismiss welcome banner"
-          >
-            <X className="w-4 h-4" />
-          </button>
+          <div className="flex items-center gap-3 flex-shrink-0">
+            <Link
+              to="/guides"
+              className="hidden md:inline-flex items-center gap-1 text-xs text-primary-200 hover:text-white transition-colors"
+            >
+              <BookOpen className="w-3.5 h-3.5" />
+              {t('hero.travelGuides', 'Travel guides')}
+            </Link>
+            <button
+              onClick={onDismiss}
+              className="p-1 text-white/60 hover:text-white hover:bg-white/10 rounded transition-colors"
+              aria-label="Dismiss welcome banner"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 const PlannerPage: React.FC = () => {
   const { openWizard, wizardOpen } = useTripWizardStore();

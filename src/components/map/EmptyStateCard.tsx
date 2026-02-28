@@ -1,75 +1,62 @@
 import React from 'react';
-import { MapPin, Search, Wand2 } from 'lucide-react';
+import { Wand2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { cn } from '../../utils/cn';
 
 interface EmptyStateCardProps {
   onOpenWizard: () => void;
-  onSearchFocus: () => void;
+  children?: React.ReactNode;
 }
 
 /**
- * EmptyStateCard — shown centered on the map when there are 0 waypoints
+ * EmptyStateCard — shown at the top of the map when there are 0 waypoints
  * and the onboarding tour has completed or been skipped.
- * Compact card that directs users to the top search bar or Trip Wizard.
- * No duplicate search input — just a clear CTA.
+ * Wraps around the search bar (passed as children) and provides Trip Wizard
+ * link and helpful hints below.
  */
-export const EmptyStateCard: React.FC<EmptyStateCardProps> = ({ onOpenWizard, onSearchFocus }) => {
+export const EmptyStateCard: React.FC<EmptyStateCardProps> = ({ onOpenWizard, children }) => {
+  const { t } = useTranslation();
   return (
-    <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
+    <div className="absolute top-2 md:top-4 left-1/2 -translate-x-1/2 z-30 w-full max-w-[calc(100%-1.5rem)] md:max-w-md px-2 md:px-4 pointer-events-none animate-in fade-in duration-300">
       <div
         className={cn(
           'pointer-events-auto',
-          'bg-white rounded-xl shadow-lg',
-          'p-5 sm:p-8 max-w-sm sm:max-w-md w-full mx-4',
-          'flex flex-col items-center gap-3 sm:gap-4'
+          'bg-white/95 backdrop-blur-sm rounded-2xl shadow-lg ring-1 ring-black/5',
+          'p-3 sm:p-4',
+          'flex flex-col items-center gap-2.5 sm:gap-3'
         )}
       >
-        {/* Map icon — smaller on mobile */}
-        <div className="flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-blue-50">
-          <MapPin className="w-6 h-6 sm:w-8 sm:h-8 text-blue-500" />
-        </div>
-
-        {/* Headline */}
-        <h2 className="text-lg sm:text-xl font-semibold text-neutral-900 text-center">
-          Where are you starting from?
+        {/* Title */}
+        <h2 className="text-sm sm:text-base font-semibold text-neutral-900 text-center">
+          {t('emptyState.title', 'Start planning your trip')}
         </h2>
 
-        {/* Subtext — hidden on very small screens to save space */}
-        <p className="text-sm text-neutral-500 text-center hidden sm:block">
-          Search for an address, city, or campsite to begin planning your trip
-        </p>
+        {/* Search bar slot — the real UnifiedSearch component renders here */}
+        {children && <div className="w-full">{children}</div>}
 
-        {/* Primary CTA — focuses the real search bar */}
-        <button
-          type="button"
-          onClick={onSearchFocus}
-          className={cn(
-            'flex items-center justify-center gap-2 w-full',
-            'px-4 py-3 rounded-lg',
-            'bg-primary-600 hover:bg-primary-700 text-white',
-            'text-sm font-medium transition-colors'
-          )}
-        >
-          <Search className="w-4 h-4" />
-          Search for a location
-        </button>
+        {/* Divider with "or" */}
+        <div className="flex items-center gap-2 w-full">
+          <div className="flex-1 h-px bg-neutral-200" />
+          <span className="text-xs text-neutral-400">or</span>
+          <div className="flex-1 h-px bg-neutral-200" />
+        </div>
 
         {/* Trip Wizard link */}
         <button
           type="button"
           onClick={onOpenWizard}
-          className="flex items-center justify-center gap-1.5 text-sm text-primary-600 hover:text-primary-700 cursor-pointer"
+          className="flex items-center justify-center gap-1.5 text-sm text-primary-600 hover:text-primary-700 font-medium cursor-pointer transition-colors"
         >
           <Wand2 className="w-3.5 h-3.5" />
-          Use the Trip Wizard instead
+          {t('emptyState.tripWizard', 'Use the Trip Wizard')}
         </button>
 
         {/* Right-click / long-press hint */}
         <p className="text-xs text-neutral-400 text-center hidden sm:block">
-          Right-click the map to add a point directly
+          {t('emptyState.hint.rightClick', 'Right-click the map to add points directly')}
         </p>
         <p className="text-xs text-neutral-400 text-center sm:hidden">
-          Long press the map to add a point directly
+          {t('emptyState.hint.longPress', 'Long-press on mobile to add points')}
         </p>
       </div>
     </div>

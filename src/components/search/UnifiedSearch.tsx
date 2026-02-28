@@ -4,6 +4,8 @@
 
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import L, { latLng } from 'leaflet';
+import { LocateFixed } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { campsiteService } from '../../services/CampsiteService';
 import { useRouteStore, useVehicleStore, useUIStore, useMapStore } from '../../store';
 import { FeatureFlags } from '../../config';
@@ -20,6 +22,7 @@ export interface UnifiedSearchProps {
   onCampsiteSelect?: (campsite: Campsite) => void;
   onCampsiteHover?: (campsiteId: string | null) => void;
   onLocationSelect?: (location: { lat: number; lng: number; name: string }) => void;
+  onFocusChange?: (focused: boolean) => void;
   className?: string;
 }
 
@@ -52,8 +55,10 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
   onCampsiteSelect,
   onCampsiteHover,
   onLocationSelect,
+  onFocusChange,
   className,
 }) => {
+  const { t } = useTranslation();
   const { addWaypoint, waypoints } = useRouteStore();
   const { profile } = useVehicleStore();
   const { addNotification } = useUIStore();
@@ -72,6 +77,8 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const currentSearchRef = useRef<string>('');
+  const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const pendingAutoSelectRef = useRef(false);
 
   // Load search history
   useEffect(() => {
@@ -285,13 +292,21 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
 
         setResults(allResults);
         setShowResults(true);
+
+        // Auto-select first result if Enter was pressed before results arrived
+        if (pendingAutoSelectRef.current && allResults.length > 0) {
+          pendingAutoSelectRef.current = false;
+          handleResultSelect(allResults[0]);
+        }
       } catch (error) {
         console.error('Search error:', error);
         setResults([]);
+        pendingAutoSelectRef.current = false;
       } finally {
         setIsSearching(false);
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [map, visibleTypes, profile, calculateDistance, isSearching]
   );
 
@@ -305,6 +320,9 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
         currentSearchRef.current = '';
       }
     }, 300);
+
+    // Store timer ref so Enter key handler can cancel it
+    debounceTimerRef.current = timer;
 
     return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -465,28 +483,37 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
   // Handle keyboard navigation
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
-      if (!showResults || results.length === 0) return;
-
       switch (e.key) {
         case 'ArrowDown':
+          if (!showResults || results.length === 0) return;
           e.preventDefault();
           setSelectedIndex(prev => Math.min(prev + 1, results.length - 1));
           break;
         case 'ArrowUp':
+          if (!showResults || results.length === 0) return;
           e.preventDefault();
           setSelectedIndex(prev => Math.max(prev - 1, -1));
           break;
         case 'Enter':
           e.preventDefault();
-          // Don't select while search is still in progress - wait for results
-          if (isSearching) {
+          if (isSearching || (results.length === 0 && query.trim().length >= 2)) {
+            // Search is in progress or hasn't started yet — trigger immediate search
+            // Cancel pending debounce timer
+            if (debounceTimerRef.current) {
+              clearTimeout(debounceTimerRef.current);
+              debounceTimerRef.current = null;
+            }
+            // Set flag to auto-select first result when search completes
+            pendingAutoSelectRef.current = true;
+            // Force clear the isSearching guard so performSearch runs
+            currentSearchRef.current = '';
+            performSearch(query);
             return;
           }
-          // If no item selected with arrow keys, select the first result
+          // Results exist — select highlighted or first
           if (selectedIndex >= 0 && selectedIndex < results.length) {
             handleResultSelect(results[selectedIndex]);
           } else if (results.length > 0) {
-            // Auto-select first result when pressing Enter without arrow navigation
             handleResultSelect(results[0]);
           }
           break;
@@ -497,7 +524,7 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
           break;
       }
     },
-    [showResults, results, selectedIndex, handleResultSelect, isSearching]
+    [showResults, results, selectedIndex, handleResultSelect, isSearching, query, performSearch]
   );
 
   // Clear search
@@ -575,6 +602,24 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
     [map, setCenter, setZoom, addNotification]
   );
 
+  // Handle input focus
+  const handleInputFocus = useCallback(() => {
+    setShowResults(true);
+    onFocusChange?.(true);
+  }, [onFocusChange]);
+
+  // Handle input blur
+  const handleInputBlur = useCallback(() => {
+    setTimeout(() => setShowResults(false), 200);
+    // Only report blur (unfocused) if search is empty and dropdown is closed
+    // This prevents dismissing the EmptyStateCard while the user is mid-search
+    setTimeout(() => {
+      if (!query.trim() && !showResults) {
+        onFocusChange?.(false);
+      }
+    }, 250);
+  }, [onFocusChange, query, showResults]);
+
   if (!FeatureFlags.CAMPSITE_DISPLAY) return null;
 
   // Group results by type
@@ -607,15 +652,19 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
             value={query}
             onChange={handleInputChange}
             onKeyDown={handleKeyDown}
-            onFocus={() => setShowResults(true)}
-            onBlur={() => setTimeout(() => setShowResults(false), 200)}
-            placeholder="Search for a location or campsite..."
-            className="flex-1 py-3 pr-4 text-sm bg-transparent border-0 focus:ring-0 focus:outline-none placeholder-neutral-400"
+            onFocus={handleInputFocus}
+            onBlur={handleInputBlur}
+            placeholder={t(
+              'map.searchPlaceholder',
+              'Search a city, region, address, or postcode...'
+            )}
+            className="flex-1 py-3 pr-2 text-sm bg-transparent border-0 focus:ring-0 focus:outline-none placeholder-neutral-400"
           />
           {query && (
             <button
               onClick={clearSearch}
-              className="px-3 py-2 text-neutral-400 hover:text-neutral-600 transition-colors"
+              className="px-2 py-2 text-neutral-400 hover:text-neutral-600 transition-colors"
+              aria-label="Clear search"
             >
               <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
@@ -628,9 +677,28 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
             </button>
           )}
           {isSearching && (
-            <div className="px-3">
+            <div className="px-2">
               <div className="animate-spin h-5 w-5 border-2 border-primary-500 border-t-transparent rounded-full"></div>
             </div>
+          )}
+          {/* Location icon button — always visible, triggers geolocation */}
+          {!isSearching && (
+            <button
+              onClick={handleUseMyLocation}
+              disabled={isLocating}
+              className={cn(
+                'px-2.5 py-2 text-neutral-400 hover:text-primary-600 transition-colors flex-shrink-0',
+                isLocating && 'text-primary-500'
+              )}
+              aria-label="Use my current location"
+              title="Use my current location"
+            >
+              {isLocating ? (
+                <div className="animate-spin h-[18px] w-[18px] border-2 border-primary-500 border-t-transparent rounded-full" />
+              ) : (
+                <LocateFixed className="h-[18px] w-[18px]" />
+              )}
+            </button>
           )}
         </div>
       </div>

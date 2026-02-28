@@ -18,7 +18,7 @@ export const FeatureFlags = {
 
   // Language Support
   MULTI_LANGUAGE_FRAMEWORK: true, // Phase 1: i18n framework ready
-  MULTI_LANGUAGE_COMPLETE: false, // V2: Complete translations
+  MULTI_LANGUAGE_COMPLETE: true, // Enabled: English + German complete, stubs for FR/ES/IT
 
   // V2 Features (Explicitly disabled in V1)
   COMMUNITY_FEATURES: false, // User reviews, route sharing

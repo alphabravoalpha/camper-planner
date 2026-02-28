@@ -5,7 +5,6 @@ import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Route, BookOpen } from 'lucide-react';
-import { FeatureFlags } from '../../config';
 import { cn } from '../../utils/cn';
 import { useUIStore, useVehicleStore, useTripWizardStore } from '../../store';
 import { LanguageSelector } from '../ui';
@@ -28,7 +27,7 @@ const Header: React.FC = () => {
 
   const navigationItems = [
     { path: '/', label: t('nav.planner'), key: 'planner' },
-    { path: '/guides', label: 'Guides', key: 'guides', icon: BookOpen },
+    { path: '/guides', label: t('nav.guides'), key: 'guides', icon: BookOpen },
     { path: '/about', label: t('nav.about'), key: 'about' },
     { path: '/help', label: t('nav.help'), key: 'help' },
   ];
@@ -105,22 +104,22 @@ const Header: React.FC = () => {
               <Link to="/" className="flex items-center space-x-3">
                 <img
                   src="/logo.png"
-                  alt="European Camper Planner"
+                  alt={t('nav.siteName')}
                   className="w-8 h-8"
                   width={32}
                   height={32}
                 />
                 <div className="hidden sm:block">
                   <h1 className="text-lg lg:text-xl font-display font-extrabold text-neutral-900">
-                    European Camper Planner
+                    {t('nav.siteName')}
                   </h1>
                   <p className="text-xs text-primary-600 font-display font-semibold tracking-wider uppercase hidden lg:block">
-                    Free trip planning for Europe
+                    {t('nav.tagline')}
                   </p>
                 </div>
                 <div className="sm:hidden">
                   <h1 className="text-lg font-display font-extrabold text-neutral-900">
-                    Camper Planner
+                    {t('nav.siteNameShort')}
                   </h1>
                 </div>
               </Link>
@@ -157,10 +156,8 @@ const Header: React.FC = () => {
                 </Link>
               )}
 
-              {/* Language Selector — hidden until multi-language translations are complete */}
-              {FeatureFlags.MULTI_LANGUAGE_COMPLETE && (
-                <LanguageSelector variant="dropdown" size="sm" />
-              )}
+              {/* Language Selector */}
+              <LanguageSelector variant="dropdown" size="sm" />
 
               {/* Mobile menu button */}
               <button
@@ -224,7 +221,7 @@ const Header: React.FC = () => {
                       : 'text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50'
                   )}
                 >
-                  Support
+                  {t('nav.support')}
                 </Link>
                 {location.pathname !== '/' && (
                   <Link

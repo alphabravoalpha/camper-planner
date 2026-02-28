@@ -531,31 +531,79 @@ const MapContainer: React.FC = () => {
         )}
       </LeafletMapContainer>
 
-      {/* Unified Search Bar - positioned at top center */}
+      {/* Unified Search Bar + Empty State Card
+           When no waypoints and search not active: search bar renders INSIDE EmptyStateCard
+           Otherwise: search bar renders standalone at top center */}
       {FeatureFlags.CAMPSITE_DISPLAY && (!isTourActive || isSearchVisibleDuringTour) && (
-        <div
-          data-tour-id="search-bar"
-          className="absolute top-2 md:top-4 left-1/2 transform -translate-x-1/2 z-30 w-full max-w-[calc(100%-1.5rem)] md:max-w-md px-2 md:px-4"
-        >
-          <ComponentErrorBoundary componentName="UnifiedSearch">
-            <UnifiedSearch
-              map={mapInstance}
-              visibleTypes={campsiteFilterState.visibleTypes}
-              onCampsiteSelect={handleCampsiteClick}
-              onCampsiteHover={setHighlightedCampsiteId}
-              onLocationSelect={location => {
-                // Auto-show campsites when navigating to a searched location
-                if (!campsitesVisible) {
-                  setCampsitesVisible(true);
-                }
-                addNotification({
-                  type: 'info',
-                  message: `Navigated to ${location.name}`,
-                });
+        <>
+          {/* Empty State Card wrapping the search bar — shown when no waypoints and not searching */}
+          {!isTourActive && waypoints.length === 0 && !isSearchActive && (
+            <EmptyStateCard
+              onOpenWizard={() => {
+                closeAllPanels();
+                openWizard();
               }}
-            />
-          </ComponentErrorBoundary>
-        </div>
+            >
+              <div data-tour-id="search-bar">
+                <ComponentErrorBoundary componentName="UnifiedSearch">
+                  <UnifiedSearch
+                    map={mapInstance}
+                    visibleTypes={campsiteFilterState.visibleTypes}
+                    onCampsiteSelect={handleCampsiteClick}
+                    onCampsiteHover={setHighlightedCampsiteId}
+                    onFocusChange={focused => {
+                      if (focused) {
+                        setIsSearchActive(true);
+                      }
+                    }}
+                    onLocationSelect={location => {
+                      if (!campsitesVisible) {
+                        setCampsitesVisible(true);
+                      }
+                      addNotification({
+                        type: 'info',
+                        message: `Navigated to ${location.name}`,
+                      });
+                    }}
+                  />
+                </ComponentErrorBoundary>
+              </div>
+            </EmptyStateCard>
+          )}
+
+          {/* Standalone search bar — shown when search is active, waypoints exist, or during tour */}
+          {(isSearchActive ||
+            waypoints.length > 0 ||
+            (isTourActive && isSearchVisibleDuringTour)) && (
+            <div
+              data-tour-id="search-bar"
+              className="absolute top-2 md:top-4 left-1/2 transform -translate-x-1/2 z-30 w-full max-w-[calc(100%-1.5rem)] md:max-w-md px-2 md:px-4"
+            >
+              <ComponentErrorBoundary componentName="UnifiedSearch">
+                <UnifiedSearch
+                  map={mapInstance}
+                  visibleTypes={campsiteFilterState.visibleTypes}
+                  onCampsiteSelect={handleCampsiteClick}
+                  onCampsiteHover={setHighlightedCampsiteId}
+                  onFocusChange={focused => {
+                    if (focused) {
+                      setIsSearchActive(true);
+                    }
+                  }}
+                  onLocationSelect={location => {
+                    if (!campsitesVisible) {
+                      setCampsitesVisible(true);
+                    }
+                    addNotification({
+                      type: 'info',
+                      message: `Navigated to ${location.name}`,
+                    });
+                  }}
+                />
+              </ComponentErrorBoundary>
+            </div>
+          )}
+        </>
       )}
 
       {/* Waypoint hint removed — "Plan a Trip" floating button and search bar serve this purpose */}
@@ -912,24 +960,7 @@ const MapContainer: React.FC = () => {
         </div>
       )}
 
-      {/* Empty State Card — shown when no waypoints and tour not active */}
-      {!isTourActive && waypoints.length === 0 && !isSearchActive && (
-        <EmptyStateCard
-          onOpenWizard={() => {
-            closeAllPanels();
-            openWizard();
-          }}
-          onSearchFocus={() => {
-            setIsSearchActive(true);
-            setTimeout(() => {
-              const searchInput = document.querySelector(
-                '[data-tour-id="search-bar"] input'
-              ) as HTMLInputElement;
-              searchInput?.focus();
-            }, 50);
-          }}
-        />
-      )}
+      {/* Empty State Card now integrated with search bar above — see "Unified Search Bar + Empty State Card" section */}
 
       {/* Contextual Nudges — progressive discovery toasts */}
       <ContextualNudge

@@ -355,6 +355,39 @@ class CampsiteCacheManager {
   }
 }
 
+/**
+ * Normalize search queries for geocoding.
+ * Uppercases queries that match European postcode patterns for better Nominatim matching.
+ * UK postcodes (e.g., "sw1a 1aa") and Dutch postcodes (e.g., "1012 ab") are indexed
+ * in uppercase in OSM data, so lowercase input can return incorrect results.
+ */
+function normalizeSearchQuery(query: string): string {
+  const trimmed = query.trim();
+
+  // UK postcode: A9 9AA, A99 9AA, A9A 9AA, AA9 9AA, AA99 9AA, AA9A 9AA
+  const ukPostcode = /^[A-Za-z]{1,2}\d[A-Za-z\d]?\s*\d[A-Za-z]{2}$/;
+
+  // Dutch postcode: 1234 AB
+  const dutchPostcode = /^\d{4}\s*[A-Za-z]{2}$/;
+
+  // Irish Eircode: D02 AF30
+  const irishEircode = /^[A-Za-z]\d{2}\s*[A-Za-z\d]{4}$/;
+
+  // Canadian-style alphanumeric: K1A 0B1
+  const alphanumericPostcode = /^[A-Za-z]\d[A-Za-z]\s*\d[A-Za-z]\d$/;
+
+  if (
+    ukPostcode.test(trimmed) ||
+    dutchPostcode.test(trimmed) ||
+    irishEircode.test(trimmed) ||
+    alphanumericPostcode.test(trimmed)
+  ) {
+    return trimmed.toUpperCase();
+  }
+
+  return trimmed;
+}
+
 export class CampsiteService extends DataService {
   private cacheManager: CampsiteCacheManager;
   private _fallbackService?: CampsiteService;
@@ -413,9 +446,12 @@ export class CampsiteService extends DataService {
       }
       this.lastNominatimRequest = Date.now();
 
+      // Normalize postcode-like queries to uppercase for better Nominatim matching
+      const normalizedQuery = normalizeSearchQuery(query);
+
       // Use direct fetch for geocoding to bypass DataService complexity
       const params = new URLSearchParams({
-        q: query,
+        q: normalizedQuery,
         format: 'json',
         limit: String(limit),
         addressdetails: '1',
@@ -524,7 +560,7 @@ export class CampsiteService extends DataService {
           )
           .sort((a: GeocodeResult, b: GeocodeResult) => {
             // Sort: exact name matches first, then startsWith, then by importance
-            const queryLower = query.toLowerCase().trim();
+            const queryLower = normalizedQuery.toLowerCase();
             const aName = (a.name || '').toLowerCase();
             const bName = (b.name || '').toLowerCase();
 

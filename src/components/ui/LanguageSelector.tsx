@@ -3,23 +3,21 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FeatureFlags } from '@/config';
+import { Globe } from 'lucide-react';
 import { cn } from '@/utils/cn';
 
 interface Language {
   code: string;
   name: string;
   nativeName: string;
-  flag: string;
 }
 
 const supportedLanguages: Language[] = [
-  { code: 'en', name: 'English', nativeName: 'English', flag: '🇺🇸' },
-  { code: 'de', name: 'German', nativeName: 'Deutsch', flag: '🇩🇪' },
-  { code: 'fr', name: 'French', nativeName: 'Français', flag: '🇫🇷' },
-  { code: 'es', name: 'Spanish', nativeName: 'Español', flag: '🇪🇸' },
-  { code: 'it', name: 'Italian', nativeName: 'Italiano', flag: '🇮🇹' },
-  { code: 'nl', name: 'Dutch', nativeName: 'Nederlands', flag: '🇳🇱' },
+  { code: 'en', name: 'English', nativeName: 'English' },
+  { code: 'de', name: 'German', nativeName: 'Deutsch' },
+  { code: 'fr', name: 'French', nativeName: 'Fran\u00e7ais' },
+  { code: 'es', name: 'Spanish', nativeName: 'Espa\u00f1ol' },
+  { code: 'it', name: 'Italian', nativeName: 'Italiano' },
 ];
 
 interface LanguageSelectorProps {
@@ -55,9 +53,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   }, []);
 
   const handleLanguageChange = (languageCode: string) => {
-    if (FeatureFlags.MULTI_LANGUAGE_COMPLETE) {
-      i18n.changeLanguage(languageCode);
-    }
+    i18n.changeLanguage(languageCode);
     setIsOpen(false);
   };
 
@@ -67,58 +63,46 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
     lg: 'text-base px-4 py-3',
   };
 
-  // Simple button variant (when translations are not ready)
-  if (variant === 'button' || !FeatureFlags.MULTI_LANGUAGE_COMPLETE) {
+  // Simple button variant
+  if (variant === 'button') {
     return (
       <button
         type="button"
         className={cn(
-          'flex items-center space-x-1 rounded-md font-medium transition-colors',
-          FeatureFlags.MULTI_LANGUAGE_COMPLETE
-            ? 'text-neutral-700 hover:text-neutral-900 hover:bg-neutral-100'
-            : 'text-neutral-400 cursor-not-allowed',
+          'flex items-center gap-1.5 rounded-md font-medium transition-colors',
+          'text-neutral-700 hover:text-neutral-900 hover:bg-neutral-100',
           sizeClasses[size],
           className
         )}
-        disabled={!FeatureFlags.MULTI_LANGUAGE_COMPLETE}
-        title={
-          FeatureFlags.MULTI_LANGUAGE_COMPLETE
-            ? 'Select language'
-            : 'Language selection coming soon'
-        }
+        onClick={() => setIsOpen(!isOpen)}
+        title="Select language"
       >
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"
-          />
-        </svg>
+        <Globe className="w-4 h-4" />
         <span>{currentLanguage.code.toUpperCase()}</span>
       </button>
     );
   }
 
-  // Full dropdown variant (when translations are ready)
+  // Full dropdown variant
   return (
     <div className={cn('relative', className)} ref={dropdownRef}>
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
-          'flex items-center space-x-2 rounded-md font-medium transition-colors',
-          'text-neutral-700 hover:text-neutral-900 hover:bg-neutral-100',
+          'flex items-center gap-1.5 rounded-md font-medium transition-colors',
+          'text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100',
           'focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500',
           sizeClasses[size]
         )}
         aria-expanded={isOpen}
         aria-haspopup="true"
+        aria-label="Select language"
       >
-        <span className="text-base">{currentLanguage.flag}</span>
+        <Globe className="w-4 h-4" />
         <span>{currentLanguage.code.toUpperCase()}</span>
         <svg
-          className={cn('w-4 h-4 transition-transform', isOpen && 'rotate-180')}
+          className={cn('w-3 h-3 transition-transform', isOpen && 'rotate-180')}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -128,22 +112,23 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 z-50">
+        <div className="absolute right-0 mt-2 w-44 bg-white rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 z-50">
           <div className="py-1" role="menu">
             {supportedLanguages.map(language => (
               <button
                 key={language.code}
                 onClick={() => handleLanguageChange(language.code)}
                 className={cn(
-                  'flex items-center w-full px-4 py-2 text-sm text-left hover:bg-neutral-50 transition-colors',
+                  'flex items-center w-full px-3 py-2 text-sm text-left hover:bg-neutral-50 transition-colors',
                   language.code === currentLanguage.code && 'bg-primary-50 text-primary-700'
                 )}
                 role="menuitem"
               >
-                <span className="text-base mr-3">{language.flag}</span>
                 <div className="flex-1">
                   <div className="font-medium">{language.nativeName}</div>
-                  <div className="text-xs text-neutral-500">{language.name}</div>
+                  {language.nativeName !== language.name && (
+                    <div className="text-xs text-neutral-500">{language.name}</div>
+                  )}
                 </div>
                 {language.code === currentLanguage.code && (
                   <svg className="w-4 h-4 text-primary-600" fill="currentColor" viewBox="0 0 20 20">
@@ -159,7 +144,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
           </div>
 
           {/* Footer */}
-          <div className="border-t border-neutral-100 px-4 py-2">
+          <div className="border-t border-neutral-100 px-3 py-2">
             <p className="text-xs text-neutral-500 text-center">
               Missing your language?{' '}
               <a href="/help" className="text-primary-600 hover:text-primary-500">
