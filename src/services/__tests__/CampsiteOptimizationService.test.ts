@@ -76,6 +76,12 @@ describe('CampsiteOptimizationService', () => {
         playground: false,
         laundry: false,
         swimming_pool: false,
+        sanitary_dump_station: false,
+        waste_disposal: false,
+        hot_water: false,
+        kitchen: false,
+        picnic_table: false,
+        bbq: false,
       },
       access: {
         motorhome: true,

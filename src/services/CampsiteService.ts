@@ -60,6 +60,12 @@ export interface Campsite {
     playground: boolean;
     laundry: boolean;
     swimming_pool: boolean;
+    sanitary_dump_station: boolean;
+    waste_disposal: boolean;
+    hot_water: boolean;
+    kitchen: boolean;
+    picnic_table: boolean;
+    bbq: boolean;
   };
 
   // Vehicle access
@@ -102,6 +108,31 @@ export interface Campsite {
   source: 'openstreetmap' | 'opencampingmap';
   last_updated: number; // timestamp
   quality_score?: number; // 0-1 based on data completeness
+
+  // Extended fields (Task 1 enrichment)
+  stars?: number; // 1-5, from tourism board ratings
+  description?: string; // Free text from OSM
+  operator?: string; // Who runs the campsite
+  imageUrl?: string; // Wikimedia Commons thumbnail or direct URL
+  policies?: {
+    dogs?: string; // 'yes' | 'no' | 'leashed'
+    fires?: boolean;
+    bbq?: boolean;
+    nudism?: boolean;
+  };
+  capacityDetails?: {
+    pitches?: number;
+    tents?: number;
+    caravans?: number;
+  };
+  powerSupply?: string; // e.g. "16A", "CEE 16A"
+  structuredAddress?: {
+    street?: string;
+    city?: string;
+    postcode?: string;
+    country?: string;
+  };
+  dataCompleteness?: 'minimal' | 'basic' | 'detailed';
 }
 
 export interface CampsiteMetadata {
@@ -1094,6 +1125,12 @@ export class CampsiteService extends DataService {
         playground: this.parseBoolean(tags.playground),
         laundry: this.parseBoolean(tags.laundry),
         swimming_pool: this.parseBoolean(tags.swimming_pool),
+        sanitary_dump_station: this.parseBoolean(tags.sanitary_dump_station),
+        waste_disposal: this.parseBoolean(tags.waste_disposal),
+        hot_water: this.parseBoolean(tags.hot_water),
+        kitchen: this.parseBoolean(tags.kitchen),
+        picnic_table: this.parseBoolean(tags.picnic_table),
+        bbq: this.parseBoolean(tags.bbq),
       },
 
       access: {
@@ -1115,6 +1152,31 @@ export class CampsiteService extends DataService {
       fee: tags.fee,
       reservation: tags.reservation,
       capacity: this.parseNumber(tags.capacity),
+
+      // Extended fields
+      stars: this.parseNumber(tags.stars),
+      description: tags.description || tags['description:en'],
+      operator: tags.operator,
+      imageUrl: this.resolveImageUrl(tags),
+      policies: {
+        dogs: tags.dog,
+        fires: this.parseBoolean(tags.openfire),
+        bbq: this.parseBoolean(tags.bbq),
+        nudism: this.parseBoolean(tags.nudism),
+      },
+      capacityDetails: {
+        pitches: this.parseNumber(tags['capacity:pitches']),
+        tents: this.parseNumber(tags['capacity:tents']),
+        caravans: this.parseNumber(tags['capacity:caravans']),
+      },
+      powerSupply: tags.power_supply,
+      structuredAddress: {
+        street: tags['addr:street'],
+        city: tags['addr:city'],
+        postcode: tags['addr:postcode'],
+        country: tags['addr:country'],
+      },
+      dataCompleteness: this.calculateDataCompleteness(tags),
 
       source: 'openstreetmap',
       last_updated: Date.now(),
@@ -1151,6 +1213,12 @@ export class CampsiteService extends DataService {
         playground: Boolean(props.playground),
         laundry: Boolean(props.laundry),
         swimming_pool: Boolean(props.swimming_pool),
+        sanitary_dump_station: Boolean(props.sanitary_dump_station),
+        waste_disposal: Boolean(props.waste_disposal),
+        hot_water: Boolean(props.hot_water),
+        kitchen: Boolean(props.kitchen),
+        picnic_table: Boolean(props.picnic_table),
+        bbq: Boolean(props.bbq),
       },
 
       access: {
@@ -1232,6 +1300,51 @@ export class CampsiteService extends DataService {
 
     score = checks.filter(Boolean).length / checks.length;
     return Math.round(score * 100) / 100;
+  }
+
+  /**
+   * Resolve image URL from OSM tags (Wikimedia Commons or direct URL)
+   */
+  private resolveImageUrl(tags: Record<string, string>): string | undefined {
+    const wikiFile = tags.wikimedia_commons || tags['image:wikimedia'];
+    if (wikiFile) {
+      const filename = wikiFile.replace(/^File:/, '');
+      return `https://commons.wikimedia.org/w/thumb.php?f=${encodeURIComponent(filename)}&w=400`;
+    }
+    if (tags.image && tags.image.startsWith('http')) {
+      return tags.image;
+    }
+    return undefined;
+  }
+
+  /**
+   * Calculate data completeness tier based on available tags
+   */
+  private calculateDataCompleteness(
+    tags: Record<string, string>
+  ): 'minimal' | 'basic' | 'detailed' {
+    const hasName = !!tags.name;
+    const amenityTags = [
+      tags.drinking_water,
+      tags.electricity,
+      tags.shower,
+      tags.toilets,
+      tags.wifi,
+      tags.internet_access,
+      tags.swimming_pool,
+      tags.shop,
+      tags.restaurant,
+      tags.playground,
+      tags.laundry,
+      tags.sanitary_dump_station,
+    ];
+    const amenityCount = amenityTags.filter(v => v === 'yes').length;
+    const hasContact = !!(tags.phone || tags.website || tags.email);
+    const hasHours = !!tags.opening_hours;
+
+    if (hasName && amenityCount >= 3 && hasContact && hasHours) return 'detailed';
+    if (hasName && (amenityCount >= 1 || hasContact)) return 'basic';
+    return 'minimal';
   }
 
   /**
