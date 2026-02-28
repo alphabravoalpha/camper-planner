@@ -16,7 +16,7 @@ zero-cost, privacy-first solution.
 camperplanning.com (GitHub Pages, DNS via Squarespace) — live with HTTPS
 **Monetization:** Booking.com (via CJ, pending), Eurocampings (via
 TradeTracker), camping.info (via Awin), Amazon Associates UK + Ko-fi donations
-(live, embedded on Support page) **Last Updated:** February 27, 2026
+(live, embedded on Support page) **Last Updated:** February 28, 2026
 
 ## Technology Stack (Implemented)
 
@@ -388,6 +388,12 @@ Core feature differentiator - routes must respect:
 - `docs/plans/lighthouse-results.md` - Lighthouse audit results (Perf 76, A11y
   100, Best Practices 96, SEO 100)
 
+### Search UX Research
+
+- `docs/research/search-ux-comparison.md` - Competitive analysis of search UX
+  across Google Maps, Booking.com, Rome2Rio, Park4Night, and Campendium (9
+  dimensions, 9 ranked recommendations)
+
 ## Current Development Priority: Post-Launch Growth
 
 ### Current Status: LIVE IN PRODUCTION
@@ -448,7 +454,44 @@ Core feature differentiator - routes must respect:
 - Multi-language content pages
 - ~~Progressive Web App (PWA) support~~ ✅ Implemented (Feb 25, 2026)
 
-## Recent Updates (February 27, 2026)
+## Recent Updates (February 28, 2026)
+
+### Search UX Improvements
+
+Research-driven search improvements based on competitive analysis of 5 major
+travel/mapping sites (Google Maps, Booking.com, Rome2Rio, Park4Night,
+Campendium). Research documented in `docs/research/search-ux-comparison.md`.
+
+**Files modified:** `CampsiteService.ts`, `UnifiedSearch.tsx`,
+`MapContainer.tsx`
+
+- **Cleaner location results:** Added `subtitle` field to GeocodeResult built
+  from Nominatim address components ("Catalonia, Spain" instead of full
+  display_name). Fallback chain: state/county + country, then last 2 parts of
+  display_name
+- **Smart zoom with boundingbox:** Location selection now uses `map.fitBounds()`
+  with Nominatim's `boundingbox` instead of fixed zoom=10. Countries zoom out
+  (~5-6), cities zoom to ~12, villages zoom tighter. Store synced via
+  `map.once('moveend')`
+- **Viewport-biased geocoding:** Added `viewbox` parameter to
+  `geocodeLocationMultiple()` — passes current map bounds to Nominatim with
+  `bounded=0` (soft bias, not restriction)
+- **Contextual empty state:** Search dropdown now shows on focus even with no
+  history — displays guidance text, popular destination chips (Barcelona, Lake
+  Garda, Provence, Algarve, Norwegian Fjords, Tuscany), and "Use my current
+  location" button
+- **Popular destinations fallback:** No-results state now shows clickable
+  destination chips instead of just "Try a different search term"
+- **"Use my location" in dropdown:** Geolocation button in search dropdown (10s
+  timeout, 5-min cache). Shows in both guidance state and at bottom of search
+  history
+- **Auto-show campsites on search:** Selecting a location from search now
+  automatically enables campsite markers on the map (`campsitesVisible = true`
+  in `MapContainer.onLocationSelect`)
+- **Fixed dead sort code:** Sort in `geocodeLocationMultiple()` was operating on
+  raw API response after a return statement — moved to chain on `.map()`
+
+## Previous Updates (February 27, 2026)
 
 ### Lighthouse Audit & Fixes (PR #13)
 
