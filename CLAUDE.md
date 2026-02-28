@@ -16,7 +16,8 @@ zero-cost, privacy-first solution.
 camperplanning.com (GitHub Pages, DNS via Squarespace) — live with HTTPS
 **Monetization:** Booking.com (via CJ, pending), Eurocampings (via
 TradeTracker), camping.info (via Awin), Amazon Associates UK + Ko-fi donations
-(live, embedded on Support page) **Last Updated:** February 28, 2026
+(live, embedded on Support page) **Last Updated:** February 28, 2026 (campsite
+performance update)
 
 ## Technology Stack (Implemented)
 
@@ -141,7 +142,8 @@ All external APIs are abstracted through service classes:
 
 - **RoutingService** - OpenRouteService integration with vehicle restrictions
 - **CampsiteService** - Overpass API for OSM campsite data (35KB, full
-  implementation)
+  implementation) with overlap-aware caching, tiered queries, and route
+  prefetching
 - **CampsiteFilterService** - Advanced campsite filtering and search
 - **CampsiteOptimizationService** - Campsite recommendation algorithms
 - **RouteOptimizationService** - TSP solver for multi-stop optimization
@@ -403,7 +405,7 @@ Core feature differentiator - routes must respect:
 **Technical Summary:**
 
 - 14,109+ lines of code written
-- **357 service tests** (99.7% pass rate) ✅
+- **359 service tests** (99.7% pass rate) ✅
 - **86% service coverage** (12/14 services tested) ✅
 - **7 critical bugs fixed** during testing ✅
 - Production build succeeds with all new pages code-split ✅
@@ -455,6 +457,42 @@ Core feature differentiator - routes must respect:
 - ~~Progressive Web App (PWA) support~~ ✅ Implemented (Feb 25, 2026)
 
 ## Recent Updates (February 28, 2026)
+
+### Campsite Marker Performance (9 Optimizations)
+
+Campsite markers were taking 2-15 seconds to appear after map movement. Applied
+9 complementary optimizations across 5 files to reduce perceived load time to
+0.5-4 seconds.
+
+**Files modified:** `CampsiteIcons.ts`, `SimpleCampsiteLayer.tsx`,
+`MapContainer.tsx`, `CampsiteService.ts`, `RouteCalculator.tsx`
+
+- **Icon memoization** (`CampsiteIcons.ts`): Map-based cache (max 200 entries)
+  keyed by visual properties (type, amenity, selection state, size). Avoids
+  rebuilding SVG HTML on every render. Cluster icons cached by child count.
+- **O(n) grid-based clustering** (`SimpleCampsiteLayer.tsx`): Replaced O(n²)
+  brute-force Haversine distance comparison with spatial grid hashing. Cell size
+  adapts to zoom level. Merges adjacent cells via 8-neighbor lookup.
+- **Campsites default to ON** (`MapContainer.tsx`): `campsitesVisible` initial
+  state changed from `false` to `true` — markers load immediately at zoom >= 7.
+- **Overlap-aware cache** (`CampsiteService.ts`): Tracks `lastLoadedBounds` and
+  `lastLoadedCampsites`. When 70%+ of new viewport overlaps previous load,
+  reuses cached data and only fetches gap strips via `computeGapRegions()`.
+- **Tighter bounding box** (`SimpleCampsiteLayer.tsx`): 10% buffer around
+  viewport bounds (was over-fetching). Pan threshold reduced from 30% to 20%
+  since overlap-aware cache handles incremental loads.
+- **Tiered Overpass queries** (`CampsiteService.ts`): Primary query fetches core
+  types only (camp_site, caravan_site, aire). Secondary query (relations,
+  wilderness huts, highway rest areas) fires in background after 2-second delay
+  to respect Overpass 2 req/s rate limit.
+- **Route corridor prefetching** (`RouteCalculator.tsx` + `CampsiteService.ts`):
+  `prefetchForRoute()` warms the cache along the route geometry immediately
+  after route calculation completes.
+- **Progressive batched rendering** (`SimpleCampsiteLayer.tsx`): Renders 80
+  markers per animation frame via `requestAnimationFrame`. Prevents UI jank when
+  hundreds of markers load simultaneously.
+- **Improved loading indicator** (`SimpleCampsiteLayer.tsx`): Shows count of
+  campsites found so far plus progressive rendering progress bar.
 
 ### Search UX Improvements
 
