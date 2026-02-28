@@ -537,6 +537,10 @@ const MapContainer: React.FC = () => {
               onCampsiteSelect={handleCampsiteClick}
               onCampsiteHover={setHighlightedCampsiteId}
               onLocationSelect={location => {
+                // Auto-show campsites when navigating to a searched location
+                if (!campsitesVisible) {
+                  setCampsitesVisible(true);
+                }
                 addNotification({
                   type: 'info',
                   message: `Navigated to ${location.name}`,
