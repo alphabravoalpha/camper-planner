@@ -28,12 +28,23 @@ interface SearchResult {
   id: string;
   name: string;
   description?: string;
+  subtitle?: string;
+  boundingbox?: [string, string, string, string];
   lat: number;
   lng: number;
   distance?: number;
   campsite?: Campsite;
   vehicleCompatible?: boolean;
 }
+
+const POPULAR_DESTINATIONS = [
+  { name: 'Barcelona', lat: 41.3874, lng: 2.1686 },
+  { name: 'Lake Garda', lat: 45.6383, lng: 10.651 },
+  { name: 'Provence', lat: 43.9493, lng: 6.0679 },
+  { name: 'Algarve', lat: 37.0179, lng: -7.9304 },
+  { name: 'Norwegian Fjords', lat: 61.2, lng: 6.75 },
+  { name: 'Tuscany', lat: 43.3188, lng: 11.3308 },
+];
 
 const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
   map,
@@ -55,6 +66,8 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
   const [searchError, setSearchError] = useState<string | null>(null);
+  const [isLocating, setIsLocating] = useState(false);
+  const [locationError, setLocationError] = useState<string | null>(null);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -141,7 +154,16 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
         let geocodedLocations: Awaited<ReturnType<typeof campsiteService.geocodeLocationMultiple>> =
           [];
         try {
-          geocodedLocations = await campsiteService.geocodeLocationMultiple(searchQuery, 5);
+          // Pass current map viewport to bias results toward what the user is viewing
+          const bounds = map?.getBounds();
+          const viewbox: [number, number, number, number] | undefined = bounds
+            ? [bounds.getWest(), bounds.getSouth(), bounds.getEast(), bounds.getNorth()]
+            : undefined;
+          geocodedLocations = await campsiteService.geocodeLocationMultiple(
+            searchQuery,
+            5,
+            viewbox
+          );
         } catch (geocodeError) {
           console.error('Geocoding failed:', geocodeError);
           setSearchError('Unable to search locations. Please try again.');
@@ -184,7 +206,9 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
               type: 'location',
               id: `location-${location.lat}-${location.lng}`,
               name: location.name || location.display_name.split(',')[0],
-              description: location.display_name, // Full name for disambiguation
+              description: location.display_name, // Full name for tooltip
+              subtitle: location.subtitle, // Clean "Region, Country" for display
+              boundingbox: location.boundingbox,
               lat: location.lat,
               lng: location.lng,
             });
@@ -290,7 +314,7 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
     setSelectedIndex(-1);
-    setShowResults(e.target.value.trim().length >= 2);
+    setShowResults(true);
   }, []);
 
   // Handle result selection
@@ -300,11 +324,24 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
       setShowResults(false);
 
       if (result.type === 'location') {
-        // Navigate to location - update store so MapController stays in sync
-        setCenter([result.lat, result.lng]);
-        setZoom(10);
-        if (map) {
-          map.setView([result.lat, result.lng], 10, { animate: true });
+        // Navigate to location using boundingbox for smart zoom
+        if (map && result.boundingbox) {
+          const [south, north, west, east] = result.boundingbox.map(Number);
+          const bounds = L.latLngBounds([south, west], [north, east]);
+          map.fitBounds(bounds, { padding: [50, 50], animate: true, maxZoom: 14 });
+          // Sync store after fitBounds completes
+          map.once('moveend', () => {
+            const c = map.getCenter();
+            setCenter([c.lat, c.lng]);
+            setZoom(map.getZoom());
+          });
+        } else {
+          // Fallback: no boundingbox available
+          setCenter([result.lat, result.lng]);
+          setZoom(10);
+          if (map) {
+            map.setView([result.lat, result.lng], 10, { animate: true });
+          }
         }
         onLocationSelect?.({ lat: result.lat, lng: result.lng, name: result.name });
         addNotification({
@@ -367,11 +404,22 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
         message: `Added "${result.name}" to your route`,
       });
 
-      // Navigate to the location and clear search
-      setCenter([result.lat, result.lng]);
-      setZoom(10);
-      if (map) {
-        map.setView([result.lat, result.lng], 10);
+      // Navigate to the location using smart zoom and clear search
+      if (map && result.boundingbox) {
+        const [south, north, west, east] = result.boundingbox.map(Number);
+        const bounds = L.latLngBounds([south, west], [north, east]);
+        map.fitBounds(bounds, { padding: [50, 50], animate: true, maxZoom: 14 });
+        map.once('moveend', () => {
+          const c = map.getCenter();
+          setCenter([c.lat, c.lng]);
+          setZoom(map.getZoom());
+        });
+      } else {
+        setCenter([result.lat, result.lng]);
+        setZoom(10);
+        if (map) {
+          map.setView([result.lat, result.lng], 10);
+        }
       }
       setQuery('');
       setShowResults(false);
@@ -460,6 +508,73 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
     setSelectedIndex(-1);
   }, []);
 
+  // Handle "Use my location" click
+  const handleUseMyLocation = useCallback(() => {
+    if (!navigator.geolocation) {
+      setLocationError('Geolocation is not supported by your browser');
+      return;
+    }
+
+    setIsLocating(true);
+    setLocationError(null);
+
+    navigator.geolocation.getCurrentPosition(
+      position => {
+        const { latitude, longitude } = position.coords;
+        setIsLocating(false);
+        setShowResults(false);
+
+        setCenter([latitude, longitude]);
+        setZoom(12);
+        if (map) {
+          map.setView([latitude, longitude], 12, { animate: true });
+        }
+
+        addNotification({
+          type: 'success',
+          message: 'Moved to your current location',
+        });
+      },
+      error => {
+        setIsLocating(false);
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            setLocationError(
+              'Location permission denied. Please allow location access in your browser.'
+            );
+            break;
+          case error.POSITION_UNAVAILABLE:
+            setLocationError('Location unavailable. Please try again.');
+            break;
+          case error.TIMEOUT:
+            setLocationError('Location request timed out. Please try again.');
+            break;
+          default:
+            setLocationError('Unable to get your location. Please try again.');
+        }
+      },
+      { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 }
+    );
+  }, [map, setCenter, setZoom, addNotification]);
+
+  // Handle popular destination click
+  const handlePopularDestinationClick = useCallback(
+    (dest: (typeof POPULAR_DESTINATIONS)[number]) => {
+      setQuery(dest.name);
+      setShowResults(false);
+      setCenter([dest.lat, dest.lng]);
+      setZoom(10);
+      if (map) {
+        map.setView([dest.lat, dest.lng], 10, { animate: true });
+      }
+      addNotification({
+        type: 'success',
+        message: `Navigated to ${dest.name}`,
+      });
+    },
+    [map, setCenter, setZoom, addNotification]
+  );
+
   if (!FeatureFlags.CAMPSITE_DISPLAY) return null;
 
   // Group results by type
@@ -492,7 +607,7 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
             value={query}
             onChange={handleInputChange}
             onKeyDown={handleKeyDown}
-            onFocus={() => setShowResults(query.trim().length >= 2 || searchHistory.length > 0)}
+            onFocus={() => setShowResults(true)}
             onBlur={() => setTimeout(() => setShowResults(false), 200)}
             placeholder="Search for a location or campsite..."
             className="flex-1 py-3 pr-4 text-sm bg-transparent border-0 focus:ring-0 focus:outline-none placeholder-neutral-400"
@@ -521,7 +636,7 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
       </div>
 
       {/* Results dropdown */}
-      {showResults && (results.length > 0 || searchHistory.length > 0 || searchError) && (
+      {showResults && (
         <div
           ref={dropdownRef}
           className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-float border-0 ring-1 ring-black/5 z-50 max-h-96 overflow-y-auto"
@@ -621,7 +736,7 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
                           className="text-xs text-neutral-500 truncate"
                           title={result.description}
                         >
-                          {result.description || 'Go to this location'}
+                          {result.subtitle || result.description || 'Go to this location'}
                         </div>
                       </div>
                     </div>
@@ -784,7 +899,18 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
                 />
               </svg>
               <p className="text-sm text-neutral-500">No results found for &quot;{query}&quot;</p>
-              <p className="text-xs text-neutral-400 mt-1">Try a different search term</p>
+              <p className="text-xs text-neutral-400 mt-1">Try a city name, region, or country</p>
+              <div className="flex flex-wrap justify-center gap-2 mt-3">
+                {POPULAR_DESTINATIONS.map(dest => (
+                  <button
+                    key={dest.name}
+                    onClick={() => handlePopularDestinationClick(dest)}
+                    className="px-3 py-1 text-xs bg-neutral-100 text-neutral-600 rounded-full hover:bg-primary-50 hover:text-primary-700 transition-colors"
+                  >
+                    {dest.name}
+                  </button>
+                ))}
+              </div>
             </div>
           )}
 
@@ -829,8 +955,85 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
                   <span className="text-sm text-neutral-700">{historyItem}</span>
                 </button>
               ))}
+              {/* Use my location at bottom of history */}
+              <button
+                onClick={handleUseMyLocation}
+                disabled={isLocating}
+                className="w-full px-4 py-3 text-left flex items-center space-x-3 hover:bg-neutral-50 transition-colors border-t border-neutral-100"
+              >
+                {isLocating ? (
+                  <div className="w-4 h-4 animate-spin border-2 border-primary-500 border-t-transparent rounded-full" />
+                ) : (
+                  <svg
+                    className="w-4 h-4 text-primary-500"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3A8.994 8.994 0 0013 3.06V1h-2v2.06A8.994 8.994 0 003.06 11H1v2h2.06A8.994 8.994 0 0011 20.94V23h2v-2.06A8.994 8.994 0 0020.94 13H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"
+                    />
+                  </svg>
+                )}
+                <span className="text-sm text-primary-600 font-medium">
+                  {isLocating ? 'Getting location...' : 'Use my current location'}
+                </span>
+              </button>
             </div>
           )}
+
+          {/* Guidance state: shown when no query and no history */}
+          {query.trim().length < 2 &&
+            searchHistory.length === 0 &&
+            results.length === 0 &&
+            !isSearching && (
+              <div className="px-4 py-4">
+                <p className="text-sm text-neutral-500 mb-3">
+                  Search for a city, region, or campsite...
+                </p>
+                <div className="flex flex-wrap gap-2 mb-3">
+                  {POPULAR_DESTINATIONS.map(dest => (
+                    <button
+                      key={dest.name}
+                      onClick={() => handlePopularDestinationClick(dest)}
+                      className="px-3 py-1 text-xs bg-neutral-100 text-neutral-600 rounded-full hover:bg-primary-50 hover:text-primary-700 transition-colors"
+                    >
+                      {dest.name}
+                    </button>
+                  ))}
+                </div>
+                <button
+                  onClick={handleUseMyLocation}
+                  disabled={isLocating}
+                  className="w-full px-3 py-2.5 text-left flex items-center space-x-3 hover:bg-neutral-50 rounded-lg transition-colors"
+                >
+                  {isLocating ? (
+                    <div className="w-4 h-4 animate-spin border-2 border-primary-500 border-t-transparent rounded-full" />
+                  ) : (
+                    <svg
+                      className="w-4 h-4 text-primary-500"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3A8.994 8.994 0 0013 3.06V1h-2v2.06A8.994 8.994 0 003.06 11H1v2h2.06A8.994 8.994 0 0011 20.94V23h2v-2.06A8.994 8.994 0 0020.94 13H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"
+                      />
+                    </svg>
+                  )}
+                  <span className="text-sm text-primary-600 font-medium">
+                    {isLocating ? 'Getting location...' : 'Use my current location'}
+                  </span>
+                </button>
+                {locationError && <p className="text-xs text-red-500 mt-2 px-1">{locationError}</p>}
+              </div>
+            )}
         </div>
       )}
     </div>

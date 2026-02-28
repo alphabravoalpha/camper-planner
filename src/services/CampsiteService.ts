@@ -123,6 +123,7 @@ export interface GeocodeResult {
   type: string; // city, region, etc
   importance: number; // 0-1 relevance score
   name?: string; // Short name (first part of display_name)
+  subtitle?: string; // Clean "Region, Country" for display
 }
 
 // Error types for campsite data
@@ -363,7 +364,11 @@ export class CampsiteService extends DataService {
    * Returns multiple results to allow user disambiguation
    * Supports: city names, addresses, postcodes, landmarks
    */
-  async geocodeLocationMultiple(query: string, limit: number = 5): Promise<GeocodeResult[]> {
+  async geocodeLocationMultiple(
+    query: string,
+    limit: number = 5,
+    viewbox?: [number, number, number, number] // [west, south, east, north] — biases results toward this viewport
+  ): Promise<GeocodeResult[]> {
     try {
       // Enforce Nominatim's 1 request/second policy
       const now = Date.now();
@@ -386,6 +391,13 @@ export class CampsiteService extends DataService {
           'gb,ie,fr,de,es,pt,it,nl,be,at,ch,dk,no,se,fi,pl,cz,hr,si,gr,hu,sk,ro,bg,ee,lv,lt,lu,mt,cy',
       });
 
+      // Bias results toward current map viewport (does not restrict, just ranks higher)
+      if (viewbox) {
+        const [west, south, east, north] = viewbox;
+        params.set('viewbox', `${west},${north},${east},${south}`);
+        params.set('bounded', '0');
+      }
+
       // Use proxy in development, direct Nominatim URL in production
       const isDevelopment = import.meta.env.DEV;
       const geocodeUrl = isDevelopment
@@ -406,71 +418,91 @@ export class CampsiteService extends DataService {
       const data = await response.json();
 
       if (data && data.length > 0) {
-        return data.map(
-          (result: {
-            display_name: string;
-            lat: string;
-            lon: string;
-            boundingbox: [string, string, string, string];
-            type?: string;
-            class?: string;
-            importance?: string;
-            address?: {
-              house_number?: string;
-              road?: string;
-              postcode?: string;
-              city?: string;
-              town?: string;
-              village?: string;
-              county?: string;
-              state?: string;
-              country?: string;
-            };
-          }) => {
-            // Build a better short name for addresses
-            let shortName = result.display_name.split(',')[0].trim();
+        return data
+          .map(
+            (result: {
+              display_name: string;
+              lat: string;
+              lon: string;
+              boundingbox: [string, string, string, string];
+              type?: string;
+              class?: string;
+              importance?: string;
+              address?: {
+                house_number?: string;
+                road?: string;
+                postcode?: string;
+                city?: string;
+                town?: string;
+                village?: string;
+                county?: string;
+                state?: string;
+                country?: string;
+              };
+            }) => {
+              // Build a better short name for addresses
+              let shortName = result.display_name.split(',')[0].trim();
 
-            // For addresses with house numbers, show street address
-            if (result.address) {
-              const addr = result.address;
-              if (addr.house_number && addr.road) {
-                shortName = `${addr.house_number} ${addr.road}`;
-              } else if (addr.road) {
-                shortName = addr.road;
-              } else if (addr.postcode) {
-                const place = addr.city || addr.town || addr.village || '';
-                shortName = place ? `${addr.postcode}, ${place}` : addr.postcode;
+              // For addresses with house numbers, show street address
+              if (result.address) {
+                const addr = result.address;
+                if (addr.house_number && addr.road) {
+                  shortName = `${addr.house_number} ${addr.road}`;
+                } else if (addr.road) {
+                  shortName = addr.road;
+                } else if (addr.postcode) {
+                  const place = addr.city || addr.town || addr.village || '';
+                  shortName = place ? `${addr.postcode}, ${place}` : addr.postcode;
+                }
               }
+
+              // Build a clean subtitle: "Region, Country" for disambiguation
+              let subtitle = '';
+              if (result.address) {
+                const addr = result.address;
+                const region = addr.state || addr.county || '';
+                const country = addr.country || '';
+                if (region && country) {
+                  subtitle = `${region}, ${country}`;
+                } else if (country) {
+                  subtitle = country;
+                }
+              }
+              // Fallback: extract last 2 parts of display_name (typically region, country)
+              if (!subtitle) {
+                const parts = result.display_name.split(',').map((s: string) => s.trim());
+                subtitle =
+                  parts.length >= 2 ? parts.slice(-2).join(', ') : parts[parts.length - 1] || '';
+              }
+
+              return {
+                display_name: result.display_name,
+                lat: parseFloat(result.lat),
+                lng: parseFloat(result.lon),
+                boundingbox: result.boundingbox,
+                type: result.type || result.class || 'place',
+                importance: parseFloat(result.importance || '0.5'),
+                name: shortName,
+                subtitle,
+              };
             }
+          )
+          .sort((a: GeocodeResult, b: GeocodeResult) => {
+            // Sort: exact name matches first, then startsWith, then by importance
+            const queryLower = query.toLowerCase().trim();
+            const aName = (a.name || '').toLowerCase();
+            const bName = (b.name || '').toLowerCase();
 
-            return {
-              display_name: result.display_name,
-              lat: parseFloat(result.lat),
-              lng: parseFloat(result.lon),
-              boundingbox: result.boundingbox,
-              type: result.type || result.class || 'place',
-              importance: parseFloat(result.importance || '0.5'),
-              name: shortName,
-            };
-          }
-        );
+            const aExact = aName === queryLower ? 1 : 0;
+            const bExact = bName === queryLower ? 1 : 0;
+            if (aExact !== bExact) return bExact - aExact;
 
-        // Sort results: exact name matches first, then by importance
-        const queryLower = query.toLowerCase().trim();
-        return data.sort((a: GeocodeResult, b: GeocodeResult) => {
-          const aName = (a.name || '').toLowerCase();
-          const bName = (b.name || '').toLowerCase();
+            const aStarts = aName.startsWith(queryLower) ? 1 : 0;
+            const bStarts = bName.startsWith(queryLower) ? 1 : 0;
+            if (aStarts !== bStarts) return bStarts - aStarts;
 
-          const aExact = aName === queryLower ? 1 : 0;
-          const bExact = bName === queryLower ? 1 : 0;
-          if (aExact !== bExact) return bExact - aExact;
-
-          const aStarts = aName.startsWith(queryLower) ? 1 : 0;
-          const bStarts = bName.startsWith(queryLower) ? 1 : 0;
-          if (aStarts !== bStarts) return bStarts - aStarts;
-
-          return (b.importance || 0) - (a.importance || 0);
-        });
+            return (b.importance || 0) - (a.importance || 0);
+          });
       }
 
       return [];
