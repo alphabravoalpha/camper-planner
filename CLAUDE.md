@@ -17,7 +17,7 @@ camperplanning.com (GitHub Pages, DNS via Squarespace) — live with HTTPS
 **Monetization:** Booking.com (via CJ, pending), Eurocampings (via
 TradeTracker), camping.info (via Awin), Amazon Associates UK + Ko-fi donations
 (live, embedded on Support page) **Last Updated:** February 28, 2026 (campsite
-performance update)
+data enrichment)
 
 ## Technology Stack (Implemented)
 
@@ -142,8 +142,10 @@ All external APIs are abstracted through service classes:
 
 - **RoutingService** - OpenRouteService integration with vehicle restrictions
 - **CampsiteService** - Overpass API for OSM campsite data (35KB, full
-  implementation) with overlap-aware caching, tiered queries, and route
-  prefetching
+  implementation) with overlap-aware caching, tiered queries, route prefetching,
+  extended OSM tag parsing (30+ tags), reverse geocoding for unnamed campsites,
+  Wikimedia Commons image resolution, data completeness tiers
+  (minimal/basic/detailed)
 - **CampsiteFilterService** - Advanced campsite filtering and search
 - **CampsiteOptimizationService** - Campsite recommendation algorithms
 - **RouteOptimizationService** - TSP solver for multi-stop optimization
@@ -317,7 +319,7 @@ Core feature differentiator - routes must respect:
 
 **Testing Tiers:**
 
-1. MUST TEST: Services (86% coverage, 357 tests) ✅ COMPLETE
+1. MUST TEST: Services (86% coverage, 392 tests) ✅ COMPLETE
 2. SHOULD TEST: Critical components (MapContainer, WaypointManager)
 3. CAN SKIP: Simple UI (buttons, forms) - manual verification only
 4. PRE-LAUNCH: 5 integration tests + cross-browser/device validation
@@ -405,7 +407,7 @@ Core feature differentiator - routes must respect:
 **Technical Summary:**
 
 - 14,109+ lines of code written
-- **359 service tests** (99.7% pass rate) ✅
+- **392 service tests** (100% pass rate) ✅
 - **86% service coverage** (12/14 services tested) ✅
 - **7 critical bugs fixed** during testing ✅
 - Production build succeeds with all new pages code-split ✅
@@ -457,6 +459,59 @@ Core feature differentiator - routes must respect:
 - ~~Progressive Web App (PWA) support~~ ✅ Implemented (Feb 25, 2026)
 
 ## Recent Updates (February 28, 2026)
+
+### Campsite Data Enrichment
+
+Campsite detail cards were frequently sparse and unusable — many showed only an
+OSM ID as name, 0/10 amenities, no address, and "No booking links available".
+Research confirmed no public APIs from Park4Night, ADAC, or similar platforms.
+Solution: extract more from OSM data we already receive, add reverse geocoding,
+Wikimedia photos, and "Find on" links to information platforms.
+
+**Design doc:** `docs/plans/2026-02-28-campsite-data-enrichment-design.md`
+**Implementation plan:**
+`docs/plans/2026-02-28-campsite-data-enrichment-plan.md`
+
+**Files modified:** `CampsiteService.ts`, `CampsiteDetails.tsx`,
+`SimpleCampsiteLayer.tsx`, `MapContainer.tsx`, `CampsiteService.test.ts` (new),
+`BookingService.test.ts`, `CampsiteFilterService.test.ts`,
+`CampsiteOptimizationService.test.ts`
+
+- **Extended Campsite interface:** Added 15+ new fields — `stars`,
+  `description`, `operator`, `imageUrl`, `policies` (dogs/fires/bbq/nudism),
+  `capacityDetails`, `powerSupply`, `structuredAddress`, `dataCompleteness`
+  tier, 6 new amenity booleans (sanitary_dump_station, waste_disposal,
+  hot_water, kitchen, picnic_table, bbq)
+- **Extended OSM tag parsing:** `parseOSMElement` now extracts 30+ tags
+  including `stars`, `description:en`, `operator`, `dog`, `openfire`, `bbq`,
+  `nudism`, `capacity:*`, `power_supply`, `addr:*`, `image`, `wikimedia_commons`
+- **Wikimedia Commons photos:** `resolveImageUrl()` constructs thumbnail URLs
+  from `wikimedia_commons` or `image` tags. ~10-15% of European campsites have
+  image tags. Hero image displayed at top of CampsiteDetails with lazy loading
+  and error fallback
+- **Data completeness tiers:** `calculateDataCompleteness()` classifies
+  campsites as `detailed` (name + 3+ amenities + contact + hours), `basic`
+  (name + 1 amenity or contact), or `minimal`. Drives display logic and sort
+  order
+- **Reverse geocoding:** `reverseGeocode()` and `enrichCampsiteWithLocation()`
+  methods. On-demand when user clicks a campsite marker — unnamed campsites
+  ("campsite 1903123151") become "Campsite near {town}, {region}". Respects
+  Nominatim 1 req/sec rate limit
+- **"Research This Campsite" section:** External links to Park4Night (reviews),
+  Google Maps (photos/Street View), PiNCAMP/ADAC (inspection ratings). Separate
+  from affiliate "Book This Campsite" section to protect revenue
+- **Hidden empty sections:** 0 amenities, no contact info, and no booking links
+  are now hidden rather than displayed as empty. "Limited data" amber banner
+  with OSM edit link shown for `minimal` tier campsites
+- **Compact map popup:** Redesigned popup with photo thumbnail, star rating, max
+  6 amenity chips, "Limited data" hint, two-button layout (Add to Route + View
+  Details). Removed verbose vehicle badge, contact info, and debug footer
+- **Completeness-based sort:** `filterAndScoreCampsites` now sorts by
+  completeness tier first (detailed > basic > minimal), then by proximity to map
+  center within each tier
+- **Async enrichment on click:** `handleCampsiteClick` in MapContainer.tsx is
+  now async — shows detail card immediately, then enriches unnamed/addressless
+  campsites via reverse geocoding in the background
 
 ### Campsite Marker Performance (9 Optimizations)
 
