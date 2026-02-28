@@ -1460,19 +1460,21 @@ export class CampsiteService extends DataService {
       });
     }
 
-    // Sort by quality score and distance from center
+    // Sort by data completeness tier, then proximity to center
     const centerLat = (request.bounds.north + request.bounds.south) / 2;
     const centerLng = (request.bounds.east + request.bounds.west) / 2;
+    const tierOrder: Record<string, number> = { detailed: 0, basic: 1, minimal: 2 };
 
     return filtered.sort((a, b) => {
+      // Primary: data completeness tier
+      const tierA = tierOrder[a.dataCompleteness || 'minimal'];
+      const tierB = tierOrder[b.dataCompleteness || 'minimal'];
+      if (tierA !== tierB) return tierA - tierB;
+
+      // Secondary: proximity to center
       const distanceA = this.calculateDistance(centerLat, centerLng, a.lat, a.lng);
       const distanceB = this.calculateDistance(centerLat, centerLng, b.lat, b.lng);
-
-      // Combine quality score and proximity
-      const scoreA = (a.quality_score || 0.5) - distanceA / 100; // Normalize distance
-      const scoreB = (b.quality_score || 0.5) - distanceB / 100;
-
-      return scoreB - scoreA;
+      return distanceA - distanceB;
     });
   }
 
