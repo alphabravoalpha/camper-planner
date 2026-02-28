@@ -16,8 +16,8 @@ zero-cost, privacy-first solution.
 camperplanning.com (GitHub Pages, DNS via Squarespace) — live with HTTPS
 **Monetization:** Booking.com (via CJ, pending), Eurocampings (via
 TradeTracker), camping.info (via Awin), Amazon Associates UK + Ko-fi donations
-(live, embedded on Support page) **Last Updated:** February 28, 2026 (campsite
-data enrichment)
+(live, embedded on Support page) **Last Updated:** February 28, 2026 (search UX
+overhaul, German i18n, rebrand)
 
 ## Technology Stack (Implemented)
 
@@ -27,7 +27,8 @@ data enrichment)
 - **Styling:** Tailwind CSS 3.3 with custom utilities
 - **Routing API:** OpenRouteService (primary), OSRM (backup)
 - **Data Sources:** Overpass API (OSM), Nominatim geocoding
-- **Internationalization:** React-i18next 13.0
+- **Internationalization:** React-i18next 13.0 +
+  i18next-browser-languagedetector (English + German live, FR/ES/IT stubs)
 - **Testing:** Vitest 1.0 + React Testing Library
 - **Code Quality:** ESLint 9.36 + Prettier 3.0 + Husky pre-commit hooks +
   lint-staged
@@ -360,7 +361,11 @@ Core feature differentiator - routes must respect:
 - `src/components/layout/Footer.tsx` - Site footer (hidden on planner, shown on
   content pages)
 - `src/config/features.ts` - Feature flags (AFFILIATE_LINKS: true, ANALYTICS:
-  true, ADVANCED_BOOKING: false)
+  true, MULTI_LANGUAGE_COMPLETE: true, ADVANCED_BOOKING: false)
+- `src/i18n/index.ts` - i18n config with browser language detection
+- `src/i18n/locales/en.ts` - English translations (120+ keys)
+- `src/i18n/locales/de.ts` - German translations (120+ keys, complete)
+- `src/i18n/locales/{fr,es,it}.ts` - Stub locale files (fall back to English)
 - `src/services/BookingService.ts` - Affiliate link generation (Booking.com,
   Eurocampings, camping.info)
 - `src/utils/analytics.ts` - Privacy-first localStorage analytics (enabled by
@@ -455,10 +460,51 @@ Core feature differentiator - routes must respect:
 
 - Advanced booking integration (availability, price comparison)
 - Community features (trip sharing, reviews)
-- Multi-language content pages
+- ~~Multi-language UI~~ ✅ German live (Feb 28, 2026), FR/ES/IT stubs ready
+- Multi-language content pages (blog articles, legal pages)
 - ~~Progressive Web App (PWA) support~~ ✅ Implemented (Feb 25, 2026)
 
 ## Recent Updates (February 28, 2026)
+
+### Search Bar UX Overhaul, German i18n & Rebrand
+
+7 improvements shipped in a single batch, deployed to production.
+
+**Files modified:** `EmptyStateCard.tsx`, `MapContainer.tsx`,
+`UnifiedSearch.tsx`, `Header.tsx`, `LanguageSelector.tsx`, `CampsiteService.ts`,
+`PlannerPage.tsx`, `features.ts`, `i18n/index.ts`
+
+**Files created:** `src/i18n/locales/en.ts`, `src/i18n/locales/de.ts`,
+`src/i18n/locales/fr.ts`, `src/i18n/locales/es.ts`, `src/i18n/locales/it.ts`
+
+- **EmptyStateCard redesign:** Repositioned from centered map overlay to
+  top-positioned card that wraps around the real search bar. "Search for a
+  location" button removed (redundant with embedded search bar). Keeps Trip
+  Wizard link and right-click/long-press hints. Dismisses when search input is
+  focused (fixed root bug: `isSearchActive` now set on input focus, not just via
+  EmptyStateCard button click)
+- **Enter key double-press fix:** First Enter now cancels debounce timer,
+  triggers immediate `performSearch()`, and sets `pendingAutoSelectRef` flag
+  that auto-selects the first result when search completes
+- **Postcode case normalization:** `normalizeSearchQuery()` helper in
+  CampsiteService.ts detects UK, Dutch, Irish, and Canadian-style postcode
+  patterns via regex and uppercases them before sending to Nominatim. Lowercase
+  "sn15 4qq" now works identically to "SN15 4QQ"
+- **Header rebrand:** "European Camper Planner" → "CamperPlanning.com",
+  subheading → "Free European trip planning", mobile → "CamperPlanning"
+- **German translations:** Full 120+ key German locale file
+  (`src/i18n/locales/de.ts`). `i18next-browser-languagedetector` added for
+  auto-detection (navigator → localStorage → htmlTag). Language selector (globe
+  icon + code) in header with dropdown. Preference stored in localStorage key
+  `camper-planner-language`. `MULTI_LANGUAGE_COMPLETE: true` feature flag
+  enabled. Stub locale files for FR/ES/IT (fall back to EN)
+- **Search placeholder:** Changed to "Search a city, region, address, or
+  postcode..." — tells users addresses/postcodes are accepted
+- **Location icon in search bar:** Persistent `LocateFixed` crosshair icon
+  inside search input (right side). Triggers geolocation on click (10s timeout,
+  5-min cache). Shows spinner while locating
+- **i18n wiring:** EmptyStateCard, UnifiedSearch placeholder, PlannerPage hero
+  banner all use `t()` translation keys with English fallback defaults
 
 ### Campsite Data Enrichment
 
