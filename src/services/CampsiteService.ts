@@ -557,6 +557,97 @@ export class CampsiteService extends DataService {
   }
 
   /**
+   * Reverse geocode coordinates to get a human-readable location name.
+   * Returns "near {town}, {region}" format.
+   * Respects Nominatim 1 req/sec rate limit.
+   */
+  async reverseGeocode(
+    lat: number,
+    lng: number
+  ): Promise<{ displayName: string; city?: string; region?: string; country?: string } | null> {
+    try {
+      // Enforce Nominatim rate limit
+      const now = Date.now();
+      const timeSinceLastRequest = now - this.lastNominatimRequest;
+      if (timeSinceLastRequest < 1100) {
+        await new Promise(resolve => setTimeout(resolve, 1100 - timeSinceLastRequest));
+      }
+      this.lastNominatimRequest = Date.now();
+
+      const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&zoom=10&addressdetails=1`;
+      const response = await fetch(url, {
+        headers: {
+          'User-Agent': 'EuropeanCamperPlanner/1.0 (camperplanning.com)',
+        },
+      });
+
+      if (!response.ok) return null;
+
+      const data = await response.json();
+      const addr = data.address || {};
+
+      const city = addr.city || addr.town || addr.village || addr.hamlet;
+      const region = addr.state || addr.county;
+      const country = addr.country;
+
+      // Build "near {city}, {region}" format
+      const parts: string[] = [];
+      if (city) parts.push(city);
+      if (region) parts.push(region);
+      if (!city && !region && country) parts.push(country);
+
+      return {
+        displayName: parts.length > 0 ? parts.join(', ') : data.display_name?.split(',')[0] || '',
+        city,
+        region,
+        country,
+      };
+    } catch {
+      return null;
+    }
+  }
+
+  /**
+   * Enrich a campsite with reverse geocoded address if it has no name or address.
+   * Call this on-demand when user clicks a campsite marker.
+   */
+  async enrichCampsiteWithLocation(campsite: Campsite): Promise<Campsite> {
+    const isUnnamed =
+      !campsite.name || /^(campsite|caravan_site|aire|parking)\s+\d+$/i.test(campsite.name);
+    const noAddress = !campsite.address && !campsite.structuredAddress?.city;
+
+    if (!isUnnamed && !noAddress) return campsite;
+
+    const location = await this.reverseGeocode(campsite.lat, campsite.lng);
+    if (!location) return campsite;
+
+    const enriched = { ...campsite };
+
+    if (isUnnamed && location.displayName) {
+      const typeLabel =
+        campsite.type === 'aire'
+          ? 'Aire'
+          : campsite.type === 'caravan_site'
+            ? 'Caravan site'
+            : 'Campsite';
+      enriched.name = `${typeLabel} near ${location.displayName}`;
+    }
+
+    if (noAddress && location.displayName) {
+      enriched.address = location.displayName;
+      if (!enriched.structuredAddress?.city) {
+        enriched.structuredAddress = {
+          ...enriched.structuredAddress,
+          city: location.city,
+          country: location.country,
+        };
+      }
+    }
+
+    return enriched;
+  }
+
+  /**
    * Search for campsites within bounding box or by location
    */
   async searchCampsites(request: CampsiteRequest): Promise<CampsiteResponse> {

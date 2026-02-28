@@ -380,4 +380,24 @@ describe('CampsiteService', () => {
       expect(result).toBeNull();
     });
   });
+
+  describe('enrichCampsiteWithLocation', () => {
+    it('should detect unnamed campsites by pattern', () => {
+      const patterns = ['campsite 1903123151', 'caravan_site 12345', 'aire 999', 'parking 42'];
+      const regex = /^(campsite|caravan_site|aire|parking)\s+\d+$/i;
+      for (const p of patterns) {
+        expect(regex.test(p)).toBe(true);
+      }
+      expect(regex.test('Camping de la Vrille')).toBe(false);
+      expect(regex.test('Le Paradis Nature')).toBe(false);
+      expect(regex.test('')).toBe(false);
+    });
+
+    it('should not match names that contain type words but are real names', () => {
+      const regex = /^(campsite|caravan_site|aire|parking)\s+\d+$/i;
+      expect(regex.test('Camping Aire du Soleil')).toBe(false);
+      expect(regex.test('Parking des Oliviers')).toBe(false);
+      expect(regex.test('Campsite Bella Vista')).toBe(false);
+    });
+  });
 });
