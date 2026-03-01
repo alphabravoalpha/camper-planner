@@ -85,11 +85,16 @@ export const demoActions = {
     if (route.waypoints.length > 0) {
       route.clearRoute();
     }
+    // Turn off campsites during this step to avoid wasteful Overpass API calls.
+    // Step 3 (showCampsitesAtNice) will turn them back on at the right location.
+    const btn = document.querySelector('[data-tour-id="campsite-toggle"]');
+    if (btn && !btn.className.includes('bg-white')) {
+      clickByTourId('campsite-toggle');
+    }
     // Add London
     route.addWaypoint(DEMO_WAYPOINTS[0]);
-    // Pan map to London
-    useMapStore.getState().setCenter([51.5, -0.1]);
-    useMapStore.getState().setZoom(8);
+    // Pan map to London — single atomic update to prevent race between setView and setZoom
+    useMapStore.setState({ center: [51.5, -0.1], zoom: 8 });
   },
 
   /**
@@ -97,8 +102,8 @@ export const demoActions = {
    */
   showCampsitesAtNice: () => {
     // Pan to Nice/French Riviera area at a zoom level showing campsite markers
-    useMapStore.getState().setCenter([43.7, 7.1]);
-    useMapStore.getState().setZoom(11);
+    // Single atomic update to prevent race between setView and setZoom
+    useMapStore.setState({ center: [43.7, 7.1], zoom: 11 });
     // Toggle campsites on (only if currently off)
     setTimeout(() => {
       const btn = document.querySelector('[data-tour-id="campsite-toggle"]');
@@ -128,8 +133,7 @@ export const demoActions = {
       route.addWaypoint(DEMO_WAYPOINTS[2]);
     }
     // Pan to show full route London → Lyon → Nice
-    useMapStore.getState().setCenter([47.0, 3.5]);
-    useMapStore.getState().setZoom(5);
+    useMapStore.setState({ center: [47.0, 3.5], zoom: 5 });
   },
 
   /**
@@ -153,8 +157,7 @@ export const demoActions = {
     useRouteStore.getState().clearRoute();
     useVehicleStore.getState().clearProfile();
     useUIStore.getState().closeVehicleSidebar();
-    useMapStore.getState().setCenter([54.526, 15.2551]);
-    useMapStore.getState().setZoom(5);
+    useMapStore.setState({ center: [54.526, 15.2551], zoom: 5 });
 
     // Close any open MapContainer panels
     demoActions.closeAllPanels();
