@@ -466,6 +466,34 @@ Core feature differentiator - routes must respect:
 
 ## Recent Updates (February 28, 2026)
 
+### Onboarding Tour Map Centering Fix (PR #18)
+
+Fixed two bugs in the onboarding guided tour:
+
+**Bug 1 — Map not centering on London (step 2):** `MapController` had two
+separate `useEffect` hooks — one for center changes (`map.setView`) and one for
+zoom changes (`map.setZoom`). When `demoActions.addLondon()` called `setCenter`
+and `setZoom` separately, the `map.setZoom` effect interrupted the animated
+`map.setView`, snapping zoom to 8 at the old center instead of panning to
+London.
+
+**Fix:** Combined both effects into a single hook that always uses
+`map.setView(center, zoom)`. Changed all `setCenter`/`setZoom` pairs across
+`MapContainer.tsx` and `demoActions.ts` to atomic
+`useMapStore.setState({ center, zoom })` calls.
+
+**Bug 2 — Slow campsite loading at step 3:** Campsites defaulted to ON, causing
+a wasteful Overpass API call at London (zoom 8) during step 2, before the
+intended Nice fetch at step 3.
+
+**Fix:** `addLondon` now turns the campsite toggle OFF. Step 3
+(`showCampsitesAtNice`) explicitly re-enables them at Nice (zoom 11). Normal
+(non-tour) usage is unaffected.
+
+**Files modified:** `MapContainer.tsx` (MapController, handleMapMove, persist
+effect, handleResetView), `demoActions.ts` (all 4 demo actions use atomic
+setState)
+
 ### Search Bar UX Overhaul, German i18n & Rebrand
 
 7 improvements shipped in a single batch, deployed to production.
