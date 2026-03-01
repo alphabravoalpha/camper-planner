@@ -114,6 +114,9 @@ const MapInstanceCapture: React.FC<MapInstanceCaptureProps> = ({ onMapReady }) =
 };
 
 // Component to sync map with store state
+// Uses a single effect + map.setView for both center and zoom changes to prevent
+// setZoom from interrupting an animated setView (which caused the map to zoom
+// at the old center instead of panning to the new one).
 const MapController: React.FC = () => {
   const map = useMap();
   const { center, zoom } = useMapStore();
@@ -121,25 +124,22 @@ const MapController: React.FC = () => {
   const lastZoom = useRef<number>(zoom);
 
   useEffect(() => {
-    // Only update if values actually changed to prevent infinite loops
-    if (center[0] !== lastCenter.current[0] || center[1] !== lastCenter.current[1]) {
+    const centerChanged =
+      center[0] !== lastCenter.current[0] || center[1] !== lastCenter.current[1];
+    const zoomChanged = zoom !== lastZoom.current;
+
+    if (centerChanged || zoomChanged) {
       map.setView(center, zoom);
       lastCenter.current = center;
-    }
-  }, [center, map, zoom]);
-
-  useEffect(() => {
-    if (zoom !== lastZoom.current) {
-      map.setZoom(zoom);
       lastZoom.current = zoom;
     }
-  }, [zoom, map]);
+  }, [center, zoom, map]);
 
   return null;
 };
 
 const MapContainer: React.FC = () => {
-  const { center, zoom, setCenter, setZoom } = useMapStore();
+  const { center, zoom } = useMapStore();
   const { waypoints, clearRoute, undo, redo, canUndo, canRedo, calculatedRoute } = useRouteStore();
   const { addNotification, openVehicleSidebar } = useUIStore();
   const { openWizard } = useTripWizardStore();
@@ -198,8 +198,7 @@ const MapContainer: React.FC = () => {
   useEffect(() => {
     const persistedState = mapStorage.getMapState();
     if (persistedState) {
-      setCenter(persistedState.center);
-      setZoom(persistedState.zoom);
+      useMapStore.setState({ center: persistedState.center, zoom: persistedState.zoom });
       if (persistedState.layerId) {
         setCurrentLayerId(persistedState.layerId);
       }
@@ -210,7 +209,7 @@ const MapContainer: React.FC = () => {
         setLayerControlCollapsed(persistedState.layerControlCollapsed);
       }
     }
-  }, [setCenter, setZoom]);
+  }, []);
 
   // Handle fullscreen changes
   useEffect(() => {
@@ -370,9 +369,8 @@ const MapContainer: React.FC = () => {
   // Map click handling is now done by WaypointManager
 
   const handleMapMove = (newCenter: [number, number], newZoom: number) => {
-    // Update store state
-    setCenter(newCenter);
-    setZoom(newZoom);
+    // Update store state — atomic update to prevent split center/zoom changes
+    useMapStore.setState({ center: newCenter, zoom: newZoom });
 
     // Persist to localStorage for next session
     mapStorage.saveMapState({
@@ -401,8 +399,7 @@ const MapContainer: React.FC = () => {
   };
 
   const handleResetView = () => {
-    setCenter(MAP_CONFIG.defaultCenter);
-    setZoom(MAP_CONFIG.defaultZoom);
+    useMapStore.setState({ center: MAP_CONFIG.defaultCenter, zoom: MAP_CONFIG.defaultZoom });
     addNotification({
       type: 'info',
       message: 'Map view reset to Europe',
