@@ -172,6 +172,28 @@ const TripWizard: React.FC = () => {
         });
       }
 
+      // Add crossing terminal waypoints so ORS can route across the Channel
+      if (day.crossing) {
+        const startIsUK = isUKOrIreland(day.start.lat, day.start.lng);
+        const departTerminal = startIsUK ? day.crossing.departure : day.crossing.arrival;
+        const arriveTerminal = startIsUK ? day.crossing.arrival : day.crossing.departure;
+
+        newWaypoints.push({
+          id: `trip-${ts}-crossing-depart-${index}`,
+          lat: departTerminal.lat,
+          lng: departTerminal.lng,
+          type: 'waypoint',
+          name: `${departTerminal.name} (${day.crossing.type === 'tunnel' ? 'Tunnel' : 'Ferry'} Terminal)`,
+        });
+        newWaypoints.push({
+          id: `trip-${ts}-crossing-arrive-${index}`,
+          lat: arriveTerminal.lat,
+          lng: arriveTerminal.lng,
+          type: 'waypoint',
+          name: `${arriveTerminal.name} (Arrival)`,
+        });
+      }
+
       // Add overnight campsite (if selected and not last day)
       if (day.selectedOvernight && index < wizard.itinerary!.days.length - 1) {
         newWaypoints.push({
