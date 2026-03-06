@@ -5,7 +5,7 @@ import React, { useCallback, useEffect, useState, useMemo } from 'react';
 import { useRouteStore, useVehicleStore, useUIStore, useTripWizardStore } from '../../store';
 import { routingService } from '../../services/RoutingService';
 import { campsiteService } from '../../services/CampsiteService';
-import { needsChannelCrossing } from '../../data/channelCrossings';
+import { needsFerryCrossing } from '../../data/ferryCrossings';
 import { FeatureFlags } from '../../config';
 import { cn } from '../../utils/cn';
 import {
@@ -44,7 +44,7 @@ const RouteCalculator: React.FC<RouteCalculatorProps> = ({ className, autoCalcul
     if (waypoints.length >= 2) {
       const first = waypoints[0];
       const last = waypoints[waypoints.length - 1];
-      return needsChannelCrossing(first.lat, first.lng, last.lat, last.lng);
+      return needsFerryCrossing(first.lat, first.lng, last.lat, last.lng);
     }
     return false;
   }, [waypoints]);
