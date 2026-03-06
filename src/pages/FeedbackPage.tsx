@@ -45,11 +45,7 @@ const FeedbackPage: React.FC = () => {
   const [iframeError, setIframeError] = useState(false);
 
   const handleBack = () => {
-    if (window.history.length > 1) {
-      navigate(-1);
-    } else {
-      navigate('/');
-    }
+    navigate(-1);
   };
 
   return (

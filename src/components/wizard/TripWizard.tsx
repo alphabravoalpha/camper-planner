@@ -37,7 +37,7 @@ import {
   type ItineraryDay,
 } from '../../services/TripWizardService';
 import { campsiteService } from '../../services/CampsiteService';
-import { CHANNEL_CROSSINGS, needsChannelCrossing } from '../../data/channelCrossings';
+import { CHANNEL_CROSSINGS, needsChannelCrossing, isUKOrIreland } from '../../data/channelCrossings';
 import { type Waypoint } from '../../types';
 
 // Mapped geocode result for search dropdowns
@@ -155,6 +155,28 @@ const TripWizard: React.FC = () => {
           lng: day.start.lng,
           type: 'start',
           name: day.start.name,
+        });
+      }
+
+      // Add crossing terminal waypoints so ORS can route across the Channel
+      if (day.crossing) {
+        const startIsUK = isUKOrIreland(day.start.lat, day.start.lng);
+        const departTerminal = startIsUK ? day.crossing.departure : day.crossing.arrival;
+        const arriveTerminal = startIsUK ? day.crossing.arrival : day.crossing.departure;
+
+        newWaypoints.push({
+          id: `trip-${ts}-crossing-depart-${index}`,
+          lat: departTerminal.lat,
+          lng: departTerminal.lng,
+          type: 'waypoint',
+          name: `${departTerminal.name} (${day.crossing.type === 'tunnel' ? 'Tunnel' : 'Ferry'} Terminal)`,
+        });
+        newWaypoints.push({
+          id: `trip-${ts}-crossing-arrive-${index}`,
+          lat: arriveTerminal.lat,
+          lng: arriveTerminal.lng,
+          type: 'waypoint',
+          name: `${arriveTerminal.name} (Arrival)`,
         });
       }
 
