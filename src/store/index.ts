@@ -9,7 +9,7 @@ import {
   type CampsiteOption,
   type DrivingStyle,
 } from '../services/TripWizardService';
-import { type ChannelCrossing } from '../data/channelCrossings';
+import { type FerryCrossing, type DetectedCrossings } from '../data/ferryCrossings';
 import { type RouteResponse } from '../services/RoutingService';
 
 // Re-export types for services that import from store
@@ -527,7 +527,8 @@ interface TripWizardState {
   startDate: Date | null;
   endDate: Date | null;
   drivingStyle: DrivingStyle;
-  crossing: ChannelCrossing | null;
+  crossings: FerryCrossing[];
+  detectedCrossings: DetectedCrossings | null;
   restDayFrequency: number;
 
   // Generated itinerary
@@ -546,7 +547,8 @@ interface TripWizardState {
   setStartDate: (date: Date | null) => void;
   setEndDate: (date: Date | null) => void;
   setDrivingStyle: (style: DrivingStyle) => void;
-  setCrossing: (crossing: ChannelCrossing | null) => void;
+  setCrossings: (crossings: FerryCrossing[]) => void;
+  setDetectedCrossings: (detected: DetectedCrossings | null) => void;
   setRestDayFrequency: (freq: number) => void;
   setItinerary: (itinerary: TripItinerary | null) => void;
   setIsGenerating: (generating: boolean) => void;
@@ -566,7 +568,8 @@ export const useTripWizardStore = create<TripWizardState>()(
       startDate: null,
       endDate: null,
       drivingStyle: 'moderate' as DrivingStyle,
-      crossing: null,
+      crossings: [],
+      detectedCrossings: null,
       restDayFrequency: 0,
       itinerary: null,
       isGenerating: false,
@@ -582,7 +585,8 @@ export const useTripWizardStore = create<TripWizardState>()(
       setStartDate: startDate => set({ startDate }),
       setEndDate: endDate => set({ endDate }),
       setDrivingStyle: drivingStyle => set({ drivingStyle }),
-      setCrossing: crossing => set({ crossing }),
+      setCrossings: crossings => set({ crossings }),
+      setDetectedCrossings: detectedCrossings => set({ detectedCrossings }),
       setRestDayFrequency: restDayFrequency => set({ restDayFrequency }),
       setItinerary: itinerary => set({ itinerary }),
       setIsGenerating: isGenerating => set({ isGenerating }),
@@ -607,7 +611,8 @@ export const useTripWizardStore = create<TripWizardState>()(
           startDate: null,
           endDate: null,
           drivingStyle: 'moderate' as DrivingStyle,
-          crossing: null,
+          crossings: [],
+          detectedCrossings: null,
           restDayFrequency: 0,
           itinerary: null,
           isGenerating: false,
