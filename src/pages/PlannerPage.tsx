@@ -9,7 +9,16 @@ const TripWizard = React.lazy(() => import('../components/wizard/TripWizard'));
 import { useTripWizardStore, useRouteStore, useUIStore } from '../store';
 import { useAnalytics } from '../utils/analytics';
 import { useOnboarding } from '../hooks/useOnboarding';
-import { Route as RouteIcon, X, MapPin, Tent, Download, BookOpen } from 'lucide-react';
+import {
+  Route as RouteIcon,
+  X,
+  MapPin,
+  Tent,
+  Download,
+  BookOpen,
+  FlaskConical,
+  MessageSquare,
+} from 'lucide-react';
 import SEOHead from '../components/seo/SEOHead';
 
 const HERO_DISMISSED_KEY = 'planner-hero-dismissed';
@@ -185,6 +194,21 @@ const PlannerPage: React.FC = () => {
             Continue Planning
           </button>
         )}
+      </div>
+
+      {/* Beta notice — persistent bottom bar */}
+      <div className="bg-amber-50 border-t border-amber-200 px-4 py-1.5 flex items-center justify-center gap-2 text-xs text-amber-800">
+        <FlaskConical className="w-3.5 h-3.5 flex-shrink-0" />
+        <span>
+          This site is in <strong>beta testing</strong> — your feedback is extremely useful!
+        </span>
+        <Link
+          to="/feedback"
+          className="inline-flex items-center gap-1 font-semibold text-amber-900 hover:text-amber-700 underline underline-offset-2"
+        >
+          <MessageSquare className="w-3 h-3" />
+          Share feedback
+        </Link>
       </div>
 
       {/* Trip Planning Wizard Modal — lazy loaded */}
