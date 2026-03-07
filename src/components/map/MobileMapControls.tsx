@@ -102,7 +102,7 @@ const MobileMapControls: React.FC<MobileMapControlsProps> = ({
   return (
     <div
       className={cn(
-        'fixed bottom-16 right-4 z-40 flex flex-col items-end space-y-2',
+        'fixed bottom-24 right-4 z-40 flex flex-col items-end space-y-2',
         'sm:hidden', // Only show on mobile/tablet
         className
       )}

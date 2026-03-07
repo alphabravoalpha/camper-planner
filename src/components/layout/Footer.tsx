@@ -52,7 +52,7 @@ const Footer: React.FC = () => {
                   to="/guides"
                   className="text-sm text-neutral-400 hover:text-white hover:underline transition-colors"
                 >
-                  Travel Guides
+                  Guides
                 </Link>
               </li>
               <li>

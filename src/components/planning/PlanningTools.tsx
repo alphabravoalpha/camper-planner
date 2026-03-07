@@ -472,7 +472,7 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
                         </div>
                         <div className="flex items-center gap-2">
                           <span
-                            className={`px-2 py-1 rounded-full text-xs font-medium ${getFeasibilityColor(stage.feasibility)}`}
+                            className={`px-2 py-1 rounded-full text-xs font-medium whitespace-nowrap capitalize ${getFeasibilityColor(stage.feasibility)}`}
                           >
                             {stage.feasibility}
                           </span>
