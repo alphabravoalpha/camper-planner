@@ -765,10 +765,12 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
                       role="button"
                       tabIndex={0}
                       onKeyDown={e => e.key === 'Enter' && handleResultSelect(result)}
+                      aria-label={`Select location: ${result.name}`}
                     >
                       <div className="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center flex-shrink-0">
                         <svg
                           className="w-4 h-4 text-primary-600"
+                          aria-hidden="true"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -866,6 +868,7 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
                       role="button"
                       tabIndex={0}
                       onKeyDown={e => e.key === 'Enter' && handleResultSelect(result)}
+                      aria-label={`Select campsite: ${result.name}`}
                     >
                       <div
                         className={cn(
@@ -878,6 +881,7 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
                             'w-4 h-4',
                             result.vehicleCompatible ? 'text-green-600' : 'text-red-600'
                           )}
+                          aria-hidden="true"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"

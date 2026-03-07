@@ -27,12 +27,12 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Norway is the ultimate campervan destination. There is no other country in Europe -- and arguably the world -- where the combination of dramatic scenery, legal wild camping, well-maintained roads, and campervan-friendly culture comes together so perfectly. The fjords are merely the headline act. Behind them lies a supporting cast of glacier-carved valleys, mountain plateaux above the treeline, waterfalls that drop hundreds of metres from hanging valleys, Arctic coastlines where the Northern Lights dance in winter, and the extraordinary Lofoten Islands where jagged peaks rise straight from fishing villages that look like they belong in a fantasy novel.',
+        'Norway is the ultimate campervan destination. There is no other country in Europe — and arguably the world — where the combination of dramatic scenery, legal wild camping, well-maintained roads, and campervan-friendly culture comes together so perfectly. The fjords are merely the headline act. Behind them lies a supporting cast of glacier-carved valleys, mountain plateaux above the treeline, waterfalls that drop hundreds of metres from hanging valleys, Arctic coastlines where the Northern Lights dance in winter, and the extraordinary Lofoten Islands where jagged peaks rise straight from fishing villages that look like they belong in a fantasy novel.',
     },
     {
       type: 'paragraph',
       content:
-        'Norway is also expensive. There is no getting around this. Fuel, food, campsites, ferries, and toll roads all cost significantly more than in Southern Europe. A two-week Norwegian campervan trip will typically cost 30-50% more than a comparable trip in France or Spain. But the unique experiences it offers -- sleeping beside a fjord at midnight with the sun still above the horizon, driving roads that corkscrew up mountainsides past frozen waterfalls, taking ferries across water so still it mirrors the mountains perfectly -- justify every krone.',
+        'Norway is also expensive. There is no getting around this. Fuel, food, campsites, ferries, and toll roads all cost significantly more than in Southern Europe. A two-week Norwegian campervan trip will typically cost 30-50% more than a comparable trip in France or Spain. But the unique experiences it offers — sleeping beside a fjord at midnight with the sun still above the horizon, driving roads that corkscrew up mountainsides past frozen waterfalls, taking ferries across water so still it mirrors the mountains perfectly — justify every krone.',
     },
     {
       type: 'paragraph',
@@ -49,12 +49,12 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        "Norway's allemannsretten (right of public access) is the foundation of campervan travel in the country. This right, codified in the Outdoor Recreation Act of 1957, allows anyone to camp on uncultivated land -- including mountains, forests, moors, and beaches -- for up to two nights in the same location without asking permission. The right applies to campervans and motorhomes as well as tents, provided you are at least 150 metres from the nearest inhabited house or cabin.",
+        "Norway's allemannsretten (right of public access) is the foundation of campervan travel in the country. This right, codified in the Outdoor Recreation Act of 1957, allows anyone to camp on uncultivated land — including mountains, forests, moors, and beaches — for up to two nights in the same location without asking permission. The right applies to campervans and motorhomes as well as tents, provided you are at least 150 metres from the nearest inhabited house or cabin.",
     },
     {
       type: 'paragraph',
       content:
-        "In practice, this means you can park your campervan at almost any scenic pull-off, lay-by, or viewpoint along Norway's fjord roads and sleep there legally. Many of the best wild camping spots are obvious -- a flat area beside a lake, a wide shoulder overlooking a fjord, a clearing at the end of a farm track. Other campervan travellers will often be parked there too, and there is an unspoken etiquette: arrive quietly, leave no trace, do not block access, and move on after two nights.",
+        "In practice, this means you can park your campervan at almost any scenic pull-off, lay-by, or viewpoint along Norway's fjord roads and sleep there legally. Many of the best wild camping spots are obvious — a flat area beside a lake, a wide shoulder overlooking a fjord, a clearing at the end of a farm track. Other campervan travellers will often be parked there too, and there is an unspoken etiquette: arrive quietly, leave no trace, do not block access, and move on after two nights.",
     },
     {
       type: 'tip',
@@ -64,7 +64,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Some popular locations have introduced local parking restrictions due to overcrowding -- particularly viewpoints along the Trollstigen, near Geirangerfjord, and in parts of Lofoten. These are clearly signposted. Respect them, even if you see others ignoring them. The continued existence of allemannsretten depends on people exercising the right responsibly.',
+        'Some popular locations have introduced local parking restrictions due to overcrowding — particularly viewpoints along the Trollstigen, near Geirangerfjord, and in parts of Lofoten. These are clearly signposted. Respect them, even if you see others ignoring them. The continued existence of allemannsretten depends on people exercising the right responsibly.',
     },
 
     // ── Best Routes ──────────────────────────────────────────────
@@ -81,17 +81,17 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        "Geirangerfjord is Norway's most famous fjord and a UNESCO World Heritage Site. The fjord itself is 15 kilometres long, flanked by near-vertical cliffs with waterfalls cascading from abandoned farms perched impossibly high on narrow ledges. The village of Geiranger at the head of the fjord is the most-visited single spot in fjord Norway, which means it gets very busy in summer -- cruise ships disgorge thousands of passengers daily.",
+        "Geirangerfjord is Norway's most famous fjord and a UNESCO World Heritage Site. The fjord itself is 15 kilometres long, flanked by near-vertical cliffs with waterfalls cascading from abandoned farms perched impossibly high on narrow ledges. The village of Geiranger at the head of the fjord is the most-visited single spot in fjord Norway, which means it gets very busy in summer — cruise ships disgorge thousands of passengers daily.",
     },
     {
       type: 'paragraph',
       content:
-        'The best way to experience Geirangerfjord by campervan is via the Golden Route (Rv63), which approaches from the north via the Trollstigen mountain pass. Trollstigen is an engineering marvel -- eleven hairpin bends climbing 800 metres up a near-vertical mountainside, with waterfalls thundering beside the road. The pass is narrow and one-way traffic is managed by traffic lights at the tightest bends. It is perfectly passable for campervans and most motorhomes up to about 8 metres, though vehicles over 12.4 metres are prohibited. The Ornevegen (Eagle Road) descending to Geiranger has equally spectacular switchbacks with a viewpoint platform extending over the fjord.',
+        'The best way to experience Geirangerfjord by campervan is via the Golden Route (Rv63), which approaches from the north via the Trollstigen mountain pass. Trollstigen is an engineering marvel — eleven hairpin bends climbing 800 metres up a near-vertical mountainside, with waterfalls thundering beside the road. The pass is narrow and one-way traffic is managed by traffic lights at the tightest bends. It is perfectly passable for campervans and most motorhomes up to about 8 metres, though vehicles over 12.4 metres are prohibited. The Ornevegen (Eagle Road) descending to Geiranger has equally spectacular switchbacks with a viewpoint platform extending over the fjord.',
     },
     {
       type: 'warning',
       content:
-        'Trollstigen is closed from late October to late May due to snow. Even when open, weather can close it temporarily. Check road conditions at vegvesen.no before departing. The road is very steep with limited run-off areas -- use low gear on the descent and check your brakes.',
+        'Trollstigen is closed from late October to late May due to snow. Even when open, weather can close it temporarily. Check road conditions at vegvesen.no before departing. The road is very steep with limited run-off areas — use low gear on the descent and check your brakes.',
     },
     {
       type: 'heading',
@@ -101,12 +101,12 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        "Sognefjord stretches 204 kilometres inland from the coast, with a maximum depth of 1,308 metres -- deeper than much of the North Sea. Its side branches are among the most scenic in Norway: Naeroyfjord (another UNESCO site, barely 250 metres wide at its narrowest) and Aurlandsfjord, accessible via the spectacular Aurlandsfjellet mountain road (Rv243) known as the Snow Road. The Stegastein viewpoint, a cantilevered platform jutting 30 metres over the Aurlandsfjord, is one of Norway's most photographed spots.",
+        "Sognefjord stretches 204 kilometres inland from the coast, with a maximum depth of 1,308 metres — deeper than much of the North Sea. Its side branches are among the most scenic in Norway: Naeroyfjord (another UNESCO site, barely 250 metres wide at its narrowest) and Aurlandsfjord, accessible via the spectacular Aurlandsfjellet mountain road (Rv243) known as the Snow Road. The Stegastein viewpoint, a cantilevered platform jutting 30 metres over the Aurlandsfjord, is one of Norway's most photographed spots.",
     },
     {
       type: 'paragraph',
       content:
-        'Flam, at the head of Aurlandsfjord, is the base for the famous Flamsbana railway -- a 20-kilometre mountain railway climbing 866 metres through tunnels and past waterfalls. It is touristy but genuinely spectacular. The village of Balestrand, across Sognefjord, is a quieter and more atmospheric base with a Victorian-era hotel, art galleries, and excellent kayaking on the fjord.',
+        'Flam, at the head of Aurlandsfjord, is the base for the famous Flamsbana railway — a 20-kilometre mountain railway climbing 866 metres through tunnels and past waterfalls. It is touristy but genuinely spectacular. The village of Balestrand, across Sognefjord, is a quieter and more atmospheric base with a Victorian-era hotel, art galleries, and excellent kayaking on the fjord.',
     },
     {
       type: 'heading',
@@ -136,7 +136,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Lofoten is connected to the mainland by bridge and ferry, and the main E10 road traverses the island chain from Svolvaer in the north to the remote fishing village of A (yes, just the letter A) at the southern tip. The road is excellent and manageable for all vehicle sizes, though some side roads to beaches and viewpoints are narrow. In summer (June-August), Lofoten experiences the midnight sun -- 24 hours of daylight that makes time feel meaningless and creates extraordinary late-night photography conditions.',
+        'Lofoten is connected to the mainland by bridge and ferry, and the main E10 road traverses the island chain from Svolvaer in the north to the remote fishing village of A (yes, just the letter A) at the southern tip. The road is excellent and manageable for all vehicle sizes, though some side roads to beaches and viewpoints are narrow. In summer (June-August), Lofoten experiences the midnight sun — 24 hours of daylight that makes time feel meaningless and creates extraordinary late-night photography conditions.',
     },
     {
       type: 'paragraph',
@@ -163,11 +163,11 @@ const post: BlogPost = {
     {
       type: 'list',
       items: [
-        'No advance booking is needed for most fjord crossings -- just arrive and queue.',
+        'No advance booking is needed for most fjord crossings — just arrive and queue.',
         'Ferries fill up in summer, especially in Lofoten and on popular tourist routes. Arrive 30-60 minutes early for peak crossings.',
         'Register your vehicle with AutoPASS for automatic payment and discounts: autopass.no.',
         'The Hurtigruten coastal steamer carries vehicles on some routes and is an alternative to driving for longer stretches.',
-        'Free ferries exist -- notably the Rv13 Nesvik-Hjelmeland crossing in Rogaland and several crossings in northern Norway.',
+        'Free ferries exist — notably the Rv13 Nesvik-Hjelmeland crossing in Rogaland and several crossings in northern Norway.',
       ],
     },
 
@@ -197,7 +197,7 @@ const post: BlogPost = {
     {
       type: 'tip',
       content:
-        'The Rema 1000 supermarket chain is consistently the cheapest in Norway for basic groceries. Buying bread, cheese, cold cuts, and fruit for lunch and cooking dinner in the campervan saves enormously compared to eating out. Norwegian tap water is excellent and free -- never buy bottled water.',
+        'The Rema 1000 supermarket chain is consistently the cheapest in Norway for basic groceries. Buying bread, cheese, cold cuts, and fruit for lunch and cooking dinner in the campervan saves enormously compared to eating out. Norwegian tap water is excellent and free — never buy bottled water.',
     },
 
     // ── Tunnels ──────────────────────────────────────────────────
@@ -286,7 +286,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'A Norwegian fjord road trip is the kind of journey that stays with you for the rest of your life. The combination of natural beauty, freedom to camp, and well-maintained roads makes it an ideal campervan destination -- if you plan the route, budget for the costs, and prepare for the weather. The distances between highlights can be deceptive, and the frequent ferry crossings add time that needs to be factored into each day.',
+        'A Norwegian fjord road trip is the kind of journey that stays with you for the rest of your life. The combination of natural beauty, freedom to camp, and well-maintained roads makes it an ideal campervan destination — if you plan the route, budget for the costs, and prepare for the weather. The distances between highlights can be deceptive, and the frequent ferry crossings add time that needs to be factored into each day.',
     },
     {
       type: 'cta',

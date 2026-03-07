@@ -92,6 +92,7 @@ const CampsiteControls: React.FC<CampsiteControlsProps> = ({
         <div className="flex items-center space-x-2">
           <button
             onClick={() => onVisibilityChange?.(!isVisible)}
+            aria-pressed={isVisible}
             className={cn(
               'flex items-center space-x-2 px-2 py-1 rounded text-sm font-medium transition-colors',
               isVisible
@@ -126,6 +127,7 @@ const CampsiteControls: React.FC<CampsiteControlsProps> = ({
             >
               <svg
                 className={cn('w-4 h-4', isLoading && 'animate-spin')}
+                aria-hidden="true"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -144,9 +146,12 @@ const CampsiteControls: React.FC<CampsiteControlsProps> = ({
           <button
             onClick={() => setIsExpanded(!isExpanded)}
             className="p-1.5 rounded text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100 transition-colors"
+            aria-label={isExpanded ? 'Collapse campsite controls' : 'Expand campsite controls'}
+            aria-expanded={isExpanded}
           >
             <svg
               className={cn('w-4 h-4 transform transition-transform', isExpanded && 'rotate-180')}
+              aria-hidden="true"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -173,6 +178,8 @@ const CampsiteControls: React.FC<CampsiteControlsProps> = ({
                 <button
                   key={type}
                   onClick={() => handleTypeToggle(type)}
+                  aria-pressed={visibleTypes.includes(type)}
+                  aria-label={CAMPSITE_TYPES.find(ct => ct.type === type)?.label}
                   className={cn(
                     'flex items-center justify-center w-8 h-8 rounded-full border-2 transition-all',
                     visibleTypes.includes(type)

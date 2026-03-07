@@ -46,12 +46,14 @@ export abstract class DataService {
   protected cache: Map<string, CacheEntry<unknown>>;
   protected rateLimitState: Map<string, { count: number; resetTime: number }>;
   protected rateLimit: RateLimitConfig;
+  private inflightRequests: Map<string, Promise<unknown>>;
 
   constructor(config: DataServiceConfig, rateLimit: RateLimitConfig) {
     this.config = config;
     this.cache = new Map();
     this.rateLimitState = new Map();
     this.rateLimit = rateLimit;
+    this.inflightRequests = new Map();
 
     // Clean up expired cache entries periodically
     this.startCacheCleanup();
@@ -77,15 +79,28 @@ export abstract class DataService {
       }
     }
 
-    // Make the actual HTTP request
-    const result = await this.makeHttpRequest<T>(context);
-
-    // Cache the result
-    if (this.config.cacheEnabled && !context.skipCache) {
-      this.setCache(cacheKey, result);
+    // Deduplicate identical in-flight requests
+    const inflight = this.inflightRequests.get(cacheKey);
+    if (inflight) {
+      return inflight as Promise<T>;
     }
 
-    return result;
+    // Make the actual HTTP request
+    const requestPromise = this.makeHttpRequest<T>(context)
+      .then(result => {
+        this.inflightRequests.delete(cacheKey);
+        if (this.config.cacheEnabled && !context.skipCache) {
+          this.setCache(cacheKey, result);
+        }
+        return result;
+      })
+      .catch(error => {
+        this.inflightRequests.delete(cacheKey);
+        throw error;
+      });
+
+    this.inflightRequests.set(cacheKey, requestPromise);
+    return requestPromise;
   }
 
   /**

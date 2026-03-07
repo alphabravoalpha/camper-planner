@@ -27,7 +27,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Italy has over 7,600 kilometres of coastline, and much of it ranks among the most beautiful in Europe. From the vertiginous cliffs of the Amalfi Coast to the pastel-coloured fishing villages of the Ligurian Riviera, from the wild beaches of Sardinia to the Baroque seaside towns of Sicily, the Italian coast offers a lifetime of exploration. It is also one of the most rewarding -- and occasionally most challenging -- countries in Europe for campervan and motorhome travel.',
+        'Italy has over 7,600 kilometres of coastline, and much of it ranks among the most beautiful in Europe. From the vertiginous cliffs of the Amalfi Coast to the pastel-coloured fishing villages of the Ligurian Riviera, from the wild beaches of Sardinia to the Baroque seaside towns of Sicily, the Italian coast offers a lifetime of exploration. It is also one of the most rewarding — and occasionally most challenging — countries in Europe for campervan and motorhome travel.',
     },
     {
       type: 'paragraph',
@@ -81,12 +81,12 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'The broader Campania region offers far more camper-friendly options than the Amalfi road itself. Naples is chaotic but extraordinary -- park at a campsite on the Phlegraean Fields west of the city (Camping Vulcano Solfatara in Pozzuoli is well-located) and use the metro and Circumvesuviana train to explore. Pompei is an essential stop: the archaeological site is vast and you need at least half a day. Camping Spartacus and Camping Zeus are both within walking distance of the ruins, with motorhome services and secure parking.',
+        'The broader Campania region offers far more camper-friendly options than the Amalfi road itself. Naples is chaotic but extraordinary — park at a campsite on the Phlegraean Fields west of the city (Camping Vulcano Solfatara in Pozzuoli is well-located) and use the metro and Circumvesuviana train to explore. Pompei is an essential stop: the archaeological site is vast and you need at least half a day. Camping Spartacus and Camping Zeus are both within walking distance of the ruins, with motorhome services and secure parking.',
     },
     {
       type: 'paragraph',
       content:
-        'The islands of Capri and Ischia are accessible by ferry from Naples and Sorrento, but you cannot bring vehicles. Procida, the smallest of the three, is a genuine hidden gem -- less touristic than its famous neighbours and authentically charming. Ferries from Pozzuoli take about 40 minutes.',
+        'The islands of Capri and Ischia are accessible by ferry from Naples and Sorrento, but you cannot bring vehicles. Procida, the smallest of the three, is a genuine hidden gem — less touristic than its famous neighbours and authentically charming. Ferries from Pozzuoli take about 40 minutes.',
     },
 
     // ── Cilento Coast ────────────────────────────────────────────
@@ -98,17 +98,17 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'South of Salerno, the Cilento coast is everything the Amalfi Coast is -- dramatic, beautiful, Mediterranean -- but without the crowds, the impossible roads, and the inflated prices. The Cilento and Vallo di Diano National Park is a UNESCO World Heritage Site that remains remarkably under-visited by international tourists. The coast between Agropoli and Sapri has clean sandy beaches, clear water, and a string of attractive campsites with direct beach access.',
+        'South of Salerno, the Cilento coast is everything the Amalfi Coast is — dramatic, beautiful, Mediterranean — but without the crowds, the impossible roads, and the inflated prices. The Cilento and Vallo di Diano National Park is a UNESCO World Heritage Site that remains remarkably under-visited by international tourists. The coast between Agropoli and Sapri has clean sandy beaches, clear water, and a string of attractive campsites with direct beach access.',
     },
     {
       type: 'paragraph',
       content:
-        'Acciaroli and Pioppi are small fishing villages with excellent local restaurants and a pace of life that feels decades removed from the frenzy of the Amalfi towns. Paestum, at the northern end of the Cilento, has three of the best-preserved Greek temples outside of Greece -- they are genuinely awe-inspiring and far less crowded than Pompei. Several campsites near Paestum (including Camping Villaggio dei Pini and Camping Apollo) provide convenient access to both the temples and the beach.',
+        'Acciaroli and Pioppi are small fishing villages with excellent local restaurants and a pace of life that feels decades removed from the frenzy of the Amalfi towns. Paestum, at the northern end of the Cilento, has three of the best-preserved Greek temples outside of Greece — they are genuinely awe-inspiring and far less crowded than Pompei. Several campsites near Paestum (including Camping Villaggio dei Pini and Camping Apollo) provide convenient access to both the temples and the beach.',
     },
     {
       type: 'tip',
       content:
-        'The Cilento coast is ideal for families with children. Beaches are sandy rather than rocky, the sea is clean and shallow near shore, and campsites tend to be larger and better equipped than those closer to Naples. It is also significantly cheaper -- expect to pay 20-30 euros per night for a good campsite pitch in high season, compared to 35-50 euros near Sorrento.',
+        'The Cilento coast is ideal for families with children. Beaches are sandy rather than rocky, the sea is clean and shallow near shore, and campsites tend to be larger and better equipped than those closer to Naples. It is also significantly cheaper — expect to pay 20-30 euros per night for a good campsite pitch in high season, compared to 35-50 euros near Sorrento.',
     },
 
     // ── Calabria ─────────────────────────────────────────────────
@@ -125,7 +125,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        "The Ionian coast is wilder and less developed, with long stretches of empty beach, ancient Greek ruins at Locri and Crotone, and the extraordinary mountain villages of the Aspromonte and Sila national parks within easy reach of the coast. Camping is affordable here -- 15-22 euros per night at most sites -- and the food is exceptional, with Calabria's fiery nduja sausage, fresh swordfish, and Ciro wines featuring on every menu.",
+        "The Ionian coast is wilder and less developed, with long stretches of empty beach, ancient Greek ruins at Locri and Crotone, and the extraordinary mountain villages of the Aspromonte and Sila national parks within easy reach of the coast. Camping is affordable here — 15-22 euros per night at most sites — and the food is exceptional, with Calabria's fiery nduja sausage, fresh swordfish, and Ciro wines featuring on every menu.",
     },
     {
       type: 'paragraph',
@@ -142,12 +142,12 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Puglia occupies the heel of Italy and faces the Adriatic Sea. It is a flatter, gentler landscape than the western coast -- olive groves, stone-walled fields, and whitewashed towns rather than mountains and cliffs. The region has become increasingly popular in recent years, but it still feels less hectic than Campania or Liguria. The coastline alternates between rocky stretches and long sandy beaches, with the water on the southern Salento peninsula reaching Caribbean levels of clarity.',
+        'Puglia occupies the heel of Italy and faces the Adriatic Sea. It is a flatter, gentler landscape than the western coast — olive groves, stone-walled fields, and whitewashed towns rather than mountains and cliffs. The region has become increasingly popular in recent years, but it still feels less hectic than Campania or Liguria. The coastline alternates between rocky stretches and long sandy beaches, with the water on the southern Salento peninsula reaching Caribbean levels of clarity.',
     },
     {
       type: 'paragraph',
       content:
-        'Lecce, the Baroque capital of Puglia, is worth a full day of exploration. Park at a campsite or sosta outside the ZTL zone and walk into the honey-coloured centro storico. The trulli of Alberobello -- conical stone houses unique to this part of Italy -- are a UNESCO site that looks like something from a fairy tale. Polignano a Mare is a dramatic cliff-top town with a beach wedged into a cave-like cove below the main square. Ostuni, the White City, gleams on its hilltop like a Greek island village transplanted to Italian farmland.',
+        'Lecce, the Baroque capital of Puglia, is worth a full day of exploration. Park at a campsite or sosta outside the ZTL zone and walk into the honey-coloured centro storico. The trulli of Alberobello — conical stone houses unique to this part of Italy — are a UNESCO site that looks like something from a fairy tale. Polignano a Mare is a dramatic cliff-top town with a beach wedged into a cave-like cove below the main square. Ostuni, the White City, gleams on its hilltop like a Greek island village transplanted to Italian farmland.',
     },
     {
       type: 'paragraph',
@@ -164,7 +164,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'The five villages of Cinque Terre -- Riomaggiore, Manarola, Corniglia, Vernazza, and Monterosso al Mare -- are among the most photographed places in Italy. They cling to steep, terraced hillsides above the Ligurian Sea, connected by footpaths and a regional train line but deliberately disconnected from the road network. You cannot drive to most of the villages, and where roads exist they are impossibly narrow and end in tiny car parks that are invariably full.',
+        'The five villages of Cinque Terre — Riomaggiore, Manarola, Corniglia, Vernazza, and Monterosso al Mare — are among the most photographed places in Italy. They cling to steep, terraced hillsides above the Ligurian Sea, connected by footpaths and a regional train line but deliberately disconnected from the road network. You cannot drive to most of the villages, and where roads exist they are impossibly narrow and end in tiny car parks that are invariably full.',
     },
     {
       type: 'warning',
@@ -191,18 +191,18 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Italy has over 2,500 registered campsites and a well-developed network of soste -- designated motorhome parking areas, often run by local councils or private operators. Soste are the Italian equivalent of French aires, though they tend to be more basic. A typical sosta offers a flat parking area, fresh water, grey and black water disposal, and sometimes electricity. Prices range from free to 15 euros per night. They are legal overnight parking areas and are signposted with the standard motorhome symbol.',
+        'Italy has over 2,500 registered campsites and a well-developed network of soste — designated motorhome parking areas, often run by local councils or private operators. Soste are the Italian equivalent of French aires, though they tend to be more basic. A typical sosta offers a flat parking area, fresh water, grey and black water disposal, and sometimes electricity. Prices range from free to 15 euros per night. They are legal overnight parking areas and are signposted with the standard motorhome symbol.',
     },
     {
       type: 'paragraph',
       content:
-        'Italian campsites are generally well-maintained and family-oriented. Many coastal sites have direct beach access, swimming pools, restaurants, and organised entertainment. Pitches tend to be larger than in northern Europe, often with mature shade trees -- essential in the Italian summer heat. Expect to pay 25-50 euros per night for a pitch at a well-equipped coastal campsite in July or August, dropping to 15-30 euros in May, June, September, and October.',
+        'Italian campsites are generally well-maintained and family-oriented. Many coastal sites have direct beach access, swimming pools, restaurants, and organised entertainment. Pitches tend to be larger than in northern Europe, often with mature shade trees — essential in the Italian summer heat. Expect to pay 25-50 euros per night for a pitch at a well-equipped coastal campsite in July or August, dropping to 15-30 euros in May, June, September, and October.',
     },
     {
       type: 'list',
       items: [
         'Campsites: Book ahead for July and August, especially on the Ligurian and Adriatic coasts. Many sites require minimum stays of 3-7 nights in peak season.',
-        'Soste: Found via the CamperPlanning campsite layer or apps like Camper Contact and Park4Night. Quality varies widely -- check reviews.',
+        'Soste: Found via the CamperPlanning campsite layer or apps like Camper Contact and Park4Night. Quality varies widely — check reviews.',
         'Agriturismo: Some Italian farms offer campervan parking with meals available. Similar to the French France Passion network but less formalised.',
         'Wild camping: Technically illegal throughout Italy, though enforcement varies by region. Fines range from 100 to 500 euros. Sardinia is particularly strict.',
       ],
@@ -217,7 +217,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'ZTL (Zona a Traffico Limitato) zones are the single biggest headache for camper travellers in Italy. These are restricted traffic areas in town and city centres, marked by electronic signs and monitored by cameras. If you drive into a ZTL without authorisation, you will receive an automatic fine of 50-100 euros per offence -- and each camera you pass counts as a separate offence. Fines are mailed to your home address or, for rental vehicles, charged to your credit card. There is no warning, no grace period, and no practical way to contest the fine from abroad.',
+        'ZTL (Zona a Traffico Limitato) zones are the single biggest headache for camper travellers in Italy. These are restricted traffic areas in town and city centres, marked by electronic signs and monitored by cameras. If you drive into a ZTL without authorisation, you will receive an automatic fine of 50-100 euros per offence — and each camera you pass counts as a separate offence. Fines are mailed to your home address or, for rental vehicles, charged to your credit card. There is no warning, no grace period, and no practical way to contest the fine from abroad.',
     },
     {
       type: 'paragraph',
@@ -240,9 +240,9 @@ const post: BlogPost = {
       type: 'list',
       items: [
         'Drive defensively. Italian driving culture is assertive. Expect close overtaking, aggressive use of horns, and creative interpretations of lane markings.',
-        'Carry a full set of spare bulbs, a reflective warning triangle, and a hi-vis vest -- all legally required in Italy.',
+        'Carry a full set of spare bulbs, a reflective warning triangle, and a hi-vis vest — all legally required in Italy.',
         'Motorway speed limit for motorhomes over 3.5 tonnes is 100 km/h (not 130 km/h as for cars). Speed cameras are common and fines are steep.',
-        'Fuel is expensive -- typically 1.70-1.90 euros per litre for diesel. Supermarket fuel stations (IP, Conad) are 10-15 cents cheaper than motorway and branded stations.',
+        'Fuel is expensive — typically 1.70-1.90 euros per litre for diesel. Supermarket fuel stations (IP, Conad) are 10-15 cents cheaper than motorway and branded stations.',
         'Toll roads (autostrada) are efficient but add up. The A1 from Milan to Naples costs approximately 50-60 euros for a standard motorhome. The toll-free SS roads are slower but scenic.',
         'Avoid driving in Naples city itself. Traffic is chaotic, streets are narrow, and parking is virtually impossible. Use campsites on the outskirts and the metro.',
       ],
@@ -262,7 +262,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Shoulder season offers warm swimming temperatures (the Mediterranean stays above 22 degrees from June through October), manageable crowds, lower campsite fees, and vastly more pleasant driving conditions. Southern Italy -- Calabria, Puglia, and Sicily -- is warm enough for beach camping from April through November, making it an excellent destination for spring and autumn trips when northern Europe is too cold.',
+        'Shoulder season offers warm swimming temperatures (the Mediterranean stays above 22 degrees from June through October), manageable crowds, lower campsite fees, and vastly more pleasant driving conditions. Southern Italy — Calabria, Puglia, and Sicily — is warm enough for beach camping from April through November, making it an excellent destination for spring and autumn trips when northern Europe is too cold.',
     },
 
     // ── CTA ──────────────────────────────────────────────────────
@@ -274,7 +274,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Italy rewards camper travellers who plan ahead. Knowing which roads to avoid, where the ZTL zones are, and which campsites to book in advance is the difference between a frustrating trip and a magical one. The coast from Amalfi to Cinque Terre is one of the great European road trips -- but only if you respect the limitations of the roads and your vehicle.',
+        'Italy rewards camper travellers who plan ahead. Knowing which roads to avoid, where the ZTL zones are, and which campsites to book in advance is the difference between a frustrating trip and a magical one. The coast from Amalfi to Cinque Terre is one of the great European road trips — but only if you respect the limitations of the roads and your vehicle.',
     },
     {
       type: 'cta',

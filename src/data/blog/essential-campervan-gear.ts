@@ -40,7 +40,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Every campervan forum on the internet has a packing list. Most of them are absurdly long, filled with items you will never use, and written by people who apparently travel with a removal van trailing behind them. This guide is different. It covers the gear that genuinely makes a European trip safer, more comfortable, and less stressful -- based on what experienced travellers actually carry and what European law actually requires.',
+        'Every campervan forum on the internet has a packing list. Most of them are absurdly long, filled with items you will never use, and written by people who apparently travel with a removal van trailing behind them. This guide is different. It covers the gear that genuinely makes a European trip safer, more comfortable, and less stressful — based on what experienced travellers actually carry and what European law actually requires.',
     },
     {
       type: 'paragraph',
@@ -50,7 +50,7 @@ const post: BlogPost = {
     {
       type: 'tip',
       content:
-        'Where we mention specific products, we have included links to Amazon UK for convenience. These are affiliate links -- if you buy through them, we earn a small commission at no extra cost to you. It helps keep CamperPlanning free.',
+        'Where we mention specific products, we have included links to Amazon UK for convenience. These are affiliate links — if you buy through them, we earn a small commission at no extra cost to you. It helps keep CamperPlanning free.',
     },
 
     // ── Safety Equipment ──────────────────────────────────────────
@@ -62,7 +62,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Safety gear is not optional -- much of it is a legal requirement in European countries and you can be fined on the spot for not carrying it. Even items that are not legally mandated in every country are worth having because you are driving a vehicle loaded with gas, electrics, and flammable soft furnishings.',
+        'Safety gear is not optional — much of it is a legal requirement in European countries and you can be fined on the spot for not carrying it. Even items that are not legally mandated in every country are worth having because you are driving a vehicle loaded with gas, electrics, and flammable soft furnishings.',
     },
     {
       type: 'heading',
@@ -79,7 +79,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Hi-visibility vests are mandatory for the driver and all passengers in France, Spain, Italy, Austria, Portugal, and Belgium. They must be inside the cabin -- not in the boot or garage -- because you need to put one on before exiting the vehicle at the roadside. Buy a <a href="' +
+        'Hi-visibility vests are mandatory for the driver and all passengers in France, Spain, Italy, Austria, Portugal, and Belgium. They must be inside the cabin — not in the boot or garage — because you need to put one on before exiting the vehicle at the roadside. Buy a <a href="' +
         amazonUrl('B07FKRHKP4') +
         '" target="_blank" rel="sponsored noopener noreferrer">multi-pack of hi-vis vests</a> and keep them in the glove box.',
     },
@@ -105,7 +105,7 @@ const post: BlogPost = {
       content:
         'A <a href="' +
         amazonUrl('B08RS495MJ') +
-        '" target="_blank" rel="sponsored noopener noreferrer">DIN 13164 first aid kit</a> is legally required in Germany, Austria, and several other countries. Even where not mandatory, carrying a proper kit is common sense. The DIN 13164 standard is the benchmark -- it includes bandages, dressings, gloves, scissors, and a foil blanket. Keep it accessible, not buried under luggage.',
+        '" target="_blank" rel="sponsored noopener noreferrer">DIN 13164 first aid kit</a> is legally required in Germany, Austria, and several other countries. Even where not mandatory, carrying a proper kit is common sense. The DIN 13164 standard is the benchmark — it includes bandages, dressings, gloves, scissors, and a foil blanket. Keep it accessible, not buried under luggage.',
     },
     {
       type: 'warning',
@@ -134,7 +134,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'The campervan kitchen is where you save the most money on a European trip. Eating out in France, Italy, or Scandinavia adds up fast. A well-equipped compact kitchen means you can eat well for a fraction of restaurant prices -- and cooking with fresh local produce from European markets is one of the genuine pleasures of van life.',
+        'The campervan kitchen is where you save the most money on a European trip. Eating out in France, Italy, or Scandinavia adds up fast. A well-equipped compact kitchen means you can eat well for a fraction of restaurant prices — and cooking with fresh local produce from European markets is one of the genuine pleasures of van life.',
     },
     {
       type: 'heading',
@@ -151,7 +151,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'A compact set of nesting pots, a good frying pan, and a kettle cover most cooking needs. Look for hard-anodised aluminium sets designed for camping -- they are light, durable, and stack neatly. Add a sharp knife (kept safely in a blade guard), a wooden spoon, tongs, a tin opener, and a compact chopping board.',
+        'A compact set of nesting pots, a good frying pan, and a kettle cover most cooking needs. Look for hard-anodised aluminium sets designed for camping — they are light, durable, and stack neatly. Add a sharp knife (kept safely in a blade guard), a wooden spoon, tongs, a tin opener, and a compact chopping board.',
     },
     {
       type: 'heading',
@@ -161,7 +161,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'A collapsible water container (10 litres) is invaluable for topping up your onboard tank from campsite taps. Collapsible washing-up bowls save space when not in use. Airtight food containers prevent smells and keep insects out -- particularly important in Mediterranean climates where ants will find any crumb within minutes.',
+        'A collapsible water container (10 litres) is invaluable for topping up your onboard tank from campsite taps. Collapsible washing-up bowls save space when not in use. Airtight food containers prevent smells and keep insects out — particularly important in Mediterranean climates where ants will find any crumb within minutes.',
     },
     {
       type: 'tip',
@@ -213,7 +213,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'If you use campsite hookups, you need a standard CEE blue 16A hookup cable (25 metres is the safe minimum length). European campsites universally use this connector, but older sites in France and Southern Europe occasionally have non-standard sockets. Carry a mains adapter kit and a polarity tester -- reverse polarity is surprisingly common on European campsites and can damage sensitive electronics.',
+        'If you use campsite hookups, you need a standard CEE blue 16A hookup cable (25 metres is the safe minimum length). European campsites universally use this connector, but older sites in France and Southern Europe occasionally have non-standard sockets. Carry a mains adapter kit and a polarity tester — reverse polarity is surprisingly common on European campsites and can damage sensitive electronics.',
     },
 
     // ── Navigation ───────────────────────────────────────────────
@@ -245,7 +245,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Download offline maps for every country you plan to visit before you leave. Google Maps, Maps.me, and OsmAnd all support offline downloads. CamperPlanning works offline once loaded -- plan your route at a campsite with Wi-Fi and navigate from the cached data the next day.',
+        'Download offline maps for every country you plan to visit before you leave. Google Maps, Maps.me, and OsmAnd all support offline downloads. CamperPlanning works offline once loaded — plan your route at a campsite with Wi-Fi and navigate from the cached data the next day.',
     },
     {
       type: 'paragraph',
@@ -286,7 +286,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'A pair of lightweight folding chairs and a small table transform a parking space into a living room. You will spend far more time sitting outside your van than inside it -- especially in Mediterranean climates. Look for camping chairs that pack small and weigh under 3 kg each. An awning or tarp provides shade and rain protection if your van does not have a built-in awning.',
+        'A pair of lightweight folding chairs and a small table transform a parking space into a living room. You will spend far more time sitting outside your van than inside it — especially in Mediterranean climates. Look for camping chairs that pack small and weigh under 3 kg each. An awning or tarp provides shade and rain protection if your van does not have a built-in awning.',
     },
     {
       type: 'heading',
@@ -336,7 +336,7 @@ const post: BlogPost = {
         'Warning triangle: mandatory',
         'Hi-vis vest: mandatory for every occupant (must be inside the cabin)',
         'Headlamp beam deflectors or adjustment: required for right-hand-drive vehicles (to prevent dazzle)',
-        'Breathalyser: technically still required by law, though the fine for not carrying one was suspended. Carry one anyway -- they cost almost nothing',
+        'Breathalyser: technically still required by law, though the fine for not carrying one was suspended. Carry one anyway — they cost almost nothing',
         "Crit'Air vignette: required for driving in low-emission zones in Paris, Lyon, Strasbourg, and other cities. Order online at certificat-air.gouv.fr before you travel",
       ],
     },
@@ -525,7 +525,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'The right gear means nothing without the right route. A well-planned itinerary keeps you near water fill-up points, LPG refill stations, and campsites with the hookups you need. CamperPlanning lets you set your vehicle dimensions, find campsites along your route, and estimate fuel costs -- so you can focus on the trip, not the logistics.',
+        'The right gear means nothing without the right route. A well-planned itinerary keeps you near water fill-up points, LPG refill stations, and campsites with the hookups you need. CamperPlanning lets you set your vehicle dimensions, find campsites along your route, and estimate fuel costs — so you can focus on the trip, not the logistics.',
     },
     {
       type: 'cta',

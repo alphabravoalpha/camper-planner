@@ -200,7 +200,13 @@ const MapLayerControl: React.FC<MapLayerControlProps> = ({
               className="text-neutral-400 hover:text-neutral-600 p-1 rounded transition-colors"
               aria-label="Collapse layer control"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg
+                className="w-4 h-4"
+                aria-hidden="true"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -223,6 +229,7 @@ const MapLayerControl: React.FC<MapLayerControlProps> = ({
                 key={layer.id}
                 onClick={() => handleLayerChange(layer.id)}
                 disabled={isLoadingThis}
+                aria-pressed={isActive}
                 className={cn(
                   'w-full flex items-center space-x-3 p-2 rounded-lg text-left transition-all',
                   isActive
@@ -247,6 +254,7 @@ const MapLayerControl: React.FC<MapLayerControlProps> = ({
                     {isActive && (
                       <svg
                         className="w-4 h-4 text-primary-600"
+                        aria-hidden="true"
                         fill="currentColor"
                         viewBox="0 0 20 20"
                       >
