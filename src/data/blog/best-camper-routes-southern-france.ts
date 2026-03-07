@@ -32,7 +32,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'France has the most developed motorhome infrastructure in Europe. The country operates over 6,000 dedicated aires de service -- designated overnight parking areas for campervans and motorhomes, most of which are either free or cost less than ten euros per night. Many include fresh water, waste disposal, and electricity hookups. Combined with an excellent network of municipal and private campsites, you rarely need to drive more than 30 minutes to find a legal, comfortable place to stop.',
+        'France has the most developed motorhome infrastructure in Europe. The country operates over 6,000 dedicated aires de service — designated overnight parking areas for campervans and motorhomes, most of which are either free or cost less than ten euros per night. Many include fresh water, waste disposal, and electricity hookups. Combined with an excellent network of municipal and private campsites, you rarely need to drive more than 30 minutes to find a legal, comfortable place to stop.',
     },
     {
       type: 'paragraph',
@@ -53,7 +53,7 @@ const post: BlogPost = {
     },
     {
       type: 'paragraph',
-      content: 'Distance: approximately 320 km. Recommended duration: 5--7 days.',
+      content: 'Distance: approximately 320 km. Recommended duration: 5–7 days.',
     },
     {
       type: 'image',
@@ -67,12 +67,12 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Start in Avignon, where you can park at the large aire near Pont Saint-Benezet and spend a few hours exploring the medieval city walls and the Palais des Papes. The aire has motorhome service facilities and is a flat 15-minute walk to the historic centre. From Avignon, take the D900 east and then the D2 south into the Luberon. Avoid the temptation to use the A7 autoroute here -- the toll-free departmental roads are far more scenic and only add about twenty minutes to the journey.',
+        'Start in Avignon, where you can park at the large aire near Pont Saint-Benezet and spend a few hours exploring the medieval city walls and the Palais des Papes. The aire has motorhome service facilities and is a flat 15-minute walk to the historic centre. From Avignon, take the D900 east and then the D2 south into the Luberon. Avoid the temptation to use the A7 autoroute here — the toll-free departmental roads are far more scenic and only add about twenty minutes to the journey.',
     },
     {
       type: 'paragraph',
       content:
-        'Gordes is one of the most photographed hill villages in France, its honey-coloured stone buildings cascading down a cliff face above the Calavon valley. Parking a motorhome in the village itself is essentially impossible -- the streets are far too narrow and there are height restrictions on the main car park. Instead, use the dedicated motorhome parking area on the D15 about 800 metres south of the village centre, which is signposted. From there, it is a short uphill walk into the village. Nearby, the Senanque Abbey is surrounded by lavender rows that are in full bloom from mid-June to late July, making it one of the most iconic photo opportunities in all of Provence.',
+        'Gordes is one of the most photographed hill villages in France, its honey-coloured stone buildings cascading down a cliff face above the Calavon valley. Parking a motorhome in the village itself is essentially impossible — the streets are far too narrow and there are height restrictions on the main car park. Instead, use the dedicated motorhome parking area on the D15 about 800 metres south of the village centre, which is signposted. From there, it is a short uphill walk into the village. Nearby, the Senanque Abbey is surrounded by lavender rows that are in full bloom from mid-June to late July, making it one of the most iconic photo opportunities in all of Provence.',
     },
     {
       type: 'warning',
@@ -87,7 +87,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'From Gordes, continue east on the D2 to Roussillon, a village built on dramatic red and orange ochre cliffs. The Sentier des Ocres is a walking trail through old quarries that looks like a miniature painted desert -- it takes about 45 minutes and is well worth the stop. There is a motorhome-friendly car park on the western edge of the village, flat and shaded by plane trees. The village has several excellent bakeries where you can stock up on provisions before heading deeper into the lavender country.',
+        'From Gordes, continue east on the D2 to Roussillon, a village built on dramatic red and orange ochre cliffs. The Sentier des Ocres is a walking trail through old quarries that looks like a miniature painted desert — it takes about 45 minutes and is well worth the stop. There is a motorhome-friendly car park on the western edge of the village, flat and shaded by plane trees. The village has several excellent bakeries where you can stock up on provisions before heading deeper into the lavender country.',
     },
     {
       type: 'heading',
@@ -102,7 +102,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'From Sault, head south-east towards Valensole via Banon and Riez. The Valensole Plateau is the largest lavender-growing area in France and the scale is breathtaking -- fields stretch unbroken to the horizon. There are several pull-off points along the D6 and D8 where you can park safely and walk into the fields. Harvest usually begins in the last week of July, so time your visit before then if you want the full purple display. The town of Valensole itself has a free aire with water and waste facilities on its northern edge.',
+        'From Sault, head south-east towards Valensole via Banon and Riez. The Valensole Plateau is the largest lavender-growing area in France and the scale is breathtaking — fields stretch unbroken to the horizon. There are several pull-off points along the D6 and D8 where you can park safely and walk into the fields. Harvest usually begins in the last week of July, so time your visit before then if you want the full purple display. The town of Valensole itself has a free aire with water and waste facilities on its northern edge.',
     },
     {
       type: 'tip',
@@ -117,12 +117,12 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'The Gorges du Verdon is a 25-kilometre limestone canyon with vertical walls dropping 700 metres to the turquoise Verdon River below. The Route des Cretes on the north rim (D23) offers the most spectacular viewpoints, with a series of belvederes carved into the cliff edge. This road is narrow in places -- comfortably passable for vehicles up to 7 metres, but challenging for anything longer. Passing oncoming traffic requires patience and occasionally reversing to a wider section.',
+        'The Gorges du Verdon is a 25-kilometre limestone canyon with vertical walls dropping 700 metres to the turquoise Verdon River below. The Route des Cretes on the north rim (D23) offers the most spectacular viewpoints, with a series of belvederes carved into the cliff edge. This road is narrow in places — comfortably passable for vehicles up to 7 metres, but challenging for anything longer. Passing oncoming traffic requires patience and occasionally reversing to a wider section.',
     },
     {
       type: 'paragraph',
       content:
-        'Moustiers-Sainte-Marie, at the western end of the gorge, is a stunning village wedged into a gap in the cliffs with a golden star suspended on a chain between the two rock faces above. The village has a well-regarded municipal campsite (Camping Saint-Jean) and several private campsites along the road to Lac de Sainte-Croix. The lake itself is a magnificent emerald-green reservoir where you can rent electric boats and pedal boats -- swimming is permitted and the water is surprisingly warm from July onwards.',
+        'Moustiers-Sainte-Marie, at the western end of the gorge, is a stunning village wedged into a gap in the cliffs with a golden star suspended on a chain between the two rock faces above. The village has a well-regarded municipal campsite (Camping Saint-Jean) and several private campsites along the road to Lac de Sainte-Croix. The lake itself is a magnificent emerald-green reservoir where you can rent electric boats and pedal boats — swimming is permitted and the water is surprisingly warm from July onwards.',
     },
     {
       type: 'warning',
@@ -143,7 +143,7 @@ const post: BlogPost = {
     },
     {
       type: 'paragraph',
-      content: 'Distance: approximately 280 km. Recommended duration: 5--7 days.',
+      content: 'Distance: approximately 280 km. Recommended duration: 5–7 days.',
     },
     {
       type: 'image',
@@ -157,7 +157,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Nice is the logical starting point for a Riviera tour, with good motorhome access from the A8 autoroute and several campsites within 20 minutes of the city centre. Camping Urban Nice on the Route de Grenoble is one of the closest, with a regular bus service into the old town. The Promenade des Anglais, the Cours Saleya flower market, and the view from Castle Hill are all walkable from the main bus routes. Avoid driving your motorhome into the city centre at all costs -- the streets of Vieux Nice are impossibly narrow and several are restricted to vehicles under 1.9 metres wide.',
+        'Nice is the logical starting point for a Riviera tour, with good motorhome access from the A8 autoroute and several campsites within 20 minutes of the city centre. Camping Urban Nice on the Route de Grenoble is one of the closest, with a regular bus service into the old town. The Promenade des Anglais, the Cours Saleya flower market, and the view from Castle Hill are all walkable from the main bus routes. Avoid driving your motorhome into the city centre at all costs — the streets of Vieux Nice are impossibly narrow and several are restricted to vehicles under 1.9 metres wide.',
     },
     {
       type: 'paragraph',
@@ -172,7 +172,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        "The stretch between Cannes and Frejus along the N7 and the Corniche de l'Esterel is one of the most beautiful coastal drives in the Mediterranean. The Esterel Massif is a range of ancient red porphyry rock that drops directly into deep blue water, creating a colour contrast that is almost unreal. There are several small parking areas along the corniche where you can stop for photos or a swim from the rocks. Be aware that some of these pull-offs have 2.3m height barriers to prevent overnight motorhome parking -- check before you commit.",
+        "The stretch between Cannes and Frejus along the N7 and the Corniche de l'Esterel is one of the most beautiful coastal drives in the Mediterranean. The Esterel Massif is a range of ancient red porphyry rock that drops directly into deep blue water, creating a colour contrast that is almost unreal. There are several small parking areas along the corniche where you can stop for photos or a swim from the rocks. Be aware that some of these pull-offs have 2.3m height barriers to prevent overnight motorhome parking — check before you commit.",
     },
     {
       type: 'paragraph',
@@ -192,17 +192,17 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        "West of Saint-Tropez, the coast becomes less developed and more wild. Hyeres is the gateway to the Iles d'Or (Golden Islands) -- Porquerolles, Port-Cros, and the Ile du Levant. Porquerolles in particular is worth a day trip: car-free, with white sand beaches and crystal-clear snorkelling water. Ferries run from La Tour Fondue, where there is a large (paid) car park that accepts motorhomes up to 3.5 tonnes.",
+        "West of Saint-Tropez, the coast becomes less developed and more wild. Hyeres is the gateway to the Iles d'Or (Golden Islands) — Porquerolles, Port-Cros, and the Ile du Levant. Porquerolles in particular is worth a day trip: car-free, with white sand beaches and crystal-clear snorkelling water. Ferries run from La Tour Fondue, where there is a large (paid) car park that accepts motorhomes up to 3.5 tonnes.",
     },
     {
       type: 'paragraph',
       content:
-        'The final stretch to Cassis takes you past the naval port of Toulon and through the coastal hills of Bandol and La Ciotat. The Calanques -- dramatic narrow inlets carved into white limestone cliffs between Cassis and Marseille -- are a highlight of the entire Mediterranean coast. You cannot drive into the Calanques; access is on foot or by boat from Cassis harbour. Camping Les Cigales in Cassis is well-positioned for both the Calanques walks and the charming village centre.',
+        'The final stretch to Cassis takes you past the naval port of Toulon and through the coastal hills of Bandol and La Ciotat. The Calanques — dramatic narrow inlets carved into white limestone cliffs between Cassis and Marseille — are a highlight of the entire Mediterranean coast. You cannot drive into the Calanques; access is on foot or by boat from Cassis harbour. Camping Les Cigales in Cassis is well-positioned for both the Calanques walks and the charming village centre.',
     },
     {
       type: 'warning',
       content:
-        'The road into Cassis descends steeply via the Route des Cretes (D141) with tight hairpin bends. Vehicles over 7.5 metres should use the D559 approach from the east instead. In summer, the Calanques National Park restricts access on high fire-risk days -- check the prefecture website before planning a hike.',
+        'The road into Cassis descends steeply via the Route des Cretes (D141) with tight hairpin bends. Vehicles over 7.5 metres should use the D559 approach from the east instead. In summer, the Calanques National Park restricts access on high fire-risk days — check the prefecture website before planning a hike.',
     },
 
     // ── Route 3: Languedoc ────────────────────────────────────────
@@ -218,7 +218,7 @@ const post: BlogPost = {
     },
     {
       type: 'paragraph',
-      content: 'Distance: approximately 350 km. Recommended duration: 5--7 days.',
+      content: 'Distance: approximately 350 km. Recommended duration: 5–7 days.',
     },
     {
       type: 'image',
@@ -237,7 +237,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'From Montpellier, head south-west along the coast to Sete, a working fishing port built on a rocky peninsula between the Mediterranean and the Etang de Thau. Sete is often called the Venice of Languedoc for its network of canals, but it has a grittier, more authentic character than that comparison suggests. The covered market (Les Halles de Sete) is outstanding -- pick up tielle (a local octopus pie), oysters from the Etang de Thau, and local Picpoul de Pinet white wine. There is a motorhome aire near the Plage de la Corniche with views across to the Mont Saint-Clair.',
+        'From Montpellier, head south-west along the coast to Sete, a working fishing port built on a rocky peninsula between the Mediterranean and the Etang de Thau. Sete is often called the Venice of Languedoc for its network of canals, but it has a grittier, more authentic character than that comparison suggests. The covered market (Les Halles de Sete) is outstanding — pick up tielle (a local octopus pie), oysters from the Etang de Thau, and local Picpoul de Pinet white wine. There is a motorhome aire near the Plage de la Corniche with views across to the Mont Saint-Clair.',
     },
     {
       type: 'heading',
@@ -262,7 +262,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'A short detour north from the canal brings you to Minerve, a fortified village perched on a rocky spur between two gorges. It was the site of a brutal siege during the Cathar Crusade in 1210 and today is one of the most dramatic small villages in France. The approach road is narrow but manageable for vehicles up to 7 metres. Park in the designated area at the entrance to the village -- do not attempt to drive across the narrow bridge into the village itself. The surrounding Minervois wine region produces excellent reds and rose at a fraction of Provence prices, and many domaines offer free tastings.',
+        'A short detour north from the canal brings you to Minerve, a fortified village perched on a rocky spur between two gorges. It was the site of a brutal siege during the Cathar Crusade in 1210 and today is one of the most dramatic small villages in France. The approach road is narrow but manageable for vehicles up to 7 metres. Park in the designated area at the entrance to the village — do not attempt to drive across the narrow bridge into the village itself. The surrounding Minervois wine region produces excellent reds and rose at a fraction of Provence prices, and many domaines offer free tastings.',
     },
     {
       type: 'heading',
@@ -277,7 +277,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        "From Carcassonne, you can loop south to Limoux -- famous for producing the world's oldest sparkling wine, Blanquette de Limoux, which predates Champagne by over a century -- before heading back east towards the coast via Narbonne. Narbonne was the first Roman colony in Gaul and has an excellent covered market (Les Halles de Narbonne) and the unfinished but enormous Cathedral Saint-Just-et-Saint-Pasteur. The coast south of Narbonne at Gruissan is wild and undeveloped, with salt flats, flamingos, and a distinctive village of chalets built on stilts above the Etang de Gruissan.",
+        "From Carcassonne, you can loop south to Limoux — famous for producing the world's oldest sparkling wine, Blanquette de Limoux, which predates Champagne by over a century — before heading back east towards the coast via Narbonne. Narbonne was the first Roman colony in Gaul and has an excellent covered market (Les Halles de Narbonne) and the unfinished but enormous Cathedral Saint-Just-et-Saint-Pasteur. The coast south of Narbonne at Gruissan is wild and undeveloped, with salt flats, flamingos, and a distinctive village of chalets built on stilts above the Etang de Gruissan.",
     },
     {
       type: 'tip',
@@ -299,7 +299,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'The ideal window for Southern France is mid-May to mid-October, but the character of your trip changes significantly within that range. May and June offer warm weather, manageable crowds, and wildflowers everywhere -- lavender begins in mid-June. July and August bring the full lavender season and the best swimming weather, but also the heaviest traffic, the most crowded campsites, and temperatures that regularly exceed 35 degrees. September and October are arguably the best months overall: the sea is still warm from the summer, the crowds have thinned dramatically, vineyards are being harvested, and campsite prices drop by 20-40%.',
+        'The ideal window for Southern France is mid-May to mid-October, but the character of your trip changes significantly within that range. May and June offer warm weather, manageable crowds, and wildflowers everywhere — lavender begins in mid-June. July and August bring the full lavender season and the best swimming weather, but also the heaviest traffic, the most crowded campsites, and temperatures that regularly exceed 35 degrees. September and October are arguably the best months overall: the sea is still warm from the summer, the crowds have thinned dramatically, vineyards are being harvested, and campsite prices drop by 20-40%.',
     },
     {
       type: 'list',
@@ -343,7 +343,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        "Narrow village roads are another challenge, particularly in the Luberon, the hill villages above the Cote d'Azur, and the Cathar country of the Languedoc. Many D-roads through villages were built for horse carts and are genuinely too narrow for vehicles over 2.3 metres wide. Wing mirrors are vulnerable. As a general rule, if your GPS is routing you through the centre of a small hilltop village, look for an alternative route around it. Park outside and walk in -- the walk is usually short and always more pleasant than a stressful drive through streets where your mirrors scrape the shutters.",
+        "Narrow village roads are another challenge, particularly in the Luberon, the hill villages above the Cote d'Azur, and the Cathar country of the Languedoc. Many D-roads through villages were built for horse carts and are genuinely too narrow for vehicles over 2.3 metres wide. Wing mirrors are vulnerable. As a general rule, if your GPS is routing you through the centre of a small hilltop village, look for an alternative route around it. Park outside and walk in — the walk is usually short and always more pleasant than a stressful drive through streets where your mirrors scrape the shutters.",
     },
     {
       type: 'warning',
@@ -358,7 +358,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'France distinguishes between two main types of overnight stopping places for motorhomes. Campsites (campings) offer full facilities -- electricity, water, showers, toilets, and often swimming pools, restaurants, and activities. They range from basic municipal sites at 12-18 euros per night to luxury four-star sites at 40-60 euros. Aires de camping-car are simpler -- typically a hardstanding area with fresh water and waste disposal, sometimes with electricity. Many are free; others charge 5-12 euros. Both are legal and accepted places to park overnight.',
+        'France distinguishes between two main types of overnight stopping places for motorhomes. Campsites (campings) offer full facilities — electricity, water, showers, toilets, and often swimming pools, restaurants, and activities. They range from basic municipal sites at 12-18 euros per night to luxury four-star sites at 40-60 euros. Aires de camping-car are simpler — typically a hardstanding area with fresh water and waste disposal, sometimes with electricity. Many are free; others charge 5-12 euros. Both are legal and accepted places to park overnight.',
     },
     {
       type: 'paragraph',
@@ -383,7 +383,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Southern France is generally easy driving, but a few rules make motorhome travel much smoother. Keep to the right-hand lane on dual carriageways and autoroutes -- French drivers can be aggressive about overtaking and will flash their lights if they feel you are blocking. Fill up with diesel at supermarket stations (Leclerc, Intermarche, Carrefour), which are consistently 10-15 cents per litre cheaper than autoroute or branded stations. Plan your fuel stops in advance, as some smaller D-roads in rural Provence and the Languedoc can have 50-kilometre stretches without a petrol station.',
+        'Southern France is generally easy driving, but a few rules make motorhome travel much smoother. Keep to the right-hand lane on dual carriageways and autoroutes — French drivers can be aggressive about overtaking and will flash their lights if they feel you are blocking. Fill up with diesel at supermarket stations (Leclerc, Intermarche, Carrefour), which are consistently 10-15 cents per litre cheaper than autoroute or branded stations. Plan your fuel stops in advance, as some smaller D-roads in rural Provence and the Languedoc can have 50-kilometre stretches without a petrol station.',
     },
     {
       type: 'paragraph',
@@ -403,12 +403,12 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        "Southern France is generally safe for motorhome travel, but vehicle break-ins do occur, particularly in the Cote d'Azur region and around Marseille. Autoroute rest areas are the highest-risk locations -- never leave valuables visible and consider using a security lock on your habitation door when sleeping at rest stops. Dedicated aires and campsites are much safer. Common-sense precautions apply: do not leave electronics, cameras, or bags visible through windows; use internal blinds and curtains when parked; and choose well-lit, populated stopping places when possible.",
+        "Southern France is generally safe for motorhome travel, but vehicle break-ins do occur, particularly in the Cote d'Azur region and around Marseille. Autoroute rest areas are the highest-risk locations — never leave valuables visible and consider using a security lock on your habitation door when sleeping at rest stops. Dedicated aires and campsites are much safer. Common-sense precautions apply: do not leave electronics, cameras, or bags visible through windows; use internal blinds and curtains when parked; and choose well-lit, populated stopping places when possible.",
     },
     {
       type: 'tip',
       content:
-        'Download the official French government Bison Fute app or check bfrn.fr before travelling on weekends and public holidays. It provides real-time traffic forecasts and colour-coded warnings (green, orange, red, black) for traffic density on major routes. Black days -- typically the first and last weekends of August -- can see six-hour delays on the A7 and A9.',
+        'Download the official French government Bison Fute app or check bfrn.fr before travelling on weekends and public holidays. It provides real-time traffic forecasts and colour-coded warnings (green, orange, red, black) for traffic density on major routes. Black days — typically the first and last weekends of August — can see six-hour delays on the A7 and A9.',
     },
 
     // ── Combining the Routes ──────────────────────────────────────
@@ -425,7 +425,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'A grand tour like this benefits enormously from forward planning. Use the CamperPlanning route planner to map out your stops, check distances between campsites, and estimate daily driving times. Aim for no more than 150--200 km of driving per day, leaving plenty of time for exploration. Build in at least two rest days per week where you stay put -- the best trips are the ones where you resist the urge to keep moving and instead linger in the places that capture your attention.',
+        'A grand tour like this benefits enormously from forward planning. Use the CamperPlanning route planner to map out your stops, check distances between campsites, and estimate daily driving times. Aim for no more than 150–200 km of driving per day, leaving plenty of time for exploration. Build in at least two rest days per week where you stay put — the best trips are the ones where you resist the urge to keep moving and instead linger in the places that capture your attention.',
     },
 
     // ── CTA ───────────────────────────────────────────────────────
@@ -442,7 +442,7 @@ const post: BlogPost = {
     {
       type: 'cta',
       content:
-        'Start planning your Southern France camper trip with CamperPlanning. Add your waypoints, set your vehicle dimensions, and let the planner calculate a safe, scenic route. It is free, works offline, and respects your privacy -- no account required.',
+        'Start planning your Southern France camper trip with CamperPlanning. Add your waypoints, set your vehicle dimensions, and let the planner calculate a safe, scenic route. It is free, works offline, and respects your privacy — no account required.',
       waypoints: [
         { name: 'Avignon', lat: 43.9493, lng: 4.8055 },
         { name: 'Gorges du Verdon', lat: 43.7369, lng: 6.3261 },

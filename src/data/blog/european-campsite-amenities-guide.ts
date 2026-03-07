@@ -27,7 +27,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'If your only experience of campsites is a basic field with a tap and a portable toilet, European campsites will be a revelation. At the top end, sites in France, Spain, and Italy operate more like outdoor resorts -- swimming pool complexes, restaurants, supermarkets, entertainment programmes, spa facilities, and pitches with private bathrooms. At the other end, Scandinavian and Eastern European sites can be beautifully simple: a flat spot in a forest, clean shared facilities, and the sound of nothing.',
+        'If your only experience of campsites is a basic field with a tap and a portable toilet, European campsites will be a revelation. At the top end, sites in France, Spain, and Italy operate more like outdoor resorts — swimming pool complexes, restaurants, supermarkets, entertainment programmes, spa facilities, and pitches with private bathrooms. At the other end, Scandinavian and Eastern European sites can be beautifully simple: a flat spot in a forest, clean shared facilities, and the sound of nothing.',
     },
     {
       type: 'paragraph',
@@ -44,7 +44,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Most European countries use a star rating system for campsites, typically from one to five stars, but the criteria and enforcement vary significantly. In France, the star system (classement prefectoral) is government-regulated and reasonably reliable -- a four-star French campsite will always have hot showers, electricity on every pitch, a swimming pool, and organised activities. In other countries, the ratings are self-assessed by campsite owners or managed by national camping federations with inconsistent standards.',
+        'Most European countries use a star rating system for campsites, typically from one to five stars, but the criteria and enforcement vary significantly. In France, the star system (classement prefectoral) is government-regulated and reasonably reliable — a four-star French campsite will always have hot showers, electricity on every pitch, a swimming pool, and organised activities. In other countries, the ratings are self-assessed by campsite owners or managed by national camping federations with inconsistent standards.',
     },
     {
       type: 'list',
@@ -71,7 +71,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        "Electric hookup is available at virtually every campsite in Western Europe from two stars upward, but the details matter. European campsites use the CEE blue industrial connector (also called the camping plug or caravan plug) -- a round, three-pin, blue-capped plug rated for outdoor use. You will need a CEE hookup cable, typically 25 metres long, which connects your vehicle's input socket to the campsite bollard. Most rental motorhomes and campervans come with one; if buying, budget 30-50 euros for a quality cable.",
+        "Electric hookup is available at virtually every campsite in Western Europe from two stars upward, but the details matter. European campsites use the CEE blue industrial connector (also called the camping plug or caravan plug) — a round, three-pin, blue-capped plug rated for outdoor use. You will need a CEE hookup cable, typically 25 metres long, which connects your vehicle's input socket to the campsite bollard. Most rental motorhomes and campervans come with one; if buying, budget 30-50 euros for a quality cable.",
     },
     {
       type: 'paragraph',
@@ -81,7 +81,7 @@ const post: BlogPost = {
     {
       type: 'warning',
       content:
-        'In Italy, Greece, and parts of Spain, some older campsites still use Schuko (standard European two-pin household) sockets rather than CEE connectors. Carry a Schuko-to-CEE adapter as a backup. Never use a domestic extension lead outdoors -- they are not waterproof and present a serious electrocution risk.',
+        'In Italy, Greece, and parts of Spain, some older campsites still use Schuko (standard European two-pin household) sockets rather than CEE connectors. Carry a Schuko-to-CEE adapter as a backup. Never use a domestic extension lead outdoors — they are not waterproof and present a serious electrocution risk.',
     },
 
     // ── Water and Sanitation ─────────────────────────────────────
@@ -98,7 +98,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Sanitary blocks vary from utilitarian to luxurious. Dutch and German campsites are renowned for the quality of their facilities -- underfloor heating, individual shower cubicles with changing areas, family bathrooms, and facilities for disabled users are standard at three stars and above. French and Spanish sites at the same level are generally clean but more basic. Scandinavian sites often include saunas as standard -- in Finland and Norway, the campsite sauna is a cultural institution.',
+        'Sanitary blocks vary from utilitarian to luxurious. Dutch and German campsites are renowned for the quality of their facilities — underfloor heating, individual shower cubicles with changing areas, family bathrooms, and facilities for disabled users are standard at three stars and above. French and Spanish sites at the same level are generally clean but more basic. Scandinavian sites often include saunas as standard — in Finland and Norway, the campsite sauna is a cultural institution.',
     },
     {
       type: 'paragraph',
@@ -142,12 +142,12 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Municipal campsites (camping municipal in France, camping comunale in Italy, camping municipal in Spain) are operated by local councils. They tend to be cheaper than commercial sites, with basic but well-maintained facilities: clean sanitary blocks, electricity, water, and waste disposal. What they lack in swimming pools and entertainment, they make up for in location -- many municipal sites occupy prime positions on lakeshores, riversides, or town centres that commercial operators could never afford.',
+        'Municipal campsites (camping municipal in France, camping comunale in Italy, camping municipal in Spain) are operated by local councils. They tend to be cheaper than commercial sites, with basic but well-maintained facilities: clean sanitary blocks, electricity, water, and waste disposal. What they lack in swimming pools and entertainment, they make up for in location — many municipal sites occupy prime positions on lakeshores, riversides, or town centres that commercial operators could never afford.',
     },
     {
       type: 'paragraph',
       content:
-        'France has the best network of municipal campsites in Europe, with over 2,000 sites spread across the country. Prices range from 8 to 20 euros per night. They are typically open from April or May to September or October. Booking is rarely possible or necessary outside July and August, when popular sites can fill up. Municipal campsites rarely appear on commercial booking platforms -- you often need to find them via local tourist office websites or apps like Park4Night and Campercontact.',
+        'France has the best network of municipal campsites in Europe, with over 2,000 sites spread across the country. Prices range from 8 to 20 euros per night. They are typically open from April or May to September or October. Booking is rarely possible or necessary outside July and August, when popular sites can fill up. Municipal campsites rarely appear on commercial booking platforms — you often need to find them via local tourist office websites or apps like Park4Night and Campercontact.',
     },
     {
       type: 'heading',
@@ -189,7 +189,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'German campsites are meticulously maintained with excellent sanitary facilities. Even two-star sites are impeccably clean. Stellplatze (designated motorhome parking areas) are abundant and well-equipped. Electricity is typically 16 amps. Many sites have wellness facilities, including saunas and thermal pools in spa regions. Prices are moderate: 20-40 euros per night at three to four star level. Campsite owners tend to enforce rules strictly -- quiet hours, pitch boundaries, and waste sorting are taken seriously.',
+        'German campsites are meticulously maintained with excellent sanitary facilities. Even two-star sites are impeccably clean. Stellplatze (designated motorhome parking areas) are abundant and well-equipped. Electricity is typically 16 amps. Many sites have wellness facilities, including saunas and thermal pools in spa regions. Prices are moderate: 20-40 euros per night at three to four star level. Campsite owners tend to enforce rules strictly — quiet hours, pitch boundaries, and waste sorting are taken seriously.',
     },
     {
       type: 'heading',
@@ -199,7 +199,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Italian campsites range widely in quality. Coastal sites in Liguria, Tuscany, and the Adriatic can be excellent, with beach access, swimming pools, and good restaurants. South of Rome, standards are more variable. Electricity supply can be unreliable at lower-rated sites -- 3-amp connections are common, which limits what you can run. The sosta network provides motorhome parking across the country. Prices range from 20-50 euros on the coast in high season, dropping to 12-25 euros inland and off-season.',
+        'Italian campsites range widely in quality. Coastal sites in Liguria, Tuscany, and the Adriatic can be excellent, with beach access, swimming pools, and good restaurants. South of Rome, standards are more variable. Electricity supply can be unreliable at lower-rated sites — 3-amp connections are common, which limits what you can run. The sosta network provides motorhome parking across the country. Prices range from 20-50 euros on the coast in high season, dropping to 12-25 euros inland and off-season.',
     },
     {
       type: 'heading',
@@ -219,7 +219,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Scandinavian campsites are clean, well-maintained, and almost always include a kitchen for guest use -- a shared indoor cooking area with hotplates, ovens, sinks, and often full sets of cookware and crockery. This is a uniquely Scandinavian feature that saves enormously on eating costs. Saunas are standard in Finland and common in Norway and Sweden. Facilities are excellent but prices reflect Scandinavian cost levels: 250-500 NOK (22-45 euros) in Norway, 200-400 SEK (17-35 euros) in Sweden. Many Scandinavian sites are part of the SCR (Scandinavian Camping Card) system, which offers discounts and is required for check-in at many sites.',
+        'Scandinavian campsites are clean, well-maintained, and almost always include a kitchen for guest use — a shared indoor cooking area with hotplates, ovens, sinks, and often full sets of cookware and crockery. This is a uniquely Scandinavian feature that saves enormously on eating costs. Saunas are standard in Finland and common in Norway and Sweden. Facilities are excellent but prices reflect Scandinavian cost levels: 250-500 NOK (22-45 euros) in Norway, 200-400 SEK (17-35 euros) in Sweden. Many Scandinavian sites are part of the SCR (Scandinavian Camping Card) system, which offers discounts and is required for check-in at many sites.',
     },
 
     // ── Booking and Pricing ──────────────────────────────────────
@@ -252,7 +252,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'European campsite pricing follows a strict seasonal pattern. Peak season (July-August, plus Easter and school holidays) commands the highest prices and often requires advance booking. Shoulder season (May-June and September-October) offers 20-40% lower rates with better weather than you might expect -- the Mediterranean is warm from May through October. Low season (November-March) sees many sites close entirely, though sites in southern Spain, Portugal, Greece, and southern Italy remain open year-round at dramatically reduced rates -- often 50-60% below peak prices.',
+        'European campsite pricing follows a strict seasonal pattern. Peak season (July-August, plus Easter and school holidays) commands the highest prices and often requires advance booking. Shoulder season (May-June and September-October) offers 20-40% lower rates with better weather than you might expect — the Mediterranean is warm from May through October. Low season (November-March) sees many sites close entirely, though sites in southern Spain, Portugal, Greece, and southern Italy remain open year-round at dramatically reduced rates — often 50-60% below peak prices.',
     },
 
     // ── Service Areas ────────────────────────────────────────────
@@ -291,7 +291,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Knowing what to expect at European campsites takes the guesswork out of planning each night of your trip. Whether you prefer a simple municipal site with a view or a full-facility resort with a heated pool, planning your overnight stops in advance ensures you always have options. The best sites in popular areas fill up quickly in high season -- advance research pays dividends.',
+        'Knowing what to expect at European campsites takes the guesswork out of planning each night of your trip. Whether you prefer a simple municipal site with a view or a full-facility resort with a heated pool, planning your overnight stops in advance ensures you always have options. The best sites in popular areas fill up quickly in high season — advance research pays dividends.',
     },
     {
       type: 'cta',

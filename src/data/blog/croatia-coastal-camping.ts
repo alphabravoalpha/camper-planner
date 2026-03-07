@@ -32,7 +32,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'The country is manageable in size -- you can drive from Dubrovnik in the south to Istria in the north in about seven hours along the coast road -- but the density of experiences along the way justifies a trip of two to three weeks at minimum. Ancient walled cities, offshore islands accessible by short ferry crossings, national parks with swimming permitted in waterfalls, and some of the cleanest beaches in the Mediterranean are all within easy reach of a single north-south route.',
+        'The country is manageable in size — you can drive from Dubrovnik in the south to Istria in the north in about seven hours along the coast road — but the density of experiences along the way justifies a trip of two to three weeks at minimum. Ancient walled cities, offshore islands accessible by short ferry crossings, national parks with swimming permitted in waterfalls, and some of the cleanest beaches in the Mediterranean are all within easy reach of a single north-south route.',
     },
     {
       type: 'paragraph',
@@ -59,7 +59,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        "Dubrovnik's city walls are the finest in the Mediterranean and the walk around them (2 km, about 90 minutes) is an essential experience despite the 35-euro entry fee. The old town's marble-paved Stradun, the Rector's Palace, and the harbour are all compact and walkable. Visit early morning or late afternoon to avoid cruise ship crowds -- on busy days, 3,000 or more passengers flood the old town between 9am and 5pm.",
+        "Dubrovnik's city walls are the finest in the Mediterranean and the walk around them (2 km, about 90 minutes) is an essential experience despite the 35-euro entry fee. The old town's marble-paved Stradun, the Rector's Palace, and the harbour are all compact and walkable. Visit early morning or late afternoon to avoid cruise ship crowds — on busy days, 3,000 or more passengers flood the old town between 9am and 5pm.",
     },
     {
       type: 'tip',
@@ -74,7 +74,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        "Split is Croatia's second city and perhaps its most characterful. The entire old town is built within and around the walls of Diocletian's Palace, a 4th-century Roman emperor's retirement home that has been continuously inhabited for 1,700 years. The palace has morphed into a living city neighbourhood -- apartments, shops, restaurants, and bars now occupy the former imperial chambers, and the cathedral was converted from a Roman mausoleum. It is one of the most extraordinary urban spaces in Europe.",
+        "Split is Croatia's second city and perhaps its most characterful. The entire old town is built within and around the walls of Diocletian's Palace, a 4th-century Roman emperor's retirement home that has been continuously inhabited for 1,700 years. The palace has morphed into a living city neighbourhood — apartments, shops, restaurants, and bars now occupy the former imperial chambers, and the cathedral was converted from a Roman mausoleum. It is one of the most extraordinary urban spaces in Europe.",
     },
     {
       type: 'paragraph',
@@ -116,12 +116,12 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Inland Istria is equally rewarding. The hilltop towns are connected by quiet roads through vineyards, olive groves, and truffle-hunting territory (Istrian truffles rival Italian ones at a fraction of the price). The Limski Fjord -- actually a ria rather than a true fjord -- is a narrow, steep-sided inlet where oysters and mussels are farmed and boat trips explore the caves. Camping in inland Istria is limited but growing, with several agriturizmi (farm campsites) offering pitches alongside local food and wine tasting.',
+        'Inland Istria is equally rewarding. The hilltop towns are connected by quiet roads through vineyards, olive groves, and truffle-hunting territory (Istrian truffles rival Italian ones at a fraction of the price). The Limski Fjord — actually a ria rather than a true fjord — is a narrow, steep-sided inlet where oysters and mussels are farmed and boat trips explore the caves. Camping in inland Istria is limited but growing, with several agriturizmi (farm campsites) offering pitches alongside local food and wine tasting.',
     },
     {
       type: 'tip',
       content:
-        'Istrian truffles are a fraction of the price of Italian truffles. In Buzet, the self-proclaimed truffle capital of the world, you can buy fresh black truffles from local hunters at the market for 30-60 euros per 100 grams -- compared to 150+ euros for the same product across the border in Italy. The white truffle season runs from September to December.',
+        'Istrian truffles are a fraction of the price of Italian truffles. In Buzet, the self-proclaimed truffle capital of the world, you can buy fresh black truffles from local hunters at the market for 30-60 euros per 100 grams — compared to 150+ euros for the same product across the border in Italy. The white truffle season runs from September to December.',
     },
 
     // ── National Parks ───────────────────────────────────────────
@@ -143,12 +143,12 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'The park is located inland, about two hours from the coast. Camping Korana is the closest campsite, just outside the park entrance at Entrance 1. The park offers two main routes: the upper lakes (a 2-3 hour walk with long-distance views over the canyon) and the lower lakes (a 2-3 hour walk through the most dramatic waterfalls and pools). The full circuit takes 4-6 hours. Swimming is not permitted in Plitvice -- the travertine formations are protected.',
+        'The park is located inland, about two hours from the coast. Camping Korana is the closest campsite, just outside the park entrance at Entrance 1. The park offers two main routes: the upper lakes (a 2-3 hour walk with long-distance views over the canyon) and the lower lakes (a 2-3 hour walk through the most dramatic waterfalls and pools). The full circuit takes 4-6 hours. Swimming is not permitted in Plitvice — the travertine formations are protected.',
     },
     {
       type: 'warning',
       content:
-        'Plitvice Lakes entry tickets must be booked online in advance during summer (June-September). Day tickets sell out, particularly for morning time slots. Book at np-plitvicka-jezera.hr as early as possible. Entry costs approximately 30-40 euros per adult in high season. The park is extremely crowded in July and August -- visit in May, June, or September for a far better experience.',
+        'Plitvice Lakes entry tickets must be booked online in advance during summer (June-September). Day tickets sell out, particularly for morning time slots. Book at np-plitvicka-jezera.hr as early as possible. Entry costs approximately 30-40 euros per adult in high season. The park is extremely crowded in July and August — visit in May, June, or September for a far better experience.',
     },
     {
       type: 'heading',
@@ -181,10 +181,10 @@ const post: BlogPost = {
       type: 'list',
       items: [
         'Hvar: Car ferry from Split to Stari Grad (2 hours). Lavender fields, Venetian architecture, buzzing nightlife. Camping Vira near Hvar town.',
-        "Brac: Car ferry from Split to Supetar (50 minutes). Home to Zlatni Rat, one of Europe's most photographed beaches -- a golden pebble spit that shifts shape with the currents. Camping Kito on the south coast.",
+        "Brac: Car ferry from Split to Supetar (50 minutes). Home to Zlatni Rat, one of Europe's most photographed beaches — a golden pebble spit that shifts shape with the currents. Camping Kito on the south coast.",
         'Korcula: Car ferry from Orebic on the Peljesac peninsula (15 minutes). Claims to be the birthplace of Marco Polo. Beautiful walled old town. Camping Kalac near Korcula town.',
         'Cres and Losinj: Car ferry from Brestova on the Istrian coast to Porozina on Cres (20 minutes). Wild, forested islands with griffon vulture colonies. Camping Kovacine on Cres.',
-        'Rab: Car ferry from Jablanac on the mainland (15 minutes). Sandy beaches -- rare in Croatia. Camping Padova on Rab island.',
+        'Rab: Car ferry from Jablanac on the mainland (15 minutes). Sandy beaches — rare in Croatia. Camping Padova on Rab island.',
       ],
     },
     {
@@ -207,7 +207,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Naturist campsites in Croatia are not fringe establishments -- they are mainstream, family-oriented, and often among the best-equipped sites in their area. Many non-naturist travellers choose them simply for the quality of facilities and locations. Textile (clothed) sections are often available within the sites. If naturism is not your thing, you will not accidentally end up at one -- they are clearly marked with FKK signage.',
+        'Naturist campsites in Croatia are not fringe establishments — they are mainstream, family-oriented, and often among the best-equipped sites in their area. Many non-naturist travellers choose them simply for the quality of facilities and locations. Textile (clothed) sections are often available within the sites. If naturism is not your thing, you will not accidentally end up at one — they are clearly marked with FKK signage.',
     },
 
     // ── Campsite Standards ───────────────────────────────────────
@@ -231,7 +231,7 @@ const post: BlogPost = {
       items: [
         'Budget (15-25 euros): Basic but clean sites with shared facilities. Often in quieter locations away from major towns. Good for self-sufficient campers.',
         'Mid-range (25-40 euros): Well-equipped sites with modern sanitary blocks, electricity, small pool or beach access. The best value tier for most travellers.',
-        "Premium (40-70 euros): Full resort facilities -- multiple pools, restaurants, water sports, kids' entertainment. Sites like Camping Zaton, Lanterna, and Polari fall into this category.",
+        "Premium (40-70 euros): Full resort facilities — multiple pools, restaurants, water sports, kids' entertainment. Sites like Camping Zaton, Lanterna, and Polari fall into this category.",
       ],
     },
 
@@ -257,7 +257,7 @@ const post: BlogPost = {
         'Speed limits: 130 km/h on motorways, 90 km/h on main roads, 50 km/h in towns. Speed cameras are common and fines start at 65 euros.',
         'Headlights must be on at all times from October to March.',
         'Blood alcohol limit is 0.05% (zero for drivers under 24).',
-        'Carry a reflective vest, warning triangle, and spare bulb kit -- all legally required.',
+        'Carry a reflective vest, warning triangle, and spare bulb kit — all legally required.',
         'Parking in cities uses numbered zones: Zone 1 (city centre) is the most expensive at 1-3 euros per hour, with limits on motorhome parking. Look for dedicated motorhome parking on city outskirts.',
       ],
     },
@@ -314,7 +314,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        "Croatia packs an extraordinary amount of natural beauty, historic cities, and island adventures into a compact coastline. Planning your route in advance -- especially ferry crossings and campsite bookings in high season -- transforms a potentially stressful drive into a relaxed exploration of one of Europe's most beautiful countries.",
+        "Croatia packs an extraordinary amount of natural beauty, historic cities, and island adventures into a compact coastline. Planning your route in advance — especially ferry crossings and campsite bookings in high season — transforms a potentially stressful drive into a relaxed exploration of one of Europe's most beautiful countries.",
     },
     {
       type: 'cta',

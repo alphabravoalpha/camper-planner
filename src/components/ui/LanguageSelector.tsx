@@ -109,10 +109,11 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
         aria-haspopup="true"
         aria-label="Select language"
       >
-        <Globe className="w-4 h-4" />
+        <Globe className="w-4 h-4" aria-hidden="true" />
         <span>{currentLanguage.code.toUpperCase()}</span>
         <svg
           className={cn('w-3 h-3 transition-transform', isOpen && 'rotate-180')}
+          aria-hidden="true"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -146,7 +147,12 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
                   )}
                 </div>
                 {language.code === currentLanguage.code && (
-                  <svg className="w-4 h-4 text-primary-600" fill="currentColor" viewBox="0 0 20 20">
+                  <svg
+                    className="w-4 h-4 text-primary-600"
+                    aria-hidden="true"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
                     <path
                       fillRule="evenodd"
                       d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"

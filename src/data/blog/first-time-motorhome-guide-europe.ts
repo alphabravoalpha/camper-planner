@@ -23,12 +23,12 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Europe is a continent built for road trips. Within a single day of driving you can cross multiple countries, pass through dramatically different landscapes, and hear half a dozen languages. A motorhome turns every one of those kilometres into part of the holiday rather than just a transfer between hotels. You sleep where you want, eat on your own schedule, and carry everything you need on your back -- metaphorically speaking.',
+        'Europe is a continent built for road trips. Within a single day of driving you can cross multiple countries, pass through dramatically different landscapes, and hear half a dozen languages. A motorhome turns every one of those kilometres into part of the holiday rather than just a transfer between hotels. You sleep where you want, eat on your own schedule, and carry everything you need on your back — metaphorically speaking.',
     },
     {
       type: 'paragraph',
       content:
-        'Unlike flying and booking accommodation in each city, a motorhome trip lets you be spontaneous. If a lakeside village charms you at lunchtime you can decide to stay the night. If the weather turns grey on the coast, you simply drive inland. That flexibility is what converts first-timers into lifelong motorhome travellers. Europe also has outstanding infrastructure for this kind of travel: thousands of dedicated campsites, motorhome service areas (called "aires" in France), and well-maintained roads that -- with the right preparation -- are perfectly navigable in a large vehicle.',
+        'Unlike flying and booking accommodation in each city, a motorhome trip lets you be spontaneous. If a lakeside village charms you at lunchtime you can decide to stay the night. If the weather turns grey on the coast, you simply drive inland. That flexibility is what converts first-timers into lifelong motorhome travellers. Europe also has outstanding infrastructure for this kind of travel: thousands of dedicated campsites, motorhome service areas (called "aires" in France), and well-maintained roads that — with the right preparation — are perfectly navigable in a large vehicle.',
     },
     {
       type: 'paragraph',
@@ -45,7 +45,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'For a first trip, renting is almost always the right call. It lets you find out what size and layout works for you before committing tens of thousands of euros to a purchase. Rental companies also handle insurance, breakdown cover, and routine maintenance, which removes a huge layer of complexity for beginners. You pick the vehicle up, drive it, and drop it back -- no MOT, no storage, no depreciation worries.',
+        'For a first trip, renting is almost always the right call. It lets you find out what size and layout works for you before committing tens of thousands of euros to a purchase. Rental companies also handle insurance, breakdown cover, and routine maintenance, which removes a huge layer of complexity for beginners. You pick the vehicle up, drive it, and drop it back — no MOT, no storage, no depreciation worries.',
     },
     {
       type: 'heading',
@@ -55,7 +55,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'In peak season (July--August), expect to pay between EUR 120 and EUR 200 per night for a mid-size motorhome (around 6--7 metres) from a major European rental company. Shoulder season (May--June, September) drops that to EUR 80--130. Winter rentals can be as low as EUR 50--70 per night, though not all companies operate year-round. Most rentals include basic insurance with an excess of EUR 1,000--2,500. You can usually buy excess reduction for an extra EUR 15--25 per day, bringing the excess down to zero or near-zero. Mileage is sometimes unlimited but check carefully -- some companies cap at 200 km per day and charge EUR 0.25--0.35 per extra kilometre.',
+        'In peak season (July–August), expect to pay between EUR 120 and EUR 200 per night for a mid-size motorhome (around 6–7 metres) from a major European rental company. Shoulder season (May–June, September) drops that to EUR 80–130. Winter rentals can be as low as EUR 50–70 per night, though not all companies operate year-round. Most rentals include basic insurance with an excess of EUR 1,000–2,500. You can usually buy excess reduction for an extra EUR 15–25 per day, bringing the excess down to zero or near-zero. Mileage is sometimes unlimited but check carefully — some companies cap at 200 km per day and charge EUR 0.25–0.35 per extra kilometre.',
     },
     {
       type: 'heading',
@@ -65,10 +65,10 @@ const post: BlogPost = {
     {
       type: 'list',
       items: [
-        'Large fleet operators: Indie Campers, McRent, Touring Cars, and Rent Easy have depots across multiple European countries and offer one-way rentals (usually with a surcharge of EUR 200--500).',
+        'Large fleet operators: Indie Campers, McRent, Touring Cars, and Rent Easy have depots across multiple European countries and offer one-way rentals (usually with a surcharge of EUR 200–500).',
         'Local independents: Often cheaper and more flexible. Search for "motorhome hire" in your starting city. In France, try Yescapa (a peer-to-peer platform). In Germany, PaulCamper is the equivalent.',
-        'Peer-to-peer platforms: Yescapa, PaulCamper, and Goboony connect you directly with private motorhome owners. Rates are typically 20--30 percent lower than fleet companies, and the vehicles often feel more personal, but availability can be patchy in peak season.',
-        'Dealership try-before-you-buy: Some dealers (especially in Germany and the UK) rent out new stock. This can be a good option if you are seriously considering a purchase -- you get a brand-new vehicle and a chance to test the layout in real conditions.',
+        'Peer-to-peer platforms: Yescapa, PaulCamper, and Goboony connect you directly with private motorhome owners. Rates are typically 20–30 percent lower than fleet companies, and the vehicles often feel more personal, but availability can be patchy in peak season.',
+        'Dealership try-before-you-buy: Some dealers (especially in Germany and the UK) rent out new stock. This can be a good option if you are seriously considering a purchase — you get a brand-new vehicle and a chance to test the layout in real conditions.',
       ],
     },
     {
@@ -79,7 +79,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'If you plan to travel for more than six to eight weeks per year, the economics start to favour ownership. A decent used motorhome (five to ten years old, 50,000--80,000 km) costs between EUR 25,000 and EUR 45,000 depending on size and condition. Annual running costs -- insurance, road tax, servicing, storage -- typically add EUR 2,000--4,000. Divide that total by your expected nights and compare it to rental rates. For frequent travellers, ownership pays for itself within two to three years and gives you a vehicle that is always set up exactly how you like it.',
+        'If you plan to travel for more than six to eight weeks per year, the economics start to favour ownership. A decent used motorhome (five to ten years old, 50,000–80,000 km) costs between EUR 25,000 and EUR 45,000 depending on size and condition. Annual running costs — insurance, road tax, servicing, storage — typically add EUR 2,000–4,000. Divide that total by your expected nights and compare it to rental rates. For frequent travellers, ownership pays for itself within two to three years and gives you a vehicle that is always set up exactly how you like it.',
     },
     {
       type: 'tip',
@@ -110,7 +110,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'A standard Category B car licence covers motorhomes up to 3,500 kg MAM (Maximum Authorised Mass). This includes the vast majority of rental motorhomes and many owner-driven vehicles up to about 7 metres long. If you are looking at anything larger -- typically 7.5-tonne or heavier coach-built models -- you will need a Category C1 licence. In the UK, anyone who passed their car test before 1 January 1997 already has C1 entitlement. Everyone else needs to take an additional test, which involves medical checks and a practical exam. Check your licence carefully before booking a large vehicle.',
+        'A standard Category B car licence covers motorhomes up to 3,500 kg MAM (Maximum Authorised Mass). This includes the vast majority of rental motorhomes and many owner-driven vehicles up to about 7 metres long. If you are looking at anything larger — typically 7.5-tonne or heavier coach-built models — you will need a Category C1 licence. In the UK, anyone who passed their car test before 1 January 1997 already has C1 entitlement. Everyone else needs to take an additional test, which involves medical checks and a practical exam. Check your licence carefully before booking a large vehicle.',
     },
     {
       type: 'heading',
@@ -120,7 +120,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Within the EU and EEA, a valid UK or EU driving licence is sufficient on its own. However, if you plan to drive in countries outside the EU -- such as Turkey, Morocco (via ferry from Spain), or the Balkans (Bosnia, Albania, North Macedonia) -- you may need an International Driving Permit. The IDP is a standardised translation of your licence and costs around GBP 5.50 from the Post Office in the UK. There are two conventions (1949 and 1968); check which one your destination country requires. Some countries accept both, while others are specific.',
+        'Within the EU and EEA, a valid UK or EU driving licence is sufficient on its own. However, if you plan to drive in countries outside the EU — such as Turkey, Morocco (via ferry from Spain), or the Balkans (Bosnia, Albania, North Macedonia) — you may need an International Driving Permit. The IDP is a standardised translation of your licence and costs around GBP 5.50 from the Post Office in the UK. There are two conventions (1949 and 1968); check which one your destination country requires. Some countries accept both, while others are specific.',
     },
     {
       type: 'heading',
@@ -131,8 +131,8 @@ const post: BlogPost = {
       type: 'list',
       items: [
         'Vehicle registration certificate (V5C in the UK, Carte Grise in France, Fahrzeugschein in Germany). If renting, the company provides this.',
-        'Proof of insurance valid for the countries you will visit. Your rental agreement typically covers all EU/EEA states. If driving your own vehicle, contact your insurer to confirm European cover -- many UK policies include 90 days of EU driving but some require an add-on.',
-        'Green Card: Since Brexit, UK-registered vehicles need a Green Card (proof of motor insurance) to drive in the EU. Your insurer provides this free of charge, but you must request it -- allow two to four weeks. EU-registered vehicles do not need one within the EU.',
+        'Proof of insurance valid for the countries you will visit. Your rental agreement typically covers all EU/EEA states. If driving your own vehicle, contact your insurer to confirm European cover — many UK policies include 90 days of EU driving but some require an add-on.',
+        'Green Card: Since Brexit, UK-registered vehicles need a Green Card (proof of motor insurance) to drive in the EU. Your insurer provides this free of charge, but you must request it — allow two to four weeks. EU-registered vehicles do not need one within the EU.',
         'MOT certificate (if applicable). Not legally required to carry abroad, but recommended as some countries can request proof of roadworthiness.',
       ],
     },
@@ -149,7 +149,7 @@ const post: BlogPost = {
     {
       type: 'warning',
       content:
-        'Driving on a Swiss or Austrian motorway without a valid vignette carries on-the-spot fines of EUR 120--240. Enforcement is strict and automated cameras catch evaders. Buy your vignette at the border or online before you arrive.',
+        'Driving on a Swiss or Austrian motorway without a valid vignette carries on-the-spot fines of EUR 120–240. Enforcement is strict and automated cameras catch evaders. Buy your vignette at the border or online before you arrive.',
     },
 
     // ── Driving Tips ──────────────────────────────────────────────
@@ -166,7 +166,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'If you are a UK driver, switching to driving on the right is the single biggest adjustment. The good news is that most people adapt within the first 30 minutes of driving. The danger points are roundabouts (remember: go anti-clockwise, give way to the left), pulling out of petrol stations or car parks (your instinct will be to go left -- resist it), and quiet rural roads where there is no other traffic to follow. Stick a small "DRIVE ON THE RIGHT" note on the dashboard for the first couple of days. It sounds silly but it genuinely helps, especially first thing in the morning.',
+        'If you are a UK driver, switching to driving on the right is the single biggest adjustment. The good news is that most people adapt within the first 30 minutes of driving. The danger points are roundabouts (remember: go anti-clockwise, give way to the left), pulling out of petrol stations or car parks (your instinct will be to go left — resist it), and quiet rural roads where there is no other traffic to follow. Stick a small "DRIVE ON THE RIGHT" note on the dashboard for the first couple of days. It sounds silly but it genuinely helps, especially first thing in the morning.',
     },
     {
       type: 'paragraph',
@@ -181,12 +181,12 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        "France has the most extensive toll motorway network in Europe. A full-length drive from Calais to the Cote d'Azur costs approximately EUR 70--90 in tolls each way for a vehicle under 3.5 tonnes. Motorhomes over 3 metres in height are often classified in a higher toll category (Class 2 or 3), which increases costs by 30--60 percent. Italy's autostrada system is cheaper but still adds up: Milan to Rome is roughly EUR 40--50. Spain's toll roads (autopistas) are being progressively freed up, but some sections still charge. Portugal has electronic-only tolls on some motorways -- you need to register your number plate or buy a temporary transponder at the border.",
+        "France has the most extensive toll motorway network in Europe. A full-length drive from Calais to the Cote d'Azur costs approximately EUR 70–90 in tolls each way for a vehicle under 3.5 tonnes. Motorhomes over 3 metres in height are often classified in a higher toll category (Class 2 or 3), which increases costs by 30–60 percent. Italy's autostrada system is cheaper but still adds up: Milan to Rome is roughly EUR 40–50. Spain's toll roads (autopistas) are being progressively freed up, but some sections still charge. Portugal has electronic-only tolls on some motorways — you need to register your number plate or buy a temporary transponder at the border.",
     },
     {
       type: 'tip',
       content:
-        'To avoid French toll costs, use "routes nationales" (N-roads) instead of autoroutes. They are free, often scenic, but add 30--50 percent to your journey time. For a holiday, the slower pace can actually be more enjoyable.',
+        'To avoid French toll costs, use "routes nationales" (N-roads) instead of autoroutes. They are free, often scenic, but add 30–50 percent to your journey time. For a holiday, the slower pace can actually be more enjoyable.',
     },
     {
       type: 'heading',
@@ -196,7 +196,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Most motorhomes run on diesel (called "Gasoil" or "Gazole" in France, "Gasoleo" in Spain and Portugal, "Diesel" or "Nafta" in Central Europe). Always double-check the pump label before filling up -- putting petrol in a diesel engine is an expensive mistake. As of early 2026, diesel prices across Europe range from roughly EUR 1.40 per litre in Spain and Luxembourg to EUR 1.80--1.90 in the Netherlands and Scandinavia. A typical 6-7 metre motorhome consumes 10--14 litres per 100 km, so budget around EUR 15--25 per 100 km of driving. LPG (autogas) is available in many countries for cooking gas refills, but bottle sizes and fittings vary. Carry an adapter set if your vehicle uses refillable LPG.',
+        'Most motorhomes run on diesel (called "Gasoil" or "Gazole" in France, "Gasoleo" in Spain and Portugal, "Diesel" or "Nafta" in Central Europe). Always double-check the pump label before filling up — putting petrol in a diesel engine is an expensive mistake. As of early 2026, diesel prices across Europe range from roughly EUR 1.40 per litre in Spain and Luxembourg to EUR 1.80–1.90 in the Netherlands and Scandinavia. A typical 6-7 metre motorhome consumes 10–14 litres per 100 km, so budget around EUR 15–25 per 100 km of driving. LPG (autogas) is available in many countries for cooking gas refills, but bottle sizes and fittings vary. Carry an adapter set if your vehicle uses refillable LPG.',
     },
     {
       type: 'heading',
@@ -206,12 +206,12 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Speed limits for motorhomes vary significantly between countries and often differ from regular car limits, especially for vehicles over 3.5 tonnes. In France, motorhomes under 3.5 tonnes follow car limits: 130 km/h on autoroutes, 80 km/h on single carriageways, 50 km/h in towns. In Germany, the autobahn has no general limit for vehicles under 3.5 tonnes, but a recommended maximum of 130 km/h -- and most motorhome manufacturers recommend not exceeding 120 km/h regardless. Italy limits motorhomes to 130 km/h on autostradas (110 km/h in rain). Spain allows 120 km/h on motorways. The UK is 60 mph (97 km/h) on single carriageways and 70 mph (113 km/h) on dual carriageways and motorways for vehicles under 3,050 kg unladen weight.',
+        'Speed limits for motorhomes vary significantly between countries and often differ from regular car limits, especially for vehicles over 3.5 tonnes. In France, motorhomes under 3.5 tonnes follow car limits: 130 km/h on autoroutes, 80 km/h on single carriageways, 50 km/h in towns. In Germany, the autobahn has no general limit for vehicles under 3.5 tonnes, but a recommended maximum of 130 km/h — and most motorhome manufacturers recommend not exceeding 120 km/h regardless. Italy limits motorhomes to 130 km/h on autostradas (110 km/h in rain). Spain allows 120 km/h on motorways. The UK is 60 mph (97 km/h) on single carriageways and 70 mph (113 km/h) on dual carriageways and motorways for vehicles under 3,050 kg unladen weight.',
     },
     {
       type: 'warning',
       content:
-        'Speeding fines in Europe are significantly higher than in the UK. In Switzerland, exceeding the limit by 20 km/h can cost CHF 600+. In Italy, fines double at night (22:00--07:00). Many countries enforce limits with unmarked cameras and will pursue foreign-registered vehicles via European cross-border agreements.',
+        'Speeding fines in Europe are significantly higher than in the UK. In Switzerland, exceeding the limit by 20 km/h can cost CHF 600+. In Italy, fines double at night (22:00–07:00). Many countries enforce limits with unmarked cameras and will pursue foreign-registered vehicles via European cross-border agreements.',
     },
 
     // ── Vehicle Dimensions ────────────────────────────────────────
@@ -223,7 +223,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        "One of the most common mistakes first-timers make is underestimating how much their vehicle's physical size affects where they can go and how they drive. A motorhome is typically 2.3--2.4 metres wide, 6--7.5 metres long, and 2.8--3.2 metres tall (with roof-mounted air conditioning or satellite dishes adding extra). Those numbers matter more in Europe than almost anywhere else, because European roads were often built centuries before motor vehicles existed.",
+        "One of the most common mistakes first-timers make is underestimating how much their vehicle's physical size affects where they can go and how they drive. A motorhome is typically 2.3–2.4 metres wide, 6–7.5 metres long, and 2.8–3.2 metres tall (with roof-mounted air conditioning or satellite dishes adding extra). Those numbers matter more in Europe than almost anywhere else, because European roads were often built centuries before motor vehicles existed.",
     },
     {
       type: 'heading',
@@ -233,7 +233,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        "Height is the dimension most likely to cause problems. Many European towns have low railway bridges, archways, covered market squares, and underground car parks that will not accommodate a vehicle over 3 metres. In France, some village roads pass through medieval gateways as low as 2.5 metres. Your GPS may not know about these restrictions, so always trust road signs over your navigation system. Write your vehicle's exact height on a piece of tape and stick it to the dashboard where you can see it at all times. Most rental companies already do this, but verify the number is correct -- especially if you have added a roof box or bike rack.",
+        "Height is the dimension most likely to cause problems. Many European towns have low railway bridges, archways, covered market squares, and underground car parks that will not accommodate a vehicle over 3 metres. In France, some village roads pass through medieval gateways as low as 2.5 metres. Your GPS may not know about these restrictions, so always trust road signs over your navigation system. Write your vehicle's exact height on a piece of tape and stick it to the dashboard where you can see it at all times. Most rental companies already do this, but verify the number is correct — especially if you have added a roof box or bike rack.",
     },
     {
       type: 'heading',
@@ -243,7 +243,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        "Your motorhome's MAM (Maximum Authorised Mass, also called MTPLM or GVW) is the maximum legal weight of the vehicle including everything inside it -- passengers, water, fuel, food, luggage, and equipment. For a 3,500 kg motorhome, the payload (what you can carry on top of the base vehicle weight) is typically only 400--600 kg. That gets eaten up fast: 100 litres of fresh water weighs 100 kg, a full fuel tank adds 60--80 kg, and two adults with luggage account for another 200 kg. Overloading is illegal and dangerous -- it affects braking distance, tyre wear, and vehicle stability. Weigh your loaded vehicle at a public weighbridge before departing if possible.",
+        "Your motorhome's MAM (Maximum Authorised Mass, also called MTPLM or GVW) is the maximum legal weight of the vehicle including everything inside it — passengers, water, fuel, food, luggage, and equipment. For a 3,500 kg motorhome, the payload (what you can carry on top of the base vehicle weight) is typically only 400–600 kg. That gets eaten up fast: 100 litres of fresh water weighs 100 kg, a full fuel tank adds 60–80 kg, and two adults with luggage account for another 200 kg. Overloading is illegal and dangerous — it affects braking distance, tyre wear, and vehicle stability. Weigh your loaded vehicle at a public weighbridge before departing if possible.",
     },
     {
       type: 'heading',
@@ -258,7 +258,7 @@ const post: BlogPost = {
     {
       type: 'tip',
       content:
-        'Measure your vehicle at its widest point including wing mirrors. Many barrier posts on French and Spanish roads are set at 2.0--2.1 metres apart, which is tight for a motorhome with extended mirrors. You can fold mirrors in, but you need to know whether you have to.',
+        'Measure your vehicle at its widest point including wing mirrors. Many barrier posts on French and Spanish roads are set at 2.0–2.1 metres apart, which is tight for a motorhome with extended mirrors. You can fold mirrors in, but you need to know whether you have to.',
     },
 
     // ── Campsite Types ────────────────────────────────────────────
@@ -284,7 +284,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'These are the most familiar type -- purpose-built sites with marked pitches, electrical hook-ups (usually 6A or 10A), shared toilet and shower blocks, and often extras like swimming pools, restaurants, laundry, and Wi-Fi. Prices range from EUR 15--25 per night for a basic rural site to EUR 40--60+ for a high-end coastal resort in peak season. Booking ahead is strongly recommended for July and August, especially in southern France, coastal Spain, and the Italian Adriatic. Sites are rated by national systems (stars in France, categories in Germany) which give a rough guide to facilities but are not standardised across borders.',
+        'These are the most familiar type — purpose-built sites with marked pitches, electrical hook-ups (usually 6A or 10A), shared toilet and shower blocks, and often extras like swimming pools, restaurants, laundry, and Wi-Fi. Prices range from EUR 15–25 per night for a basic rural site to EUR 40–60+ for a high-end coastal resort in peak season. Booking ahead is strongly recommended for July and August, especially in southern France, coastal Spain, and the Italian Adriatic. Sites are rated by national systems (stars in France, categories in Germany) which give a rough guide to facilities but are not standardised across borders.',
     },
     {
       type: 'heading',
@@ -294,7 +294,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Run by local councils, municipal sites (called "camping municipal" in France) are typically cheaper than commercial alternatives -- EUR 8--18 per night -- and offer basic but clean facilities. They are especially common in France, where almost every small town has one. Pitches are often larger and more spaced out than commercial sites. The trade-off is fewer amenities: do not expect a swimming pool or entertainment programme. For travellers who want a quiet, affordable base to explore an area, municipal sites are hard to beat.',
+        'Run by local councils, municipal sites (called "camping municipal" in France) are typically cheaper than commercial alternatives — EUR 8–18 per night — and offer basic but clean facilities. They are especially common in France, where almost every small town has one. Pitches are often larger and more spaced out than commercial sites. The trade-off is fewer amenities: do not expect a swimming pool or entertainment programme. For travellers who want a quiet, affordable base to explore an area, municipal sites are hard to beat.',
     },
     {
       type: 'heading',
@@ -304,7 +304,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'An "aire" (short for "aire de service camping-car") is a dedicated motorhome parking and service area. France has over 6,000 of them and they are the backbone of motorhome touring in the country. Most provide fresh water, waste water drainage, chemical toilet disposal, and sometimes electricity. Some are free; others cost EUR 5--12 per night. They are typically located in or near towns, often with walking access to shops and restaurants. Aires are generally not suitable for tents or caravans -- they are specifically for self-contained motorhomes. Germany has a similar system called "Stellplatz", and Spain and Portugal have "areas de autocaravanas".',
+        'An "aire" (short for "aire de service camping-car") is a dedicated motorhome parking and service area. France has over 6,000 of them and they are the backbone of motorhome touring in the country. Most provide fresh water, waste water drainage, chemical toilet disposal, and sometimes electricity. Some are free; others cost EUR 5–12 per night. They are typically located in or near towns, often with walking access to shops and restaurants. Aires are generally not suitable for tents or caravans — they are specifically for self-contained motorhomes. Germany has a similar system called "Stellplatz", and Spain and Portugal have "areas de autocaravanas".',
     },
     {
       type: 'heading',
@@ -319,7 +319,7 @@ const post: BlogPost = {
     {
       type: 'tip',
       content:
-        'Apps like Park4Night and Camper Contact are invaluable for finding aires, free spots, and small campsites that do not appear on mainstream booking platforms. Cross-reference reviews and check dates -- regulations change frequently.',
+        'Apps like Park4Night and Camper Contact are invaluable for finding aires, free spots, and small campsites that do not appear on mainstream booking platforms. Cross-reference reviews and check dates — regulations change frequently.',
     },
 
     // ── What to Pack ──────────────────────────────────────────────
@@ -331,7 +331,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Packing for a motorhome trip is a balancing act between being prepared and not overloading the vehicle. Rental motorhomes typically come with basic kitchen equipment (pots, pans, plates, cutlery) and bedding, but check your specific booking -- some budget rentals charge extra for these as "comfort packs". If driving your own vehicle, you will need to kit it out yourself. Here is what experienced motorhome travellers consider essential.',
+        'Packing for a motorhome trip is a balancing act between being prepared and not overloading the vehicle. Rental motorhomes typically come with basic kitchen equipment (pots, pans, plates, cutlery) and bedding, but check your specific booking — some budget rentals charge extra for these as "comfort packs". If driving your own vehicle, you will need to kit it out yourself. Here is what experienced motorhome travellers consider essential.',
     },
     {
       type: 'heading',
@@ -358,7 +358,7 @@ const post: BlogPost = {
     {
       type: 'list',
       items: [
-        'Levelling chocks or ramps: most pitches are not perfectly flat. A set of plastic levelling ramps costs EUR 15--30 and makes sleeping much more comfortable.',
+        'Levelling chocks or ramps: most pitches are not perfectly flat. A set of plastic levelling ramps costs EUR 15–30 and makes sleeping much more comfortable.',
         'Electrical hook-up cable (at least 25 metres) and adaptors: European campsites use CEE 17 blue connectors, but you may need a UK 3-pin to CEE adaptor if bringing your own cable.',
         'Fresh water hose (food-grade, at least 10 metres) with universal tap adaptor.',
         'Waste water container (if your vehicle does not have a built-in grey water tank).',
@@ -385,7 +385,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'One of the biggest appeals of motorhome travel is controlling your costs. You are not locked into hotel rates or restaurant prices -- you can cook in, stay at free aires, and adjust your spending day by day. That said, it is easy to underestimate costs if you have never done it before. Here is a realistic daily budget breakdown for a couple travelling in a rented motorhome during shoulder season.',
+        'One of the biggest appeals of motorhome travel is controlling your costs. You are not locked into hotel rates or restaurant prices — you can cook in, stay at free aires, and adjust your spending day by day. That said, it is easy to underestimate costs if you have never done it before. Here is a realistic daily budget breakdown for a couple travelling in a rented motorhome during shoulder season.',
     },
     {
       type: 'heading',
@@ -395,20 +395,20 @@ const post: BlogPost = {
     {
       type: 'list',
       items: [
-        'Vehicle rental: EUR 80--130 (shoulder season, mid-size motorhome, all-inclusive insurance)',
-        'Fuel: EUR 20--35 (assuming 150--200 km driving per day at 12 L/100 km)',
-        'Campsite/aire: EUR 0--35 (free aires at the low end, commercial campsites at the high end; average EUR 15--20 using a mix)',
-        'Food and drink: EUR 20--40 (cooking in with supermarket shopping at the low end, occasional restaurant meals at the high end)',
-        'Tolls: EUR 0--15 (depends heavily on country and route choice)',
-        'Activities and sightseeing: EUR 0--30 (museum entries, guided tours, etc.)',
-        'Gas (LPG/propane) refills: EUR 1--3 (averaged over trip length)',
-        'Laundry: EUR 2--4 (campsite laundry every 3--4 days)',
+        'Vehicle rental: EUR 80–130 (shoulder season, mid-size motorhome, all-inclusive insurance)',
+        'Fuel: EUR 20–35 (assuming 150–200 km driving per day at 12 L/100 km)',
+        'Campsite/aire: EUR 0–35 (free aires at the low end, commercial campsites at the high end; average EUR 15–20 using a mix)',
+        'Food and drink: EUR 20–40 (cooking in with supermarket shopping at the low end, occasional restaurant meals at the high end)',
+        'Tolls: EUR 0–15 (depends heavily on country and route choice)',
+        'Activities and sightseeing: EUR 0–30 (museum entries, guided tours, etc.)',
+        'Gas (LPG/propane) refills: EUR 1–3 (averaged over trip length)',
+        'Laundry: EUR 2–4 (campsite laundry every 3–4 days)',
       ],
     },
     {
       type: 'paragraph',
       content:
-        'Adding those up, a realistic daily budget is EUR 140--250 for a couple, with the biggest variable being the vehicle rental cost. On a tight budget (free aires, cooking in, avoiding toll roads), you can get down to EUR 100--120 per day excluding the rental. If you own your vehicle, remove the rental line and the numbers become very attractive: EUR 60--120 per day for two people, including fuel, food, and accommodation. That is substantially cheaper than hotels and restaurants, especially in western Europe.',
+        'Adding those up, a realistic daily budget is EUR 140–250 for a couple, with the biggest variable being the vehicle rental cost. On a tight budget (free aires, cooking in, avoiding toll roads), you can get down to EUR 100–120 per day excluding the rental. If you own your vehicle, remove the rental line and the numbers become very attractive: EUR 60–120 per day for two people, including fuel, food, and accommodation. That is substantially cheaper than hotels and restaurants, especially in western Europe.',
     },
     {
       type: 'heading',
@@ -418,10 +418,10 @@ const post: BlogPost = {
     {
       type: 'list',
       items: [
-        'Rental extras: many companies charge for bedding packs (EUR 15--30), kitchen kits (EUR 15--25), bike racks (EUR 5--10/day), and child seats (EUR 5--10/day). These add up fast.',
-        'Cleaning fees: some rentals include a final clean in the price; others charge EUR 80--150 if the vehicle is not returned in good condition.',
-        'One-way fees: dropping the vehicle at a different depot to where you collected it typically costs EUR 200--500.',
-        'Ferry crossings: if crossing the Channel from the UK, Eurotunnel and ferry companies charge based on vehicle length. A 7 m motorhome on a Dover--Calais ferry costs GBP 150--300 return depending on time of year.',
+        'Rental extras: many companies charge for bedding packs (EUR 15–30), kitchen kits (EUR 15–25), bike racks (EUR 5–10/day), and child seats (EUR 5–10/day). These add up fast.',
+        'Cleaning fees: some rentals include a final clean in the price; others charge EUR 80–150 if the vehicle is not returned in good condition.',
+        'One-way fees: dropping the vehicle at a different depot to where you collected it typically costs EUR 200–500.',
+        'Ferry crossings: if crossing the Channel from the UK, Eurotunnel and ferry companies charge based on vehicle length. A 7 m motorhome on a Dover–Calais ferry costs GBP 150–300 return depending on time of year.',
         "Low-emission zones: many European cities (Paris, Brussels, Amsterdam, Milan) restrict older diesel vehicles. Check whether your motorhome's Euro emission standard allows entry.",
       ],
     },
@@ -450,7 +450,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'France is the undisputed king of European motorhome touring. With over 6,000 aires, thousands of campsites, and a network of well-maintained roads, it is purpose-built for this kind of travel. The variety of landscapes is extraordinary: Atlantic beaches in Brittany, lavender fields in Provence, dramatic gorges in the Ardeche, alpine meadows in the Haute-Savoie, and vineyard-lined valleys along the Loire. Driving is generally straightforward outside of Paris (which you should avoid in a motorhome). Municipal campsites are cheap, aires are plentiful, and the French are genuinely welcoming to motorhome visitors -- it is a big part of their own holiday culture.',
+        'France is the undisputed king of European motorhome touring. With over 6,000 aires, thousands of campsites, and a network of well-maintained roads, it is purpose-built for this kind of travel. The variety of landscapes is extraordinary: Atlantic beaches in Brittany, lavender fields in Provence, dramatic gorges in the Ardeche, alpine meadows in the Haute-Savoie, and vineyard-lined valleys along the Loire. Driving is generally straightforward outside of Paris (which you should avoid in a motorhome). Municipal campsites are cheap, aires are plentiful, and the French are genuinely welcoming to motorhome visitors — it is a big part of their own holiday culture.',
     },
     {
       type: 'heading',
@@ -470,7 +470,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Germany combines excellent road infrastructure with a strong motorhome culture. The "Stellplatz" system (similar to French aires) is extensive and well-maintained, with many offering electricity, water, and waste disposal for EUR 8--15 per night. The country is ideal for touring: the Romantic Road, the Black Forest, the Moselle wine valley, and the Baltic coast are all well-suited to motorhome travel. No motorway tolls for vehicles under 7.5 tonnes is a significant cost saving. The main challenge is that popular Stellplatze in tourist areas fill up early in summer -- arrive before 14:00 or book ahead where possible.',
+        'Germany combines excellent road infrastructure with a strong motorhome culture. The "Stellplatz" system (similar to French aires) is extensive and well-maintained, with many offering electricity, water, and waste disposal for EUR 8–15 per night. The country is ideal for touring: the Romantic Road, the Black Forest, the Moselle wine valley, and the Baltic coast are all well-suited to motorhome travel. No motorway tolls for vehicles under 7.5 tonnes is a significant cost saving. The main challenge is that popular Stellplatze in tourist areas fill up early in summer — arrive before 14:00 or book ahead where possible.',
     },
     {
       type: 'heading',
@@ -502,12 +502,12 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'A motorhome trip through Europe is one of the most rewarding ways to travel. You set the pace, choose the view outside your window, and wake up somewhere new every morning -- or stay put when you find a spot you love. The key to a great first trip is preparation: know your documents, understand your vehicle, plan a realistic budget, and choose a beginner-friendly destination. Everything else you will learn as you go, and that is half the fun.',
+        'A motorhome trip through Europe is one of the most rewarding ways to travel. You set the pace, choose the view outside your window, and wake up somewhere new every morning — or stay put when you find a spot you love. The key to a great first trip is preparation: know your documents, understand your vehicle, plan a realistic budget, and choose a beginner-friendly destination. Everything else you will learn as you go, and that is half the fun.',
     },
     {
       type: 'cta',
       content:
-        'Start planning your route with the free CamperPlanning trip planner. Add your stops, set your vehicle dimensions, find campsites along the way, and estimate your fuel costs -- all in one tool, with no sign-up required.',
+        'Start planning your route with the free CamperPlanning trip planner. Add your stops, set your vehicle dimensions, find campsites along the way, and estimate your fuel costs — all in one tool, with no sign-up required.',
     },
   ],
 };

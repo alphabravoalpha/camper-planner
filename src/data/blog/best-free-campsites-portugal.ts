@@ -33,7 +33,7 @@ const bestFreeCampsitesPortugal: BlogPost = {
     {
       type: 'paragraph',
       content:
-        "But Portugal's appeal goes beyond price. The country is compact enough to cross north-to-south in a single day, yet varied enough to offer surf beaches, medieval hill towns, terraced vineyards, and wild mountain scenery within a few hours' drive of each other. The food is exceptional and affordable -- grilled sardines and a glass of vinho verde for under \u20ac8 at a local tasca is a daily reality, not a tourist fantasy. Add reliable 4G coverage across most of the country and a generally welcoming attitude toward travellers, and you have the perfect destination for extended camper trips.",
+        "But Portugal's appeal goes beyond price. The country is compact enough to cross north-to-south in a single day, yet varied enough to offer surf beaches, medieval hill towns, terraced vineyards, and wild mountain scenery within a few hours' drive of each other. The food is exceptional and affordable — grilled sardines and a glass of vinho verde for under \u20ac8 at a local tasca is a daily reality, not a tourist fantasy. Add reliable 4G coverage across most of the country and a generally welcoming attitude toward travellers, and you have the perfect destination for extended camper trips.",
     },
     {
       type: 'tip',
@@ -147,7 +147,7 @@ const bestFreeCampsitesPortugal: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'North of the Algarve, the Alentejo coast stretches from Odeceixe to the Troia peninsula, and it is arguably the most beautiful stretch of coastline in Portugal. Wild, undeveloped, and protected by the Vicentine Coast Natural Park, this region offers towering cliffs, deserted beaches, and a handful of small towns that have resisted mass tourism. For campervan travellers, it is a paradise -- but one that requires careful planning, as free camping enforcement is strict within the natural park boundaries.',
+        'North of the Algarve, the Alentejo coast stretches from Odeceixe to the Troia peninsula, and it is arguably the most beautiful stretch of coastline in Portugal. Wild, undeveloped, and protected by the Vicentine Coast Natural Park, this region offers towering cliffs, deserted beaches, and a handful of small towns that have resisted mass tourism. For campervan travellers, it is a paradise — but one that requires careful planning, as free camping enforcement is strict within the natural park boundaries.',
     },
     {
       type: 'heading',
@@ -157,7 +157,7 @@ const bestFreeCampsitesPortugal: BlogPost = {
     {
       type: 'paragraph',
       content:
-        "This tiny clifftop village is home to the Sudoeste Festival each August, which transforms it into a temporary city of tens of thousands. Outside festival season, it is beautifully quiet. The municipal campsite, Parque de Campismo de Zambujeira, is perched on the cliffs with views of the Atlantic and charges around \u20ac8-12 per night. It is basic -- toilets, showers, and not much else -- but the location is superb. The Rota Vicentina hiking trail passes directly through the village, making it a perfect base for walking the Fishermen's Trail, one of Europe's best coastal walks.",
+        "This tiny clifftop village is home to the Sudoeste Festival each August, which transforms it into a temporary city of tens of thousands. Outside festival season, it is beautifully quiet. The municipal campsite, Parque de Campismo de Zambujeira, is perched on the cliffs with views of the Atlantic and charges around \u20ac8-12 per night. It is basic — toilets, showers, and not much else — but the location is superb. The Rota Vicentina hiking trail passes directly through the village, making it a perfect base for walking the Fishermen's Trail, one of Europe's best coastal walks.",
     },
     {
       type: 'heading',
@@ -182,7 +182,7 @@ const bestFreeCampsitesPortugal: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'The inland Alentejo -- the vast, rolling plains east of the coast -- is a completely different experience. This is cork oak and olive country, with whitewashed hilltop villages, stork nests on every church tower, and almost no other tourists. While formal campsites are scarce, several villages have basic municipal camping areas, and the lack of enforcement pressure inland means that discreet overnight parking in rural areas is generally tolerated. Towns like Mertola, Monsaraz, and Estremoz all make excellent bases for exploring this deeply atmospheric region.',
+        'The inland Alentejo — the vast, rolling plains east of the coast — is a completely different experience. This is cork oak and olive country, with whitewashed hilltop villages, stork nests on every church tower, and almost no other tourists. While formal campsites are scarce, several villages have basic municipal camping areas, and the lack of enforcement pressure inland means that discreet overnight parking in rural areas is generally tolerated. Towns like Mertola, Monsaraz, and Estremoz all make excellent bases for exploring this deeply atmospheric region.',
     },
 
     // ── Douro & North ─────────────────────────────────────────────────
@@ -226,19 +226,19 @@ const bestFreeCampsitesPortugal: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'The quality varies, as you would expect. Some municipal sites are beautifully maintained with shade trees, barbecue areas, and even small swimming pools. Others are basic concrete pads with minimal facilities. The common thread is value -- you will struggle to find cheaper legal camping anywhere in Western Europe. Municipal sites are particularly common in the Alentejo, the Centro region, and the Tras-os-Montes interior, where tourism infrastructure is less developed and local councils use campsites to attract visitors to otherwise overlooked areas.',
+        'The quality varies, as you would expect. Some municipal sites are beautifully maintained with shade trees, barbecue areas, and even small swimming pools. Others are basic concrete pads with minimal facilities. The common thread is value — you will struggle to find cheaper legal camping anywhere in Western Europe. Municipal sites are particularly common in the Alentejo, the Centro region, and the Tras-os-Montes interior, where tourism infrastructure is less developed and local councils use campsites to attract visitors to otherwise overlooked areas.',
     },
     {
       type: 'list',
       content: 'Standout municipal campsites across Portugal:',
       items: [
-        'Campismo Municipal de Zambujeira do Mar -- clifftop location, Atlantic views, \u20ac8-12/night',
-        'Parque de Campismo Municipal de Castelo de Vide -- medieval hill town in the Alentejo, \u20ac6/night',
-        'Campismo de Idanha-a-Nova -- near the Spanish border, natural pool, \u20ac5/night',
-        'Parque Municipal de Campismo de Monsanto -- at the foot of Portugal\'s "most Portuguese village", \u20ac7/night',
-        'Campismo Municipal de Montalegre -- Tras-os-Montes mountains, spectacular isolation, \u20ac5/night',
-        'Parque de Campismo de Vila Real -- gateway to the Douro, \u20ac8/night with electricity',
-        'Campismo de Vila do Conde -- northern coast near Porto, \u20ac9/night',
+        'Campismo Municipal de Zambujeira do Mar — clifftop location, Atlantic views, \u20ac8-12/night',
+        'Parque de Campismo Municipal de Castelo de Vide — medieval hill town in the Alentejo, \u20ac6/night',
+        'Campismo de Idanha-a-Nova — near the Spanish border, natural pool, \u20ac5/night',
+        'Parque Municipal de Campismo de Monsanto — at the foot of Portugal\'s "most Portuguese village", \u20ac7/night',
+        'Campismo Municipal de Montalegre — Tras-os-Montes mountains, spectacular isolation, \u20ac5/night',
+        'Parque de Campismo de Vila Real — gateway to the Douro, \u20ac8/night with electricity',
+        'Campismo de Vila do Conde — northern coast near Porto, \u20ac9/night',
       ],
     },
     {
@@ -261,22 +261,22 @@ const bestFreeCampsitesPortugal: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Prices at these areas typically range from free (service point only, no overnight parking) to \u20ac5-10 per night for parking with basic services. Some are run by municipalities, others by private operators. The quality can be excellent -- the motorhome area in Vila Nova de Milfontes, for example, offers level hardstanding, electricity, water, and waste disposal for around \u20ac5 per night, just a short walk from the town centre. Others are little more than a car park with a water tap.',
+        'Prices at these areas typically range from free (service point only, no overnight parking) to \u20ac5-10 per night for parking with basic services. Some are run by municipalities, others by private operators. The quality can be excellent — the motorhome area in Vila Nova de Milfontes, for example, offers level hardstanding, electricity, water, and waste disposal for around \u20ac5 per night, just a short walk from the town centre. Others are little more than a car park with a water tap.',
     },
     {
       type: 'paragraph',
       content:
-        'The Algarve has the densest network of these areas, with most larger towns now offering at least a service point. The area around Faro and Olhao has several well-equipped options. Moving north, coverage becomes patchier, but new areas are being added regularly. The Centro region around Coimbra and the Silver Coast has seen significant recent investment, with several new motorhome areas opening in 2025 near Nazare, Obidos, and Peniche -- all popular surfing and tourism towns that previously had no legal motorhome parking.',
+        'The Algarve has the densest network of these areas, with most larger towns now offering at least a service point. The area around Faro and Olhao has several well-equipped options. Moving north, coverage becomes patchier, but new areas are being added regularly. The Centro region around Coimbra and the Silver Coast has seen significant recent investment, with several new motorhome areas opening in 2025 near Nazare, Obidos, and Peniche — all popular surfing and tourism towns that previously had no legal motorhome parking.',
     },
     {
       type: 'list',
       content: 'Best resources for finding motorhome service areas:',
       items: [
-        'park4night app -- the most comprehensive database, with user reviews and photos',
-        'Campercontact -- detailed listings with verified information on services available',
-        'iOverlander -- particularly good for more remote and informal spots',
-        'Portugal Autocaravanas Facebook groups -- active Portuguese motorhome community with real-time updates',
-        'Google Maps -- search "area autocaravanas" in any Portuguese town',
+        'park4night app — the most comprehensive database, with user reviews and photos',
+        'Campercontact — detailed listings with verified information on services available',
+        'iOverlander — particularly good for more remote and informal spots',
+        'Portugal Autocaravanas Facebook groups — active Portuguese motorhome community with real-time updates',
+        'Google Maps — search "area autocaravanas" in any Portuguese town',
       ],
     },
 
@@ -289,12 +289,12 @@ const bestFreeCampsitesPortugal: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Despite the legal restrictions, wild camping has not disappeared from Portugal -- it has simply become more nuanced. The reality on the ground is a patchwork of strict enforcement, quiet tolerance, and everything in between, depending on location, season, and how you behave. Understanding this reality helps you make informed decisions about where and how to spend the night.',
+        'Despite the legal restrictions, wild camping has not disappeared from Portugal — it has simply become more nuanced. The reality on the ground is a patchwork of strict enforcement, quiet tolerance, and everything in between, depending on location, season, and how you behave. Understanding this reality helps you make informed decisions about where and how to spend the night.',
     },
     {
       type: 'paragraph',
       content:
-        'In the Algarve during summer (June-September), enforcement is at its peak. The GNR patrols known hotspots regularly, and you should expect to be moved on if you are parked overnight in a non-designated area anywhere along the coast. The same applies to the Vicentine Coast Natural Park year-round, where environmental protection takes priority. In winter, enforcement in the Algarve drops significantly but does not disappear entirely -- popular spots around Lagos, Sagres, and Burgau are still checked periodically.',
+        'In the Algarve during summer (June-September), enforcement is at its peak. The GNR patrols known hotspots regularly, and you should expect to be moved on if you are parked overnight in a non-designated area anywhere along the coast. The same applies to the Vicentine Coast Natural Park year-round, where environmental protection takes priority. In winter, enforcement in the Algarve drops significantly but does not disappear entirely — popular spots around Lagos, Sagres, and Burgau are still checked periodically.',
     },
     {
       type: 'paragraph',
@@ -327,11 +327,11 @@ const bestFreeCampsitesPortugal: BlogPost = {
       type: 'list',
       content: 'Essential apps for camping in Portugal:',
       items: [
-        'park4night -- the gold standard for free and low-cost spots across Europe. User-submitted locations with reviews, photos, GPS coordinates, and information on available services. The free version is perfectly usable; the paid version removes ads and adds offline maps.',
-        'Campercontact -- a Dutch-run database that is particularly strong on official motorhome areas and service points. Listings are verified and include detailed information on what services are available. Paid subscription required for full access.',
-        'iOverlander -- originally built for overlanders in remote regions, this free app has excellent coverage of Portugal, particularly for more informal spots. Community-moderated with recent reviews.',
-        'Google Maps -- do not underestimate the power of simply searching "parque campismo" or "area autocaravanas" in your area. Many smaller municipal sites and motorhome areas are listed on Google Maps with reviews and photos.',
-        'ACSI Eurocampings -- the definitive guide to commercial campsites across Europe. The ACSI CampingCard discount scheme can save you 40-60% at participating sites during the low season (typically September to June).',
+        'park4night — the gold standard for free and low-cost spots across Europe. User-submitted locations with reviews, photos, GPS coordinates, and information on available services. The free version is perfectly usable; the paid version removes ads and adds offline maps.',
+        'Campercontact — a Dutch-run database that is particularly strong on official motorhome areas and service points. Listings are verified and include detailed information on what services are available. Paid subscription required for full access.',
+        'iOverlander — originally built for overlanders in remote regions, this free app has excellent coverage of Portugal, particularly for more informal spots. Community-moderated with recent reviews.',
+        'Google Maps — do not underestimate the power of simply searching "parque campismo" or "area autocaravanas" in your area. Many smaller municipal sites and motorhome areas are listed on Google Maps with reviews and photos.',
+        'ACSI Eurocampings — the definitive guide to commercial campsites across Europe. The ACSI CampingCard discount scheme can save you 40-60% at participating sites during the low season (typically September to June).',
       ],
     },
     {
@@ -359,7 +359,7 @@ const bestFreeCampsitesPortugal: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Winter is when Portugal truly shines for budget campervan travel. The Algarve becomes a de facto motorhome community, with thousands of northern European travellers escaping the cold for months at a time. Campsite prices drop by 30-50% from peak rates, and many municipal sites remain open year-round. Daytime temperatures in the Algarve average 15-18\u00b0C, warm enough for comfortable outdoor living with a decent heating system in your van for the cooler evenings. Rainfall is moderate -- you will get wet days, but extended dry spells are common.',
+        'Winter is when Portugal truly shines for budget campervan travel. The Algarve becomes a de facto motorhome community, with thousands of northern European travellers escaping the cold for months at a time. Campsite prices drop by 30-50% from peak rates, and many municipal sites remain open year-round. Daytime temperatures in the Algarve average 15-18\u00b0C, warm enough for comfortable outdoor living with a decent heating system in your van for the cooler evenings. Rainfall is moderate — you will get wet days, but extended dry spells are common.',
     },
     {
       type: 'paragraph',
@@ -411,7 +411,7 @@ const bestFreeCampsitesPortugal: BlogPost = {
     {
       type: 'cta',
       content:
-        'Start planning your Portugal camper trip with our free route planner. Add your waypoints, find campsites along your route, calculate fuel costs, and export your itinerary to your GPS -- all without creating an account or spending a penny.',
+        'Start planning your Portugal camper trip with our free route planner. Add your waypoints, find campsites along your route, calculate fuel costs, and export your itinerary to your GPS — all without creating an account or spending a penny.',
       waypoints: [
         { name: 'Lisbon', lat: 38.7223, lng: -9.1393 },
         { name: 'Alentejo Coast', lat: 37.8389, lng: -8.7919 },

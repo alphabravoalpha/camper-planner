@@ -86,20 +86,33 @@ interface MapEventHandlerProps {
 }
 
 // Component to handle map events (click events handled by WaypointManager)
+// Debounced to prevent API call storms during rapid events (e.g. window resize)
 const MapEventHandler: React.FC<MapEventHandlerProps> = ({ onMapMove }) => {
   const map = useMap();
+  const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const debouncedMapMove = useCallback(() => {
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+    debounceTimerRef.current = setTimeout(() => {
+      const center = map.getCenter();
+      const zoom = map.getZoom();
+      onMapMove([center.lat, center.lng], zoom);
+    }, 150);
+  }, [map, onMapMove]);
+
+  useEffect(() => {
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, []);
 
   useMapEvents({
-    moveend: () => {
-      const center = map.getCenter();
-      const zoom = map.getZoom();
-      onMapMove([center.lat, center.lng], zoom);
-    },
-    zoomend: () => {
-      const center = map.getCenter();
-      const zoom = map.getZoom();
-      onMapMove([center.lat, center.lng], zoom);
-    },
+    moveend: debouncedMapMove,
+    zoomend: debouncedMapMove,
   });
 
   return null;

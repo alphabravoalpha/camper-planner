@@ -13,7 +13,7 @@ const Header: React.FC = () => {
   const location = useLocation();
   const { t } = useTranslation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { toggleSidebar, openVehicleSidebar } = useUIStore();
+  const { openVehicleSidebar } = useUIStore();
   const { profile } = useVehicleStore();
   const { openWizard: _openWizard } = useTripWizardStore();
 
@@ -30,6 +30,7 @@ const Header: React.FC = () => {
     { path: '/guides', label: t('nav.guides'), key: 'guides', icon: BookOpen },
     { path: '/about', label: t('nav.about'), key: 'about' },
     { path: '/help', label: t('nav.help'), key: 'help' },
+    { path: '/support', label: t('nav.support'), key: 'support' },
   ];
 
   const isActivePath = (path: string) => {
@@ -64,6 +65,7 @@ const Header: React.FC = () => {
               >
                 <svg
                   className="w-4 h-4"
+                  aria-hidden="true"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -83,24 +85,6 @@ const Header: React.FC = () => {
 
             {/* Logo and Title */}
             <div className="flex items-center space-x-3">
-              {/* Sidebar toggle for planner page */}
-              {location.pathname === '/' && (
-                <button
-                  onClick={toggleSidebar}
-                  className="hidden md:block lg:hidden p-2 rounded-lg text-neutral-500 hover:text-neutral-700 hover:bg-neutral-50"
-                  aria-label="Toggle sidebar"
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M4 6h16M4 12h16M4 18h16"
-                    />
-                  </svg>
-                </button>
-              )}
-
               <Link to="/" className="flex items-center space-x-3">
                 <img
                   src="/logo.png"
@@ -168,6 +152,7 @@ const Header: React.FC = () => {
               >
                 <svg
                   className={cn('w-6 h-6 transition-transform', isMobileMenuOpen && 'rotate-90')}
+                  aria-hidden="true"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -211,18 +196,6 @@ const Header: React.FC = () => {
                     {item.label}
                   </Link>
                 ))}
-                <Link
-                  to="/support"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className={cn(
-                    'block px-3 py-2 rounded-lg text-base font-display font-medium transition-all duration-200',
-                    isActivePath('/support')
-                      ? 'text-primary-700 bg-primary-50'
-                      : 'text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50'
-                  )}
-                >
-                  {t('nav.support')}
-                </Link>
                 {location.pathname !== '/' && (
                   <Link
                     to="/"

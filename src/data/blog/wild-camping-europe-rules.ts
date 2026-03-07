@@ -27,12 +27,12 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Wild camping -- parking your campervan or motorhome overnight in a non-designated spot, away from official campsites and aires -- is one of the most appealing aspects of the campervan lifestyle. Waking up beside a mountain lake, on a quiet coastal headland, or in a forest clearing with no other humans in sight is an experience that no campsite can replicate. It is also one of the most legally complex areas of European travel.',
+        'Wild camping — parking your campervan or motorhome overnight in a non-designated spot, away from official campsites and aires — is one of the most appealing aspects of the campervan lifestyle. Waking up beside a mountain lake, on a quiet coastal headland, or in a forest clearing with no other humans in sight is an experience that no campsite can replicate. It is also one of the most legally complex areas of European travel.',
     },
     {
       type: 'paragraph',
       content:
-        'Wild camping laws vary enormously across Europe, from countries where it is an enshrined constitutional right to countries where it is a criminal offence. Even within countries, regulations can change between regions, municipalities, and seasons. National parks, nature reserves, and coastal zones almost always have stricter rules than general countryside. Understanding these differences before you travel is essential -- not just to avoid fines, but to ensure wild camping remains viable for future travellers by respecting local rules and environments.',
+        'Wild camping laws vary enormously across Europe, from countries where it is an enshrined constitutional right to countries where it is a criminal offence. Even within countries, regulations can change between regions, municipalities, and seasons. National parks, nature reserves, and coastal zones almost always have stricter rules than general countryside. Understanding these differences before you travel is essential — not just to avoid fines, but to ensure wild camping remains viable for future travellers by respecting local rules and environments.',
     },
     {
       type: 'paragraph',
@@ -54,7 +54,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Norway has the strongest wild camping rights in Europe through allemannsretten (the right of public access). You can camp anywhere on uncultivated land -- mountains, forests, moorland, beaches -- for up to two nights in the same spot without permission. This right explicitly includes campervans and motorhomes, provided you are at least 150 metres from the nearest inhabited house or cabin. There is no permit required and no need to inform anyone.',
+        'Norway has the strongest wild camping rights in Europe through allemannsretten (the right of public access). You can camp anywhere on uncultivated land — mountains, forests, moorland, beaches — for up to two nights in the same spot without permission. This right explicitly includes campervans and motorhomes, provided you are at least 150 metres from the nearest inhabited house or cabin. There is no permit required and no need to inform anyone.',
     },
     {
       type: 'paragraph',
@@ -69,7 +69,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Sweden has allemansratten, a similar right to roam enshrined in the Swedish constitution. You can pitch a tent or park a campervan on private land for one night without permission, as long as you are out of sight of any dwelling, do not damage crops or plantations, and leave no trace. The right is more restrictive for vehicles than for hikers -- you should park on hard ground (not grass that could be damaged) and avoid blocking roads or tracks. National parks and nature reserves often have specific camping zones where vehicle camping is restricted.',
+        'Sweden has allemansratten, a similar right to roam enshrined in the Swedish constitution. You can pitch a tent or park a campervan on private land for one night without permission, as long as you are out of sight of any dwelling, do not damage crops or plantations, and leave no trace. The right is more restrictive for vehicles than for hikers — you should park on hard ground (not grass that could be damaged) and avoid blocking roads or tracks. National parks and nature reserves often have specific camping zones where vehicle camping is restricted.',
     },
     {
       type: 'heading',
@@ -106,7 +106,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        "However, many municipalities -- particularly coastal towns and popular tourist areas -- have enacted local bylaws (arretes municipaux) that specifically prohibit overnight motorhome parking. These are posted on signs at entrances to car parks and public areas. Nature reserves, national parks (Calanques, Verdon, Mercantour), and many beaches have blanket bans. With France's extensive network of over 6,000 aires, there is rarely a reason to wild camp anyway.",
+        "However, many municipalities — particularly coastal towns and popular tourist areas — have enacted local bylaws (arretes municipaux) that specifically prohibit overnight motorhome parking. These are posted on signs at entrances to car parks and public areas. Nature reserves, national parks (Calanques, Verdon, Mercantour), and many beaches have blanket bans. With France's extensive network of over 6,000 aires, there is rarely a reason to wild camp anyway.",
     },
     {
       type: 'heading',
@@ -136,7 +136,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'The UK has no general right to wild camp in a vehicle. In England and Wales, parking overnight in a lay-by or public car park is not illegal per se, but many local councils have enacted bylaws prohibiting it, and enforcement is increasing. Scotland is different -- the Land Reform (Scotland) Act 2003 provides a right of responsible access that includes lightweight camping (tents), but courts have not clearly extended this to vehicle camping. In practice, respectful overnight parking in Scottish Highland lay-bys is widely tolerated.',
+        'The UK has no general right to wild camp in a vehicle. In England and Wales, parking overnight in a lay-by or public car park is not illegal per se, but many local councils have enacted bylaws prohibiting it, and enforcement is increasing. Scotland is different — the Land Reform (Scotland) Act 2003 provides a right of responsible access that includes lightweight camping (tents), but courts have not clearly extended this to vehicle camping. In practice, respectful overnight parking in Scottish Highland lay-bys is widely tolerated.',
     },
 
     // ── Southern Europe ──────────────────────────────────────────
@@ -153,7 +153,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Spain has no national wild camping law -- rules are set by each of the 17 autonomous communities, and sometimes by individual municipalities. As a general rule, sleeping in your vehicle is tolerated in most areas as long as you do not "camp" (deploy external equipment). However, certain regions -- notably Catalonia, the Balearic Islands, and parts of Andalusia -- have enacted strict bans with fines of 200 to 2,000 euros. Coastal areas and natural parks are almost universally restricted. Spain\'s network of areas de servicio (service areas) and municipal motorhome parking is improving rapidly, providing affordable alternatives.',
+        'Spain has no national wild camping law — rules are set by each of the 17 autonomous communities, and sometimes by individual municipalities. As a general rule, sleeping in your vehicle is tolerated in most areas as long as you do not "camp" (deploy external equipment). However, certain regions — notably Catalonia, the Balearic Islands, and parts of Andalusia — have enacted strict bans with fines of 200 to 2,000 euros. Coastal areas and natural parks are almost universally restricted. Spain\'s network of areas de servicio (service areas) and municipal motorhome parking is improving rapidly, providing affordable alternatives.',
     },
     {
       type: 'heading',
@@ -163,7 +163,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Wild camping in Italy is illegal under national law, with fines ranging from 100 to 500 euros. Enforcement varies hugely by region -- it is strict in tourist areas along the coasts and near major cities, but more relaxed in rural southern Italy and inland areas. The Italian sosta network provides a legal alternative: over 3,000 designated motorhome parking areas across the country, many free or costing 5-15 euros per night. Local police (Polizia Municipale) are the primary enforcement body, and they tend to be understanding with foreign travellers who are genuinely lost rather than deliberately flouting rules.',
+        'Wild camping in Italy is illegal under national law, with fines ranging from 100 to 500 euros. Enforcement varies hugely by region — it is strict in tourist areas along the coasts and near major cities, but more relaxed in rural southern Italy and inland areas. The Italian sosta network provides a legal alternative: over 3,000 designated motorhome parking areas across the country, many free or costing 5-15 euros per night. Local police (Polizia Municipale) are the primary enforcement body, and they tend to be understanding with foreign travellers who are genuinely lost rather than deliberately flouting rules.',
     },
     {
       type: 'heading',
@@ -188,7 +188,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Wild camping in Greece is technically illegal, but enforcement outside of protected areas and popular beaches is minimal. Greece has a long tradition of informal camping culture, and local attitudes tend to be tolerant. The main exceptions are archaeological sites (where overnight parking is strictly forbidden), organised beach areas, and the popular islands where tourism pressure has led to crackdowns. On the mainland -- particularly the Peloponnese, Epirus, and northern Greece -- sleeping in a campervan at a quiet beach or village car park rarely causes any issue.',
+        'Wild camping in Greece is technically illegal, but enforcement outside of protected areas and popular beaches is minimal. Greece has a long tradition of informal camping culture, and local attitudes tend to be tolerant. The main exceptions are archaeological sites (where overnight parking is strictly forbidden), organised beach areas, and the popular islands where tourism pressure has led to crackdowns. On the mainland — particularly the Peloponnese, Epirus, and northern Greece — sleeping in a campervan at a quiet beach or village car park rarely causes any issue.',
     },
 
     // ── Eastern Europe ───────────────────────────────────────────
@@ -217,14 +217,14 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Wild camping rights exist only as long as people exercise them responsibly. The tightening of laws in Portugal, parts of Spain, and other countries is a direct result of irresponsible behaviour -- dumping waste, leaving rubbish, occupying spots for days or weeks, parking on fragile vegetation, and gathering in large groups that disrupt local communities. Every careless act makes it harder for responsible campers.',
+        'Wild camping rights exist only as long as people exercise them responsibly. The tightening of laws in Portugal, parts of Spain, and other countries is a direct result of irresponsible behaviour — dumping waste, leaving rubbish, occupying spots for days or weeks, parking on fragile vegetation, and gathering in large groups that disrupt local communities. Every careless act makes it harder for responsible campers.',
     },
     {
       type: 'list',
       items: [
         'Take all rubbish with you. Every wrapper, bottle, and food scrap. Leave the spot cleaner than you found it.',
         'Never dump grey or black water in nature. Use designated dump points at service stations, campsites, or aires.',
-        'Park on hard standing -- tarmac, gravel, or compacted earth. Never on grass, wildflowers, or soft ground that will show tyre tracks.',
+        'Park on hard standing — tarmac, gravel, or compacted earth. Never on grass, wildflowers, or soft ground that will show tyre tracks.',
         'Do not light fires unless you are in a country where it is legal and conditions are safe. Forest fires are a devastating problem in Southern Europe.',
         'Stay one night only in any spot. Do not create a semi-permanent camp.',
         'Arrive late and leave early. This minimises your visual impact on the landscape and on local residents.',
@@ -242,12 +242,12 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Finding good wild camping spots is part skill, part experience, and part serendipity. The best spots are rarely found by searching specifically for them -- they reveal themselves as you drive through an area and spot a promising turn-off, a quiet track, or a scenic viewpoint with space to park. That said, several tools and strategies can help.',
+        'Finding good wild camping spots is part skill, part experience, and part serendipity. The best spots are rarely found by searching specifically for them — they reveal themselves as you drive through an area and spot a promising turn-off, a quiet track, or a scenic viewpoint with space to park. That said, several tools and strategies can help.',
     },
     {
       type: 'list',
       items: [
-        'Park4Night: The most widely used app for finding free and wild camping spots. Community-contributed with photos, GPS coordinates, and reviews. Quality varies -- always check recent reviews.',
+        'Park4Night: The most widely used app for finding free and wild camping spots. Community-contributed with photos, GPS coordinates, and reviews. Quality varies — always check recent reviews.',
         'iOverlander: Popular with long-distance travellers. Good coverage of Eastern Europe and less-touristed areas. Includes safety reports.',
         'Satellite imagery: Google Maps or Google Earth satellite view lets you spot potential pull-offs, tracks, and clearings that are invisible on the road map.',
         'Local knowledge: Ask at shops, bars, or petrol stations in rural areas. Locals often know quiet spots where overnight parking is accepted.',
@@ -269,12 +269,12 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Wild camping is generally safe across Europe, but it carries inherent risks that official campsites do not. Vehicle break-ins are the most common crime affecting campervan travellers, and isolated parking spots can be more vulnerable than busy campsites. Southern Spain (Andalusia), parts of southern France, and the outskirts of major cities across Europe are higher-risk areas. Autoroute rest areas are the single most dangerous places to sleep -- avoid them entirely for overnight stays.',
+        'Wild camping is generally safe across Europe, but it carries inherent risks that official campsites do not. Vehicle break-ins are the most common crime affecting campervan travellers, and isolated parking spots can be more vulnerable than busy campsites. Southern Spain (Andalusia), parts of southern France, and the outskirts of major cities across Europe are higher-risk areas. Autoroute rest areas are the single most dangerous places to sleep — avoid them entirely for overnight stays.',
     },
     {
       type: 'list',
       items: [
-        'Trust your instincts. If a spot feels wrong -- too isolated, too visible from the road, evidence of other problems -- move on.',
+        'Trust your instincts. If a spot feels wrong — too isolated, too visible from the road, evidence of other problems — move on.',
         'Lock your vehicle and close blinds or curtains before sleeping. Many break-ins target visible valuables.',
         'Avoid publicising your wild camping locations on social media with precise geolocations. This leads to overcrowding and crackdowns.',
         'In bear country (Romania, parts of Scandinavia, the Pyrenees), store food securely and keep a clean camp. Bears are attracted to food waste.',

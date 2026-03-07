@@ -32,7 +32,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'The terms themselves cause confusion. In this guide, a campervan refers to a converted or factory-built van -- typically based on a Volkswagen Transporter, Mercedes Sprinter, Fiat Ducato, or similar commercial van chassis -- with a pop-top or fixed high roof and a compact living space. A motorhome (also called a motor caravan or RV) is a purpose-built living vehicle, usually with an overcab bed or a coachbuilt body extending beyond the base vehicle chassis. Motorhomes range from compact models around 5.5 metres long to large A-class vehicles exceeding 9 metres.',
+        'The terms themselves cause confusion. In this guide, a campervan refers to a converted or factory-built van — typically based on a Volkswagen Transporter, Mercedes Sprinter, Fiat Ducato, or similar commercial van chassis — with a pop-top or fixed high roof and a compact living space. A motorhome (also called a motor caravan or RV) is a purpose-built living vehicle, usually with an overcab bed or a coachbuilt body extending beyond the base vehicle chassis. Motorhomes range from compact models around 5.5 metres long to large A-class vehicles exceeding 9 metres.',
     },
     {
       type: 'paragraph',
@@ -86,12 +86,12 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Campervans drive much like a large estate car or small delivery van. If you are comfortable driving a standard van, you will adapt to a campervan within minutes. Visibility is good, turning circles are tight, and fuel consumption is reasonable -- typically 8-11 litres per 100 km for a Ducato-based campervan. Pop-top models have particularly low wind resistance and handle well on motorways and in crosswinds.',
+        'Campervans drive much like a large estate car or small delivery van. If you are comfortable driving a standard van, you will adapt to a campervan within minutes. Visibility is good, turning circles are tight, and fuel consumption is reasonable — typically 8-11 litres per 100 km for a Ducato-based campervan. Pop-top models have particularly low wind resistance and handle well on motorways and in crosswinds.',
     },
     {
       type: 'paragraph',
       content:
-        'Motorhomes require a more deliberate driving style. The longer body means wider turns, greater overhang on corners, and a very different sense of spatial awareness when reversing or threading through tight gaps. Crosswinds on exposed bridges and coastal roads can push a high-sided motorhome significantly -- the Mistral in Provence, the Tramontane in Languedoc, and the Bora on the Adriatic coast all demand caution. Fuel consumption for a coachbuilt motorhome runs between 11 and 16 litres per 100 km depending on size, weight, and driving style.',
+        'Motorhomes require a more deliberate driving style. The longer body means wider turns, greater overhang on corners, and a very different sense of spatial awareness when reversing or threading through tight gaps. Crosswinds on exposed bridges and coastal roads can push a high-sided motorhome significantly — the Mistral in Provence, the Tramontane in Languedoc, and the Bora on the Adriatic coast all demand caution. Fuel consumption for a coachbuilt motorhome runs between 11 and 16 litres per 100 km depending on size, weight, and driving style.',
     },
     {
       type: 'tip',
@@ -101,7 +101,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Licence requirements also differ. In most European countries, a standard Category B driving licence covers vehicles up to 3,500 kg gross vehicle weight. Most campervans and many compact motorhomes fall within this limit. Larger motorhomes -- particularly those with full water tanks, heavy batteries, and loaded storage -- frequently exceed 3,500 kg and require a C1 licence (up to 7,500 kg). In the UK, drivers who passed their test after January 1997 do not automatically receive C1 entitlement and must take an additional test. Check your licence carefully before booking or buying.',
+        'Licence requirements also differ. In most European countries, a standard Category B driving licence covers vehicles up to 3,500 kg gross vehicle weight. Most campervans and many compact motorhomes fall within this limit. Larger motorhomes — particularly those with full water tanks, heavy batteries, and loaded storage — frequently exceed 3,500 kg and require a C1 licence (up to 7,500 kg). In the UK, drivers who passed their test after January 1997 do not automatically receive C1 entitlement and must take an additional test. Check your licence carefully before booking or buying.',
     },
     {
       type: 'warning',
@@ -123,7 +123,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'New campervan prices in Europe start around 45,000 euros for a basic Possl or Globecar model on a Fiat Ducato base, rising to 65,000-80,000 euros for a Volkswagen California or Mercedes Marco Polo. Professional van conversions range from 30,000 to 60,000 euros on top of the base vehicle cost. The used market is strong, with well-maintained campervans holding their value better than almost any other vehicle type -- expect to pay 30,000-55,000 euros for a 3-5 year old model with reasonable mileage.',
+        'New campervan prices in Europe start around 45,000 euros for a basic Possl or Globecar model on a Fiat Ducato base, rising to 65,000-80,000 euros for a Volkswagen California or Mercedes Marco Polo. Professional van conversions range from 30,000 to 60,000 euros on top of the base vehicle cost. The used market is strong, with well-maintained campervans holding their value better than almost any other vehicle type — expect to pay 30,000-55,000 euros for a 3-5 year old model with reasonable mileage.',
     },
     {
       type: 'paragraph',
@@ -144,7 +144,7 @@ const post: BlogPost = {
       type: 'list',
       items: [
         'Campervan rental: 50-140 euros/day depending on season and model. Typically includes basic insurance and unlimited mileage.',
-        'Motorhome rental: 70-200 euros/day depending on season and size. Check mileage limits -- some companies charge 0.15-0.30 euros per km over the allowance.',
+        'Motorhome rental: 70-200 euros/day depending on season and size. Check mileage limits — some companies charge 0.15-0.30 euros per km over the allowance.',
         'Insurance excess: Standard excess is often 1,000-2,500 euros. Consider paying an extra 10-20 euros/day for a reduced excess policy.',
         'One-way fees: Picking up and dropping off in different cities or countries typically adds 200-500 euros.',
       ],
@@ -179,12 +179,12 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'This is where the biggest practical differences emerge. A campervan forces you to be disciplined about packing. Wardrobe space is minimal -- typically a narrow hanging area and a shelf or two. Kitchen storage might be two or three small cupboards. There is rarely space for bulky items like folding bikes, kayaks, or extensive outdoor furniture without sacrificing living space. Every item you bring must earn its place.',
+        'This is where the biggest practical differences emerge. A campervan forces you to be disciplined about packing. Wardrobe space is minimal — typically a narrow hanging area and a shelf or two. Kitchen storage might be two or three small cupboards. There is rarely space for bulky items like folding bikes, kayaks, or extensive outdoor furniture without sacrificing living space. Every item you bring must earn its place.',
     },
     {
       type: 'paragraph',
       content:
-        'Motorhomes are a different proposition entirely. A mid-range coachbuilt typically has a large garage compartment under the rear bed (accessible via an external hatch) that can hold folding bikes, camping chairs, a barbecue, hiking equipment, and tools. Internal storage includes a full-height wardrobe, overhead lockers throughout, under-seat storage, and a proper pantry area in the kitchen. The feeling of space is dramatically different -- a motorhome genuinely feels like a small flat, while a campervan feels like a cleverly packed cabin.',
+        'Motorhomes are a different proposition entirely. A mid-range coachbuilt typically has a large garage compartment under the rear bed (accessible via an external hatch) that can hold folding bikes, camping chairs, a barbecue, hiking equipment, and tools. Internal storage includes a full-height wardrobe, overhead lockers throughout, under-seat storage, and a proper pantry area in the kitchen. The feeling of space is dramatically different — a motorhome genuinely feels like a small flat, while a campervan feels like a cleverly packed cabin.',
     },
     {
       type: 'paragraph',
@@ -286,17 +286,17 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'There is a growing middle ground that blurs the line between campervan and motorhome: the panel van motorhome (also called a van conversion or campervan with fixed interior). Models like the Adria Twin, Globecar Roadscout, Possl Summit, and Hymer Free are built on standard Fiat Ducato or Mercedes Sprinter long-wheelbase vans but have the interior fitout of a small motorhome -- fixed bed, dedicated bathroom, full kitchen, and proper heating. They typically measure 5.9 to 6.4 metres long, stay under 3 metres tall, and remain under 3,500 kg gross weight.',
+        'There is a growing middle ground that blurs the line between campervan and motorhome: the panel van motorhome (also called a van conversion or campervan with fixed interior). Models like the Adria Twin, Globecar Roadscout, Possl Summit, and Hymer Free are built on standard Fiat Ducato or Mercedes Sprinter long-wheelbase vans but have the interior fitout of a small motorhome — fixed bed, dedicated bathroom, full kitchen, and proper heating. They typically measure 5.9 to 6.4 metres long, stay under 3 metres tall, and remain under 3,500 kg gross weight.',
     },
     {
       type: 'paragraph',
       content:
-        'These vehicles combine the driving ease and parking convenience of a large campervan with many of the comfort features of a motorhome. They represent the fastest-growing segment of the European leisure vehicle market, and for good reason -- they are an excellent compromise for couples who want comfort without bulk. The trade-off is that they are more expensive than a basic campervan and more cramped than a full-size motorhome.',
+        'These vehicles combine the driving ease and parking convenience of a large campervan with many of the comfort features of a motorhome. They represent the fastest-growing segment of the European leisure vehicle market, and for good reason — they are an excellent compromise for couples who want comfort without bulk. The trade-off is that they are more expensive than a basic campervan and more cramped than a full-size motorhome.',
     },
     {
       type: 'tip',
       content:
-        'If you are renting for the first time and cannot decide, rent a panel van motorhome in the 6.0-6.4 metre range. It gives you a taste of both worlds -- compact enough for village exploration but comfortable enough for extended stays. After a week on the road, you will know whether you want more space or less vehicle.',
+        'If you are renting for the first time and cannot decide, rent a panel van motorhome in the 6.0-6.4 metre range. It gives you a taste of both worlds — compact enough for village exploration but comfortable enough for extended stays. After a week on the road, you will know whether you want more space or less vehicle.',
     },
 
     // ── Making the Decision ─────────────────────────────────────
@@ -308,17 +308,17 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Before you commit, work through these practical questions. How many people are travelling, and what are their space expectations? If you are a couple who has tent-camped for years, a campervan will feel luxurious. If your partner expects a proper bed and a bathroom door that closes, a motorhome is the safer choice. Where specifically are you going? The Amalfi Coast, Cinque Terre, and the Greek islands are campervan territory -- motorhomes over 7 metres face serious access problems. Scandinavia, France, and Germany have excellent motorhome infrastructure and wide roads where a larger vehicle is no disadvantage.',
+        'Before you commit, work through these practical questions. How many people are travelling, and what are their space expectations? If you are a couple who has tent-camped for years, a campervan will feel luxurious. If your partner expects a proper bed and a bathroom door that closes, a motorhome is the safer choice. Where specifically are you going? The Amalfi Coast, Cinque Terre, and the Greek islands are campervan territory — motorhomes over 7 metres face serious access problems. Scandinavia, France, and Germany have excellent motorhome infrastructure and wide roads where a larger vehicle is no disadvantage.',
     },
     {
       type: 'paragraph',
       content:
-        'How long is your trip? For a week or two, a campervan is often sufficient -- you can tolerate limited space for a short period and the lower costs add up. For trips of a month or more, the extra living space and storage of a motorhome becomes increasingly valuable. The psychological impact of cramped quarters compounds over time, and what felt cosy in week one can feel claustrophobic by week four.',
+        'How long is your trip? For a week or two, a campervan is often sufficient — you can tolerate limited space for a short period and the lower costs add up. For trips of a month or more, the extra living space and storage of a motorhome becomes increasingly valuable. The psychological impact of cramped quarters compounds over time, and what felt cosy in week one can feel claustrophobic by week four.',
     },
     {
       type: 'paragraph',
       content:
-        'Finally, consider the logistics of your specific itinerary. If your route includes multiple city stops, frequent driving days, and varied terrain, a campervan gives you flexibility. If you plan to drive to a region and then stay put for extended periods with shorter day trips, a motorhome provides a more comfortable base camp. There is no universally right answer -- only the right answer for your trip.',
+        'Finally, consider the logistics of your specific itinerary. If your route includes multiple city stops, frequent driving days, and varied terrain, a campervan gives you flexibility. If you plan to drive to a region and then stay put for extended periods with shorter day trips, a motorhome provides a more comfortable base camp. There is no universally right answer — only the right answer for your trip.',
     },
 
     // ── CTA ──────────────────────────────────────────────────────
@@ -330,7 +330,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Whichever vehicle you choose, planning a route that respects its dimensions is essential. Low bridges, narrow roads, weight-restricted lanes, and height-barriered car parks can turn a pleasant drive into a stressful ordeal if you have not checked in advance. CamperPlanning lets you enter your exact vehicle profile -- height, width, weight, and length -- and calculates routes that avoid restrictions your vehicle cannot handle.',
+        'Whichever vehicle you choose, planning a route that respects its dimensions is essential. Low bridges, narrow roads, weight-restricted lanes, and height-barriered car parks can turn a pleasant drive into a stressful ordeal if you have not checked in advance. CamperPlanning lets you enter your exact vehicle profile — height, width, weight, and length — and calculates routes that avoid restrictions your vehicle cannot handle.',
     },
     {
       type: 'cta',

@@ -32,7 +32,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Spain is also increasingly campervan-friendly. The network of areas de autocaravanas (designated motorhome service and parking areas) has grown rapidly in recent years, with over 1,500 now operating across the country. Many are free or charge 5-10 euros per night. Fuel prices are lower than in France or Italy. Campsite fees are generally reasonable, and the cost of eating out -- tapas, menu del dia lunches, and local wines -- is the lowest in Western Europe. The climate allows year-round travel in the south, making Spain a favourite winter destination for European motorhome owners.',
+        'Spain is also increasingly campervan-friendly. The network of areas de autocaravanas (designated motorhome service and parking areas) has grown rapidly in recent years, with over 1,500 now operating across the country. Many are free or charge 5-10 euros per night. Fuel prices are lower than in France or Italy. Campsite fees are generally reasonable, and the cost of eating out — tapas, menu del dia lunches, and local wines — is the lowest in Western Europe. The climate allows year-round travel in the south, making Spain a favourite winter destination for European motorhome owners.',
     },
     {
       type: 'paragraph',
@@ -44,7 +44,7 @@ const post: BlogPost = {
     {
       type: 'heading',
       level: 2,
-      content: 'Route 1: Northern Green Spain -- Galicia to the Basque Country',
+      content: 'Route 1: Northern Green Spain — Galicia to the Basque Country',
     },
     {
       type: 'paragraph',
@@ -63,17 +63,17 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        "Start in Santiago de Compostela, the endpoint of the Camino de Santiago pilgrimage and a UNESCO-listed city with one of Europe's great cathedral squares. From there, head south-west to the Rias Baixas -- a series of deep estuaries along the coast that produce the region's famous Albarino white wine and some of Spain's best seafood. Camping Rias Baixas near Sanxenxo is well-positioned for exploring the coast and the O Grove seafood restaurants.",
+        "Start in Santiago de Compostela, the endpoint of the Camino de Santiago pilgrimage and a UNESCO-listed city with one of Europe's great cathedral squares. From there, head south-west to the Rias Baixas — a series of deep estuaries along the coast that produce the region's famous Albarino white wine and some of Spain's best seafood. Camping Rias Baixas near Sanxenxo is well-positioned for exploring the coast and the O Grove seafood restaurants.",
     },
     {
       type: 'paragraph',
       content:
-        'The Costa da Morte (Coast of Death), named for its history of shipwrecks, runs north from the rias to Cape Finisterre -- the ancient "end of the earth." This is wild, Atlantic coastline with enormous waves, windswept headlands, and almost no tourist development. Free overnight parking is widely tolerated at viewpoints and small harbours along this coast.',
+        'The Costa da Morte (Coast of Death), named for its history of shipwrecks, runs north from the rias to Cape Finisterre — the ancient "end of the earth." This is wild, Atlantic coastline with enormous waves, windswept headlands, and almost no tourist development. Free overnight parking is widely tolerated at viewpoints and small harbours along this coast.',
     },
     {
       type: 'paragraph',
       content:
-        'Moving east into Asturias, the coast becomes even more spectacular. The Playa de las Catedrales (Beach of the Cathedrals) near Ribadeo has towering rock arches carved by the sea that look like Gothic flying buttresses. Advance booking (free) is required in summer. Cudillero is a picture-perfect fishing village packed into a narrow ravine. Llanes has over 30 beaches within its municipal boundary. The Picos de Europa National Park, just inland, is a mountain massif of staggering drama -- limestone peaks exceeding 2,600 metres with deep gorges, alpine lakes, and the Cares Gorge walking route carved into sheer cliff faces.',
+        'Moving east into Asturias, the coast becomes even more spectacular. The Playa de las Catedrales (Beach of the Cathedrals) near Ribadeo has towering rock arches carved by the sea that look like Gothic flying buttresses. Advance booking (free) is required in summer. Cudillero is a picture-perfect fishing village packed into a narrow ravine. Llanes has over 30 beaches within its municipal boundary. The Picos de Europa National Park, just inland, is a mountain massif of staggering drama — limestone peaks exceeding 2,600 metres with deep gorges, alpine lakes, and the Cares Gorge walking route carved into sheer cliff faces.',
     },
     {
       type: 'tip',
@@ -90,7 +90,7 @@ const post: BlogPost = {
     {
       type: 'heading',
       level: 2,
-      content: 'Route 2: Andalusia -- Cities, Mountains, and the Southern Coast',
+      content: 'Route 2: Andalusia — Cities, Mountains, and the Southern Coast',
     },
     {
       type: 'paragraph',
@@ -109,12 +109,12 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        "Seville is Spain's most charismatic city, with the massive Gothic cathedral, the Alcazar palace complex, and the atmospheric Santa Cruz quarter. Do not attempt to drive a motorhome into the historic centre -- park at Camping Villsom on the outskirts and use the excellent metro and bus network. Cordoba's Mezquita (mosque-cathedral) is one of the most extraordinary buildings in Europe, a forest of over 850 columns with red-and-white striped arches that seems to stretch to infinity.",
+        "Seville is Spain's most charismatic city, with the massive Gothic cathedral, the Alcazar palace complex, and the atmospheric Santa Cruz quarter. Do not attempt to drive a motorhome into the historic centre — park at Camping Villsom on the outskirts and use the excellent metro and bus network. Cordoba's Mezquita (mosque-cathedral) is one of the most extraordinary buildings in Europe, a forest of over 850 columns with red-and-white striped arches that seems to stretch to infinity.",
     },
     {
       type: 'paragraph',
       content:
-        'Granada and the Alhambra need no introduction, but they do need advance booking -- tickets sell out weeks ahead in high season. The city has several campsites with mountain views, including Camping Sierra Nevada near the foot of the ski station. From Granada, a detour into the Alpujarras -- a series of white villages on the southern slopes of the Sierra Nevada -- is essential. Narrow, winding roads connect Pampaneira, Bubion, and Capileira at elevations exceeding 1,400 metres, with views across to the Moroccan Rif mountains on clear days.',
+        'Granada and the Alhambra need no introduction, but they do need advance booking — tickets sell out weeks ahead in high season. The city has several campsites with mountain views, including Camping Sierra Nevada near the foot of the ski station. From Granada, a detour into the Alpujarras — a series of white villages on the southern slopes of the Sierra Nevada — is essential. Narrow, winding roads connect Pampaneira, Bubion, and Capileira at elevations exceeding 1,400 metres, with views across to the Moroccan Rif mountains on clear days.',
     },
     {
       type: 'paragraph',
@@ -136,7 +136,7 @@ const post: BlogPost = {
     {
       type: 'heading',
       level: 2,
-      content: 'Route 3: The Mediterranean Coast -- Valencia to Costa Brava',
+      content: 'Route 3: The Mediterranean Coast — Valencia to Costa Brava',
     },
     {
       type: 'paragraph',
@@ -155,17 +155,17 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'Valencia is a vibrant city with the futuristic City of Arts and Sciences complex, the old Turia riverbed gardens, and a fantastic food market (Mercado Central). It is also the home of authentic paella -- never order it anywhere else in Spain if you can help it. Camping Coll Vert near the Albufera lagoon south of the city is well-placed for both the city and the rice-growing wetlands where paella was invented.',
+        'Valencia is a vibrant city with the futuristic City of Arts and Sciences complex, the old Turia riverbed gardens, and a fantastic food market (Mercado Central). It is also the home of authentic paella — never order it anywhere else in Spain if you can help it. Camping Coll Vert near the Albufera lagoon south of the city is well-placed for both the city and the rice-growing wetlands where paella was invented.',
     },
     {
       type: 'paragraph',
       content:
-        "Peniscola is a medieval fortress town built on a rocky promontory that juts into the sea -- it served as the set for Game of Thrones's Meereen. The old town is vehicle-free, but the area de autocaravanas at the base of the promontory is well-positioned. Tarragona has outstanding Roman ruins -- an amphitheatre overlooking the sea, a well-preserved aqueduct, and extensive city walls -- and is far less crowded than Barcelona.",
+        "Peniscola is a medieval fortress town built on a rocky promontory that juts into the sea — it served as the set for Game of Thrones's Meereen. The old town is vehicle-free, but the area de autocaravanas at the base of the promontory is well-positioned. Tarragona has outstanding Roman ruins — an amphitheatre overlooking the sea, a well-preserved aqueduct, and extensive city walls — and is far less crowded than Barcelona.",
     },
     {
       type: 'paragraph',
       content:
-        "Barcelona is magnificent but terrible for motorhomes. Park at one of the campsites in Castelldefels or Malgrat de Mar and use the Rodalies commuter trains. The Costa Brava north of Barcelona is the real gem of this route: Tossa de Mar has a walled old town on a headland above a sandy bay, Begur has multiple coves with turquoise water, and Cadaques -- where Salvador Dali lived and worked -- is a whitewashed gem at the end of a winding mountain road. Cap de Creus, the easternmost point of Spain, is a wild rocky headland that inspired Dali's surrealist landscapes.",
+        "Barcelona is magnificent but terrible for motorhomes. Park at one of the campsites in Castelldefels or Malgrat de Mar and use the Rodalies commuter trains. The Costa Brava north of Barcelona is the real gem of this route: Tossa de Mar has a walled old town on a headland above a sandy bay, Begur has multiple coves with turquoise water, and Cadaques — where Salvador Dali lived and worked — is a whitewashed gem at the end of a winding mountain road. Cap de Creus, the easternmost point of Spain, is a wild rocky headland that inspired Dali's surrealist landscapes.",
     },
     {
       type: 'warning',
@@ -177,7 +177,7 @@ const post: BlogPost = {
     {
       type: 'heading',
       level: 2,
-      content: 'Route 4: The Inland Alternative -- Meseta and Mountains',
+      content: 'Route 4: The Inland Alternative — Meseta and Mountains',
     },
     {
       type: 'paragraph',
@@ -196,7 +196,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        'The Sierra de Cazorla Natural Park in Jaen province is the largest protected area in Spain -- a wilderness of pine forests, limestone gorges, and mountain rivers that feels remote despite being only three hours from the coast. Deer and ibex are common, and the park has several well-equipped campsites at modest prices (12-20 euros per night). Ubeda and Baeza are twin Renaissance towns, both UNESCO-listed, that most international tourists have never heard of but which contain some of the finest architecture in Andalusia.',
+        'The Sierra de Cazorla Natural Park in Jaen province is the largest protected area in Spain — a wilderness of pine forests, limestone gorges, and mountain rivers that feels remote despite being only three hours from the coast. Deer and ibex are common, and the park has several well-equipped campsites at modest prices (12-20 euros per night). Ubeda and Baeza are twin Renaissance towns, both UNESCO-listed, that most international tourists have never heard of but which contain some of the finest architecture in Andalusia.',
     },
     {
       type: 'tip',
@@ -234,7 +234,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        "Spain's climate varies enormously by region. The Atlantic north (Galicia, Asturias, Cantabria, Basque Country) is cool and wet, with weather similar to Brittany or Cornwall -- summers are warm (20-28 degrees) with occasional rain, and winters are mild but grey. The Mediterranean coast is hot and dry in summer (30-35 degrees) and mild in winter (10-18 degrees). Inland Spain experiences extremes: scorching summers and cold winters, with the meseta regularly freezing between December and February. The south coast (Costa del Sol, Almeria, Murcia) has Europe's warmest winters and is the destination of choice for motorhome owners escaping northern European cold from November to March.",
+        "Spain's climate varies enormously by region. The Atlantic north (Galicia, Asturias, Cantabria, Basque Country) is cool and wet, with weather similar to Brittany or Cornwall — summers are warm (20-28 degrees) with occasional rain, and winters are mild but grey. The Mediterranean coast is hot and dry in summer (30-35 degrees) and mild in winter (10-18 degrees). Inland Spain experiences extremes: scorching summers and cold winters, with the meseta regularly freezing between December and February. The south coast (Costa del Sol, Almeria, Murcia) has Europe's warmest winters and is the destination of choice for motorhome owners escaping northern European cold from November to March.",
     },
     {
       type: 'list',
@@ -256,7 +256,7 @@ const post: BlogPost = {
     {
       type: 'list',
       items: [
-        'Fuel is 10-20% cheaper than France or Italy. Fill up at independent stations (Ballenoil, Plenoil) for the lowest prices -- often 15-20 cents below branded stations.',
+        'Fuel is 10-20% cheaper than France or Italy. Fill up at independent stations (Ballenoil, Plenoil) for the lowest prices — often 15-20 cents below branded stations.',
         'Spanish autopistas (toll motorways) are expensive but increasingly being made free as concessions expire. The AP-7 along the Mediterranean coast is now mostly toll-free.',
         'Supermarket shopping is excellent and affordable. Mercadona, Lidl, and Aldi are the best value. Municipal markets (mercados) sell fresh produce at good prices.',
         'Meal deal: The menu del dia (fixed-price lunch) at local restaurants costs 10-15 euros for a three-course meal with wine. It is the best-value eating in Western Europe.',
@@ -274,7 +274,7 @@ const post: BlogPost = {
     {
       type: 'paragraph',
       content:
-        "Spain offers more variety per kilometre than almost any other European country. Whether you are drawn to the green Atlantic north, the Moorish south, the Mediterranean beaches, or the empty interior, planning your route in advance ensures you hit the highlights without wasting days on unnecessary driving. Spain's distances are deceptive -- it takes over 10 hours to drive from Santiago de Compostela to Tarifa.",
+        "Spain offers more variety per kilometre than almost any other European country. Whether you are drawn to the green Atlantic north, the Moorish south, the Mediterranean beaches, or the empty interior, planning your route in advance ensures you hit the highlights without wasting days on unnecessary driving. Spain's distances are deceptive — it takes over 10 hours to drive from Santiago de Compostela to Tarifa.",
     },
     {
       type: 'cta',

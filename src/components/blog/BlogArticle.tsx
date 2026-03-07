@@ -9,6 +9,20 @@ import BlogHero from './BlogHero';
 import BlogSectionRenderer from './BlogSectionRenderer';
 import BlogCard from './BlogCard';
 
+// Special display names for tags that can't be derived from slug
+const TAG_DISPLAY_OVERRIDES: Record<string, string> = {
+  'cote-d-azur': "Côte d'Azur",
+  'cinque-terre': 'Cinque Terre',
+};
+
+function formatTagName(slug: string): string {
+  if (TAG_DISPLAY_OVERRIDES[slug]) return TAG_DISPLAY_OVERRIDES[slug];
+  return slug
+    .split('-')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
+
 interface BlogArticleProps {
   post: BlogPost;
 }
@@ -63,7 +77,7 @@ const BlogArticle: React.FC<BlogArticleProps> = ({ post }) => {
                     key={tag}
                     className="px-3 py-1 bg-neutral-100 text-neutral-600 text-xs rounded-full"
                   >
-                    {tag}
+                    {formatTagName(tag)}
                   </span>
                 ))}
               </div>
