@@ -15,6 +15,7 @@ import {
   Download,
   Trash2,
 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { cn } from '../../utils/cn';
 
 interface ToolsMenuProps {
@@ -44,7 +45,7 @@ interface ToolsMenuProps {
 interface MenuItem {
   id: string;
   icon: React.ElementType;
-  label: string;
+  labelKey: string;
   onClick: () => void;
   visible: boolean;
   activeKey?: keyof ToolsMenuProps['activePanels'];
@@ -69,6 +70,7 @@ const ToolsMenu: React.FC<ToolsMenuProps> = ({
   onMenuOpen,
   activePanels,
 }) => {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -136,7 +138,7 @@ const ToolsMenu: React.FC<ToolsMenuProps> = ({
     {
       id: 'trip-settings',
       icon: Settings2,
-      label: 'Trip Settings',
+      labelKey: 'map.tools.tripSettings',
       onClick: onToggleTripSettings,
       visible: true,
       activeKey: 'tripSettings',
@@ -146,7 +148,7 @@ const ToolsMenu: React.FC<ToolsMenuProps> = ({
     {
       id: 'trip-manager',
       icon: FolderOpen,
-      label: 'Trip Manager',
+      labelKey: 'map.tools.tripManager',
       onClick: onToggleTripManager,
       visible: true,
       activeKey: 'tripManager',
@@ -156,7 +158,7 @@ const ToolsMenu: React.FC<ToolsMenuProps> = ({
     {
       id: 'vehicle-setup',
       icon: Truck,
-      label: 'Vehicle Setup',
+      labelKey: 'map.tools.vehicleSetup',
       onClick: onToggleVehicle,
       visible: true,
     },
@@ -166,7 +168,7 @@ const ToolsMenu: React.FC<ToolsMenuProps> = ({
     {
       id: 'route-info',
       icon: FileText,
-      label: 'Route Info',
+      labelKey: 'map.tools.routeInfo',
       onClick: onToggleRouteInfo,
       visible: hasCalculatedRoute,
       activeKey: 'routeInfo',
@@ -176,7 +178,7 @@ const ToolsMenu: React.FC<ToolsMenuProps> = ({
     {
       id: 'planning-tools',
       icon: Calendar,
-      label: 'Planning Tools',
+      labelKey: 'map.tools.planningTools',
       onClick: onTogglePlanningTools,
       visible: waypointCount >= 2,
       activeKey: 'planningTools',
@@ -186,7 +188,7 @@ const ToolsMenu: React.FC<ToolsMenuProps> = ({
     {
       id: 'cost-calculator',
       icon: DollarSign,
-      label: 'Cost Calculator',
+      labelKey: 'map.tools.costCalculator',
       onClick: onToggleCostCalculator,
       visible: waypointCount >= 2,
       activeKey: 'costCalculator',
@@ -196,7 +198,7 @@ const ToolsMenu: React.FC<ToolsMenuProps> = ({
     {
       id: 'route-optimizer',
       icon: Zap,
-      label: 'Route Optimizer',
+      labelKey: 'map.tools.routeOptimizer',
       onClick: onToggleRouteOptimizer,
       visible: waypointCount >= 3 && hasRouteOptimization,
       activeKey: 'routeOptimizer',
@@ -206,7 +208,7 @@ const ToolsMenu: React.FC<ToolsMenuProps> = ({
     {
       id: 'export-route',
       icon: Download,
-      label: 'Export Route',
+      labelKey: 'map.tools.exportRoute',
       onClick: onExportRoute,
       visible: hasCalculatedRoute,
     },
@@ -216,7 +218,7 @@ const ToolsMenu: React.FC<ToolsMenuProps> = ({
     {
       id: 'clear-route',
       icon: Trash2,
-      label: 'Clear Route',
+      labelKey: 'map.tools.clearRoute',
       onClick: onClearRoute,
       visible: waypointCount > 0,
       variant: 'danger',
@@ -246,7 +248,7 @@ const ToolsMenu: React.FC<ToolsMenuProps> = ({
         role="menuitem"
       >
         <Icon className="w-4 h-4 flex-shrink-0" />
-        <span>{item.label}</span>
+        <span>{t(item.labelKey)}</span>
       </button>
     );
   };
@@ -263,8 +265,8 @@ const ToolsMenu: React.FC<ToolsMenuProps> = ({
           isOpen && 'bg-neutral-100',
           hasAnyActivePanel && 'ring-2 ring-blue-400 ring-offset-1'
         )}
-        title="Tools"
-        aria-label="Tools menu"
+        title={t('map.tools.title')}
+        aria-label={t('map.tools.label')}
         aria-expanded={isOpen}
         aria-haspopup="menu"
       >
@@ -280,7 +282,7 @@ const ToolsMenu: React.FC<ToolsMenuProps> = ({
           ref={menuRef}
           className="absolute left-12 top-0 z-50 bg-white rounded-lg shadow-lg border border-neutral-200 py-1 min-w-[200px]"
           role="menu"
-          aria-label="Tools"
+          aria-label={t('map.tools.title')}
         >
           {/* Always-visible items */}
           {alwaysVisibleItems.map(renderItem)}

@@ -3,6 +3,7 @@
 
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useOnboarding } from '../hooks/useOnboarding';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -16,74 +17,22 @@ import {
 } from 'lucide-react';
 import SEOHead from '../components/seo/SEOHead';
 
-const STEPS = [
-  {
-    number: '1',
-    title: 'Set up your vehicle',
-    description:
-      'Click the vehicle badge in the header (or the vehicle button on the map) and enter your height, width, weight, and length. This ensures routes avoid low bridges, narrow roads, and weight-restricted areas.',
-  },
-  {
-    number: '2',
-    title: 'Plan your route',
-    description:
-      'Right-click on the map to add waypoints, or use the search bar to find cities and landmarks. Drag waypoints to reorder your stops. Routes calculate automatically.',
-  },
-  {
-    number: '3',
-    title: 'Find campsites along the way',
-    description:
-      'Click the campsite toggle (tent icon) on the map to see nearby campsites, aires, and caravan parks. Use filters to narrow by amenities like electricity, WiFi, or waste disposal.',
-  },
-  {
-    number: '4',
-    title: 'Export & go',
-    description:
-      'Open the planning tools panel to export your route as GPX for your satnav, estimate fuel costs with the cost calculator, or save your trip for later.',
-  },
+const STEP_KEYS = [
+  { number: '1', titleKey: 'help.step1Title', descKey: 'help.step1Desc' },
+  { number: '2', titleKey: 'help.step2Title', descKey: 'help.step2Desc' },
+  { number: '3', titleKey: 'help.step3Title', descKey: 'help.step3Desc' },
+  { number: '4', titleKey: 'help.step4Title', descKey: 'help.step4Desc' },
 ];
 
-const FAQ_ITEMS = [
-  {
-    question: 'How do I add stops to my route?',
-    answer:
-      'Right-click anywhere on the map to add a waypoint, or use the search bar at the top of the map to find a city, town, or point of interest. You can also click "Plan a Trip" to use the trip planning wizard.',
-  },
-  {
-    question: 'How do I reorder my stops?',
-    answer:
-      'Open the waypoint list (sidebar on desktop, or the list icon on mobile) and drag waypoints up or down to reorder them. You can also use the route optimizer in the planning tools to find the most efficient order automatically.',
-  },
-  {
-    question: 'Why should I set up a vehicle profile?',
-    answer:
-      'Your vehicle dimensions (height, width, weight, length) are sent to the routing engine so it can avoid roads with low bridges, weight restrictions, or narrow passages. Without a profile, you get standard car routing which may take you down unsuitable roads.',
-  },
-  {
-    question: 'How do I export my route to a GPS device?',
-    answer:
-      'Open the planning tools panel (the tools icon on the right side of the map), then click "Export Route". You can download as GPX (for most satnavs), KML (for Google Earth), or JSON (for backup). Transfer the GPX file to your device via USB or Bluetooth.',
-  },
-  {
-    question: 'Is my data safe? Where is it stored?',
-    answer:
-      'All your data — trips, vehicle profiles, preferences — is stored locally in your browser using localStorage. Nothing is sent to any server. You can export a backup from the Settings page and clear your data at any time.',
-  },
-  {
-    question: 'How accurate are the campsite locations?',
-    answer:
-      'Campsite data comes from OpenStreetMap, which is community-maintained. Most major campsites are listed with accurate coordinates, but smaller or newer sites may be missing or have limited details. If you find an error, you can contribute to OpenStreetMap directly.',
-  },
-  {
-    question: 'Can I plan trips across multiple countries?',
-    answer:
-      'Yes — the planner covers 40+ European countries. Add waypoints across borders and the routing engine handles the rest, including ferry crossings where available.',
-  },
-  {
-    question: 'Does it work offline?',
-    answer:
-      'The app loads in your browser and retains your saved data offline. However, map tiles, routing calculations, and campsite searches require an internet connection. Your saved trips and vehicle profile are always available offline.',
-  },
+const FAQ_KEYS = [
+  { qKey: 'help.faq1Q', aKey: 'help.faq1A' },
+  { qKey: 'help.faq2Q', aKey: 'help.faq2A' },
+  { qKey: 'help.faq3Q', aKey: 'help.faq3A' },
+  { qKey: 'help.faq4Q', aKey: 'help.faq4A' },
+  { qKey: 'help.faq5Q', aKey: 'help.faq5A' },
+  { qKey: 'help.faq6Q', aKey: 'help.faq6A' },
+  { qKey: 'help.faq7Q', aKey: 'help.faq7A' },
+  { qKey: 'help.faq8Q', aKey: 'help.faq8A' },
 ];
 
 const FAQItem: React.FC<{ question: string; answer: string }> = ({ question, answer }) => {
@@ -112,6 +61,7 @@ const FAQItem: React.FC<{ question: string; answer: string }> = ({ question, ans
 };
 
 const HelpPage: React.FC = () => {
+  const { t } = useTranslation();
   const { resetOnboarding } = useOnboarding();
   const navigate = useNavigate();
 
@@ -139,14 +89,13 @@ const HelpPage: React.FC = () => {
           <div className="text-center">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/15 rounded-full text-sm font-medium mb-6 backdrop-blur-sm">
               <HelpCircle className="w-4 h-4" />
-              Help & Getting Started
+              {t('help.hero.badge')}
             </div>
             <h1 className="text-4xl sm:text-5xl font-display font-bold mb-4 tracking-tight">
-              How can we help?
+              {t('help.hero.title')}
             </h1>
             <p className="text-lg sm:text-xl text-primary-100 max-w-2xl mx-auto leading-relaxed">
-              Step-by-step guides and answers to common questions about planning your European
-              camper trip.
+              {t('help.hero.subtitle')}
             </p>
           </div>
         </div>
@@ -161,18 +110,15 @@ const HelpPage: React.FC = () => {
             </div>
             <div className="flex-1">
               <h2 className="text-xl font-display font-bold text-accent-900 mb-1">
-                New here? Take the interactive tutorial
+                {t('help.tutorialTitle')}
               </h2>
-              <p className="text-accent-800 leading-relaxed">
-                Our guided walkthrough shows you how to plan a trip in under 2 minutes. You can
-                restart it any time.
-              </p>
+              <p className="text-accent-800 leading-relaxed">{t('help.tutorialDesc')}</p>
             </div>
             <button
               onClick={handleShowTutorial}
               className="inline-flex items-center gap-2 px-6 py-3 bg-accent-500 text-white rounded-lg font-display font-semibold hover:bg-accent-600 transition-all duration-200 shadow-sm hover:shadow-medium active:scale-[0.97] flex-shrink-0"
             >
-              Start Tutorial
+              {t('help.startTutorial')}
               <ChevronRight className="w-5 h-5" />
             </button>
           </div>
@@ -181,10 +127,10 @@ const HelpPage: React.FC = () => {
         {/* How It Works */}
         <div className="mb-12">
           <h2 className="text-2xl font-display font-bold text-neutral-900 mb-6 text-center">
-            How it works
+            {t('help.howItWorks')}
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {STEPS.map(step => (
+            {STEP_KEYS.map(step => (
               <div
                 key={step.number}
                 className="bg-white rounded-xl shadow-soft p-6 hover:shadow-medium hover:-translate-y-1 transition-all duration-200 relative"
@@ -193,9 +139,9 @@ const HelpPage: React.FC = () => {
                   {step.number}
                 </div>
                 <h3 className="text-base font-display font-semibold text-neutral-900 mb-1.5">
-                  {step.title}
+                  {t(step.titleKey)}
                 </h3>
-                <p className="text-sm text-neutral-500 leading-relaxed">{step.description}</p>
+                <p className="text-sm text-neutral-500 leading-relaxed">{t(step.descKey)}</p>
               </div>
             ))}
           </div>
@@ -208,33 +154,18 @@ const HelpPage: React.FC = () => {
               <Compass className="w-6 h-6 text-primary-600" />
             </div>
             <div>
-              <h2 className="text-xl font-display font-bold text-neutral-900 mb-3">Pro tips</h2>
+              <h2 className="text-xl font-display font-bold text-neutral-900 mb-3">
+                {t('help.proTips')}
+              </h2>
               <ul className="space-y-2.5 text-neutral-600 leading-relaxed">
-                <li className="flex items-start gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary-500 mt-2 flex-shrink-0" />
-                  Use the <strong>search bar</strong> to quickly find cities, towns, and points of
-                  interest.
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary-500 mt-2 flex-shrink-0" />
-                  Set your <strong>vehicle profile</strong> before calculating routes — bridges and
-                  tunnels are checked against your dimensions.
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary-500 mt-2 flex-shrink-0" />
-                  Use <strong>route optimization</strong> to find the most efficient order for
-                  multiple stops.
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary-500 mt-2 flex-shrink-0" />
-                  Filter campsites by <strong>amenities</strong> — electricity, WiFi, showers,
-                  water, and waste disposal.
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary-500 mt-2 flex-shrink-0" />
-                  Your data is <strong>saved locally</strong> in your browser — no account needed,
-                  nothing leaves your device.
-                </li>
+                {[1, 2, 3, 4, 5].map(i => (
+                  <li key={i} className="flex items-start gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-primary-500 mt-2 flex-shrink-0" />
+                    <span>
+                      <strong>{t(`help.proTip${i}Label`)}</strong> {t(`help.proTip${i}Text`)}
+                    </span>
+                  </li>
+                ))}
               </ul>
             </div>
           </div>
@@ -243,11 +174,11 @@ const HelpPage: React.FC = () => {
         {/* FAQ Section */}
         <div className="mb-12">
           <h2 className="text-2xl font-display font-bold text-neutral-900 mb-6 text-center">
-            Frequently asked questions
+            {t('help.faqTitle')}
           </h2>
           <div className="space-y-3 max-w-3xl mx-auto">
-            {FAQ_ITEMS.map(item => (
-              <FAQItem key={item.question} question={item.question} answer={item.answer} />
+            {FAQ_KEYS.map(item => (
+              <FAQItem key={item.qKey} question={t(item.qKey)} answer={t(item.aKey)} />
             ))}
           </div>
         </div>
@@ -264,10 +195,10 @@ const HelpPage: React.FC = () => {
               </div>
               <div>
                 <h3 className="text-base font-display font-semibold text-neutral-900 mb-1 group-hover:text-primary-700 transition-colors">
-                  Share feedback
+                  {t('help.shareFeedbackTitle')}
                 </h3>
                 <p className="text-sm text-neutral-500 leading-relaxed">
-                  Report a bug, suggest a feature, or let us know what you think.
+                  {t('help.shareFeedbackDesc')}
                 </p>
               </div>
             </div>
@@ -282,10 +213,10 @@ const HelpPage: React.FC = () => {
               </div>
               <div>
                 <h3 className="text-base font-display font-semibold text-neutral-900 mb-1 group-hover:text-accent-700 transition-colors">
-                  Support the project
+                  {t('help.supportProjectTitle')}
                 </h3>
                 <p className="text-sm text-neutral-500 leading-relaxed">
-                  Help keep the app free by buying us a coffee on Ko-fi.
+                  {t('help.supportProjectDesc')}
                 </p>
               </div>
             </div>
@@ -295,17 +226,15 @@ const HelpPage: React.FC = () => {
         {/* CTA */}
         <div className="text-center bg-white rounded-xl shadow-soft p-8">
           <h2 className="text-2xl font-display font-bold text-neutral-900 mb-3">
-            Ready to plan your trip?
+            {t('help.ctaTitle')}
           </h2>
-          <p className="text-neutral-500 mb-6">
-            Jump in and start adding waypoints — no sign-up, no fees, just open road ahead.
-          </p>
+          <p className="text-neutral-500 mb-6">{t('help.ctaText')}</p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
               to="/"
               className="inline-flex items-center gap-2 px-6 py-3 bg-primary-600 text-white rounded-lg font-display font-semibold hover:bg-primary-700 transition-all duration-200 shadow-sm hover:shadow-medium active:scale-[0.97]"
             >
-              Open the Planner
+              {t('common.openPlanner')}
               <ChevronRight className="w-5 h-5" />
             </Link>
             <button
@@ -313,7 +242,7 @@ const HelpPage: React.FC = () => {
               className="inline-flex items-center gap-2 px-6 py-3 bg-neutral-100 text-neutral-700 rounded-lg font-display font-semibold hover:bg-neutral-200 transition-all duration-200"
             >
               <PlayCircle className="w-5 h-5" />
-              Watch Tutorial
+              {t('help.watchTutorial')}
             </button>
           </div>
         </div>

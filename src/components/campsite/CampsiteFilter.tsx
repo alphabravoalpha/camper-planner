@@ -2,6 +2,7 @@
 // Phase 4.3: Comprehensive filtering and search functionality
 
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Tent,
   Truck,
@@ -108,65 +109,89 @@ export const getDefaultFilterState = (): CampsiteFilterState => ({
 const CAMPSITE_TYPES = [
   {
     type: 'campsite' as CampsiteType,
-    label: 'Campsites',
+    labelKey: 'campsites.types.campsites',
     icon: Tent,
-    description: 'Traditional camping with tents/caravans',
+    descKey: 'campsites.types.campsitesDesc',
   },
   {
     type: 'caravan_site' as CampsiteType,
-    label: 'Caravan Sites',
+    labelKey: 'campsites.types.caravanSites',
     icon: Truck,
-    description: 'Sites specifically for caravans/motorhomes',
+    descKey: 'campsites.types.caravanSitesDesc',
   },
   {
     type: 'aire' as CampsiteType,
-    label: 'Aires de Service',
+    labelKey: 'campsites.types.airesDeService',
     icon: ParkingCircle,
-    description: 'Motorhome service areas with facilities',
+    descKey: 'campsites.types.airesDeServiceDesc',
   },
 ];
 
 // Amenity configurations
 const AMENITY_OPTIONS = [
-  { key: 'electricity' as keyof CampsiteFilterState['amenities'], label: 'Electricity', icon: Zap },
-  { key: 'wifi' as keyof CampsiteFilterState['amenities'], label: 'WiFi', icon: Wifi },
-  { key: 'shower' as keyof CampsiteFilterState['amenities'], label: 'Showers', icon: Droplets },
-  { key: 'toilets' as keyof CampsiteFilterState['amenities'], label: 'Toilets', icon: Bath },
+  {
+    key: 'electricity' as keyof CampsiteFilterState['amenities'],
+    labelKey: 'campsites.electricity',
+    icon: Zap,
+  },
+  { key: 'wifi' as keyof CampsiteFilterState['amenities'], labelKey: 'campsites.wifi', icon: Wifi },
+  {
+    key: 'shower' as keyof CampsiteFilterState['amenities'],
+    labelKey: 'campsites.amenity.showers',
+    icon: Droplets,
+  },
+  {
+    key: 'toilets' as keyof CampsiteFilterState['amenities'],
+    labelKey: 'campsites.amenity.toilets',
+    icon: Bath,
+  },
   {
     key: 'drinking_water' as keyof CampsiteFilterState['amenities'],
-    label: 'Drinking Water',
+    labelKey: 'campsites.amenity.drinkingWater',
     icon: GlassWater,
   },
   {
     key: 'waste_disposal' as keyof CampsiteFilterState['amenities'],
-    label: 'Waste Disposal',
+    labelKey: 'campsites.amenity.wasteDisposal',
     icon: Trash2,
   },
-  { key: 'laundry' as keyof CampsiteFilterState['amenities'], label: 'Laundry', icon: Shirt },
+  {
+    key: 'laundry' as keyof CampsiteFilterState['amenities'],
+    labelKey: 'campsites.laundry',
+    icon: Shirt,
+  },
   {
     key: 'restaurant' as keyof CampsiteFilterState['amenities'],
-    label: 'Restaurant',
+    labelKey: 'campsites.restaurant',
     icon: UtensilsCrossed,
   },
-  { key: 'shop' as keyof CampsiteFilterState['amenities'], label: 'Shop', icon: ShoppingCart },
-  { key: 'playground' as keyof CampsiteFilterState['amenities'], label: 'Playground', icon: Baby },
+  {
+    key: 'shop' as keyof CampsiteFilterState['amenities'],
+    labelKey: 'campsites.shop',
+    icon: ShoppingCart,
+  },
+  {
+    key: 'playground' as keyof CampsiteFilterState['amenities'],
+    labelKey: 'campsites.playground',
+    icon: Baby,
+  },
   {
     key: 'swimming_pool' as keyof CampsiteFilterState['amenities'],
-    label: 'Swimming Pool',
+    labelKey: 'campsites.swimmingPool',
     icon: Waves,
   },
   {
     key: 'pet_allowed' as keyof CampsiteFilterState['amenities'],
-    label: 'Pets Allowed',
+    labelKey: 'campsites.amenity.petsAllowed',
     icon: Dog,
   },
 ];
 
 const SORT_OPTIONS = [
-  { value: 'distance' as const, label: 'Distance from route' },
-  { value: 'name' as const, label: 'Name A-Z' },
-  { value: 'rating' as const, label: 'Rating' },
-  { value: 'relevance' as const, label: 'Search relevance' },
+  { value: 'distance' as const, labelKey: 'campsites.filter.sortDistance' },
+  { value: 'name' as const, labelKey: 'campsites.filter.sortName' },
+  { value: 'rating' as const, labelKey: 'campsites.filter.sortRating' },
+  { value: 'relevance' as const, labelKey: 'campsites.filter.sortRelevance' },
 ];
 
 const MAX_RESULTS_OPTIONS = [25, 50, 100, 200, 500];
@@ -185,6 +210,7 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
     'types'
   );
   const { calculatedRoute } = useRouteStore();
+  const { t } = useTranslation();
 
   // Persist filter state to localStorage
   const persistFilters = useCallback((filters: CampsiteFilterState) => {
@@ -286,14 +312,18 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
       <div className="flex items-center justify-between p-3 border-b border-neutral-100">
         <div className="flex items-center space-x-2">
           <Search className="w-5 h-5 text-neutral-600" />
-          <h3 className="text-sm font-display font-semibold text-neutral-900">Campsite Filters</h3>
+          <h3 className="text-sm font-display font-semibold text-neutral-900">
+            {t('campsites.filter.heading')}
+          </h3>
           {activeFilterCount > 0 && (
             <span className="bg-primary-100 text-primary-800 px-2 py-1 rounded-full text-xs font-medium">
-              {activeFilterCount} active
+              {t('campsites.filter.active', { count: activeFilterCount })}
             </span>
           )}
           {campsiteCount > 0 && (
-            <span className="text-xs text-neutral-500">({campsiteCount} results)</span>
+            <span className="text-xs text-neutral-500">
+              {t('campsites.filter.results', { count: campsiteCount })}
+            </span>
           )}
         </div>
 
@@ -304,7 +334,7 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
               onClick={clearAllFilters}
               className="text-xs text-red-600 hover:text-red-800 font-medium"
             >
-              Clear All
+              {t('campsites.filter.clearAll')}
             </button>
           )}
 
@@ -341,7 +371,7 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               {/* Type toggles */}
-              {CAMPSITE_TYPES.map(({ type, icon: Icon, label }) => (
+              {CAMPSITE_TYPES.map(({ type, icon: Icon, labelKey }) => (
                 <button
                   key={type}
                   onClick={() => toggleType(type)}
@@ -351,7 +381,7 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
                       ? 'border-green-500 bg-green-50 text-green-700'
                       : 'border-neutral-300 bg-neutral-50 text-neutral-400 hover:border-neutral-400'
                   )}
-                  title={label}
+                  title={t(labelKey)}
                 >
                   <Icon className="w-4 h-4" />
                 </button>
@@ -368,12 +398,14 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
                       : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'
                   )}
                 >
-                  <MapPin className="w-3 h-3 inline mr-0.5" /> Route only
+                  <MapPin className="w-3 h-3 inline mr-0.5" /> {t('campsites.filter.routeOnly')}
                 </button>
               )}
             </div>
 
-            <div className="text-xs text-neutral-500">Max: {filterState.maxResults}</div>
+            <div className="text-xs text-neutral-500">
+              {t('campsites.controls.max', { max: filterState.maxResults })}
+            </div>
           </div>
         </div>
       )}
@@ -385,10 +417,10 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
           <div className="flex border-b border-neutral-200 bg-neutral-50">
             {(
               [
-                { id: 'types', label: 'Types', icon: Tent },
-                { id: 'amenities', label: 'Amenities', icon: Zap },
-                { id: 'advanced', label: 'Advanced', icon: Settings },
-                { id: 'search', label: 'Search', icon: Search },
+                { id: 'types', labelKey: 'campsites.filter.typesTab', icon: Tent },
+                { id: 'amenities', labelKey: 'campsites.filter.amenitiesTab', icon: Zap },
+                { id: 'advanced', labelKey: 'campsites.filter.advancedTab', icon: Settings },
+                { id: 'search', labelKey: 'campsites.filter.searchTab', icon: Search },
               ] as const
             ).map(tab => {
               const TabIcon = tab.icon;
@@ -404,7 +436,7 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
                   )}
                 >
                   <TabIcon className="w-4 h-4" />
-                  <span>{tab.label}</span>
+                  <span>{t(tab.labelKey)}</span>
                 </button>
               );
             })}
@@ -416,22 +448,26 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
             {activeTab === 'types' && (
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <h4 className="text-sm font-medium text-neutral-900">Campsite Types</h4>
+                  <h4 className="text-sm font-medium text-neutral-900">
+                    {t('campsites.types.label')}
+                  </h4>
                   <button
                     onClick={() => {
                       const allSelected = filterState.visibleTypes.length === CAMPSITE_TYPES.length;
                       updateFilter(
                         'visibleTypes',
-                        allSelected ? [] : CAMPSITE_TYPES.map(t => t.type)
+                        allSelected ? [] : CAMPSITE_TYPES.map(ct => ct.type)
                       );
                     }}
                     className="text-xs text-primary-600 hover:text-primary-800 font-medium"
                   >
-                    {filterState.visibleTypes.length === CAMPSITE_TYPES.length ? 'None' : 'All'}
+                    {filterState.visibleTypes.length === CAMPSITE_TYPES.length
+                      ? t('campsites.filter.none')
+                      : t('campsites.filter.all')}
                   </button>
                 </div>
 
-                {CAMPSITE_TYPES.map(({ type, label, icon: Icon, description }) => (
+                {CAMPSITE_TYPES.map(({ type, labelKey, icon: Icon, descKey }) => (
                   <label
                     key={type}
                     htmlFor={`filter-type-${type}`}
@@ -446,8 +482,8 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
                     />
                     <Icon className="w-4 h-4 mt-1" />
                     <span className="flex-1 min-w-0">
-                      <span className="text-sm font-medium text-neutral-900">{label}</span>
-                      <p className="text-xs text-neutral-500 mt-0.5">{description}</p>
+                      <span className="text-sm font-medium text-neutral-900">{t(labelKey)}</span>
+                      <p className="text-xs text-neutral-500 mt-0.5">{t(descKey)}</p>
                     </span>
                   </label>
                 ))}
@@ -458,7 +494,9 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
             {activeTab === 'amenities' && (
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <h4 className="text-sm font-medium text-neutral-900">Required Amenities</h4>
+                  <h4 className="text-sm font-medium text-neutral-900">
+                    {t('campsites.filter.requiredAmenities')}
+                  </h4>
                   <button
                     onClick={() => {
                       const allSelected = Object.values(filterState.amenities).every(Boolean);
@@ -473,12 +511,14 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
                     }}
                     className="text-xs text-primary-600 hover:text-primary-800 font-medium"
                   >
-                    {Object.values(filterState.amenities).every(Boolean) ? 'None' : 'All'}
+                    {Object.values(filterState.amenities).every(Boolean)
+                      ? t('campsites.filter.none')
+                      : t('campsites.filter.all')}
                   </button>
                 </div>
 
                 <div className="grid grid-cols-2 gap-2">
-                  {AMENITY_OPTIONS.map(({ key, label, icon: Icon }) => (
+                  {AMENITY_OPTIONS.map(({ key, labelKey, icon: Icon }) => (
                     <label key={key} className="flex items-center space-x-2 cursor-pointer">
                       <input
                         type="checkbox"
@@ -487,14 +527,14 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
                         className="h-4 w-4 text-green-600 rounded border-neutral-300 focus:ring-green-500"
                       />
                       <Icon className="w-4 h-4" />
-                      <span className="text-sm text-neutral-900">{label}</span>
+                      <span className="text-sm text-neutral-900">{t(labelKey)}</span>
                     </label>
                   ))}
                 </div>
 
                 <div className="mt-3 p-2 bg-primary-50 rounded-lg text-xs text-primary-800 flex items-center gap-1.5">
-                  <Lightbulb className="w-3.5 h-3.5 flex-shrink-0" /> Only campsites with ALL
-                  selected amenities will be shown
+                  <Lightbulb className="w-3.5 h-3.5 flex-shrink-0" />{' '}
+                  {t('campsites.filter.amenitiesHint')}
                 </div>
               </div>
             )}
@@ -515,9 +555,9 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
                     className="mt-1 h-4 w-4 text-green-600 rounded border-neutral-300 focus:ring-green-500"
                   />
                   <span className="flex-1">
-                    Vehicle Compatible Only
+                    {t('campsites.filter.vehicleCompatibleOnly')}
                     <p className="text-xs text-neutral-500 mt-0.5">
-                      Show only campsites that can accommodate your vehicle dimensions
+                      {t('campsites.filter.vehicleCompatibleHint')}
                     </p>
                   </span>
                 </label>
@@ -537,9 +577,9 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
                         className="mt-1 h-4 w-4 text-green-600 rounded border-neutral-300 focus:ring-green-500"
                       />
                       <span className="flex-1">
-                        Show Along Route Only
+                        {t('campsites.filter.showAlongRoute')}
                         <p className="text-xs text-neutral-500 mt-0.5">
-                          Filter campsites within distance of your planned route
+                          {t('campsites.filter.routeFilterHint')}
                         </p>
                       </span>
                     </label>
@@ -547,7 +587,9 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
                     {filterState.routeOnlyMode && (
                       <div className="ml-7">
                         <label className="block text-xs font-medium text-neutral-700 mb-1">
-                          Max Distance from Route: {filterState.maxDistanceFromRoute}km
+                          {t('campsites.filter.maxDistance', {
+                            distance: filterState.maxDistanceFromRoute,
+                          })}
                         </label>
                         <div className="flex items-center space-x-2">
                           <input
@@ -589,7 +631,9 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
                       onChange={e => updateFilter('openNow', e.target.checked)}
                       className="h-4 w-4 text-green-600 rounded border-neutral-300 focus:ring-green-500"
                     />
-                    <span className="text-sm text-neutral-900">Open Now</span>
+                    <span className="text-sm text-neutral-900">
+                      {t('campsites.filter.openNow')}
+                    </span>
                   </label>
 
                   <label className="flex items-center space-x-3 cursor-pointer">
@@ -599,7 +643,9 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
                       onChange={e => updateFilter('freeOnly', e.target.checked)}
                       className="h-4 w-4 text-green-600 rounded border-neutral-300 focus:ring-green-500"
                     />
-                    <span className="text-sm text-neutral-900">Free Only</span>
+                    <span className="text-sm text-neutral-900">
+                      {t('campsites.filter.freeOnly')}
+                    </span>
                   </label>
 
                   <label className="flex items-center space-x-3 cursor-pointer">
@@ -609,7 +655,9 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
                       onChange={e => updateFilter('acceptsReservations', e.target.checked)}
                       className="h-4 w-4 text-green-600 rounded border-neutral-300 focus:ring-green-500"
                     />
-                    <span className="text-sm text-neutral-900">Accepts Reservations</span>
+                    <span className="text-sm text-neutral-900">
+                      {t('campsites.filter.acceptsReservations')}
+                    </span>
                   </label>
                 </div>
 
@@ -620,7 +668,7 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
                       htmlFor="filter-max-results"
                       className="block text-xs font-medium text-neutral-700 mb-1"
                     >
-                      Max Results
+                      {t('campsites.filter.maxResults')}
                     </label>
                     <select
                       id="filter-max-results"
@@ -641,7 +689,7 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
                       htmlFor="filter-sort-by"
                       className="block text-xs font-medium text-neutral-700 mb-1"
                     >
-                      Sort By
+                      {t('campsites.filter.sortBy')}
                     </label>
                     <select
                       id="filter-sort-by"
@@ -653,7 +701,7 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
                     >
                       {SORT_OPTIONS.map(option => (
                         <option key={option.value} value={option.value}>
-                          {option.label}
+                          {t(option.labelKey)}
                         </option>
                       ))}
                     </select>
@@ -662,7 +710,9 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
 
                 {/* Map Legend */}
                 <div className="p-3 bg-neutral-50 border border-neutral-200 rounded mt-4">
-                  <div className="text-xs font-medium text-neutral-700 mb-2">Map Legend</div>
+                  <div className="text-xs font-medium text-neutral-700 mb-2">
+                    {t('campsites.legend.title')}
+                  </div>
                   <div className="space-y-2">
                     {/* Campsite type legend */}
                     <div className="flex items-center space-x-2">
@@ -676,7 +726,9 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
                           />
                         </svg>
                       </div>
-                      <span className="text-xs text-neutral-700">Campsite (tent/caravan)</span>
+                      <span className="text-xs text-neutral-700">
+                        {t('campsites.legend.campsite')}
+                      </span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <div className="w-5 h-6 flex-shrink-0">
@@ -689,7 +741,9 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
                           />
                         </svg>
                       </div>
-                      <span className="text-xs text-neutral-700">Caravan/Motorhome site</span>
+                      <span className="text-xs text-neutral-700">
+                        {t('campsites.legend.caravanSite')}
+                      </span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <div className="w-5 h-6 flex-shrink-0">
@@ -702,7 +756,7 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
                           />
                         </svg>
                       </div>
-                      <span className="text-xs text-neutral-700">Aire de Service</span>
+                      <span className="text-xs text-neutral-700">{t('campsites.legend.aire')}</span>
                     </div>
 
                     {/* Status indicators */}
@@ -718,7 +772,9 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
                             />
                           </svg>
                         </div>
-                        <span className="text-xs text-neutral-700">May not fit your vehicle</span>
+                        <span className="text-xs text-neutral-700">
+                          {t('campsites.legend.mayNotFit')}
+                        </span>
                       </div>
                       <div className="flex items-center space-x-2 mt-1">
                         <div className="w-5 h-5 flex-shrink-0 flex items-center justify-center">
@@ -727,7 +783,7 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
                           </div>
                         </div>
                         <span className="text-xs text-neutral-700">
-                          Clustered markers (zoom in)
+                          {t('campsites.legend.clustered')}
                         </span>
                       </div>
                     </div>
@@ -744,7 +800,7 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
                     htmlFor="filter-search-name"
                     className="block text-sm font-medium text-neutral-700 mb-2"
                   >
-                    Search by Name
+                    {t('campsites.filter.searchByName')}
                   </label>
                   <input
                     id="filter-search-name"
@@ -754,7 +810,7 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
                       updateFilter('searchQuery', e.target.value);
                       onSearchChange?.(e.target.value);
                     }}
-                    placeholder="Search campsite names..."
+                    placeholder={t('campsites.filter.searchNamePlaceholder')}
                     className="w-full px-3 py-2 text-sm border border-neutral-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
                   />
                 </div>
@@ -764,25 +820,27 @@ const CampsiteFilter: React.FC<CampsiteFilterProps> = ({
                     htmlFor="filter-search-location"
                     className="block text-sm font-medium text-neutral-700 mb-2"
                   >
-                    Search by Location
+                    {t('campsites.filter.searchByLocation')}
                   </label>
                   <input
                     id="filter-search-location"
                     type="text"
                     value={filterState.searchLocation}
                     onChange={e => updateFilter('searchLocation', e.target.value)}
-                    placeholder="City, region, or address..."
+                    placeholder={t('campsites.filter.searchLocationPlaceholder')}
                     className="w-full px-3 py-2 text-sm border border-neutral-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
                   />
                 </div>
 
                 <div className="p-3 bg-neutral-50 border border-neutral-200 rounded text-xs">
-                  <div className="font-medium text-neutral-900 mb-1">Search Tips:</div>
+                  <div className="font-medium text-neutral-900 mb-1">
+                    {t('campsites.filter.searchTips')}
+                  </div>
                   <ul className="space-y-0.5 text-neutral-700">
-                    <li>• Use partial names for broader results</li>
-                    <li>• Search by city or region names</li>
-                    <li>• Combine with other filters for precise results</li>
-                    <li>• Clear search to see all campsites in area</li>
+                    <li>• {t('campsites.filter.searchTip1')}</li>
+                    <li>• {t('campsites.filter.searchTip2')}</li>
+                    <li>• {t('campsites.filter.searchTip3')}</li>
+                    <li>• {t('campsites.filter.searchTip4')}</li>
                   </ul>
                 </div>
               </div>

@@ -2,6 +2,7 @@
 // Reusable modal for confirmation actions
 
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { cn } from '../../utils/cn';
 
 interface ConfirmDialogProps {
@@ -19,12 +20,15 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   isOpen,
   title,
   message,
-  confirmLabel = 'Confirm',
-  cancelLabel = 'Cancel',
+  confirmLabel,
+  cancelLabel,
   confirmVariant = 'primary',
   onConfirm,
   onCancel,
 }) => {
+  const { t } = useTranslation();
+  const resolvedConfirmLabel = confirmLabel ?? t('confirm.defaultConfirm');
+  const resolvedCancelLabel = cancelLabel ?? t('confirm.defaultCancel');
   // Handle keyboard events - must be called before any early returns
   React.useEffect(() => {
     if (!isOpen) return;
@@ -69,7 +73,7 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
         onKeyDown={e => e.key === 'Escape' && onCancel()}
         role="button"
         tabIndex={0}
-        aria-label="Close dialog"
+        aria-label={t('actions.close')}
       />
 
       {/* Dialog */}
@@ -89,7 +93,7 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
             <button
               onClick={onCancel}
               className="text-neutral-400 hover:text-neutral-600 p-1 rounded transition-colors"
-              aria-label="Close dialog"
+              aria-label={t('actions.close')}
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
@@ -115,10 +119,10 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
               onClick={onCancel}
               className="px-4 py-2 border border-neutral-300 rounded-lg text-neutral-700 hover:bg-neutral-50 transition-colors focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:ring-offset-2"
             >
-              {cancelLabel}
+              {resolvedCancelLabel}
             </button>
             <button onClick={onConfirm} className={confirmButtonClass}>
-              {confirmLabel}
+              {resolvedConfirmLabel}
             </button>
           </div>
         </div>

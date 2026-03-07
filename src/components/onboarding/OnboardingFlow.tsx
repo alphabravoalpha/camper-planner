@@ -12,6 +12,7 @@
 // would cause the header and other elements to float above it.
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAnnounce, useFocusTrap } from '../../utils/accessibility';
 import SpotlightOverlay from './SpotlightOverlay';
 import TourTooltip from './TourTooltip';
@@ -34,6 +35,7 @@ interface OnboardingFlowProps {
 // =============================================================================
 
 const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete, onSkip }) => {
+  const { t } = useTranslation();
   const announce = useAnnounce();
   const [currentStep, setCurrentStep] = useState(0);
   const containerRef = useFocusTrap(true);
@@ -93,17 +95,23 @@ const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete, onSkip }) =
     } else {
       const next = currentStep + 1;
       setCurrentStep(next);
-      announce(`Step ${next + 1} of ${totalSteps}: ${SPOTLIGHT_STEPS[next].headline}`, 'polite');
+      announce(
+        `${t('tour.stepOf', { current: next + 1, total: totalSteps })}: ${t(SPOTLIGHT_STEPS[next].titleKey)}`,
+        'polite'
+      );
     }
-  }, [currentStep, isLastStep, onComplete, announce, totalSteps]);
+  }, [currentStep, isLastStep, onComplete, announce, totalSteps, t]);
 
   const handleBack = useCallback(() => {
     if (currentStep > 0) {
       const prev = currentStep - 1;
       setCurrentStep(prev);
-      announce(`Step ${prev + 1} of ${totalSteps}: ${SPOTLIGHT_STEPS[prev].headline}`, 'polite');
+      announce(
+        `${t('tour.stepOf', { current: prev + 1, total: totalSteps })}: ${t(SPOTLIGHT_STEPS[prev].titleKey)}`,
+        'polite'
+      );
     }
-  }, [currentStep, announce, totalSteps]);
+  }, [currentStep, announce, totalSteps, t]);
 
   const handleSkip = useCallback(() => {
     cleanupRanRef.current = true;

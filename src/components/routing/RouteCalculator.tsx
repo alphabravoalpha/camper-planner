@@ -2,6 +2,7 @@
 // Phase 3.2: Route calculation with OpenRouteService integration
 
 import React, { useCallback, useEffect, useState, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useRouteStore, useVehicleStore, useUIStore, useTripWizardStore } from '../../store';
 import { routingService } from '../../services/RoutingService';
 import { campsiteService } from '../../services/CampsiteService';
@@ -21,6 +22,7 @@ interface RouteCalculatorProps {
 }
 
 const RouteCalculator: React.FC<RouteCalculatorProps> = ({ className, autoCalculate = true }) => {
+  const { t } = useTranslation();
   const { waypoints, setCalculatedRoute, isValidForRouting } = useRouteStore();
   const { profile } = useVehicleStore();
   const { addNotification } = useUIStore();
@@ -77,7 +79,7 @@ const RouteCalculator: React.FC<RouteCalculatorProps> = ({ className, autoCalcul
       const debounceTimer = setTimeout(() => {
         addNotification({
           type: 'info',
-          message: 'Recalculating route with updated vehicle profile...',
+          message: t('route.calc.recalculating'),
         });
         calculateRoute();
       }, 500); // Shorter debounce for profile changes
@@ -91,7 +93,7 @@ const RouteCalculator: React.FC<RouteCalculatorProps> = ({ className, autoCalcul
     if (!isValidForRouting()) {
       addNotification({
         type: 'warning',
-        message: 'Need at least 2 waypoints to calculate route',
+        message: t('route.calc.minWaypoints'),
       });
       return;
     }
@@ -99,7 +101,7 @@ const RouteCalculator: React.FC<RouteCalculatorProps> = ({ className, autoCalcul
     if (!FeatureFlags.BASIC_ROUTING) {
       addNotification({
         type: 'info',
-        message: 'Routing feature is currently disabled',
+        message: t('route.calc.disabled'),
       });
       return;
     }
@@ -159,18 +161,18 @@ const RouteCalculator: React.FC<RouteCalculatorProps> = ({ className, autoCalcul
       if (routeResponse.warnings && routeResponse.warnings.length > 0) {
         addNotification({
           type: 'warning',
-          message: `Route calculated with warnings: ${routeResponse.warnings[0]}`,
+          message: t('route.calc.withWarnings', { warning: routeResponse.warnings[0] }),
         });
       } else {
         addNotification({
           type: 'success',
-          message: `Route calculated successfully using ${routeResponse.metadata.service}`,
+          message: t('route.calc.success', { service: routeResponse.metadata.service }),
         });
       }
     } catch (error) {
       console.error('Route calculation failed:', error);
 
-      let errorMessage = 'Failed to calculate route';
+      let errorMessage = t('route.calc.failed');
 
       if (error instanceof RoutingError) {
         errorMessage = error.message;
@@ -190,7 +192,7 @@ const RouteCalculator: React.FC<RouteCalculatorProps> = ({ className, autoCalcul
     } finally {
       setIsCalculating(false);
     }
-  }, [waypoints, profile, isValidForRouting, setCalculatedRoute, addNotification]);
+  }, [waypoints, profile, isValidForRouting, setCalculatedRoute, addNotification, t]);
 
   // Don't render if feature is disabled
   if (!FeatureFlags.BASIC_ROUTING) return null;
@@ -198,7 +200,7 @@ const RouteCalculator: React.FC<RouteCalculatorProps> = ({ className, autoCalcul
   return (
     <div className={cn('bg-white rounded-2xl shadow-soft p-4', className)}>
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-sm font-medium text-neutral-900">Route Calculation</h3>
+        <h3 className="text-sm font-medium text-neutral-900">{t('route.calc.title')}</h3>
 
         {/* Route status indicator */}
         <div className="flex items-center space-x-2">
@@ -232,7 +234,7 @@ const RouteCalculator: React.FC<RouteCalculatorProps> = ({ className, autoCalcul
                 d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
               />
             </svg>
-            <span className="font-medium text-red-800">Vehicle Restriction Violations</span>
+            <span className="font-medium text-red-800">{t('route.calc.restrictionTitle')}</span>
           </div>
           <div className="space-y-1">
             {restrictions.suggestedActions.map((action, index) => (
@@ -243,7 +245,7 @@ const RouteCalculator: React.FC<RouteCalculatorProps> = ({ className, autoCalcul
           </div>
           {restrictions.cannotAccommodate && (
             <div className="mt-2 p-2 bg-red-100 rounded text-red-800 font-medium">
-              ⚠️ Your vehicle cannot use European roads with these dimensions
+              {t('route.calc.cannotAccommodate')}
             </div>
           )}
         </div>
@@ -280,14 +282,16 @@ const RouteCalculator: React.FC<RouteCalculatorProps> = ({ className, autoCalcul
                 restrictions?.violatedDimensions.length ? 'text-amber-700' : 'text-green-700'
               )}
             >
-              Vehicle: {profile.height}m H × {profile.width}m W × {profile.weight}t ×{' '}
-              {profile.length}m L
+              {t('route.calc.vehicleSpecs', {
+                height: profile.height,
+                width: profile.width,
+                weight: profile.weight,
+                length: profile.length,
+              })}
             </div>
           )}
           {restrictions?.violatedDimensions.length ? (
-            <div className="text-amber-700 mt-1 font-medium">
-              ⚠️ Route may include restricted roads
-            </div>
+            <div className="text-amber-700 mt-1 font-medium">{t('route.calc.restrictedRoads')}</div>
           ) : null}
         </div>
       )}
@@ -300,8 +304,7 @@ const RouteCalculator: React.FC<RouteCalculatorProps> = ({ className, autoCalcul
             className="w-full flex items-center justify-between p-2 bg-primary-50 border border-primary-200 rounded text-xs text-primary-800 hover:bg-primary-100 transition-colors"
           >
             <span className="font-medium">
-              {alternativeRoutes.length} Alternative Route{alternativeRoutes.length > 1 ? 's' : ''}{' '}
-              Available
+              {t('route.calc.alternativesAvailable', { count: alternativeRoutes.length })}
             </span>
             <svg
               className={cn(
@@ -330,8 +333,10 @@ const RouteCalculator: React.FC<RouteCalculatorProps> = ({ className, autoCalcul
                 >
                   <div className="flex justify-between items-center">
                     <span className="text-neutral-700">
-                      Alternative {index + 1}:{' '}
-                      <strong>{Math.round((altRoute.summary.distance / 1000) * 10) / 10} km</strong>
+                      {t('route.calc.alternativeRoute', {
+                        index: index + 1,
+                        distance: Math.round((altRoute.summary.distance / 1000) * 10) / 10,
+                      })}
                     </span>
                     <span className="text-neutral-600">
                       {Math.floor(altRoute.summary.duration / 60)}h{' '}
@@ -361,12 +366,12 @@ const RouteCalculator: React.FC<RouteCalculatorProps> = ({ className, autoCalcul
                       });
                       addNotification({
                         type: 'info',
-                        message: `Switched to alternative route ${index + 1}`,
+                        message: t('route.calc.switchedToAlternative', { index: index + 1 }),
                       });
                     }}
                     className="mt-1 text-primary-600 hover:text-primary-800 font-medium underline"
                   >
-                    Use this route
+                    {t('route.calc.useThisRoute')}
                   </button>
                 </div>
               ))}
@@ -394,17 +399,16 @@ const RouteCalculator: React.FC<RouteCalculatorProps> = ({ className, autoCalcul
             </svg>
             <div>
               <p className="text-sm font-medium text-accent-900">
-                {Math.floor(routeStats.duration / 60)}+ hour drive
+                {t('route.calc.longDrive', { hours: Math.floor(routeStats.duration / 60) })}
               </p>
               <p className="text-xs text-accent-700 mt-0.5">
-                Use the Trip Planner to split this into daily legs with overnight campsite stops
-                along the way.
+                {t('route.calc.tripPlannerSuggestion')}
               </p>
               <button
                 onClick={handleOpenWizardWithRoute}
                 className="mt-2 text-xs font-semibold text-accent-700 hover:text-accent-900 underline underline-offset-2"
               >
-                Open Trip Planner →
+                {t('route.calc.openTripPlanner')}
               </button>
             </div>
           </div>
@@ -429,16 +433,15 @@ const RouteCalculator: React.FC<RouteCalculatorProps> = ({ className, autoCalcul
               />
             </svg>
             <div>
-              <p className="text-sm font-medium text-blue-900">Channel crossing required</p>
+              <p className="text-sm font-medium text-blue-900">{t('route.calc.ferryCrossing')}</p>
               <p className="text-xs text-blue-700 mt-0.5">
-                Your route crosses between the UK and mainland Europe. Use the Trip Planner to
-                choose a ferry or tunnel option with times and costs.
+                {t('route.calc.ferryCrossingExplanation')}
               </p>
               <button
                 onClick={handleOpenWizardWithRoute}
                 className="mt-2 text-xs font-semibold text-blue-700 hover:text-blue-900 underline underline-offset-2"
               >
-                Choose a crossing →
+                {t('route.calc.chooseCrossing')}
               </button>
             </div>
           </div>
@@ -465,10 +468,7 @@ const RouteCalculator: React.FC<RouteCalculatorProps> = ({ className, autoCalcul
               </svg>
               <div>
                 <p className="text-xs text-red-800 font-medium">{calculationError}</p>
-                <p className="text-xs text-red-600 mt-1">
-                  The routing service may be temporarily unavailable. Please try again in a few
-                  seconds.
-                </p>
+                <p className="text-xs text-red-600 mt-1">{t('route.calc.retryMessage')}</p>
               </div>
             </div>
           </div>
@@ -488,7 +488,7 @@ const RouteCalculator: React.FC<RouteCalculatorProps> = ({ className, autoCalcul
                 d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
               />
             </svg>
-            <span>Try again</span>
+            <span>{t('route.calc.retryButton')}</span>
           </button>
         </div>
       )}
@@ -508,7 +508,7 @@ const RouteCalculator: React.FC<RouteCalculatorProps> = ({ className, autoCalcul
           {isCalculating ? (
             <>
               <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-              <span>Calculating...</span>
+              <span>{t('route.calc.calculatingButton')}</span>
             </>
           ) : (
             <>
@@ -520,7 +520,7 @@ const RouteCalculator: React.FC<RouteCalculatorProps> = ({ className, autoCalcul
                   d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 01.553-.894L9 2l6 3 6-3v15l-6 3-6-3z"
                 />
               </svg>
-              <span>Calculate Route</span>
+              <span>{t('route.calc.calculateButton')}</span>
             </>
           )}
         </button>
@@ -537,7 +537,7 @@ const RouteCalculator: React.FC<RouteCalculatorProps> = ({ className, autoCalcul
             className="h-3 w-3 text-primary-600 rounded border-neutral-300"
             disabled
           />
-          <span>Auto-calculate</span>
+          <span>{t('route.calc.autoCalculate')}</span>
         </label>
       </div>
 
@@ -545,7 +545,7 @@ const RouteCalculator: React.FC<RouteCalculatorProps> = ({ className, autoCalcul
       {routeStats && (
         <div className="mt-3 p-2 bg-neutral-50 border border-neutral-200 rounded text-xs">
           <div className="flex items-center justify-between text-neutral-600">
-            <span>Route ready for export</span>
+            <span>{t('route.calc.readyForExport')}</span>
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
@@ -561,7 +561,7 @@ const RouteCalculator: React.FC<RouteCalculatorProps> = ({ className, autoCalcul
       {/* Help text */}
       {!isValidForRouting() && waypoints.length < 2 && (
         <div className="mt-3 p-2 bg-primary-50 border border-primary-200 rounded text-xs text-primary-800">
-          Add at least 2 waypoints to enable route calculation
+          {t('route.calc.enablementText')}
         </div>
       )}
     </div>

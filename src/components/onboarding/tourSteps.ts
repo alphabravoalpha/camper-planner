@@ -4,6 +4,9 @@
 // The tour walks through the core trip-planning loop: search → find campsites → add to route.
 // Steps mirror what a real user does: add start, discover campsites, build a multi-stop trip.
 //
+// All user-visible strings are stored as i18n translation KEY REFERENCES (e.g. 'tour.welcome.title').
+// TourTooltip.tsx resolves them at render time via t(step.titleKey).
+//
 // Z-index management:
 //   The overlay is always at z-9997. Steps that spotlight UI elements have CSS rules in
 //   index.css that boost those elements to z-9998, keyed off body[data-tour-step="<stepId>"].
@@ -20,11 +23,12 @@ export interface SpotlightStep {
   targetSelector: string | null;
   /** Preferred tooltip position relative to the spotlight cutout */
   tooltipPosition: TooltipPosition;
-  /** Content */
-  title: string;
-  headline: string;
-  body: string;
-  tip?: string;
+  /** i18n key for the step title (displayed as heading) */
+  titleKey: string;
+  /** i18n key for the step description (displayed as body text) */
+  descriptionKey: string;
+  /** i18n key for the tip text (optional) */
+  tipKey?: string;
   /** Lucide icon name for the tooltip header */
   iconKey:
     | 'Truck'
@@ -46,12 +50,12 @@ export interface SpotlightStep {
   onExit?: () => void;
   /** Render variant: 'welcome' for the intro card with feature list, 'final' for the closing card */
   variant?: 'welcome' | 'final';
-  /** Feature bullet points shown on the welcome variant */
-  features?: string[];
-  /** Custom CTA button text (default: "Next", or "Start Planning" on last step) */
-  ctaText?: string;
-  /** Tool items shown on the toolkit step */
-  tools?: Array<{ emoji: string; label: string; description: string }>;
+  /** i18n keys for feature bullet points shown on the welcome variant */
+  featureKeys?: string[];
+  /** i18n key for custom CTA button text (default: tour.buttonNext, or tour.buttonFinish on last step) */
+  ctaTextKey?: string;
+  /** Tool items shown on the toolkit step — labels and descriptions are i18n keys */
+  tools?: Array<{ emoji: string; labelKey: string; descriptionKey: string }>;
 }
 
 /** Step IDs during which the search bar should remain visible on the map */
@@ -64,15 +68,10 @@ export const SPOTLIGHT_STEPS: SpotlightStep[] = [
     targetSelector: null,
     tooltipPosition: 'center',
     variant: 'welcome',
-    title: 'Welcome',
-    headline: 'Plan Your European Camper Trip',
-    body: "We'll show you the basics in under a minute. Let's plan a quick trip from London to the South of France.",
-    features: [
-      'Search locations and build your route',
-      'Discover campsites along the way',
-      'Vehicle-safe routing that avoids low bridges and narrow roads',
-    ],
-    ctaText: 'Show Me How',
+    titleKey: 'tour.welcome.title',
+    descriptionKey: 'tour.welcome.description',
+    featureKeys: ['tour.welcome.feature1', 'tour.welcome.feature2', 'tour.welcome.feature3'],
+    ctaTextKey: 'tour.buttonStart',
     iconKey: 'Truck',
   },
 
@@ -81,10 +80,9 @@ export const SPOTLIGHT_STEPS: SpotlightStep[] = [
     id: 'add-start',
     targetSelector: '[data-tour-id="search-bar"]',
     tooltipPosition: 'below',
-    title: 'Start Point',
-    headline: 'Search for Your Starting Point',
-    body: "Type any address, city, or place. We've added London — you'll search for your own starting point.",
-    tip: "Click '+ Add' on a result to add it to your route.",
+    titleKey: 'tour.addStart.title',
+    descriptionKey: 'tour.addStart.description',
+    tipKey: 'tour.addStart.tip',
     iconKey: 'MapPin',
     spotlightPadding: 12,
     overlayOpacity: 0.3,
@@ -96,10 +94,9 @@ export const SPOTLIGHT_STEPS: SpotlightStep[] = [
     id: 'find-campsites',
     targetSelector: '[data-tour-id="campsite-toggle"]',
     tooltipPosition: 'right',
-    title: 'Campsites',
-    headline: 'Find Campsites Anywhere',
-    body: "Toggle campsites on to see real campsite data. We've zoomed to the French Riviera — zoom into any area on your trips to browse campsites there.",
-    tip: 'Click any campsite marker for details, amenities, and booking links.',
+    titleKey: 'tour.findCampsites.title',
+    descriptionKey: 'tour.findCampsites.description',
+    tipKey: 'tour.findCampsites.tip',
     iconKey: 'Tent',
     spotlightPadding: 8,
     overlayOpacity: 0.15,
@@ -111,10 +108,9 @@ export const SPOTLIGHT_STEPS: SpotlightStep[] = [
     id: 'add-campsite',
     targetSelector: null,
     tooltipPosition: 'right',
-    title: 'Build Route',
-    headline: 'Add Stops Along the Way',
-    body: "We've added a campsite near Nice and an overnight stop near Lyon. Click any campsite marker → 'Add to Route' to build multi-stop trips.",
-    tip: 'Drag waypoints on the map to reorder your route.',
+    titleKey: 'tour.addCampsite.title',
+    descriptionKey: 'tour.addCampsite.description',
+    tipKey: 'tour.addCampsite.tip',
     iconKey: 'Tent',
     overlayOpacity: 0.08,
     onEnter: demoActions.addCampsitesToRoute,
@@ -125,17 +121,32 @@ export const SPOTLIGHT_STEPS: SpotlightStep[] = [
     id: 'toolkit',
     targetSelector: '[data-tour-id="left-toolbar"]',
     tooltipPosition: 'right',
-    title: 'Tools',
-    headline: 'Tools When You Need Them',
-    body: 'Once your route is taking shape, these tools help you refine it:',
+    titleKey: 'tour.toolkit.title',
+    descriptionKey: 'tour.toolkit.description',
     iconKey: 'Wrench',
     spotlightPadding: 8,
     overlayOpacity: 0.4,
     tools: [
-      { emoji: '🚐', label: 'Vehicle setup', description: 'set dimensions for safe routing' },
-      { emoji: '📊', label: 'Trip costs', description: 'fuel and budget estimates' },
-      { emoji: '📅', label: 'Daily stages', description: 'break long drives into days' },
-      { emoji: '💾', label: 'Save & export', description: 'save trips, export to GPS' },
+      {
+        emoji: '\uD83D\uDE90',
+        labelKey: 'tour.toolkit.toolVehicleLabel',
+        descriptionKey: 'tour.toolkit.toolVehicleDesc',
+      },
+      {
+        emoji: '\uD83D\uDCCA',
+        labelKey: 'tour.toolkit.toolCostsLabel',
+        descriptionKey: 'tour.toolkit.toolCostsDesc',
+      },
+      {
+        emoji: '\uD83D\uDCC5',
+        labelKey: 'tour.toolkit.toolStagesLabel',
+        descriptionKey: 'tour.toolkit.toolStagesDesc',
+      },
+      {
+        emoji: '\uD83D\uDCBE',
+        labelKey: 'tour.toolkit.toolSaveLabel',
+        descriptionKey: 'tour.toolkit.toolSaveDesc',
+      },
     ],
   },
 
@@ -145,10 +156,9 @@ export const SPOTLIGHT_STEPS: SpotlightStep[] = [
     targetSelector: null,
     tooltipPosition: 'center',
     variant: 'final',
-    title: 'Ready',
-    headline: "You're Ready to Plan!",
-    body: "We'll clear the demo trip and give you a fresh map. Search for your starting point and start building your route.",
-    ctaText: 'Start Planning',
+    titleKey: 'tour.ready.title',
+    descriptionKey: 'tour.ready.description',
+    ctaTextKey: 'tour.buttonFinish',
     iconKey: 'CheckCircle',
     onEnter: demoActions.closeAllPanels,
   },

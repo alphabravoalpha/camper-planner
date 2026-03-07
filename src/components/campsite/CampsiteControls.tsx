@@ -2,6 +2,7 @@
 // Phase 4.2: Enhanced filtering, display controls, and search for campsite data
 
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Tent, Truck, ParkingCircle } from 'lucide-react';
 import { FeatureFlags } from '../../config';
 import { type CampsiteType } from '../../services/CampsiteService';
@@ -24,27 +25,27 @@ interface CampsiteControlsProps {
 
 const CAMPSITE_TYPES: {
   type: CampsiteType;
-  label: string;
+  labelKey: string;
   icon: React.FC<{ className?: string }>;
-  description: string;
+  descKey: string;
 }[] = [
   {
     type: 'campsite',
-    label: 'Campsites',
+    labelKey: 'campsites.types.campsites',
     icon: Tent,
-    description: 'Traditional camping with tents/caravans',
+    descKey: 'campsites.types.campsitesDesc',
   },
   {
     type: 'caravan_site',
-    label: 'Caravan Sites',
+    labelKey: 'campsites.types.caravanSites',
     icon: Truck,
-    description: 'Sites specifically for caravans/motorhomes',
+    descKey: 'campsites.types.caravanSitesDesc',
   },
   {
     type: 'aire',
-    label: 'Aires de Service',
+    labelKey: 'campsites.types.airesDeService',
     icon: ParkingCircle,
-    description: 'Motorhome service areas with facilities',
+    descKey: 'campsites.types.airesDeServiceDesc',
   },
 ];
 
@@ -64,6 +65,7 @@ const CampsiteControls: React.FC<CampsiteControlsProps> = ({
   isLoading = false,
   campsiteCount = 0,
 }) => {
+  const { t } = useTranslation();
   const [isExpanded, setIsExpanded] = useState(false);
 
   const handleTypeToggle = (type: CampsiteType) => {
@@ -101,7 +103,7 @@ const CampsiteControls: React.FC<CampsiteControlsProps> = ({
             )}
           >
             <Tent className="w-4 h-4" />
-            <span>Campsites</span>
+            <span>{t('campsites.title')}</span>
             {isVisible && campsiteCount > 0 && (
               <span className="bg-green-200 text-green-800 px-1.5 py-0.5 rounded-full text-xs font-medium">
                 {campsiteCount}
@@ -109,7 +111,10 @@ const CampsiteControls: React.FC<CampsiteControlsProps> = ({
             )}
           </button>
           <span className="text-xs text-neutral-500">
-            ({visibleTypes.length}/{CAMPSITE_TYPES.length} types)
+            {t('campsites.controls.typesCount', {
+              visible: visibleTypes.length,
+              total: CAMPSITE_TYPES.length,
+            })}
           </span>
         </div>
 
@@ -123,7 +128,7 @@ const CampsiteControls: React.FC<CampsiteControlsProps> = ({
                 'p-1.5 rounded text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100 transition-colors',
                 isLoading && 'cursor-not-allowed opacity-50'
               )}
-              title="Refresh campsite data"
+              title={t('campsites.controls.refresh')}
             >
               <svg
                 className={cn('w-4 h-4', isLoading && 'animate-spin')}
@@ -186,7 +191,7 @@ const CampsiteControls: React.FC<CampsiteControlsProps> = ({
                       ? 'border-green-500 bg-green-50 text-green-700'
                       : 'border-neutral-300 bg-neutral-50 text-neutral-400 hover:border-neutral-400'
                   )}
-                  title={CAMPSITE_TYPES.find(ct => ct.type === type)?.label}
+                  title={t(CAMPSITE_TYPES.find(ct => ct.type === type)?.labelKey ?? '')}
                 >
                   <Icon className="w-4 h-4" />
                 </button>
@@ -194,7 +199,10 @@ const CampsiteControls: React.FC<CampsiteControlsProps> = ({
             </div>
 
             <div className="text-xs text-neutral-500">
-              Max: {maxResults} • {vehicleCompatibleOnly ? 'Compatible only' : 'All sites'}
+              {t('campsites.controls.max', { max: maxResults })} •{' '}
+              {vehicleCompatibleOnly
+                ? t('campsites.controls.compatibleOnly')
+                : t('campsites.controls.allSites')}
             </div>
           </div>
         </div>
@@ -206,17 +214,21 @@ const CampsiteControls: React.FC<CampsiteControlsProps> = ({
           {/* Campsite type filters */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-medium text-neutral-700">Campsite Types</span>
+              <span className="text-xs font-medium text-neutral-700">
+                {t('campsites.types.label')}
+              </span>
               <button
                 onClick={toggleAll}
                 className="text-xs text-primary-600 hover:text-primary-800 font-medium"
               >
-                {visibleTypes.length === CAMPSITE_TYPES.length ? 'None' : 'All'}
+                {visibleTypes.length === CAMPSITE_TYPES.length
+                  ? t('campsites.filter.none')
+                  : t('campsites.filter.all')}
               </button>
             </div>
 
             <div className="space-y-2">
-              {CAMPSITE_TYPES.map(({ type, label, icon: Icon, description }) => (
+              {CAMPSITE_TYPES.map(({ type, labelKey, icon: Icon, descKey }) => (
                 <label
                   key={type}
                   htmlFor={`controls-type-${type}`}
@@ -231,8 +243,8 @@ const CampsiteControls: React.FC<CampsiteControlsProps> = ({
                   />
                   <Icon className="w-4 h-4 mt-1" />
                   <span className="flex-1 min-w-0">
-                    <span className="text-sm font-medium text-neutral-900">{label}</span>
-                    <p className="text-xs text-neutral-500 mt-0.5">{description}</p>
+                    <span className="text-sm font-medium text-neutral-900">{t(labelKey)}</span>
+                    <p className="text-xs text-neutral-500 mt-0.5">{t(descKey)}</p>
                   </span>
                 </label>
               ))}
@@ -253,9 +265,9 @@ const CampsiteControls: React.FC<CampsiteControlsProps> = ({
                 className="mt-1 h-4 w-4 text-green-600 rounded border-neutral-300 focus:ring-green-500"
               />
               <span className="flex-1">
-                Vehicle Compatible Only
+                {t('campsites.filter.vehicleCompatibleOnly')}
                 <p className="text-xs text-neutral-500 mt-0.5">
-                  Show only campsites that can accommodate your vehicle dimensions
+                  {t('campsites.filter.vehicleCompatibleHint')}
                 </p>
               </span>
             </label>
@@ -264,7 +276,7 @@ const CampsiteControls: React.FC<CampsiteControlsProps> = ({
           {/* Max results */}
           <div>
             <label className="block text-xs font-medium text-neutral-700 mb-2">
-              Maximum Results: {maxResults}
+              {t('campsites.filter.maximumResults', { max: maxResults })}
             </label>
             <div className="flex items-center space-x-2">
               <input
@@ -296,7 +308,9 @@ const CampsiteControls: React.FC<CampsiteControlsProps> = ({
 
           {/* Map Legend */}
           <div className="p-3 bg-neutral-50 border border-neutral-200 rounded">
-            <div className="text-xs font-medium text-neutral-700 mb-2">Map Legend</div>
+            <div className="text-xs font-medium text-neutral-700 mb-2">
+              {t('campsites.legend.title')}
+            </div>
             <div className="space-y-2">
               {/* Campsite type legend */}
               <div className="flex items-center space-x-2">
@@ -310,7 +324,7 @@ const CampsiteControls: React.FC<CampsiteControlsProps> = ({
                     />
                   </svg>
                 </div>
-                <span className="text-xs text-neutral-700">Campsite (tent/caravan)</span>
+                <span className="text-xs text-neutral-700">{t('campsites.legend.campsite')}</span>
               </div>
               <div className="flex items-center space-x-2">
                 <div className="w-5 h-6 flex-shrink-0">
@@ -323,7 +337,9 @@ const CampsiteControls: React.FC<CampsiteControlsProps> = ({
                     />
                   </svg>
                 </div>
-                <span className="text-xs text-neutral-700">Caravan/Motorhome site</span>
+                <span className="text-xs text-neutral-700">
+                  {t('campsites.legend.caravanSite')}
+                </span>
               </div>
               <div className="flex items-center space-x-2">
                 <div className="w-5 h-6 flex-shrink-0">
@@ -336,7 +352,7 @@ const CampsiteControls: React.FC<CampsiteControlsProps> = ({
                     />
                   </svg>
                 </div>
-                <span className="text-xs text-neutral-700">Aire de Service</span>
+                <span className="text-xs text-neutral-700">{t('campsites.legend.aire')}</span>
               </div>
 
               {/* Status indicators */}
@@ -352,7 +368,9 @@ const CampsiteControls: React.FC<CampsiteControlsProps> = ({
                       />
                     </svg>
                   </div>
-                  <span className="text-xs text-neutral-700">May not fit your vehicle</span>
+                  <span className="text-xs text-neutral-700">
+                    {t('campsites.legend.mayNotFit')}
+                  </span>
                 </div>
                 <div className="flex items-center space-x-2 mt-1">
                   <div className="w-5 h-5 flex-shrink-0 flex items-center justify-center">
@@ -360,7 +378,9 @@ const CampsiteControls: React.FC<CampsiteControlsProps> = ({
                       3
                     </div>
                   </div>
-                  <span className="text-xs text-neutral-700">Clustered markers (zoom in)</span>
+                  <span className="text-xs text-neutral-700">
+                    {t('campsites.legend.clustered')}
+                  </span>
                 </div>
               </div>
             </div>

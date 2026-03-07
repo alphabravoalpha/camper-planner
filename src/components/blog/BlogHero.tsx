@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Clock, Calendar, ChevronRight } from 'lucide-react';
 import type { BlogPost } from '../../types/blog';
 import { BLOG_CATEGORIES } from '../../data/blog';
@@ -11,6 +12,7 @@ interface BlogHeroProps {
 }
 
 const BlogHero: React.FC<BlogHeroProps> = ({ post }) => {
+  const { t } = useTranslation();
   const categoryInfo = BLOG_CATEGORIES[post.category];
   const formattedDate = new Date(post.publishedDate).toLocaleDateString('en-GB', {
     day: 'numeric',
@@ -42,11 +44,11 @@ const BlogHero: React.FC<BlogHeroProps> = ({ post }) => {
             {/* Breadcrumbs */}
             <nav className="flex items-center gap-1.5 text-xs text-white/80 mb-3">
               <Link to="/" className="hover:text-white transition-colors">
-                Home
+                {t('blog.home')}
               </Link>
               <ChevronRight className="w-3 h-3" />
               <Link to="/guides" className="hover:text-white transition-colors">
-                Guides
+                {t('blog.guides')}
               </Link>
               <ChevronRight className="w-3 h-3" />
               <span className="text-white/60 truncate">{categoryInfo.name}</span>
@@ -70,7 +72,7 @@ const BlogHero: React.FC<BlogHeroProps> = ({ post }) => {
               </span>
               <span className="flex items-center gap-1.5">
                 <Clock className="w-4 h-4" />
-                {post.readingTime} min read
+                {t('blog.minuteRead', { min: post.readingTime })}
               </span>
             </div>
           </div>
@@ -80,16 +82,7 @@ const BlogHero: React.FC<BlogHeroProps> = ({ post }) => {
       {/* Image Credit */}
       {post.heroImage.credit && (
         <div className="bg-neutral-100 px-4 py-1.5 text-xs text-neutral-500 text-right">
-          Photo by{' '}
-          <a
-            href={post.heroImage.creditUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline hover:text-neutral-700"
-          >
-            {post.heroImage.credit}
-          </a>
-          {' on Unsplash'}
+          {t('blog.photoCredit', { credit: post.heroImage.credit })}
         </div>
       )}
     </div>

@@ -2,6 +2,7 @@
 // Enhanced with 5 budget categories — reads settings from tripSettingsStore
 
 import React, { useState, useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Calculator,
   Euro,
@@ -37,6 +38,7 @@ const CostCalculator: React.FC<CostCalculatorProps> = ({
   onCostUpdate,
   isVisible = true,
 }) => {
+  const { t } = useTranslation();
   const { waypoints } = useRouteStore();
   const { profile } = useVehicleStore();
   const { settings } = useTripSettingsStore();
@@ -193,7 +195,7 @@ const CostCalculator: React.FC<CostCalculatorProps> = ({
       }
     } catch (err) {
       console.error('Cost calculation failed:', err);
-      setError('Failed to calculate trip costs. Please try again.');
+      setError(t('planning.costCalc.helpText'));
     } finally {
       setIsCalculating(false);
     }
@@ -220,9 +222,9 @@ const CostCalculator: React.FC<CostCalculatorProps> = ({
       <div className="flex items-center justify-between p-4 border-b bg-gradient-to-r from-green-50 to-primary-50">
         <div className="flex items-center gap-2">
           <Calculator className="w-5 h-5 text-green-600" />
-          <h3 className="text-lg font-semibold text-neutral-800">Trip Cost Calculator</h3>
+          <h3 className="text-lg font-semibold text-neutral-800">{t('planning.costCalc.title')}</h3>
         </div>
-        <span className="text-xs text-neutral-600">Edit budget in Trip Settings</span>
+        <span className="text-xs text-neutral-600">{t('planning.costCalc.editBudgetHint')}</span>
       </div>
 
       {/* Main Content */}
@@ -239,7 +241,7 @@ const CostCalculator: React.FC<CostCalculatorProps> = ({
         {isCalculating ? (
           <div className="flex items-center justify-center py-8">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
-            <span className="ml-2 text-neutral-600">Calculating costs...</span>
+            <span className="ml-2 text-neutral-600">{t('planning.costCalc.calculating')}</span>
           </div>
         ) : costBreakdown ? (
           <div className="space-y-4">
@@ -249,7 +251,9 @@ const CostCalculator: React.FC<CostCalculatorProps> = ({
                 <div className="text-3xl font-bold text-neutral-800 mb-1">
                   {formatCurrency(costBreakdown.totalCost, costBreakdown.currency)}
                 </div>
-                <div className="text-sm text-neutral-600">Estimated Trip Cost</div>
+                <div className="text-sm text-neutral-600">
+                  {t('planning.costCalc.estimatedCost')}
+                </div>
               </div>
             </div>
 
@@ -258,7 +262,7 @@ const CostCalculator: React.FC<CostCalculatorProps> = ({
               {/* Fuel */}
               <CostRow
                 icon={<Fuel className="w-4 h-4 text-blue-600" />}
-                label="Fuel"
+                label={t('planning.costCalc.fuel')}
                 amount={formatCurrency(costBreakdown.fuelCost, costBreakdown.currency)}
                 percentage={pct(costBreakdown.fuelCost, costBreakdown.totalCost)}
                 color="bg-blue-500"
@@ -267,7 +271,7 @@ const CostCalculator: React.FC<CostCalculatorProps> = ({
               {/* Campsites */}
               <CostRow
                 icon={<Tent className="w-4 h-4 text-green-600" />}
-                label="Campsites"
+                label={t('planning.costCalc.campsites')}
                 amount={formatCurrency(costBreakdown.accommodationCost, costBreakdown.currency)}
                 percentage={pct(costBreakdown.accommodationCost, costBreakdown.totalCost)}
                 color="bg-green-500"
@@ -276,7 +280,7 @@ const CostCalculator: React.FC<CostCalculatorProps> = ({
               {/* Food */}
               <CostRow
                 icon={<UtensilsCrossed className="w-4 h-4 text-orange-600" />}
-                label="Food"
+                label={t('planning.costCalc.food')}
                 amount={formatCurrency(costBreakdown.foodCost, costBreakdown.currency)}
                 percentage={pct(costBreakdown.foodCost, costBreakdown.totalCost)}
                 color="bg-orange-500"
@@ -286,7 +290,7 @@ const CostCalculator: React.FC<CostCalculatorProps> = ({
               {costBreakdown.tollCost > 0 && (
                 <CostRow
                   icon={<Euro className="w-4 h-4 text-purple-600" />}
-                  label="Tolls"
+                  label={t('planning.costCalc.tolls')}
                   amount={formatCurrency(costBreakdown.tollCost, costBreakdown.currency)}
                   percentage={pct(costBreakdown.tollCost, costBreakdown.totalCost)}
                   color="bg-purple-500"
@@ -297,7 +301,7 @@ const CostCalculator: React.FC<CostCalculatorProps> = ({
               {costBreakdown.ferryCost > 0 && (
                 <CostRow
                   icon={<Ship className="w-4 h-4 text-cyan-600" />}
-                  label="Ferry / Crossing"
+                  label={t('planning.costCalc.ferryCrossing')}
                   amount={formatCurrency(costBreakdown.ferryCost, costBreakdown.currency)}
                   percentage={pct(costBreakdown.ferryCost, costBreakdown.totalCost)}
                   color="bg-cyan-500"
@@ -310,7 +314,9 @@ const CostCalculator: React.FC<CostCalculatorProps> = ({
               <div>
                 <div className="flex items-center gap-2 mb-3">
                   <Calendar className="w-4 h-4 text-primary-600" />
-                  <h4 className="font-medium text-neutral-800">Daily Cost Breakdown</h4>
+                  <h4 className="font-medium text-neutral-800">
+                    {t('planning.costCalc.dailyBreakdown')}
+                  </h4>
                 </div>
                 <div className="space-y-2">
                   {costBreakdown.dailyBreakdown.map((day, index) => (
@@ -318,10 +324,14 @@ const CostCalculator: React.FC<CostCalculatorProps> = ({
                       <div className="flex justify-between items-center">
                         <div>
                           <div className="font-medium text-neutral-800">
-                            Day {index + 1} - {day.date.toLocaleDateString()}
+                            {t('planning.costCalc.dayLabel', {
+                              day: index + 1,
+                              date: day.date.toLocaleDateString(),
+                            })}
                           </div>
                           <div className="text-sm text-neutral-600">
-                            {day.distance.toFixed(0)}km driving
+                            {day.distance.toFixed(0)}
+                            {t('planning.costCalc.kmDriving')}
                           </div>
                         </div>
                         <div className="text-right">
@@ -330,10 +340,12 @@ const CostCalculator: React.FC<CostCalculatorProps> = ({
                           </div>
                           <div className="text-xs text-neutral-500 space-x-2">
                             <span>
-                              Fuel: {formatCurrency(day.fuelCost, costBreakdown.currency)}
+                              {t('planning.costCalc.fuel')}:{' '}
+                              {formatCurrency(day.fuelCost, costBreakdown.currency)}
                             </span>
                             <span>
-                              Food: {formatCurrency(day.foodCost, costBreakdown.currency)}
+                              {t('planning.costCalc.food')}:{' '}
+                              {formatCurrency(day.foodCost, costBreakdown.currency)}
                             </span>
                           </div>
                         </div>
@@ -349,7 +361,9 @@ const CostCalculator: React.FC<CostCalculatorProps> = ({
               <div>
                 <div className="flex items-center gap-2 mb-3">
                   <MapPin className="w-4 h-4 text-green-600" />
-                  <h4 className="font-medium text-neutral-800">Route Segments</h4>
+                  <h4 className="font-medium text-neutral-800">
+                    {t('planning.costCalc.routeSegments')}
+                  </h4>
                 </div>
                 <div className="space-y-2 max-h-60 overflow-y-auto">
                   {costBreakdown.segments.map((segment, index) => (
@@ -363,7 +377,7 @@ const CostCalculator: React.FC<CostCalculatorProps> = ({
                             {segment.distance.toFixed(0)}km &bull; {Math.round(segment.duration)}min
                             {segment.segmentType === 'overnight' && (
                               <span className="ml-2 px-2 py-1 bg-primary-100 text-primary-700 rounded-full text-xs">
-                                Overnight
+                                {t('planning.costCalc.overnight')}
                               </span>
                             )}
                           </div>
@@ -376,7 +390,8 @@ const CostCalculator: React.FC<CostCalculatorProps> = ({
                             )}
                           </div>
                           <div className="text-sm text-neutral-600">
-                            Fuel: {formatCurrency(segment.fuelCost, costBreakdown.currency)}
+                            {t('planning.costCalc.fuel')}:{' '}
+                            {formatCurrency(segment.fuelCost, costBreakdown.currency)}
                           </div>
                         </div>
                       </div>
@@ -393,16 +408,18 @@ const CostCalculator: React.FC<CostCalculatorProps> = ({
                 <div>
                   <div className="flex items-center gap-2 mb-3">
                     <TrendingDown className="w-4 h-4 text-orange-600" />
-                    <h4 className="font-medium text-neutral-800">Cost Optimization</h4>
+                    <h4 className="font-medium text-neutral-800">
+                      {t('planning.costCalc.optimization')}
+                    </h4>
                   </div>
                   <div className="bg-orange-50 rounded-lg p-4">
                     <div className="text-center mb-3">
                       <div className="text-lg font-semibold text-orange-800">
-                        Potential Savings:{' '}
+                        {t('planning.costCalc.potentialSavings')}{' '}
                         {formatCurrency(optimization.savings, costBreakdown.currency)}
                       </div>
                       <div className="text-sm text-orange-600">
-                        Optimized total:{' '}
+                        {t('planning.costCalc.optimizedTotal')}{' '}
                         {formatCurrency(optimization.optimizedCost, costBreakdown.currency)}
                       </div>
                     </div>
@@ -435,7 +452,7 @@ const CostCalculator: React.FC<CostCalculatorProps> = ({
         ) : (
           <div className="text-center py-8 text-neutral-500">
             <Calculator className="w-12 h-12 mx-auto mb-3 text-neutral-300" />
-            <p>Add waypoints to your route to calculate trip costs</p>
+            <p>{t('planning.costCalc.noWaypoints')}</p>
           </div>
         )}
       </div>

@@ -2,6 +2,7 @@
 // Phase 5.3: Comprehensive trip management system
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import ConfirmDialog from '../ui/ConfirmDialog';
 import {
   Save,
@@ -64,6 +65,8 @@ const TripManager: React.FC<TripManagerProps> = ({
   onClose,
   isVisible = true,
 }) => {
+  const { t } = useTranslation();
+
   // Store hooks
   const { waypoints, estimatedTime } = useRouteStore();
   const { profile: selectedProfile } = useVehicleStore();
@@ -140,6 +143,7 @@ const TripManager: React.FC<TripManagerProps> = ({
       }
     };
     init();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Filter trips
@@ -156,7 +160,7 @@ const TripManager: React.FC<TripManagerProps> = ({
       const summaries = await TripStorageService.getTripSummaries({ excludeTemplates: true });
       setTrips(summaries);
     } catch (_err) {
-      setError('Failed to load trips');
+      setError(t('planning.tripMgr.loadError'));
       // Error already surfaced in UI via setError
     }
   };
@@ -172,7 +176,7 @@ const TripManager: React.FC<TripManagerProps> = ({
 
   const handleSaveCurrentTrip = async () => {
     if (waypoints.length < 2) {
-      setError('Add at least 2 waypoints to save a trip');
+      setError(t('planning.tripMgr.minWaypointsError'));
       return;
     }
 
@@ -181,7 +185,7 @@ const TripManager: React.FC<TripManagerProps> = ({
 
   const confirmSaveTrip = async () => {
     if (!saveData.name.trim()) {
-      setError('Trip name is required');
+      setError(t('planning.tripMgr.nameRequired'));
       return;
     }
 
@@ -255,7 +259,7 @@ const TripManager: React.FC<TripManagerProps> = ({
         isPublic: false,
       });
     } catch (_err) {
-      setError('Failed to save trip');
+      setError(t('planning.tripMgr.saveError'));
       // Error already surfaced in UI via setError
     } finally {
       setIsLoading(false);
@@ -275,7 +279,7 @@ const TripManager: React.FC<TripManagerProps> = ({
         await loadRecentTrips(); // Update recent trips
       }
     } catch (_err) {
-      setError('Failed to load trip');
+      setError(t('planning.tripMgr.loadTripError'));
       // Error already surfaced in UI via setError
     } finally {
       setIsLoading(false);
@@ -288,7 +292,7 @@ const TripManager: React.FC<TripManagerProps> = ({
       await TripStorageService.duplicateTrip(tripId);
       await loadTrips();
     } catch (_err) {
-      setError('Failed to duplicate trip');
+      setError(t('planning.tripMgr.duplicateError'));
       // Error already surfaced in UI via setError
     } finally {
       setIsLoading(false);
@@ -311,11 +315,12 @@ const TripManager: React.FC<TripManagerProps> = ({
       await TripStorageService.deleteTrip(deletingTripId);
       await loadTrips();
     } catch (_err) {
-      setError('Failed to delete trip');
+      setError(t('planning.tripMgr.deleteError'));
     } finally {
       setIsLoading(false);
     }
-  }, [deletingTripId]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [deletingTripId, t]);
 
   const handleExportTrip = (tripId: string) => {
     setExportingTripId(tripId);
@@ -365,7 +370,7 @@ const TripManager: React.FC<TripManagerProps> = ({
         throw new Error('Export download failed');
       }
     } catch (_err) {
-      setError('Failed to export trip');
+      setError(t('planning.tripMgr.exportError'));
       // Error already surfaced in UI via setError
     } finally {
       setIsLoading(false);
@@ -374,7 +379,7 @@ const TripManager: React.FC<TripManagerProps> = ({
 
   const handleImportTrip = async () => {
     if (!importData.trim()) {
-      setError('Please paste trip data to import');
+      setError(t('planning.tripMgr.importEmptyError'));
       return;
     }
 
@@ -386,10 +391,10 @@ const TripManager: React.FC<TripManagerProps> = ({
         setShowImportModal(false);
         setImportData('');
       } else {
-        setError('Invalid trip data format');
+        setError(t('planning.tripMgr.importInvalidError'));
       }
     } catch (_err) {
-      setError('Failed to import trip');
+      setError(t('planning.tripMgr.importError'));
       // Error already surfaced in UI via setError
     } finally {
       setIsLoading(false);
@@ -398,7 +403,7 @@ const TripManager: React.FC<TripManagerProps> = ({
 
   const handleCompareTrips = async () => {
     if (selectedTrips.length < 2) {
-      setError('Select at least 2 trips to compare');
+      setError(t('planning.tripMgr.minCompareError'));
       return;
     }
 
@@ -408,7 +413,7 @@ const TripManager: React.FC<TripManagerProps> = ({
       setComparison(comparisonResult);
       setViewMode('comparison');
     } catch (_err) {
-      setError('Failed to compare trips');
+      setError(t('planning.tripMgr.compareError'));
       // Error already surfaced in UI via setError
     } finally {
       setIsLoading(false);
@@ -534,7 +539,9 @@ const TripManager: React.FC<TripManagerProps> = ({
       <div className="flex items-center justify-between p-4 border-b bg-gradient-to-r from-primary-50 to-primary-100">
         <div className="flex items-center gap-3">
           <Navigation className="w-6 h-6 text-primary-600" />
-          <h2 className="text-xl font-display font-semibold text-neutral-800">Trip Manager</h2>
+          <h2 className="text-xl font-display font-semibold text-neutral-800">
+            {t('planning.tripMgr.title')}
+          </h2>
         </div>
         <div className="flex items-center gap-2">
           {/* Quick actions */}
@@ -544,7 +551,7 @@ const TripManager: React.FC<TripManagerProps> = ({
             className="flex items-center gap-2 px-3 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             <Save className="w-4 h-4" />
-            Save Current
+            {t('planning.tripMgr.saveCurrent')}
           </button>
 
           {onClose && (
@@ -561,8 +568,16 @@ const TripManager: React.FC<TripManagerProps> = ({
       {/* Navigation Tabs */}
       <div className="flex border-b bg-neutral-50">
         {[
-          { id: 'my_trips', label: 'My Trips', icon: <Save className="w-4 h-4" /> },
-          { id: 'recent', label: 'Recent', icon: <Clock className="w-4 h-4" /> },
+          {
+            id: 'my_trips',
+            label: t('planning.tripMgr.myTrips'),
+            icon: <Save className="w-4 h-4" />,
+          },
+          {
+            id: 'recent',
+            label: t('planning.tripMgr.recent'),
+            icon: <Clock className="w-4 h-4" />,
+          },
         ].map(tab => (
           <button
             key={tab.id}
@@ -593,7 +608,7 @@ const TripManager: React.FC<TripManagerProps> = ({
               }}
               className="text-xs text-red-700 hover:text-red-900 underline font-medium"
             >
-              Retry
+              {t('planning.tripMgr.retryButton')}
             </button>
             <button onClick={() => setError(null)} className="p-1 hover:bg-red-100 rounded">
               <X className="w-3 h-3" />
@@ -610,7 +625,7 @@ const TripManager: React.FC<TripManagerProps> = ({
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-neutral-400" />
             <input
               type="text"
-              placeholder="Search trips, tags, or countries..."
+              placeholder={t('planning.tripMgr.searchPlaceholder')}
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-2 border rounded-lg text-sm"
@@ -624,12 +639,12 @@ const TripManager: React.FC<TripManagerProps> = ({
               onChange={e => setCategoryFilter(e.target.value)}
               className="px-3 py-2 border rounded-lg text-sm"
             >
-              <option value="all">All Categories</option>
-              <option value="leisure">Leisure</option>
-              <option value="adventure">Adventure</option>
-              <option value="romantic">Romantic</option>
-              <option value="family">Family</option>
-              <option value="business">Business</option>
+              <option value="all">{t('planning.tripMgr.allCategories')}</option>
+              <option value="leisure">{t('planning.tripMgr.leisure')}</option>
+              <option value="adventure">{t('planning.tripMgr.adventure')}</option>
+              <option value="romantic">{t('planning.tripMgr.romantic')}</option>
+              <option value="family">{t('planning.tripMgr.family')}</option>
+              <option value="business">{t('planning.tripMgr.business')}</option>
             </select>
           </div>
         </div>
@@ -642,7 +657,7 @@ const TripManager: React.FC<TripManagerProps> = ({
           <div>
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-display font-medium text-neutral-800">
-                My Trips ({filteredTrips.length})
+                {t('planning.tripMgr.myTripsCount', { count: filteredTrips.length })}
               </h3>
               <div className="flex gap-2">
                 <button
@@ -650,7 +665,7 @@ const TripManager: React.FC<TripManagerProps> = ({
                   className="flex items-center gap-2 px-3 py-2 border rounded-lg hover:bg-neutral-50 text-sm"
                 >
                   <Upload className="w-4 h-4" />
-                  Import
+                  {t('planning.tripMgr.importButton')}
                 </button>
                 {selectedTrips.length >= 2 && (
                   <button
@@ -658,7 +673,7 @@ const TripManager: React.FC<TripManagerProps> = ({
                     className="flex items-center gap-2 px-3 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 text-sm"
                   >
                     <BarChart3 className="w-4 h-4" />
-                    Compare ({selectedTrips.length})
+                    {t('planning.tripMgr.compareButton', { count: selectedTrips.length })}
                   </button>
                 )}
               </div>
@@ -667,7 +682,7 @@ const TripManager: React.FC<TripManagerProps> = ({
             {filteredTrips.length === 0 ? (
               <div className="text-center py-8 text-neutral-500">
                 <Navigation className="w-12 h-12 mx-auto mb-3 text-neutral-300" />
-                <p>No saved trips yet. Plan a route and save it here.</p>
+                <p>{t('planning.tripMgr.noTrips')}</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -699,28 +714,28 @@ const TripManager: React.FC<TripManagerProps> = ({
                         <button
                           onClick={() => handleLoadTrip(trip.id)}
                           className="p-1 hover:bg-primary-100 rounded text-primary-600"
-                          title="Load trip"
+                          title={t('planning.tripMgr.loadTripTitle')}
                         >
                           <ExternalLink className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => handleDuplicateTrip(trip.id)}
                           className="p-1 hover:bg-green-100 rounded text-green-600"
-                          title="Duplicate trip"
+                          title={t('planning.tripMgr.duplicateTripTitle')}
                         >
                           <Copy className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => handleExportTrip(trip.id)}
                           className="p-1 hover:bg-purple-100 rounded text-purple-600"
-                          title="Export trip"
+                          title={t('planning.tripMgr.exportTripTitleAttr')}
                         >
                           <Download className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => handleDeleteTrip(trip.id)}
                           className="p-1 hover:bg-red-100 rounded text-red-600"
-                          title="Delete trip"
+                          title={t('planning.tripMgr.deleteTripTitleAttr')}
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
@@ -730,21 +745,23 @@ const TripManager: React.FC<TripManagerProps> = ({
                     <div className="grid grid-cols-2 gap-4 text-sm text-neutral-600 mb-3">
                       <div className="flex items-center gap-1">
                         <Calendar className="w-4 h-4" />
-                        {trip.duration > 0 ? `${trip.duration} days` : 'Not calculated'}
+                        {trip.duration > 0
+                          ? t('planning.tripMgr.durationDays', { count: trip.duration })
+                          : t('planning.tripMgr.notCalculated')}
                       </div>
                       <div className="flex items-center gap-1">
                         <Euro className="w-4 h-4" />
                         {trip.estimatedCost > 0
                           ? formatCurrency(trip.estimatedCost)
-                          : 'Not calculated'}
+                          : t('planning.tripMgr.notCalculated')}
                       </div>
                       <div className="flex items-center gap-1">
                         <MapPin className="w-4 h-4" />
-                        {trip.waypointCount} stops
+                        {t('planning.tripMgr.stopsCount', { count: trip.waypointCount })}
                       </div>
                       <div className="flex items-center gap-1">
                         <Globe className="w-4 h-4" />
-                        {trip.countries.length} countries
+                        {t('planning.tripMgr.countriesCount', { count: trip.countries.length })}
                       </div>
                     </div>
 
@@ -760,14 +777,16 @@ const TripManager: React.FC<TripManagerProps> = ({
                         ))}
                         {trip.tags.length > 3 && (
                           <span className="px-2 py-1 bg-neutral-100 text-neutral-600 rounded-full text-xs">
-                            +{trip.tags.length - 3} more
+                            {t('planning.tripMgr.moreTags', { count: trip.tags.length - 3 })}
                           </span>
                         )}
                       </div>
                     )}
 
                     <div className="text-xs text-neutral-500">
-                      Last modified: {trip.lastModified.toLocaleDateString()}
+                      {t('planning.tripMgr.lastModified', {
+                        date: trip.lastModified.toLocaleDateString(),
+                      })}
                     </div>
                   </div>
                 ))}
@@ -781,14 +800,14 @@ const TripManager: React.FC<TripManagerProps> = ({
           <div>
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-display font-medium text-neutral-800">
-                Recent Trips ({recentTrips.length})
+                {t('planning.tripMgr.recentTrips', { count: recentTrips.length })}
               </h3>
             </div>
 
             {recentTrips.length === 0 ? (
               <div className="text-center py-8 text-neutral-500">
                 <Clock className="w-12 h-12 mx-auto mb-3 text-neutral-300" />
-                <p>No recent trips. Start planning your next adventure!</p>
+                <p>{t('planning.tripMgr.noRecentTrips')}</p>
               </div>
             ) : (
               <div className="space-y-3">
@@ -811,11 +830,19 @@ const TripManager: React.FC<TripManagerProps> = ({
                       <div>
                         <h4 className="font-medium text-neutral-800">{trip.name}</h4>
                         <div className="flex items-center gap-4 text-sm text-neutral-600">
-                          <span>{trip.duration > 0 ? `${trip.duration} days` : 'N/A'}</span>
                           <span>
-                            {trip.estimatedCost > 0 ? formatCurrency(trip.estimatedCost) : 'N/A'}
+                            {trip.duration > 0
+                              ? t('planning.tripMgr.durationDays', { count: trip.duration })
+                              : t('planning.tripMgr.notAvailable')}
                           </span>
-                          <span>{trip.waypointCount} stops</span>
+                          <span>
+                            {trip.estimatedCost > 0
+                              ? formatCurrency(trip.estimatedCost)
+                              : t('planning.tripMgr.notAvailable')}
+                          </span>
+                          <span>
+                            {t('planning.tripMgr.stopsCount', { count: trip.waypointCount })}
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -833,19 +860,23 @@ const TripManager: React.FC<TripManagerProps> = ({
         {viewMode === 'comparison' && comparison && (
           <div>
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-display font-medium text-neutral-800">Trip Comparison</h3>
+              <h3 className="text-lg font-display font-medium text-neutral-800">
+                {t('planning.tripMgr.comparisonTitle')}
+              </h3>
               <button
                 onClick={() => setViewMode('my_trips')}
                 className="text-primary-600 hover:text-primary-700"
               >
-                Back to My Trips
+                {t('planning.tripMgr.backToTrips')}
               </button>
             </div>
 
             <div className="space-y-6">
               {/* Cost Comparison */}
               <div>
-                <h4 className="font-medium text-neutral-800 mb-3">Cost Comparison</h4>
+                <h4 className="font-medium text-neutral-800 mb-3">
+                  {t('planning.tripMgr.costComparison')}
+                </h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {comparison.trips.map(trip => {
                     const costs = comparison.comparison.costs[trip.metadata.id];
@@ -862,26 +893,26 @@ const TripManager: React.FC<TripManagerProps> = ({
                           <h5 className="font-medium">{trip.metadata.name}</h5>
                           {isChecapest && (
                             <span className="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs">
-                              Cheapest
+                              {t('planning.tripMgr.cheapest')}
                             </span>
                           )}
                         </div>
                         {costs && (
                           <div className="space-y-1 text-sm">
                             <div className="flex justify-between">
-                              <span>Total:</span>
+                              <span>{t('planning.tripMgr.totalLabel')}</span>
                               <span className="font-medium">{formatCurrency(costs.total)}</span>
                             </div>
                             <div className="flex justify-between text-neutral-600">
-                              <span>Fuel:</span>
+                              <span>{t('planning.tripMgr.fuelLabel')}</span>
                               <span>{formatCurrency(costs.fuel)}</span>
                             </div>
                             <div className="flex justify-between text-neutral-600">
-                              <span>Accommodation:</span>
+                              <span>{t('planning.tripMgr.accommodationLabel')}</span>
                               <span>{formatCurrency(costs.accommodation)}</span>
                             </div>
                             <div className="flex justify-between text-neutral-600">
-                              <span>Tolls:</span>
+                              <span>{t('planning.tripMgr.tollsLabel')}</span>
                               <span>{formatCurrency(costs.tolls)}</span>
                             </div>
                           </div>
@@ -894,16 +925,28 @@ const TripManager: React.FC<TripManagerProps> = ({
 
               {/* Route Comparison */}
               <div>
-                <h4 className="font-medium text-neutral-800 mb-3">Route Comparison</h4>
+                <h4 className="font-medium text-neutral-800 mb-3">
+                  {t('planning.tripMgr.routeComparison')}
+                </h4>
                 <div className="overflow-x-auto">
                   <table className="w-full border-collapse border border-neutral-200 rounded-lg">
                     <thead>
                       <tr className="bg-neutral-50">
-                        <th className="border border-neutral-200 px-4 py-2 text-left">Trip</th>
-                        <th className="border border-neutral-200 px-4 py-2 text-left">Distance</th>
-                        <th className="border border-neutral-200 px-4 py-2 text-left">Duration</th>
-                        <th className="border border-neutral-200 px-4 py-2 text-left">Waypoints</th>
-                        <th className="border border-neutral-200 px-4 py-2 text-left">Countries</th>
+                        <th className="border border-neutral-200 px-4 py-2 text-left">
+                          {t('planning.tripMgr.tripColumn')}
+                        </th>
+                        <th className="border border-neutral-200 px-4 py-2 text-left">
+                          {t('planning.tripMgr.distanceColumn')}
+                        </th>
+                        <th className="border border-neutral-200 px-4 py-2 text-left">
+                          {t('planning.tripMgr.durationColumn')}
+                        </th>
+                        <th className="border border-neutral-200 px-4 py-2 text-left">
+                          {t('planning.tripMgr.waypointsColumn')}
+                        </th>
+                        <th className="border border-neutral-200 px-4 py-2 text-left">
+                          {t('planning.tripMgr.countriesColumn')}
+                        </th>
                       </tr>
                     </thead>
                     <tbody>
@@ -927,7 +970,9 @@ const TripManager: React.FC<TripManagerProps> = ({
                                 {route.distance.toFixed(0)}km
                               </span>
                               {isShortest && (
-                                <span className="ml-1 text-xs text-green-600">(shortest)</span>
+                                <span className="ml-1 text-xs text-green-600">
+                                  {t('planning.tripMgr.shortestTag')}
+                                </span>
                               )}
                             </td>
                             <td className="border border-neutral-200 px-4 py-2">
@@ -935,7 +980,9 @@ const TripManager: React.FC<TripManagerProps> = ({
                                 {route.duration.toFixed(1)}h
                               </span>
                               {isFastest && (
-                                <span className="ml-1 text-xs text-primary-600">(fastest)</span>
+                                <span className="ml-1 text-xs text-primary-600">
+                                  {t('planning.tripMgr.fastestTag')}
+                                </span>
                               )}
                             </td>
                             <td className="border border-neutral-200 px-4 py-2">
@@ -955,7 +1002,9 @@ const TripManager: React.FC<TripManagerProps> = ({
               {/* Recommendations */}
               {comparison.comparison.analysis.recommendations.length > 0 && (
                 <div>
-                  <h4 className="font-medium text-neutral-800 mb-3">Recommendations</h4>
+                  <h4 className="font-medium text-neutral-800 mb-3">
+                    {t('planning.tripMgr.recommendations')}
+                  </h4>
                   <div className="space-y-3">
                     {comparison.comparison.analysis.recommendations.map((rec, index) => {
                       const trip = comparison.trips.find(t => t.metadata.id === rec.tripId);
@@ -997,7 +1046,9 @@ const TripManager: React.FC<TripManagerProps> = ({
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
             <div className="p-4 border-b">
-              <h3 className="text-lg font-display font-semibold">Save Current Trip</h3>
+              <h3 className="text-lg font-display font-semibold">
+                {t('planning.tripMgr.saveTripTitle')}
+              </h3>
             </div>
             <div className="p-4 space-y-4">
               <div>
@@ -1005,7 +1056,7 @@ const TripManager: React.FC<TripManagerProps> = ({
                   htmlFor="trip-save-name"
                   className="block text-sm font-medium text-neutral-700 mb-1"
                 >
-                  Trip Name *
+                  {t('planning.tripMgr.tripNameLabel')}
                 </label>
                 <input
                   id="trip-save-name"
@@ -1013,7 +1064,7 @@ const TripManager: React.FC<TripManagerProps> = ({
                   value={saveData.name}
                   onChange={e => setSaveData({ ...saveData, name: e.target.value })}
                   className="w-full px-3 py-2 border rounded-lg"
-                  placeholder="My European Adventure"
+                  placeholder={t('planning.tripMgr.tripNamePlaceholder')}
                 />
               </div>
 
@@ -1022,7 +1073,7 @@ const TripManager: React.FC<TripManagerProps> = ({
                   htmlFor="trip-save-description"
                   className="block text-sm font-medium text-neutral-700 mb-1"
                 >
-                  Description
+                  {t('planning.tripMgr.descriptionLabel')}
                 </label>
                 <textarea
                   id="trip-save-description"
@@ -1030,7 +1081,7 @@ const TripManager: React.FC<TripManagerProps> = ({
                   onChange={e => setSaveData({ ...saveData, description: e.target.value })}
                   className="w-full px-3 py-2 border rounded-lg resize-none"
                   rows={3}
-                  placeholder="Describe your trip..."
+                  placeholder={t('planning.tripMgr.descriptionPlaceholder')}
                 />
               </div>
 
@@ -1039,7 +1090,7 @@ const TripManager: React.FC<TripManagerProps> = ({
                   htmlFor="trip-save-category"
                   className="block text-sm font-medium text-neutral-700 mb-1"
                 >
-                  Category
+                  {t('planning.tripMgr.categoryLabel')}
                 </label>
                 <select
                   id="trip-save-category"
@@ -1052,11 +1103,11 @@ const TripManager: React.FC<TripManagerProps> = ({
                   }
                   className="w-full px-3 py-2 border rounded-lg"
                 >
-                  <option value="leisure">Leisure</option>
-                  <option value="adventure">Adventure</option>
-                  <option value="romantic">Romantic</option>
-                  <option value="family">Family</option>
-                  <option value="business">Business</option>
+                  <option value="leisure">{t('planning.tripMgr.leisure')}</option>
+                  <option value="adventure">{t('planning.tripMgr.adventure')}</option>
+                  <option value="romantic">{t('planning.tripMgr.romantic')}</option>
+                  <option value="family">{t('planning.tripMgr.family')}</option>
+                  <option value="business">{t('planning.tripMgr.business')}</option>
                 </select>
               </div>
 
@@ -1065,7 +1116,7 @@ const TripManager: React.FC<TripManagerProps> = ({
                   htmlFor="trip-save-tags"
                   className="block text-sm font-medium text-neutral-700 mb-1"
                 >
-                  Tags (comma-separated)
+                  {t('planning.tripMgr.tagsLabel')}
                 </label>
                 <input
                   id="trip-save-tags"
@@ -1081,7 +1132,7 @@ const TripManager: React.FC<TripManagerProps> = ({
                     })
                   }
                   className="w-full px-3 py-2 border rounded-lg"
-                  placeholder="scenic, historic, wine-tasting"
+                  placeholder={t('planning.tripMgr.tagsPlaceholder')}
                 />
               </div>
             </div>
@@ -1090,14 +1141,14 @@ const TripManager: React.FC<TripManagerProps> = ({
                 onClick={() => setShowSaveModal(false)}
                 className="px-4 py-2 border rounded-lg hover:bg-neutral-50"
               >
-                Cancel
+                {t('planning.tripMgr.cancelButton')}
               </button>
               <button
                 onClick={confirmSaveTrip}
                 disabled={!saveData.name.trim()}
                 className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50"
               >
-                Save Trip
+                {t('planning.tripMgr.saveTripButton')}
               </button>
             </div>
           </div>
@@ -1109,14 +1160,16 @@ const TripManager: React.FC<TripManagerProps> = ({
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-xl max-w-lg w-full mx-4">
             <div className="p-4 border-b">
-              <h3 className="text-lg font-display font-semibold">Import Trip</h3>
+              <h3 className="text-lg font-display font-semibold">
+                {t('planning.tripMgr.importTripTitle')}
+              </h3>
             </div>
             <div className="p-4">
               <label
                 htmlFor="trip-import-data"
                 className="block text-sm font-medium text-neutral-700 mb-2"
               >
-                Paste trip data (JSON format):
+                {t('planning.tripMgr.importDataLabel')}
               </label>
               <textarea
                 id="trip-import-data"
@@ -1124,7 +1177,7 @@ const TripManager: React.FC<TripManagerProps> = ({
                 onChange={e => setImportData(e.target.value)}
                 className="w-full px-3 py-2 border rounded-lg resize-none font-mono text-sm"
                 rows={8}
-                placeholder="Paste the exported trip JSON data here..."
+                placeholder={t('planning.tripMgr.importDataPlaceholder')}
               />
             </div>
             <div className="p-4 border-t flex justify-end gap-2">
@@ -1132,14 +1185,14 @@ const TripManager: React.FC<TripManagerProps> = ({
                 onClick={() => setShowImportModal(false)}
                 className="px-4 py-2 border rounded-lg hover:bg-neutral-50"
               >
-                Cancel
+                {t('planning.tripMgr.cancelButton')}
               </button>
               <button
                 onClick={handleImportTrip}
                 disabled={!importData.trim()}
                 className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50"
               >
-                Import Trip
+                {t('planning.tripMgr.importTripButton')}
               </button>
             </div>
           </div>
@@ -1151,20 +1204,22 @@ const TripManager: React.FC<TripManagerProps> = ({
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
             <div className="p-4 border-b">
-              <h3 className="text-lg font-display font-semibold">Export Trip</h3>
+              <h3 className="text-lg font-display font-semibold">
+                {t('planning.tripMgr.exportTripTitle')}
+              </h3>
             </div>
             <div className="p-4 space-y-4">
               {/* Format Selection */}
               <div>
                 <span className="block text-sm font-medium text-neutral-700 mb-2">
-                  Export Format
+                  {t('planning.tripMgr.exportFormatLabel')}
                 </span>
                 <div className="grid grid-cols-2 gap-2">
                   {[
-                    { id: 'gpx', label: 'GPX', desc: 'For GPS devices' },
-                    { id: 'kml', label: 'KML', desc: 'For Google Earth' },
-                    { id: 'json', label: 'JSON', desc: 'Complete trip data' },
-                    { id: 'csv', label: 'CSV', desc: 'For spreadsheets' },
+                    { id: 'gpx', label: 'GPX', desc: t('planning.tripMgr.gpxDesc') },
+                    { id: 'kml', label: 'KML', desc: t('planning.tripMgr.kmlDesc') },
+                    { id: 'json', label: 'JSON', desc: t('planning.tripMgr.jsonDesc') },
+                    { id: 'csv', label: 'CSV', desc: t('planning.tripMgr.csvDesc') },
                   ].map(format => (
                     <label
                       key={format.id}
@@ -1201,15 +1256,18 @@ const TripManager: React.FC<TripManagerProps> = ({
               {/* Export Options */}
               <div>
                 <span className="block text-sm font-medium text-neutral-700 mb-2">
-                  Include Data
+                  {t('planning.tripMgr.includeDataLabel')}
                 </span>
                 <div className="space-y-2">
                   {[
-                    { key: 'includeWaypoints', label: 'Route Waypoints' },
-                    { key: 'includeTrackPoints', label: 'Track Points' },
-                    { key: 'includeInstructions', label: 'Turn Instructions' },
-                    { key: 'includeElevation', label: 'Elevation Data' },
-                    { key: 'includeMetadata', label: 'Trip Metadata' },
+                    { key: 'includeWaypoints', label: t('planning.tripMgr.includeWaypoints') },
+                    { key: 'includeTrackPoints', label: t('planning.tripMgr.includeTrackPoints') },
+                    {
+                      key: 'includeInstructions',
+                      label: t('planning.tripMgr.includeInstructions'),
+                    },
+                    { key: 'includeElevation', label: t('planning.tripMgr.includeElevation') },
+                    { key: 'includeMetadata', label: t('planning.tripMgr.includeMetadata') },
                   ].map(option => (
                     <label key={option.key} className="flex items-center space-x-2">
                       <input
@@ -1235,14 +1293,14 @@ const TripManager: React.FC<TripManagerProps> = ({
                   htmlFor="trip-export-creator"
                   className="block text-sm font-medium text-neutral-700 mb-1"
                 >
-                  Creator
+                  {t('planning.tripMgr.creatorLabel')}
                 </label>
                 <input
                   id="trip-export-creator"
                   type="text"
                   value={exportOptions.creator || ''}
                   onChange={e => setExportOptions(prev => ({ ...prev, creator: e.target.value }))}
-                  placeholder="European Camper Trip Planner"
+                  placeholder={t('nav.siteName')}
                   className="w-full px-3 py-2 border rounded-lg text-sm"
                 />
               </div>
@@ -1255,14 +1313,16 @@ const TripManager: React.FC<TripManagerProps> = ({
                 }}
                 className="px-4 py-2 border rounded-lg hover:bg-neutral-50"
               >
-                Cancel
+                {t('planning.tripMgr.cancelButton')}
               </button>
               <button
                 onClick={confirmExportTrip}
                 disabled={isLoading}
                 className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50"
               >
-                {isLoading ? 'Exporting...' : 'Export Trip'}
+                {isLoading
+                  ? t('planning.tripMgr.exportingButton')
+                  : t('planning.tripMgr.exportTripButton')}
               </button>
             </div>
           </div>
@@ -1272,10 +1332,10 @@ const TripManager: React.FC<TripManagerProps> = ({
       {/* Delete Confirmation Dialog */}
       <ConfirmDialog
         isOpen={!!deletingTripId}
-        title="Delete Trip"
-        message={`Are you sure you want to delete "${deletingTripName}"? This action cannot be undone.`}
-        confirmLabel="Delete"
-        cancelLabel="Cancel"
+        title={t('planning.tripMgr.deleteTripTitle')}
+        message={t('planning.tripMgr.deleteConfirm', { name: deletingTripName })}
+        confirmLabel={t('planning.tripMgr.deleteButton')}
+        cancelLabel={t('planning.tripMgr.cancelButton')}
         confirmVariant="danger"
         onConfirm={confirmDeleteTrip}
         onCancel={() => setDeletingTripId(null)}

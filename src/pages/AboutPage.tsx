@@ -3,6 +3,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   Shield,
   Route,
@@ -21,33 +22,33 @@ import SEOHead from '../components/seo/SEOHead';
 const FEATURES = [
   {
     icon: Route,
-    title: 'Camper-Safe Routing',
-    description: 'Routes that respect your vehicle height, weight, width and length limits.',
+    titleKey: 'about.features.routing.title',
+    descKey: 'about.features.routing.description',
   },
   {
     icon: Tent,
-    title: 'Campsite Database',
-    description: 'Thousands of campsites, aires, and caravan sites across Europe.',
+    titleKey: 'about.features.database.title',
+    descKey: 'about.features.database.description',
   },
   {
     icon: Truck,
-    title: 'Vehicle Profiles',
-    description: 'Configure your exact vehicle dimensions for safe route planning.',
+    titleKey: 'about.features.profiles.title',
+    descKey: 'about.features.profiles.description',
   },
   {
     icon: Download,
-    title: 'GPX Export',
-    description: 'Export routes to your GPS device in GPX, KML, or JSON formats.',
+    titleKey: 'about.features.export.title',
+    descKey: 'about.features.export.description',
   },
   {
     icon: Shield,
-    title: 'Privacy First',
-    description: 'No accounts required. Your data stays on your device, always.',
+    titleKey: 'about.features.privacy.title',
+    descKey: 'about.features.privacy.description',
   },
   {
     icon: Globe,
-    title: 'All of Europe',
-    description: 'Covering 40+ countries from Portugal to Norway, Iceland to Greece.',
+    titleKey: 'about.features.globe.title',
+    descKey: 'about.features.globe.description',
   },
 ];
 
@@ -67,6 +68,8 @@ const COUNTRIES = [
 ];
 
 const AboutPage: React.FC = () => {
+  const { t } = useTranslation();
+
   return (
     <div className="min-h-screen bg-neutral-50 animate-fade-in">
       <SEOHead
@@ -86,23 +89,20 @@ const AboutPage: React.FC = () => {
           <div className="text-center">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/15 rounded-full text-sm font-medium mb-6 backdrop-blur-sm">
               <MapPin className="w-4 h-4" />
-              Free trip planning for Europe
+              {t('about.hero.badge')}
             </div>
             <h1 className="text-4xl sm:text-5xl font-display font-bold mb-4 tracking-tight">
-              European Camper
-              <br />
-              Trip Planner
+              {t('about.hero.title')}
             </h1>
             <p className="text-lg sm:text-xl text-primary-100 max-w-2xl mx-auto leading-relaxed">
-              The first comprehensive, free camper trip planning platform designed specifically for
-              European travel.
+              {t('about.hero.subtitle')}
             </p>
             <div className="mt-8">
               <Link
                 to="/"
                 className="inline-flex items-center gap-2 px-6 py-3 bg-accent-500 text-white rounded-lg font-display font-semibold hover:bg-accent-600 transition-all duration-200 shadow-lg hover:shadow-xl active:scale-[0.97]"
               >
-                Start Planning
+                {t('about.startPlanning')}
                 <ChevronRight className="w-5 h-5" />
               </Link>
             </div>
@@ -113,34 +113,32 @@ const AboutPage: React.FC = () => {
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Mission Card */}
         <div className="bg-white rounded-xl shadow-soft p-8 mb-12 -mt-8 relative z-10">
-          <h2 className="text-2xl font-display font-bold text-neutral-900 mb-3">Our Mission</h2>
-          <p className="text-neutral-600 leading-relaxed text-lg">
-            While North America has tools like RV LIFE Trip Wizard, Europe&apos;s 15+ million camper
-            travellers have been left without a dedicated solution. We believe comprehensive trip
-            planning should be accessible to everyone, regardless of budget.
-          </p>
+          <h2 className="text-2xl font-display font-bold text-neutral-900 mb-3">
+            {t('about.missionTitle')}
+          </h2>
+          <p className="text-neutral-600 leading-relaxed text-lg">{t('about.missionText')}</p>
         </div>
 
         {/* Features Grid */}
         <div className="mb-12">
           <h2 className="text-2xl font-display font-bold text-neutral-900 mb-6 text-center">
-            Everything you need to plan your trip
+            {t('about.featuresTitle')}
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {FEATURES.map(feature => {
               const Icon = feature.icon;
               return (
                 <div
-                  key={feature.title}
+                  key={feature.titleKey}
                   className="bg-white rounded-xl shadow-soft p-6 hover:shadow-medium hover:-translate-y-1 transition-all duration-200"
                 >
                   <div className="w-11 h-11 bg-primary-50 rounded-lg flex items-center justify-center mb-4">
                     <Icon className="w-5 h-5 text-primary-600" />
                   </div>
                   <h3 className="text-base font-display font-semibold text-neutral-900 mb-1.5">
-                    {feature.title}
+                    {t(feature.titleKey)}
                   </h3>
-                  <p className="text-sm text-neutral-500 leading-relaxed">{feature.description}</p>
+                  <p className="text-sm text-neutral-500 leading-relaxed">{t(feature.descKey)}</p>
                 </div>
               );
             })}
@@ -155,15 +153,9 @@ const AboutPage: React.FC = () => {
             </div>
             <div>
               <h2 className="text-xl font-display font-bold text-accent-900 mb-2">
-                Why is it free?
+                {t('about.whyFreeTitle')}
               </h2>
-              <p className="text-accent-800 leading-relaxed">
-                Current trip planning requires £65-150+/year in subscriptions plus hours of manual
-                research across multiple fragmented tools. We built this using free open-source
-                tools and static hosting — so there are no running costs to pass on to you. When you
-                book campsites through our links, we may earn a small commission at no extra cost to
-                you, which helps fund development.
-              </p>
+              <p className="text-accent-800 leading-relaxed">{t('about.whyFreeText')}</p>
             </div>
           </div>
         </div>
@@ -171,7 +163,7 @@ const AboutPage: React.FC = () => {
         {/* Countries Grid */}
         <div className="mb-12">
           <h2 className="text-2xl font-display font-bold text-neutral-900 mb-6 text-center">
-            Explore 40+ European countries
+            {t('about.countriesTitle')}
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
             {COUNTRIES.map(country => (
@@ -183,10 +175,7 @@ const AboutPage: React.FC = () => {
               </div>
             ))}
           </div>
-          <p className="text-center text-sm text-neutral-400 mt-3">
-            ...and many more including UK, Ireland, Denmark, Finland, Poland, Czech Republic,
-            Hungary, Romania, and beyond.
-          </p>
+          <p className="text-center text-sm text-neutral-400 mt-3">{t('about.countriesFooter')}</p>
         </div>
 
         {/* Support Card */}
@@ -197,19 +186,16 @@ const AboutPage: React.FC = () => {
             </div>
             <div>
               <h2 className="text-xl font-display font-bold text-neutral-900 mb-2">
-                Support this project
+                {t('about.supportTitle')}
               </h2>
-              <p className="text-neutral-600 leading-relaxed mb-4">
-                If this tool helps you plan your travels, consider supporting its development. Every
-                contribution helps keep the app free and fund new features.
-              </p>
+              <p className="text-neutral-600 leading-relaxed mb-4">{t('about.supportText')}</p>
               <div className="flex flex-wrap gap-3">
                 <Link
                   to="/support"
                   className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#FF5E5B] text-white rounded-lg font-display font-semibold hover:bg-[#e54e4b] transition-all duration-200 text-sm"
                 >
                   <Heart className="w-4 h-4" />
-                  Support Us
+                  {t('about.supportButton')}
                 </Link>
                 <a
                   href="https://ko-fi.com/camperplanning"
@@ -217,7 +203,7 @@ const AboutPage: React.FC = () => {
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 px-5 py-2.5 border border-neutral-300 text-neutral-700 rounded-lg font-medium hover:bg-neutral-50 transition-all duration-200 text-sm"
                 >
-                  Buy us a coffee
+                  {t('common.buyACoffee')}
                   <ExternalLink className="w-3.5 h-3.5" />
                 </a>
               </div>
@@ -228,16 +214,14 @@ const AboutPage: React.FC = () => {
         {/* CTA */}
         <div className="text-center bg-white rounded-xl shadow-soft p-8">
           <h2 className="text-2xl font-display font-bold text-neutral-900 mb-3">
-            Ready to hit the road?
+            {t('about.ctaTitle')}
           </h2>
-          <p className="text-neutral-500 mb-6">
-            Start planning your next European camper adventure — no sign-up required.
-          </p>
+          <p className="text-neutral-500 mb-6">{t('about.ctaText')}</p>
           <Link
             to="/"
             className="inline-flex items-center gap-2 px-6 py-3 bg-primary-600 text-white rounded-lg font-display font-semibold hover:bg-primary-700 transition-all duration-200 shadow-sm hover:shadow-medium active:scale-[0.97]"
           >
-            Open the Planner
+            {t('about.openPlanner')}
             <ChevronRight className="w-5 h-5" />
           </Link>
         </div>

@@ -2,6 +2,7 @@
 // Phase 1.5: Basic map foundation with React-Leaflet
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { MapContainer as LeafletMapContainer, useMap, useMapEvents } from 'react-leaflet';
 import * as L from 'leaflet';
 import { FeatureFlags } from '../../config';
@@ -159,6 +160,7 @@ const MapController: React.FC = () => {
 };
 
 const MapContainer: React.FC = () => {
+  const { t } = useTranslation();
   const { center, zoom } = useMapStore();
   const { waypoints, clearRoute, undo, redo, canUndo, canRedo, calculatedRoute } = useRouteStore();
   const { addNotification, openVehicleSidebar } = useUIStore();
@@ -379,8 +381,10 @@ const MapContainer: React.FC = () => {
     return (
       <div className="h-full flex items-center justify-center bg-neutral-100">
         <div className="text-center">
-          <h3 className="text-lg font-medium text-neutral-500 mb-2">Map Display Disabled</h3>
-          <p className="text-sm text-neutral-400">Enable BASIC_MAP_DISPLAY feature flag</p>
+          <h3 className="text-lg font-medium text-neutral-500 mb-2">
+            {t('map.featureDisabled.title')}
+          </h3>
+          <p className="text-sm text-neutral-400">{t('map.featureDisabled.message')}</p>
         </div>
       </div>
     );
@@ -413,7 +417,7 @@ const MapContainer: React.FC = () => {
     } catch {
       addNotification({
         type: 'warning',
-        message: 'Fullscreen mode not supported in this browser',
+        message: t('map.notify.fullscreenUnsupported'),
       });
     }
   };
@@ -422,7 +426,7 @@ const MapContainer: React.FC = () => {
     useMapStore.setState({ center: MAP_CONFIG.defaultCenter, zoom: MAP_CONFIG.defaultZoom });
     addNotification({
       type: 'info',
-      message: 'Map view reset to Europe',
+      message: t('map.notify.viewReset'),
     });
   };
 
@@ -456,7 +460,7 @@ const MapContainer: React.FC = () => {
     setShowCampsiteRecommendations(false);
     addNotification({
       type: 'info',
-      message: `Selected ${campsite.name || campsite.type}`,
+      message: t('map.notify.selectedCampsite', { name: campsite.name || campsite.type }),
     });
 
     // Enrich unnamed/addressless campsites with reverse geocoding (non-blocking)
@@ -491,7 +495,7 @@ const MapContainer: React.FC = () => {
         <div className="absolute inset-0 bg-neutral-100 flex items-center justify-center z-20">
           <div className="text-center">
             <div className="animate-spin rounded-full h-8 w-8 border-2 border-primary-600 border-t-transparent mx-auto mb-3"></div>
-            <p className="text-sm text-neutral-600">Loading European map...</p>
+            <p className="text-sm text-neutral-600">{t('map.loading')}</p>
           </div>
         </div>
       )}
@@ -579,7 +583,7 @@ const MapContainer: React.FC = () => {
                       }
                       addNotification({
                         type: 'info',
-                        message: `Navigated to ${location.name}`,
+                        message: t('map.notify.navigatedTo', { name: location.name }),
                       });
                     }}
                   />
@@ -613,7 +617,7 @@ const MapContainer: React.FC = () => {
                     }
                     addNotification({
                       type: 'info',
-                      message: `Navigated to ${location.name}`,
+                      message: t('map.notify.navigatedTo', { name: location.name }),
                     });
                   }}
                 />
@@ -673,7 +677,9 @@ const MapContainer: React.FC = () => {
             {/* Mobile sheet */}
             <div className="fixed inset-y-0 right-0 z-40 w-full bg-white border-l border-neutral-200 shadow-xl md:hidden overflow-y-auto">
               <div className="flex items-center justify-between p-4 border-b border-neutral-200 bg-green-50 sticky top-0">
-                <h2 className="text-lg font-semibold text-neutral-900">Campsite Settings</h2>
+                <h2 className="text-lg font-semibold text-neutral-900">
+                  {t('map.panel.campsiteSettings')}
+                </h2>
                 <button
                   onClick={() => setShowCampsiteControls(false)}
                   className="p-1.5 hover:bg-green-200 rounded-lg transition-colors"
@@ -736,7 +742,9 @@ const MapContainer: React.FC = () => {
           {/* Mobile sheet */}
           <div className="fixed inset-y-0 right-0 z-40 w-full bg-white border-l border-neutral-200 shadow-xl md:hidden overflow-y-auto">
             <div className="flex items-center justify-between p-4 border-b border-neutral-200 bg-green-50 sticky top-0">
-              <h2 className="text-lg font-semibold text-neutral-900">Campsite Filters</h2>
+              <h2 className="text-lg font-semibold text-neutral-900">
+                {t('map.panel.campsiteFilters')}
+              </h2>
               <button
                 onClick={() => setShowCampsiteFilter(false)}
                 className="p-1.5 hover:bg-green-200 rounded-lg transition-colors"
@@ -813,8 +821,8 @@ const MapContainer: React.FC = () => {
                 ? 'hover:bg-neutral-50 text-neutral-700'
                 : 'text-neutral-300 cursor-not-allowed'
             )}
-            title="Undo (Ctrl+Z)"
-            aria-label="Undo last action"
+            title={t('map.controls.undoTitle')}
+            aria-label={t('map.controls.undoLabel')}
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
@@ -834,8 +842,8 @@ const MapContainer: React.FC = () => {
                 ? 'hover:bg-neutral-50 text-neutral-700'
                 : 'text-neutral-300 cursor-not-allowed'
             )}
-            title="Redo (Ctrl+Y)"
-            aria-label="Redo last action"
+            title={t('map.controls.redoTitle')}
+            aria-label={t('map.controls.redoLabel')}
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
@@ -906,8 +914,10 @@ const MapContainer: React.FC = () => {
                   ? 'bg-green-600 text-white hover:bg-green-700'
                   : 'bg-white text-neutral-700 hover:bg-neutral-50'
               )}
-              title={campsitesVisible ? 'Hide campsites' : 'Show campsites'}
-              aria-label="Toggle campsites"
+              title={
+                campsitesVisible ? t('map.controls.hideCampsites') : t('map.controls.showCampsites')
+              }
+              aria-label={t('map.controls.toggleCampsites')}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
@@ -934,8 +944,8 @@ const MapContainer: React.FC = () => {
                     ? 'bg-green-100 text-green-700'
                     : 'bg-white text-neutral-500 hover:text-neutral-700'
                 )}
-                title="Campsite filters"
-                aria-label="Toggle campsite filters"
+                title={t('map.controls.campsiteFilters')}
+                aria-label={t('map.controls.toggleCampsiteFilters')}
               >
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
@@ -963,15 +973,17 @@ const MapContainer: React.FC = () => {
           <div className="bg-white/90 backdrop-blur-sm rounded-lg shadow-sm px-3 py-1.5 text-xs text-neutral-500 animate-fade-in">
             <div className="flex items-center gap-3">
               <span className="text-primary-600 font-medium">
-                {waypoints.length} waypoint{waypoints.length !== 1 ? 's' : ''}
+                {t('map.info.waypointCount', { count: waypoints.length })}
               </span>
               {waypoints.length === 0 && (
-                <span className="text-neutral-400">Right-click map to add</span>
+                <span className="text-neutral-400">{t('map.info.hintRightClick')}</span>
               )}
               {waypoints.length === 1 && (
-                <span className="text-orange-500">Add 1 more for routing</span>
+                <span className="text-orange-500">{t('map.info.hintAddMore')}</span>
               )}
-              {waypoints.length >= 2 && <span className="text-green-600">✓ Ready</span>}
+              {waypoints.length >= 2 && (
+                <span className="text-green-600">{t('map.info.ready')}</span>
+              )}
             </div>
           </div>
         </div>
@@ -982,17 +994,17 @@ const MapContainer: React.FC = () => {
       {/* Contextual Nudges — progressive discovery toasts */}
       <ContextualNudge
         nudgeId="first-waypoint"
-        message="Add a second stop to calculate your route — search above or toggle campsites to browse."
+        message={t('map.nudge.firstWaypoint')}
         show={!isTourActive && waypoints.length === 1}
       />
       <ContextualNudge
         nudgeId="route-ready"
-        message="Your route is ready! Open the Tools menu for vehicle setup, cost estimates, and daily stages."
+        message={t('map.nudge.routeReady')}
         show={!isTourActive && waypoints.length >= 2 && !!calculatedRoute}
       />
       <ContextualNudge
         nudgeId="campsites-on"
-        message="Zoom in to see individual campsites. Click any marker for details."
+        message={t('map.nudge.campsitesOn')}
         show={!isTourActive && (showCampsiteControls || showCampsiteFilter)}
       />
 
@@ -1044,19 +1056,21 @@ const MapContainer: React.FC = () => {
             <div className="flex items-center justify-between p-4 border-b border-neutral-200 bg-neutral-50">
               <div className="flex items-center space-x-3">
                 <h2 className="text-lg font-display font-semibold text-neutral-900">
-                  Route Details
+                  {t('map.routePanel.title')}
                 </h2>
                 {calculatedRoute.alternativeRoutes &&
                   calculatedRoute.alternativeRoutes.length > 0 && (
                     <span className="bg-primary-100 text-primary-800 text-xs px-2 py-1 rounded-full">
-                      +{calculatedRoute.alternativeRoutes.length} alternatives
+                      {t('map.routePanel.alternatives', {
+                        count: calculatedRoute.alternativeRoutes.length,
+                      })}
                     </span>
                   )}
               </div>
               <button
                 onClick={() => setShowRouteInfo(false)}
                 className="p-1 hover:bg-neutral-200 rounded transition-colors"
-                aria-label="Close route information"
+                aria-label={t('map.routePanel.closeLabel')}
               >
                 <svg
                   className="w-5 h-5 text-neutral-500"
@@ -1086,7 +1100,7 @@ const MapContainer: React.FC = () => {
                       : 'text-neutral-500 hover:text-neutral-700'
                   )}
                 >
-                  Route Info
+                  {t('map.routePanel.infoTab')}
                 </button>
                 <button
                   onClick={() => setRouteInfoTab('comparison')}
@@ -1097,7 +1111,7 @@ const MapContainer: React.FC = () => {
                       : 'text-neutral-500 hover:text-neutral-700'
                   )}
                 >
-                  Compare Routes
+                  {t('map.routePanel.comparisonTab')}
                 </button>
               </div>
             )}
@@ -1153,12 +1167,12 @@ const MapContainer: React.FC = () => {
             {/* Panel Header */}
             <div className="flex items-center justify-between p-4 border-b border-neutral-200 bg-orange-50">
               <h2 className="text-lg font-display font-semibold text-neutral-900">
-                Route Optimizer
+                {t('map.panel.routeOptimizer')}
               </h2>
               <button
                 onClick={() => setShowRouteOptimizer(false)}
                 className="p-1 hover:bg-orange-200 rounded transition-colors"
-                aria-label="Close optimizer"
+                aria-label={t('map.panel.closeOptimizer')}
               >
                 <svg
                   className="w-5 h-5 text-neutral-500"
@@ -1199,12 +1213,12 @@ const MapContainer: React.FC = () => {
             {/* Panel Header */}
             <div className="flex items-center justify-between p-4 border-b border-neutral-200 bg-emerald-50">
               <h2 className="text-lg font-display font-semibold text-neutral-900">
-                Trip Cost Calculator
+                {t('map.panel.costCalculator')}
               </h2>
               <button
                 onClick={() => setShowCostCalculator(false)}
                 className="p-1 hover:bg-emerald-200 rounded transition-colors"
-                aria-label="Close cost calculator"
+                aria-label={t('map.panel.closeCostCalculator')}
               >
                 <svg
                   className="w-5 h-5 text-neutral-500"
@@ -1241,11 +1255,13 @@ const MapContainer: React.FC = () => {
           <div className="h-full flex flex-col">
             {/* Panel Header */}
             <div className="flex items-center justify-between p-4 border-b border-neutral-200 bg-indigo-50">
-              <h2 className="text-lg font-display font-semibold text-neutral-900">Trip Manager</h2>
+              <h2 className="text-lg font-display font-semibold text-neutral-900">
+                {t('map.panel.tripManager')}
+              </h2>
               <button
                 onClick={() => setShowTripManager(false)}
                 className="p-1 hover:bg-indigo-200 rounded transition-colors"
-                aria-label="Close trip manager"
+                aria-label={t('map.panel.closeTripManager')}
               >
                 <svg
                   className="w-5 h-5 text-neutral-500"
@@ -1296,7 +1312,7 @@ const MapContainer: React.FC = () => {
 
                   addNotification({
                     type: 'success',
-                    message: `Trip "${trip.metadata.name}" loaded`,
+                    message: t('map.notify.tripLoaded', { name: trip.metadata.name }),
                   });
                   setShowTripManager(false);
                 }}
@@ -1316,11 +1332,13 @@ const MapContainer: React.FC = () => {
           <div className="h-full flex flex-col">
             {/* Panel Header */}
             <div className="flex items-center justify-between p-4 border-b border-neutral-200 bg-violet-50">
-              <h2 className="text-lg font-display font-semibold text-neutral-900">Trip Plan</h2>
+              <h2 className="text-lg font-display font-semibold text-neutral-900">
+                {t('map.panel.tripPlan')}
+              </h2>
               <button
                 onClick={() => setShowPlanningTools(false)}
                 className="p-1 hover:bg-violet-200 rounded transition-colors"
-                aria-label="Close trip plan"
+                aria-label={t('map.panel.closeTripPlan')}
               >
                 <svg
                   className="w-5 h-5 text-neutral-500"
@@ -1360,11 +1378,13 @@ const MapContainer: React.FC = () => {
           <div className="h-full flex flex-col">
             {/* Panel Header */}
             <div className="flex items-center justify-between p-4 border-b border-neutral-200 bg-sky-50">
-              <h2 className="text-lg font-display font-semibold text-neutral-900">Trip Settings</h2>
+              <h2 className="text-lg font-display font-semibold text-neutral-900">
+                {t('map.panel.tripSettings')}
+              </h2>
               <button
                 onClick={() => setShowTripSettings(false)}
                 className="p-1 hover:bg-sky-200 rounded transition-colors"
-                aria-label="Close trip settings"
+                aria-label={t('map.panel.closeTripSettings')}
               >
                 <svg
                   className="w-5 h-5 text-neutral-500"
@@ -1393,15 +1413,15 @@ const MapContainer: React.FC = () => {
       {/* Clear confirmation dialog */}
       <ConfirmDialog
         isOpen={showConfirmClear}
-        title="Clear All Waypoints"
-        message={`Are you sure you want to remove all ${waypoints.length} waypoints? This can be undone.`}
-        confirmLabel="Clear All"
+        title={t('map.clearConfirm.title')}
+        message={t('map.clearConfirm.message', { count: waypoints.length })}
+        confirmLabel={t('map.clearConfirm.confirm')}
         confirmVariant="danger"
         onConfirm={() => {
           clearRoute();
           addNotification({
             type: 'success',
-            message: 'All waypoints cleared',
+            message: t('map.clearConfirm.success'),
           });
           setShowConfirmClear(false);
         }}

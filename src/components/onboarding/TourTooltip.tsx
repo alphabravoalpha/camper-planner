@@ -2,6 +2,7 @@
 // Positioned card that shows step content, progress, and navigation
 
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { cn } from '../../utils/cn';
 import {
   MapPin,
@@ -85,6 +86,7 @@ const TourTooltip: React.FC<TourTooltipProps> = ({
   isLastStep,
   containerRef,
 }) => {
+  const { t } = useTranslation();
   const Icon = ICON_MAP[step.iconKey];
   const isWelcome = step.variant === 'welcome';
 
@@ -108,7 +110,7 @@ const TourTooltip: React.FC<TourTooltipProps> = ({
       <button
         onClick={onSkip}
         className="absolute top-3 right-3 text-neutral-400 hover:text-neutral-600 transition-colors"
-        aria-label="Close tour"
+        aria-label={t('tour.closeTour')}
       >
         <X className="w-4 h-4" />
       </button>
@@ -135,7 +137,7 @@ const TourTooltip: React.FC<TourTooltipProps> = ({
             id={`tour-step-${step.id}`}
             className="text-lg font-display font-bold text-neutral-900 leading-tight text-center mb-2"
           >
-            {step.headline}
+            {t(step.titleKey)}
           </h2>
 
           {/* Subtitle */}
@@ -143,16 +145,16 @@ const TourTooltip: React.FC<TourTooltipProps> = ({
             id={`tour-desc-${step.id}`}
             className="text-sm text-neutral-600 leading-relaxed text-center mb-4"
           >
-            {step.body}
+            {t(step.descriptionKey)}
           </p>
 
           {/* Feature list */}
-          {step.features && (
+          {step.featureKeys && (
             <ul className="space-y-2 mb-4">
-              {step.features.map((feature, i) => (
+              {step.featureKeys.map((featureKey, i) => (
                 <li key={i} className="flex items-start gap-2 text-xs text-neutral-600">
                   <CheckCircle className="w-3.5 h-3.5 text-success-500 flex-shrink-0 mt-0.5" />
-                  <span>{feature}</span>
+                  <span>{t(featureKey)}</span>
                 </li>
               ))}
             </ul>
@@ -170,14 +172,14 @@ const TourTooltip: React.FC<TourTooltipProps> = ({
                 id={`tour-step-${step.id}`}
                 className="text-base font-display font-bold text-neutral-900 leading-tight"
               >
-                {step.headline}
+                {t(step.titleKey)}
               </h2>
             </div>
           </div>
 
           {/* Body */}
           <p id={`tour-desc-${step.id}`} className="text-sm text-neutral-600 leading-relaxed mb-3">
-            {step.body}
+            {t(step.descriptionKey)}
           </p>
 
           {/* Tools list (optional — used by toolkit step) */}
@@ -187,8 +189,8 @@ const TourTooltip: React.FC<TourTooltipProps> = ({
                 <li key={i} className="flex items-start gap-2 text-sm text-neutral-700">
                   <span className="flex-shrink-0">{tool.emoji}</span>
                   <span>
-                    <span className="font-medium">{tool.label}</span>
-                    <span className="text-neutral-500"> — {tool.description}</span>
+                    <span className="font-medium">{t(tool.labelKey)}</span>
+                    <span className="text-neutral-500"> — {t(tool.descriptionKey)}</span>
                   </span>
                 </li>
               ))}
@@ -196,10 +198,10 @@ const TourTooltip: React.FC<TourTooltipProps> = ({
           )}
 
           {/* Tip (optional) */}
-          {step.tip && (
+          {step.tipKey && (
             <div className="bg-primary-50 border border-primary-200 rounded-lg p-2.5 text-xs text-primary-800 mb-4">
-              <span className="font-medium">Tip: </span>
-              {step.tip}
+              <span className="font-medium">{t('tour.tipLabel')}</span>
+              {t(step.tipKey)}
             </div>
           )}
         </>
@@ -211,7 +213,7 @@ const TourTooltip: React.FC<TourTooltipProps> = ({
           onClick={onSkip}
           className="text-xs text-neutral-400 hover:text-neutral-600 transition-colors"
         >
-          Skip tour
+          {t('tour.buttonSkip')}
         </button>
         <div className="flex gap-2">
           {!isFirstStep && (
@@ -219,15 +221,19 @@ const TourTooltip: React.FC<TourTooltipProps> = ({
               onClick={onBack}
               className="px-3 py-1.5 text-sm border border-neutral-300 rounded-lg text-neutral-700 hover:bg-neutral-50 transition-colors"
             >
-              Back
+              {t('tour.buttonBack')}
             </button>
           )}
           <button
             onClick={onNext}
             className="px-4 py-1.5 text-sm bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 active:scale-[0.97] transition-all flex items-center gap-1.5"
           >
-            {step.ctaText ?? (isLastStep ? 'Start Planning' : 'Next')}
-            {!step.ctaText && !isLastStep && <ArrowRight className="w-3.5 h-3.5" />}
+            {step.ctaTextKey
+              ? t(step.ctaTextKey)
+              : isLastStep
+                ? t('tour.buttonFinish')
+                : t('tour.buttonNext')}
+            {!step.ctaTextKey && !isLastStep && <ArrowRight className="w-3.5 h-3.5" />}
           </button>
         </div>
       </div>

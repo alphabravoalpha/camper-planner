@@ -12,8 +12,6 @@ interface Language {
   nativeName: string;
 }
 
-const COMPLETE_LANGUAGES = new Set(['en', 'de']);
-
 const supportedLanguages: Language[] = [
   { code: 'en', name: 'English', nativeName: 'English' },
   { code: 'de', name: 'German', nativeName: 'Deutsch' },
@@ -33,7 +31,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   size = 'md',
   className,
 }) => {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -85,7 +83,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
           className
         )}
         onClick={() => setIsOpen(!isOpen)}
-        title="Select language"
+        title={t('language.selectTooltip')}
       >
         <Globe className="w-4 h-4" />
         <span>{currentLanguage.code.toUpperCase()}</span>
@@ -107,7 +105,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
         )}
         aria-expanded={isOpen}
         aria-haspopup="true"
-        aria-label="Select language"
+        aria-label={t('language.selectTooltip')}
       >
         <Globe className="w-4 h-4" aria-hidden="true" />
         <span>{currentLanguage.code.toUpperCase()}</span>
@@ -136,12 +134,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
                 role="menuitem"
               >
                 <div className="flex-1">
-                  <div className="font-medium">
-                    {language.nativeName}
-                    {!COMPLETE_LANGUAGES.has(language.code) && (
-                      <span className="ml-1.5 text-xs text-amber-600 font-normal">(Beta)</span>
-                    )}
-                  </div>
+                  <div className="font-medium">{language.nativeName}</div>
                   {language.nativeName !== language.name && (
                     <div className="text-xs text-neutral-500">{language.name}</div>
                   )}
@@ -167,9 +160,9 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
           {/* Footer */}
           <div className="border-t border-neutral-100 px-3 py-2">
             <p className="text-xs text-neutral-500 text-center">
-              Missing your language?{' '}
+              {t('language.missingLanguage')}{' '}
               <a href="/help" className="text-primary-600 hover:text-primary-500">
-                Let us know
+                {t('language.letUsKnow')}
               </a>
             </p>
           </div>

@@ -2,6 +2,7 @@
 // Phase 6.1: Export Functionality - Export routes to various formats for GPS devices
 
 import React, { useState, useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useRouteStore, useVehicleStore, useTripStore, useUIStore } from '../../store';
 import MultiFormatExportService, {
   type ExportOptions,
@@ -21,17 +22,20 @@ const ExportProgress: React.FC<{
   currentStep: string;
   onCancel?: () => void;
 }> = ({ isExporting, progress, currentStep, onCancel }) => {
+  const { t } = useTranslation();
   if (!isExporting) return null;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-        <h3 className="text-lg font-semibold text-neutral-900 mb-4">Exporting Route</h3>
+        <h3 className="text-lg font-semibold text-neutral-900 mb-4">
+          {t('route.export.exportingTitle')}
+        </h3>
 
         <div className="mb-4">
           <div className="flex justify-between text-sm text-neutral-600 mb-2">
             <span>{currentStep}</span>
-            <span>{Math.round(progress)}%</span>
+            <span>{t('route.export.progress', { progress: Math.round(progress) })}</span>
           </div>
           <div className="w-full bg-neutral-200 rounded-full h-2">
             <div
@@ -47,7 +51,7 @@ const ExportProgress: React.FC<{
               onClick={onCancel}
               className="px-4 py-2 text-neutral-600 hover:text-neutral-800 transition-colors"
             >
-              Cancel
+              {t('route.export.cancel')}
             </button>
           </div>
         )}
@@ -61,6 +65,7 @@ const ExportOptionsPanel: React.FC<{
   options: ExportOptions;
   onChange: (options: ExportOptions) => void;
 }> = ({ options, onChange }) => {
+  const { t } = useTranslation();
   const updateOption = (key: keyof ExportOptions, value: ExportOptions[keyof ExportOptions]) => {
     onChange({ ...options, [key]: value });
   };
@@ -69,13 +74,15 @@ const ExportOptionsPanel: React.FC<{
     <div className="space-y-6">
       {/* Format Selection */}
       <div>
-        <h4 className="text-sm font-medium text-neutral-900 mb-3">Export Format</h4>
+        <h4 className="text-sm font-medium text-neutral-900 mb-3">
+          {t('route.export.formatLabel')}
+        </h4>
         <div className="grid grid-cols-2 gap-3">
           {[
-            { id: 'gpx', label: 'GPX', desc: 'For GPS devices' },
-            { id: 'json', label: 'JSON', desc: 'Complete trip data' },
-            { id: 'kml', label: 'KML', desc: 'For Google Earth' },
-            { id: 'csv', label: 'CSV', desc: 'For spreadsheets' },
+            { id: 'gpx', label: 'GPX', desc: t('route.export.gpxDesc') },
+            { id: 'json', label: 'JSON', desc: t('route.export.jsonDesc') },
+            { id: 'kml', label: 'KML', desc: t('route.export.kmlDesc') },
+            { id: 'csv', label: 'CSV', desc: t('route.export.csvDesc') },
           ].map(format => (
             <label
               key={format.id}
@@ -112,33 +119,35 @@ const ExportOptionsPanel: React.FC<{
 
       {/* Data Inclusion Options */}
       <div>
-        <h4 className="text-sm font-medium text-neutral-900 mb-3">Include Data</h4>
+        <h4 className="text-sm font-medium text-neutral-900 mb-3">
+          {t('route.export.includeDataLabel')}
+        </h4>
         <div className="space-y-2">
           {[
             {
               key: 'includeWaypoints',
-              label: 'Route Waypoints',
-              desc: 'All route points and navigation',
+              label: t('route.export.waypoints'),
+              desc: t('route.export.waypointsDesc'),
             },
             {
               key: 'includeTrackPoints',
-              label: 'Track Points',
-              desc: 'Detailed route path and turns',
+              label: t('route.export.trackPoints'),
+              desc: t('route.export.trackPointsDesc'),
             },
             {
               key: 'includeInstructions',
-              label: 'Turn Instructions',
-              desc: 'Step-by-step navigation instructions',
+              label: t('route.export.instructions'),
+              desc: t('route.export.instructionsDesc'),
             },
             {
               key: 'includeElevation',
-              label: 'Elevation Data',
-              desc: 'Height information for route points',
+              label: t('route.export.elevation'),
+              desc: t('route.export.elevationDesc'),
             },
             {
               key: 'includeMetadata',
-              label: 'Trip Metadata',
-              desc: 'Creation date, author, descriptions',
+              label: t('route.export.metadata'),
+              desc: t('route.export.metadataDesc'),
             },
           ].map(option => (
             <label
@@ -167,21 +176,23 @@ const ExportOptionsPanel: React.FC<{
 
       {/* Custom Metadata */}
       <div>
-        <h4 className="text-sm font-medium text-neutral-900 mb-3">Custom Information</h4>
+        <h4 className="text-sm font-medium text-neutral-900 mb-3">
+          {t('route.export.customInfoLabel')}
+        </h4>
         <div className="space-y-3">
           <div>
             <label
               htmlFor="export-trip-name"
               className="block text-xs font-medium text-neutral-700 mb-1"
             >
-              Trip Name
+              {t('route.export.tripNameLabel')}
             </label>
             <input
               id="export-trip-name"
               type="text"
               value={options.description || ''}
               onChange={e => updateOption('description', e.target.value)}
-              placeholder="My European Camper Trip"
+              placeholder={t('route.export.tripNamePlaceholder')}
               className="w-full p-2 text-sm border border-neutral-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
             />
           </div>
@@ -190,13 +201,13 @@ const ExportOptionsPanel: React.FC<{
               htmlFor="export-description"
               className="block text-xs font-medium text-neutral-700 mb-1"
             >
-              Description
+              {t('route.export.descriptionLabel')}
             </label>
             <textarea
               id="export-description"
               value={options.description || ''}
               onChange={e => updateOption('description', e.target.value)}
-              placeholder="A wonderful journey through Europe..."
+              placeholder={t('route.export.descriptionPlaceholder')}
               rows={2}
               className="w-full p-2 text-sm border border-neutral-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
             />
@@ -206,14 +217,14 @@ const ExportOptionsPanel: React.FC<{
               htmlFor="export-creator"
               className="block text-xs font-medium text-neutral-700 mb-1"
             >
-              Creator
+              {t('route.export.creatorLabel')}
             </label>
             <input
               id="export-creator"
               type="text"
               value={options.creator || ''}
               onChange={e => updateOption('creator', e.target.value)}
-              placeholder="European Camper Trip Planner"
+              placeholder={t('route.export.creatorPlaceholder')}
               className="w-full p-2 text-sm border border-neutral-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
             />
           </div>
@@ -227,11 +238,12 @@ const ExportOptionsPanel: React.FC<{
 const ImportPanel: React.FC<{
   onImportComplete: (result: unknown) => void;
 }> = ({ onImportComplete: _onImportComplete }) => {
+  const { t } = useTranslation();
   return (
     <div>
       <div
         role="region"
-        aria-label="Route import - coming soon"
+        aria-label={t('route.export.importAriaLabel')}
         className="border-2 border-dashed rounded-lg p-8 text-center border-neutral-200 bg-neutral-50"
       >
         <div className="space-y-3">
@@ -249,13 +261,11 @@ const ImportPanel: React.FC<{
             />
           </svg>
           <div>
-            <p className="text-lg font-medium text-neutral-400">Import Route</p>
+            <p className="text-lg font-medium text-neutral-400">{t('route.export.importTitle')}</p>
             <span className="inline-block mt-1 px-3 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded-full">
-              Coming Soon
+              {t('route.export.comingSoon')}
             </span>
-            <p className="text-sm text-neutral-400 mt-2">
-              Route import from GPX, JSON, KML, and CSV files is planned for a future update.
-            </p>
+            <p className="text-sm text-neutral-400 mt-2">{t('route.export.comingSoonText')}</p>
           </div>
         </div>
       </div>
@@ -265,6 +275,7 @@ const ImportPanel: React.FC<{
 
 // Main RouteExporter Component
 const RouteExporter: React.FC<RouteExporterProps> = ({ className }) => {
+  const { t } = useTranslation();
   const { waypoints, calculatedRoute } = useRouteStore();
   const { profile: vehicleProfile } = useVehicleStore();
   const { currentTrip } = useTripStore();
@@ -338,22 +349,22 @@ const RouteExporter: React.FC<RouteExporterProps> = ({ className }) => {
 
     try {
       // Step 1: Prepare data
-      setCurrentStep('Preparing route data...');
+      setCurrentStep(t('route.export.stepPreparing'));
       setExportProgress(10);
       await new Promise(resolve => setTimeout(resolve, 300));
 
       // Step 2: Format conversion
-      setCurrentStep('Converting to export format...');
+      setCurrentStep(t('route.export.stepConverting'));
       setExportProgress(30);
       await new Promise(resolve => setTimeout(resolve, 500));
 
       // Step 3: Add metadata
-      setCurrentStep('Adding metadata and compatibility...');
+      setCurrentStep(t('route.export.stepMetadata'));
       setExportProgress(60);
       await new Promise(resolve => setTimeout(resolve, 400));
 
       // Step 4: Generate file
-      setCurrentStep('Generating export file...');
+      setCurrentStep(t('route.export.stepGenerating'));
       setExportProgress(80);
 
       // Create a mock RouteResponse from waypoints for export
@@ -411,7 +422,7 @@ const RouteExporter: React.FC<RouteExporterProps> = ({ className }) => {
         exportOptions as ExportOptions
       );
 
-      setCurrentStep('Finalizing export...');
+      setCurrentStep(t('route.export.stepFinalizing'));
       setExportProgress(100);
       await new Promise(resolve => setTimeout(resolve, 200));
 
@@ -428,7 +439,7 @@ const RouteExporter: React.FC<RouteExporterProps> = ({ className }) => {
         if (success) {
           addNotification({
             type: 'success',
-            message: `Route exported successfully as ${result.filename}`,
+            message: t('route.export.successMessage', { filename: result.filename }),
           });
         } else {
           throw new Error('Download failed');
@@ -439,7 +450,9 @@ const RouteExporter: React.FC<RouteExporterProps> = ({ className }) => {
     } catch (error) {
       addNotification({
         type: 'error',
-        message: `Export failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        message: t('route.export.errorMessage', {
+          error: error instanceof Error ? error.message : 'Unknown error',
+        }),
       });
     } finally {
       setIsExporting(false);
@@ -473,8 +486,10 @@ const RouteExporter: React.FC<RouteExporterProps> = ({ className }) => {
               d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
             />
           </svg>
-          <h3 className="text-lg font-medium text-neutral-900 mb-1">No Route to Export</h3>
-          <p>Add waypoints to your route to enable export functionality</p>
+          <h3 className="text-lg font-medium text-neutral-900 mb-1">
+            {t('route.export.noRouteTitle')}
+          </h3>
+          <p>{t('route.export.noRouteText')}</p>
         </div>
       </div>
     );
@@ -486,8 +501,8 @@ const RouteExporter: React.FC<RouteExporterProps> = ({ className }) => {
       <div className="border-b border-neutral-200">
         <nav className="-mb-px flex space-x-8 px-4">
           {[
-            { id: 'export', label: 'Export Route', icon: '📤' },
-            { id: 'import', label: 'Import Route', icon: '📥' },
+            { id: 'export', label: t('route.export.exportTab'), icon: '📤' },
+            { id: 'import', label: t('route.export.importTab'), icon: '📥' },
           ].map(tab => (
             <button
               key={tab.id}
@@ -512,10 +527,9 @@ const RouteExporter: React.FC<RouteExporterProps> = ({ className }) => {
           <div className="space-y-6">
             {/* Export Header */}
             <div>
-              <h3 className="text-lg font-semibold text-neutral-900">Export Route</h3>
+              <h3 className="text-lg font-semibold text-neutral-900">{t('route.export.title')}</h3>
               <p className="text-sm text-neutral-600 mt-1">
-                Export your route with {waypoints.length} waypoints to various formats for GPS
-                devices and trip planning
+                {t('route.export.exportDescription', { count: waypoints.length })}
               </p>
             </div>
 
@@ -524,24 +538,26 @@ const RouteExporter: React.FC<RouteExporterProps> = ({ className }) => {
 
             {/* Export Summary */}
             <div className="bg-neutral-50 rounded-lg p-4">
-              <h4 className="text-sm font-medium text-neutral-900 mb-2">Export Summary</h4>
+              <h4 className="text-sm font-medium text-neutral-900 mb-2">
+                {t('route.export.summaryLabel')}
+              </h4>
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
-                  <span className="text-neutral-600">Waypoints:</span>
+                  <span className="text-neutral-600">{t('route.export.waypointsLabel')}</span>
                   <span className="ml-2 font-medium">{waypoints.length}</span>
                 </div>
                 <div>
-                  <span className="text-neutral-600">Format:</span>
+                  <span className="text-neutral-600">{t('route.export.formatSummaryLabel')}</span>
                   <span className="ml-2 font-medium uppercase">{exportOptions.format}</span>
                 </div>
                 <div>
-                  <span className="text-neutral-600">Estimated Size:</span>
+                  <span className="text-neutral-600">{t('route.export.estimatedSizeLabel')}</span>
                   <span className="ml-2 font-medium">{estimatedSize} KB</span>
                 </div>
                 <div>
-                  <span className="text-neutral-600">Creator:</span>
+                  <span className="text-neutral-600">{t('route.export.creatorSummaryLabel')}</span>
                   <span className="ml-2 font-medium">
-                    {exportOptions.creator || 'European Camper Trip Planner'}
+                    {exportOptions.creator || t('route.export.creatorPlaceholder')}
                   </span>
                 </div>
               </div>
@@ -559,7 +575,7 @@ const RouteExporter: React.FC<RouteExporterProps> = ({ className }) => {
                     : 'bg-neutral-300 text-neutral-500 cursor-not-allowed'
                 )}
               >
-                {isExporting ? 'Exporting...' : 'Export Route'}
+                {isExporting ? t('route.export.exportingButton') : t('route.export.exportButton')}
               </button>
             </div>
           </div>
@@ -569,10 +585,10 @@ const RouteExporter: React.FC<RouteExporterProps> = ({ className }) => {
           <div className="space-y-6">
             {/* Import Header */}
             <div>
-              <h3 className="text-lg font-semibold text-neutral-900">Import Route</h3>
-              <p className="text-sm text-neutral-600 mt-1">
-                Import routes from GPX, JSON, KML, or CSV files to restore your trip planning
-              </p>
+              <h3 className="text-lg font-semibold text-neutral-900">
+                {t('route.export.importTitle')}
+              </h3>
+              <p className="text-sm text-neutral-600 mt-1">{t('route.export.comingSoonText')}</p>
             </div>
 
             {/* Import Panel */}

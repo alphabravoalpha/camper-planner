@@ -3,6 +3,7 @@
 
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import * as L from 'leaflet';
+import { useTranslation } from 'react-i18next';
 import { cn } from '../../utils/cn';
 import { useRouteStore, useUIStore } from '../../store';
 import { zoomToFitWaypoints } from '../../utils/mapUtils';
@@ -25,6 +26,7 @@ const MapControlsPanel: React.FC<MapControlsPanelProps> = ({
   onToggleLayerControl,
   layerControlCollapsed,
 }) => {
+  const { t } = useTranslation();
   const { waypoints } = useRouteStore();
   const { addNotification } = useUIStore();
   const [showShortcuts, setShowShortcuts] = useState(false);
@@ -55,7 +57,7 @@ const MapControlsPanel: React.FC<MapControlsPanelProps> = ({
     if (!map || waypoints.length === 0) {
       addNotification({
         type: 'warning',
-        message: 'Add waypoints to use zoom to fit',
+        message: t('map.controls.addWaypointsToZoom'),
       });
       return;
     }
@@ -70,15 +72,15 @@ const MapControlsPanel: React.FC<MapControlsPanelProps> = ({
     if (success) {
       addNotification({
         type: 'success',
-        message: 'Zoomed to fit all waypoints',
+        message: t('map.controls.zoomedToFit'),
       });
     } else {
       addNotification({
         type: 'error',
-        message: 'Failed to zoom to waypoints',
+        message: t('map.controls.zoomToFitFailed'),
       });
     }
-  }, [map, waypoints, addNotification]);
+  }, [map, waypoints, addNotification, t]);
 
   const handleZoomIn = useCallback(() => {
     if (map) {
@@ -100,8 +102,8 @@ const MapControlsPanel: React.FC<MapControlsPanelProps> = ({
         <button
           onClick={handleZoomIn}
           className="block w-10 h-10 flex items-center justify-center hover:bg-neutral-50 border-b border-neutral-200 transition-colors"
-          title="Zoom in (+)"
-          aria-label="Zoom in"
+          title={t('map.controls.zoomInTitle')}
+          aria-label={t('map.zoomIn')}
         >
           <svg
             className="w-4 h-4"
@@ -121,8 +123,8 @@ const MapControlsPanel: React.FC<MapControlsPanelProps> = ({
         <button
           onClick={handleZoomOut}
           className="block w-10 h-10 flex items-center justify-center hover:bg-neutral-50 transition-colors"
-          title="Zoom out (-)"
-          aria-label="Zoom out"
+          title={t('map.controls.zoomOutTitle')}
+          aria-label={t('map.zoomOut')}
         >
           <svg
             className="w-4 h-4"
@@ -148,8 +150,12 @@ const MapControlsPanel: React.FC<MapControlsPanelProps> = ({
               ? 'hover:bg-neutral-50 text-neutral-700'
               : 'text-neutral-300 cursor-not-allowed'
           )}
-          title={`Zoom to fit waypoints (Ctrl+F)${waypoints.length === 0 ? ' - Add waypoints first' : ''}`}
-          aria-label="Zoom to fit all waypoints"
+          title={
+            waypoints.length === 0
+              ? t('map.controls.zoomToFitDisabled')
+              : t('map.controls.zoomToFitTitle')
+          }
+          aria-label={t('map.controls.zoomToFitLabel')}
         >
           <svg
             className="w-4 h-4"
@@ -175,8 +181,8 @@ const MapControlsPanel: React.FC<MapControlsPanelProps> = ({
               'block w-10 h-10 flex items-center justify-center hover:bg-neutral-50 transition-colors',
               showOverflow && 'bg-neutral-100'
             )}
-            title="More options"
-            aria-label="More map options"
+            title={t('map.controls.moreOptions')}
+            aria-label={t('map.controls.moreMapOptions')}
             aria-expanded={showOverflow}
             aria-haspopup="menu"
           >
@@ -201,7 +207,7 @@ const MapControlsPanel: React.FC<MapControlsPanelProps> = ({
                 className="flex items-center gap-3 px-3 py-2 text-sm text-neutral-700 hover:bg-neutral-50 w-full"
                 role="menuitem"
               >
-                Reset to Europe view
+                {t('map.controls.resetView')}
               </button>
               {/* Layer Control */}
               <button
@@ -215,7 +221,7 @@ const MapControlsPanel: React.FC<MapControlsPanelProps> = ({
                 )}
                 role="menuitem"
               >
-                Toggle layers
+                {t('map.controls.toggleLayers')}
               </button>
               {/* Fullscreen */}
               <button
@@ -229,7 +235,7 @@ const MapControlsPanel: React.FC<MapControlsPanelProps> = ({
                 )}
                 role="menuitem"
               >
-                {isFullscreen ? 'Exit fullscreen' : 'Fullscreen'}
+                {isFullscreen ? t('map.controls.exitFullscreen') : t('map.fullscreen')}
               </button>
               <div className="border-t border-neutral-100 my-1" role="separator" />
               {/* Keyboard Shortcuts */}
@@ -241,7 +247,7 @@ const MapControlsPanel: React.FC<MapControlsPanelProps> = ({
                 className="flex items-center gap-3 px-3 py-2 text-sm text-neutral-700 hover:bg-neutral-50 w-full"
                 role="menuitem"
               >
-                Keyboard shortcuts
+                {t('map.controls.keyboardShortcuts')}
               </button>
             </div>
           )}
@@ -252,7 +258,7 @@ const MapControlsPanel: React.FC<MapControlsPanelProps> = ({
       {showShortcuts && (
         <div className="bg-white rounded-lg shadow-lg p-4 min-w-64 max-w-sm">
           <h3 className="font-display font-semibold text-neutral-900 mb-3 text-sm">
-            Keyboard Shortcuts
+            {t('map.controls.keyboardShortcutsTitle')}
           </h3>
           <div className="space-y-2">
             {shortcuts.map((shortcut, index) => (
@@ -265,9 +271,7 @@ const MapControlsPanel: React.FC<MapControlsPanelProps> = ({
             ))}
           </div>
           <div className="mt-3 pt-3 border-t border-neutral-200">
-            <p className="text-xs text-neutral-500">
-              Shortcuts work when not typing in input fields
-            </p>
+            <p className="text-xs text-neutral-500">{t('map.controls.shortcutsHint')}</p>
           </div>
         </div>
       )}

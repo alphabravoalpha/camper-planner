@@ -2,6 +2,7 @@
 // Phase 3.4: Comprehensive route information display with turn-by-turn directions
 
 import React, { useState, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useRouteStore, useVehicleStore } from '../../store';
 import { type RouteResponse, type RouteSegment } from '../../services/RoutingService';
 import ElevationProfile from './ElevationProfile';
@@ -17,6 +18,7 @@ const RouteSummary: React.FC<{ route: RouteResponse; compact?: boolean }> = ({
   route,
   compact,
 }) => {
+  const { t } = useTranslation();
   const { profile } = useVehicleStore();
 
   if (!route.routes.length) return null;
@@ -62,25 +64,27 @@ const RouteSummary: React.FC<{ route: RouteResponse; compact?: boolean }> = ({
   return (
     <div className="bg-white rounded-lg border border-neutral-200 p-4">
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-lg font-semibold text-neutral-900">Route Summary</h3>
+        <h3 className="text-lg font-semibold text-neutral-900">{t('route.info.summaryTitle')}</h3>
       </div>
 
       <div className="grid grid-cols-2 gap-4 mb-4">
         <div className="text-center p-3 bg-primary-50 rounded-lg">
           <div className="text-2xl font-bold text-primary-900">{distanceKm}</div>
-          <div className="text-sm text-primary-700">kilometers</div>
+          <div className="text-sm text-primary-700">{t('route.info.kilometers')}</div>
         </div>
         <div className="text-center p-3 bg-green-50 rounded-lg">
           <div className="text-2xl font-bold text-green-900">
             {hours}h {minutes}m
           </div>
-          <div className="text-sm text-green-700">travel time</div>
+          <div className="text-sm text-green-700">{t('route.info.travelTime')}</div>
         </div>
       </div>
 
       {/* Vehicle Compatibility */}
       <div className="flex items-center justify-between p-3 bg-neutral-50 rounded-lg">
-        <span className="text-sm font-medium text-neutral-700">Vehicle Compatibility</span>
+        <span className="text-sm font-medium text-neutral-700">
+          {t('route.info.vehicleCompatibility')}
+        </span>
         <div className="flex items-center space-x-2">
           <div
             className={cn(
@@ -118,11 +122,14 @@ const RouteSummary: React.FC<{ route: RouteResponse; compact?: boolean }> = ({
 
 // Route Segments Component
 const RouteSegments: React.FC<{ segments: RouteSegment[] }> = ({ segments }) => {
+  const { t } = useTranslation();
   if (!segments.length) return null;
 
   return (
     <div className="bg-white rounded-lg border border-neutral-200 p-4">
-      <h3 className="text-lg font-semibold text-neutral-900 mb-3">Route Segments</h3>
+      <h3 className="text-lg font-semibold text-neutral-900 mb-3">
+        {t('route.info.segmentsTitle')}
+      </h3>
 
       <div className="space-y-3">
         {segments.map((segment, index) => {
@@ -140,7 +147,9 @@ const RouteSegments: React.FC<{ segments: RouteSegment[] }> = ({ segments }) => 
                   <span className="text-sm font-medium text-primary-900">{index + 1}</span>
                 </div>
                 <div>
-                  <div className="font-medium text-neutral-900">Segment {index + 1}</div>
+                  <div className="font-medium text-neutral-900">
+                    {t('route.info.segment', { index: index + 1 })}
+                  </div>
                   <div className="text-sm text-neutral-600">{distanceKm} km</div>
                 </div>
               </div>
@@ -149,7 +158,7 @@ const RouteSegments: React.FC<{ segments: RouteSegment[] }> = ({ segments }) => 
                   {hours > 0 ? `${hours}h ` : ''}
                   {minutes}m
                 </div>
-                <div className="text-sm text-neutral-600">travel time</div>
+                <div className="text-sm text-neutral-600">{t('route.info.travelTime')}</div>
               </div>
             </div>
           );
@@ -161,6 +170,7 @@ const RouteSegments: React.FC<{ segments: RouteSegment[] }> = ({ segments }) => 
 
 // Turn-by-Turn Directions Component
 const TurnByTurnDirections: React.FC<{ segments: RouteSegment[] }> = ({ segments }) => {
+  const { t } = useTranslation();
   const [_expandedSegment, _setExpandedSegment] = useState<number | null>(0);
 
   const allSteps = useMemo(() => {
@@ -177,7 +187,9 @@ const TurnByTurnDirections: React.FC<{ segments: RouteSegment[] }> = ({ segments
   if (!allSteps.length) {
     return (
       <div className="bg-white rounded-lg border border-neutral-200 p-4">
-        <h3 className="text-lg font-semibold text-neutral-900 mb-3">Turn-by-Turn Directions</h3>
+        <h3 className="text-lg font-semibold text-neutral-900 mb-3">
+          {t('route.info.directionsTitle')}
+        </h3>
         <div className="text-center py-6 text-neutral-500">
           <svg
             className="w-12 h-12 mx-auto mb-3 text-neutral-300"
@@ -192,10 +204,8 @@ const TurnByTurnDirections: React.FC<{ segments: RouteSegment[] }> = ({ segments
               d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 01.553-.894L9 2l6 3 6-3v15l-6 3-6-3z"
             />
           </svg>
-          <p>Detailed turn-by-turn directions not available</p>
-          <p className="text-sm">
-            Try recalculating with OpenRouteService for detailed instructions
-          </p>
+          <p>{t('route.info.noDirections')}</p>
+          <p className="text-sm">{t('route.info.recalculateHint')}</p>
         </div>
       </div>
     );
@@ -204,8 +214,12 @@ const TurnByTurnDirections: React.FC<{ segments: RouteSegment[] }> = ({ segments
   return (
     <div className="bg-white rounded-lg border border-neutral-200">
       <div className="p-4 border-b border-neutral-200">
-        <h3 className="text-lg font-semibold text-neutral-900">Turn-by-Turn Directions</h3>
-        <p className="text-sm text-neutral-600 mt-1">{allSteps.length} instructions</p>
+        <h3 className="text-lg font-semibold text-neutral-900">
+          {t('route.info.directionsTitle')}
+        </h3>
+        <p className="text-sm text-neutral-600 mt-1">
+          {t('route.info.instructionCount', { count: allSteps.length })}
+        </p>
       </div>
 
       <div className="max-h-96 overflow-y-auto">
@@ -231,10 +245,12 @@ const TurnByTurnDirections: React.FC<{ segments: RouteSegment[] }> = ({ segments
                 <div className="text-sm font-medium text-neutral-900 mb-1">{step.instruction}</div>
                 {step.name && (
                   <div className="text-sm text-neutral-600 mb-1">
-                    on <span className="font-medium">{step.name}</span>
+                    {t('route.info.onStreet', { street: step.name })}
                   </div>
                 )}
-                <div className="text-xs text-neutral-500">Continue for {distanceKm}</div>
+                <div className="text-xs text-neutral-500">
+                  {t('route.info.continueFor', { distance: distanceKm })}
+                </div>
               </div>
             </div>
           );
@@ -246,6 +262,7 @@ const TurnByTurnDirections: React.FC<{ segments: RouteSegment[] }> = ({ segments
 
 // Main Route Information Component
 const RouteInformation: React.FC<RouteInformationProps> = ({ className, compact = false }) => {
+  const { t } = useTranslation();
   const { calculatedRoute } = useRouteStore();
   const [activeTab, setActiveTab] = useState<'summary' | 'segments' | 'directions' | 'elevation'>(
     'summary'
@@ -268,8 +285,10 @@ const RouteInformation: React.FC<RouteInformationProps> = ({ className, compact 
               d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 01.553-.894L9 2l6 3 6-3v15l-6 3-6-3z"
             />
           </svg>
-          <h3 className="text-lg font-medium text-neutral-900 mb-1">No Route Information</h3>
-          <p>Calculate a route to see detailed information</p>
+          <h3 className="text-lg font-medium text-neutral-900 mb-1">
+            {t('route.info.noRouteTitle')}
+          </h3>
+          <p>{t('route.info.calculateRouteHint')}</p>
         </div>
       </div>
     );
@@ -291,10 +310,10 @@ const RouteInformation: React.FC<RouteInformationProps> = ({ className, compact 
       <div className="border-b border-neutral-200">
         <nav className="-mb-px flex space-x-8 px-4">
           {[
-            { id: 'summary', label: 'Summary', icon: '📊' },
-            { id: 'segments', label: 'Segments', icon: '🛣️' },
-            { id: 'directions', label: 'Directions', icon: '🧭' },
-            { id: 'elevation', label: 'Elevation', icon: '⛰️' },
+            { id: 'summary', label: t('route.info.summaryTab'), icon: '📊' },
+            { id: 'segments', label: t('route.info.segmentsTab'), icon: '🛣️' },
+            { id: 'directions', label: t('route.info.directionsTab'), icon: '🧭' },
+            { id: 'elevation', label: t('route.info.elevationTab'), icon: '⛰️' },
           ].map(tab => (
             <button
               key={tab.id}
