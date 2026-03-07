@@ -200,7 +200,7 @@ const CostCalculator: React.FC<CostCalculatorProps> = ({
   };
 
   const formatCurrency = (amount: number, currency: string = 'EUR'): string => {
-    return new Intl.NumberFormat('en-EU', {
+    return new Intl.NumberFormat('en-GB', {
       style: 'currency',
       currency,
       minimumFractionDigits: 2,
@@ -222,7 +222,7 @@ const CostCalculator: React.FC<CostCalculatorProps> = ({
           <Calculator className="w-5 h-5 text-green-600" />
           <h3 className="text-lg font-semibold text-neutral-800">Trip Cost Calculator</h3>
         </div>
-        <span className="text-xs text-neutral-500">Edit budget in Trip Settings</span>
+        <span className="text-xs text-neutral-600">Edit budget in Trip Settings</span>
       </div>
 
       {/* Main Content */}

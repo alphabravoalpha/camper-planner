@@ -59,6 +59,7 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
   const [optimizationResult, setOptimizationResult] = useState<OptimizationResult | null>(null);
   const [lockedWaypoints, setLockedWaypoints] = useState<Set<string>>(new Set());
   const [showAdvancedSettings, setShowAdvancedSettings] = useState(false);
+  const [optimizationError, setOptimizationError] = useState<string | null>(null);
   const [insertionMode, setInsertionMode] = useState(false);
   const [insertionResult, setInsertionResult] = useState<WaypointInsertionResult | null>(null);
   const [newWaypointPosition, setNewWaypointPosition] = useState<{
@@ -76,6 +77,7 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
     if (!canOptimize) return;
 
     setIsOptimizing(true);
+    setOptimizationError(null);
 
     try {
       const criteria: OptimizationCriteria = {
@@ -118,10 +120,11 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
 
       onOptimizationComplete?.(result);
     } catch (error) {
-      console.error('Optimization failed:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      setOptimizationError(errorMessage);
       addNotification({
         type: 'error',
-        message: `Optimization failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        message: `Optimization failed: ${errorMessage}`,
       });
     } finally {
       setIsOptimizing(false);
@@ -379,6 +382,29 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
             </svg>
           </button>
         </div>
+
+        {/* Persistent Error Display */}
+        {optimizationError && (
+          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2">
+            <span className="text-red-600 text-sm flex-1">
+              Optimization failed: {optimizationError}
+            </span>
+            <button
+              onClick={() => setOptimizationError(null)}
+              className="text-red-400 hover:text-red-600 p-0.5"
+              aria-label="Dismiss error"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
+        )}
 
         {/* Quick Settings */}
         <div className="flex items-center justify-between mb-4">

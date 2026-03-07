@@ -1,14 +1,14 @@
 // Trip Manager Component
 // Phase 5.3: Comprehensive trip management system
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import ConfirmDialog from '../ui/ConfirmDialog';
 import {
   Save,
   Copy,
   Download,
   Upload,
   Search,
-  Star,
   Calendar,
   MapPin,
   Clock,
@@ -48,7 +48,7 @@ interface TripManagerProps {
   isVisible?: boolean;
 }
 
-type ViewMode = 'my_trips' | 'templates' | 'recent' | 'comparison' | 'create';
+type ViewMode = 'my_trips' | 'recent' | 'comparison' | 'create';
 
 interface SaveTripData {
   name: string;
@@ -65,7 +65,7 @@ const TripManager: React.FC<TripManagerProps> = ({
   isVisible = true,
 }) => {
   // Store hooks
-  const { waypoints } = useRouteStore();
+  const { waypoints, estimatedTime } = useRouteStore();
   const { profile: selectedProfile } = useVehicleStore();
   const { settings: tripSettings } = useTripSettingsStore();
   // Derive fuel settings from trip settings store for cost calculations
@@ -90,13 +90,11 @@ const TripManager: React.FC<TripManagerProps> = ({
   // State
   const [viewMode, setViewMode] = useState<ViewMode>('my_trips');
   const [trips, setTrips] = useState<TripSummary[]>([]);
-  const [templates, setTemplates] = useState<TripSummary[]>([]);
   const [recentTrips, setRecentTrips] = useState<TripSummary[]>([]);
   const [selectedTrips, setSelectedTrips] = useState<string[]>([]);
   const [comparison, setComparison] = useState<TripComparison | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
-  const [difficultyFilter, setDifficultyFilter] = useState<string>('all');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -127,14 +125,24 @@ const TripManager: React.FC<TripManagerProps> = ({
     creator: 'European Camper Trip Planner',
   });
 
+  // Delete confirmation state
+  const [deletingTripId, setDeletingTripId] = useState<string | null>(null);
+  const [deletingTripName, setDeletingTripName] = useState('');
+
   // Load data on component mount
   useEffect(() => {
-    loadTrips();
-    loadTemplates();
-    loadRecentTrips();
+    const init = async () => {
+      setIsLoading(true);
+      try {
+        await Promise.all([loadTrips(), loadRecentTrips()]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    init();
   }, []);
 
-  // Filter trips and templates
+  // Filter trips
   const filteredTrips = trips.filter(trip => {
     const matchesSearch =
       trip.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -143,35 +151,12 @@ const TripManager: React.FC<TripManagerProps> = ({
     return matchesSearch && matchesCategory;
   });
 
-  const filteredTemplates = templates.filter(template => {
-    const matchesSearch =
-      template.metadata.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      template.metadata.tags.some((tag: string) =>
-        tag.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    const matchesCategory =
-      categoryFilter === 'all' || template.metadata.category === categoryFilter;
-    const matchesDifficulty =
-      difficultyFilter === 'all' || template.metadata.difficulty === difficultyFilter;
-    return matchesSearch && matchesCategory && matchesDifficulty;
-  });
-
   const loadTrips = async () => {
     try {
       const summaries = await TripStorageService.getTripSummaries({ excludeTemplates: true });
       setTrips(summaries);
     } catch (_err) {
       setError('Failed to load trips');
-      // Error already surfaced in UI via setError
-    }
-  };
-
-  const loadTemplates = async () => {
-    try {
-      // TripTemplatesService disabled for MVP
-      setTemplates([]);
-    } catch (_err) {
-      setError('Failed to load templates');
       // Error already surfaced in UI via setError
     }
   };
@@ -204,10 +189,13 @@ const TripManager: React.FC<TripManagerProps> = ({
     try {
       const tripId = `trip_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
-      // Estimate trip details
+      // Use actual route data when available
       const countries = estimateCountries(waypoints);
-      const estimatedDuration = Math.ceil(waypoints.length / 2); // Rough estimate
-      const estimatedCost = 100 * waypoints.length; // Rough estimate
+      // Duration in days from actual route time (seconds -> days), or 0 if no route calculated
+      const estimatedDuration =
+        estimatedTime > 0 ? Math.max(1, Math.ceil(estimatedTime / 86400)) : 0;
+      // Use 0 when no real cost data — display will show "Not calculated"
+      const estimatedCost = 0;
 
       const trip: Omit<Trip, 'timestamps'> = {
         metadata: {
@@ -237,10 +225,10 @@ const TripManager: React.FC<TripManagerProps> = ({
           campsiteSelections: [],
           costCalculations: {
             breakdown: {
-              totalCost: estimatedCost,
-              fuelCost: estimatedCost * 0.6,
+              totalCost: 0,
+              fuelCost: 0,
               tollCost: 0,
-              accommodationCost: estimatedCost * 0.4,
+              accommodationCost: 0,
               foodCost: 0,
               ferryCost: 0,
               otherCosts: 0,
@@ -307,20 +295,27 @@ const TripManager: React.FC<TripManagerProps> = ({
     }
   };
 
-  const handleDeleteTrip = async (tripId: string) => {
-    if (!confirm('Are you sure you want to delete this trip?')) return;
+  const handleDeleteTrip = (tripId: string) => {
+    // Find the trip name for the confirmation dialog
+    const trip = trips.find(t => t.id === tripId);
+    setDeletingTripName(trip?.name || 'this trip');
+    setDeletingTripId(tripId);
+  };
+
+  const confirmDeleteTrip = useCallback(async () => {
+    if (!deletingTripId) return;
 
     setIsLoading(true);
+    setDeletingTripId(null);
     try {
-      await TripStorageService.deleteTrip(tripId);
+      await TripStorageService.deleteTrip(deletingTripId);
       await loadTrips();
     } catch (_err) {
       setError('Failed to delete trip');
-      // Error already surfaced in UI via setError
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [deletingTripId]);
 
   const handleExportTrip = (tripId: string) => {
     setExportingTripId(tripId);
@@ -395,19 +390,6 @@ const TripManager: React.FC<TripManagerProps> = ({
       }
     } catch (_err) {
       setError('Failed to import trip');
-      // Error already surfaced in UI via setError
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleUseTemplate = async (_template: TripSummary) => {
-    setIsLoading(true);
-    try {
-      // TripTemplatesService disabled for MVP
-      setError('Templates not available in MVP version');
-    } catch (_err) {
-      setError('Failed to create trip from template');
       // Error already surfaced in UI via setError
     } finally {
       setIsLoading(false);
@@ -521,7 +503,7 @@ const TripManager: React.FC<TripManagerProps> = ({
   };
 
   const formatCurrency = (amount: number, currency: string = 'EUR'): string => {
-    return new Intl.NumberFormat('en-EU', {
+    return new Intl.NumberFormat('en-GB', {
       style: 'currency',
       currency,
       minimumFractionDigits: 0,
@@ -541,19 +523,6 @@ const TripManager: React.FC<TripManagerProps> = ({
         return <Users className="w-4 h-4" />;
       default:
         return <Car className="w-4 h-4" />;
-    }
-  };
-
-  const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty) {
-      case 'easy':
-        return 'text-green-600 bg-green-100';
-      case 'moderate':
-        return 'text-yellow-600 bg-yellow-100';
-      case 'challenging':
-        return 'text-red-600 bg-red-100';
-      default:
-        return 'text-neutral-600 bg-neutral-100';
     }
   };
 
@@ -593,7 +562,6 @@ const TripManager: React.FC<TripManagerProps> = ({
       <div className="flex border-b bg-neutral-50">
         {[
           { id: 'my_trips', label: 'My Trips', icon: <Save className="w-4 h-4" /> },
-          { id: 'templates', label: 'Templates', icon: <Star className="w-4 h-4" /> },
           { id: 'recent', label: 'Recent', icon: <Clock className="w-4 h-4" /> },
         ].map(tab => (
           <button
@@ -616,8 +584,18 @@ const TripManager: React.FC<TripManagerProps> = ({
         <div className="p-4 bg-red-50 border-b border-red-200">
           <div className="flex items-center gap-2 text-red-700">
             <X className="w-4 h-4" />
-            <span className="text-sm">{error}</span>
-            <button onClick={() => setError(null)} className="ml-auto p-1 hover:bg-red-100 rounded">
+            <span className="text-sm flex-1">{error}</span>
+            <button
+              onClick={() => {
+                setError(null);
+                loadTrips();
+                loadRecentTrips();
+              }}
+              className="text-xs text-red-700 hover:text-red-900 underline font-medium"
+            >
+              Retry
+            </button>
+            <button onClick={() => setError(null)} className="p-1 hover:bg-red-100 rounded">
               <X className="w-3 h-3" />
             </button>
           </div>
@@ -653,19 +631,6 @@ const TripManager: React.FC<TripManagerProps> = ({
               <option value="family">Family</option>
               <option value="business">Business</option>
             </select>
-
-            {viewMode === 'templates' && (
-              <select
-                value={difficultyFilter}
-                onChange={e => setDifficultyFilter(e.target.value)}
-                className="px-3 py-2 border rounded-lg text-sm"
-              >
-                <option value="all">All Difficulties</option>
-                <option value="easy">Easy</option>
-                <option value="moderate">Moderate</option>
-                <option value="challenging">Challenging</option>
-              </select>
-            )}
           </div>
         </div>
       </div>
@@ -765,11 +730,13 @@ const TripManager: React.FC<TripManagerProps> = ({
                     <div className="grid grid-cols-2 gap-4 text-sm text-neutral-600 mb-3">
                       <div className="flex items-center gap-1">
                         <Calendar className="w-4 h-4" />
-                        {trip.duration} days
+                        {trip.duration > 0 ? `${trip.duration} days` : 'Not calculated'}
                       </div>
                       <div className="flex items-center gap-1">
                         <Euro className="w-4 h-4" />
-                        {formatCurrency(trip.estimatedCost)}
+                        {trip.estimatedCost > 0
+                          ? formatCurrency(trip.estimatedCost)
+                          : 'Not calculated'}
                       </div>
                       <div className="flex items-center gap-1">
                         <MapPin className="w-4 h-4" />
@@ -809,101 +776,6 @@ const TripManager: React.FC<TripManagerProps> = ({
           </div>
         )}
 
-        {/* Templates View */}
-        {viewMode === 'templates' && (
-          <div>
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-display font-medium text-neutral-800">
-                Trip Templates ({filteredTemplates.length})
-              </h3>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              {filteredTemplates.map(template => (
-                <div
-                  key={template.metadata.id}
-                  className="border rounded-lg p-4 hover:shadow-md transition-shadow"
-                >
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="flex items-center gap-2">
-                      {getCategoryIcon(template.metadata.category)}
-                      <h4 className="font-semibold text-neutral-800">{template.metadata.name}</h4>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span
-                        className={`px-2 py-1 rounded-full text-xs ${getDifficultyColor(template.metadata.difficulty)}`}
-                      >
-                        {template.metadata.difficulty}
-                      </span>
-                      <button
-                        onClick={() => handleUseTemplate(template)}
-                        className="px-3 py-1 bg-primary-600 text-white rounded text-sm hover:bg-primary-700"
-                      >
-                        Use Template
-                      </button>
-                    </div>
-                  </div>
-
-                  <p className="text-sm text-neutral-600 mb-3">{template.metadata.description}</p>
-
-                  <div className="grid grid-cols-2 gap-4 text-sm text-neutral-600 mb-3">
-                    <div className="flex items-center gap-1">
-                      <Calendar className="w-4 h-4" />
-                      {template.metadata.duration} days
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Euro className="w-4 h-4" />
-                      {formatCurrency(template.metadata.estimatedCost)}
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <MapPin className="w-4 h-4" />
-                      {template.data.waypoints.length} stops
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Star className="w-4 h-4" />
-                      {template.templateInfo.popularity}% popularity
-                    </div>
-                  </div>
-
-                  <div className="text-sm mb-3">
-                    <strong>Countries: </strong>
-                    {template.metadata.countries.join(', ')}
-                  </div>
-
-                  <div className="text-sm mb-3">
-                    <strong>Best months: </strong>
-                    {template.templateInfo.recommendedMonths
-                      .map((month: number) =>
-                        new Date(2024, month - 1, 1).toLocaleDateString('en', { month: 'short' })
-                      )
-                      .join(', ')}
-                  </div>
-
-                  {template.templateInfo.highlights.length > 0 && (
-                    <div className="text-sm">
-                      <strong>Highlights:</strong>
-                      <ul className="mt-1 space-y-1">
-                        {template.templateInfo.highlights
-                          .slice(0, 2)
-                          .map((highlight: string, index: number) => (
-                            <li key={index} className="text-neutral-600">
-                              • {highlight}
-                            </li>
-                          ))}
-                        {template.templateInfo.highlights.length > 2 && (
-                          <li className="text-neutral-500">
-                            • +{template.templateInfo.highlights.length - 2} more highlights
-                          </li>
-                        )}
-                      </ul>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
         {/* Recent Trips View */}
         {viewMode === 'recent' && (
           <div>
@@ -939,8 +811,10 @@ const TripManager: React.FC<TripManagerProps> = ({
                       <div>
                         <h4 className="font-medium text-neutral-800">{trip.name}</h4>
                         <div className="flex items-center gap-4 text-sm text-neutral-600">
-                          <span>{trip.duration} days</span>
-                          <span>{formatCurrency(trip.estimatedCost)}</span>
+                          <span>{trip.duration > 0 ? `${trip.duration} days` : 'N/A'}</span>
+                          <span>
+                            {trip.estimatedCost > 0 ? formatCurrency(trip.estimatedCost) : 'N/A'}
+                          </span>
                           <span>{trip.waypointCount} stops</span>
                         </div>
                       </div>
@@ -1210,19 +1084,6 @@ const TripManager: React.FC<TripManagerProps> = ({
                   placeholder="scenic, historic, wine-tasting"
                 />
               </div>
-
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  id="isPublic"
-                  checked={saveData.isPublic}
-                  onChange={e => setSaveData({ ...saveData, isPublic: e.target.checked })}
-                  className="rounded"
-                />
-                <label htmlFor="isPublic" className="ml-2 text-sm text-neutral-700">
-                  Make trip public (for future sharing features)
-                </label>
-              </div>
             </div>
             <div className="p-4 border-t flex justify-end gap-2">
               <button
@@ -1407,6 +1268,18 @@ const TripManager: React.FC<TripManagerProps> = ({
           </div>
         </div>
       )}
+
+      {/* Delete Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={!!deletingTripId}
+        title="Delete Trip"
+        message={`Are you sure you want to delete "${deletingTripName}"? This action cannot be undone.`}
+        confirmLabel="Delete"
+        cancelLabel="Cancel"
+        confirmVariant="danger"
+        onConfirm={confirmDeleteTrip}
+        onCancel={() => setDeletingTripId(null)}
+      />
     </div>
   );
 };

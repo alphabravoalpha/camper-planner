@@ -20,7 +20,6 @@ import {
   Navigation,
   Target,
   BarChart3,
-  Settings,
   ChevronDown,
   ChevronUp,
 } from 'lucide-react';
@@ -37,6 +36,7 @@ import {
 } from '../../services/TripPlanningService';
 import { useTripSettingsStore } from '../../store/tripSettingsStore';
 import { getSeasonFromDate } from '../../types/tripSettings';
+import { useTranslation } from 'react-i18next';
 
 interface PlanningToolsProps {
   className?: string;
@@ -54,6 +54,7 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
   // Store hooks
   const { waypoints } = useRouteStore();
   const { profile } = useVehicleStore();
+  const { i18n } = useTranslation();
 
   // Trip settings from shared store
   const { settings } = useTripSettingsStore();
@@ -61,7 +62,7 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
   const startDate = settings.startDate || '';
 
   // State
-  const [viewMode, setViewMode] = useState<ViewMode>('calendar');
+  const [viewMode, setViewMode] = useState<ViewMode>('overview');
   const [tripPlan, setTripPlan] = useState<TripPlan | null>(null);
   const [metrics, setMetrics] = useState<TripMetrics | null>(null);
   const [recommendations, setRecommendations] = useState<PlanningRecommendation[]>([]);
@@ -144,7 +145,7 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
   };
 
   const formatDate = (date: Date): string => {
-    return date.toLocaleDateString('en-US', {
+    return date.toLocaleDateString(i18n.language || 'en', {
       weekday: 'short',
       month: 'short',
       day: 'numeric',
@@ -232,9 +233,6 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
         <div className="flex items-center gap-2">
           <Target className="w-5 h-5 text-purple-600" />
           <h3 className="text-lg font-semibold text-neutral-800">Trip Plan</h3>
-        </div>
-        <div className="flex items-center gap-2">
-          <Settings className="w-4 h-4 text-neutral-400" />
         </div>
       </div>
 
@@ -466,7 +464,8 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
                               {stage.startWaypoint.name} → {stage.endWaypoint.name}
                             </div>
                             <div className="text-sm text-neutral-600">
-                              {stage.date && formatDate(stage.date)} • {Math.round(stage.distance)}
+                              {stage.date && <>{formatDate(stage.date)} • </>}
+                              {Math.round(stage.distance)}
                               km • {formatDuration(stage.drivingTime)}
                             </div>
                           </div>

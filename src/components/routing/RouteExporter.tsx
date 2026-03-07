@@ -227,110 +227,37 @@ const ExportOptionsPanel: React.FC<{
 const ImportPanel: React.FC<{
   onImportComplete: (result: unknown) => void;
 }> = ({ onImportComplete: _onImportComplete }) => {
-  const [isDragging, setIsDragging] = useState(false);
-  const [isImporting, setIsImporting] = useState(false);
-  const { addNotification } = useUIStore();
-
-  const handleFileUpload = useCallback(
-    async (_file: File) => {
-      setIsImporting(true);
-
-      try {
-        // Import functionality would need to be implemented in MultiFormatExportService
-        // For now, show a placeholder message
-        throw new Error('Import functionality not yet implemented in new export service');
-      } catch (error) {
-        addNotification({
-          type: 'error',
-          message: `Failed to import file: ${error instanceof Error ? error.message : 'Unknown error'}`,
-        });
-      } finally {
-        setIsImporting(false);
-      }
-    },
-    [addNotification]
-  );
-
-  const handleDrop = useCallback(
-    (e: React.DragEvent) => {
-      e.preventDefault();
-      setIsDragging(false);
-
-      const files = Array.from(e.dataTransfer.files);
-      if (files.length > 0) {
-        handleFileUpload(files[0]);
-      }
-    },
-    [handleFileUpload]
-  );
-
-  const handleFileSelect = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const files = Array.from(e.target.files || []);
-      if (files.length > 0) {
-        handleFileUpload(files[0]);
-      }
-    },
-    [handleFileUpload]
-  );
-
   return (
     <div>
       <div
-        onDrop={handleDrop}
-        onDragOver={e => e.preventDefault()}
-        onDragEnter={() => setIsDragging(true)}
-        onDragLeave={() => setIsDragging(false)}
         role="region"
-        aria-label="File drop zone for route import"
-        className={cn(
-          'border-2 border-dashed rounded-lg p-8 text-center transition-colors',
-          isDragging ? 'border-primary-500 bg-primary-50' : 'border-neutral-300',
-          isImporting && 'opacity-50 pointer-events-none'
-        )}
+        aria-label="Route import - coming soon"
+        className="border-2 border-dashed rounded-lg p-8 text-center border-neutral-200 bg-neutral-50"
       >
-        {isImporting ? (
-          <div className="space-y-3">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 mx-auto" />
-            <p className="text-sm text-neutral-600">Importing route...</p>
+        <div className="space-y-3">
+          <svg
+            className="w-12 h-12 mx-auto text-neutral-300"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+            />
+          </svg>
+          <div>
+            <p className="text-lg font-medium text-neutral-400">Import Route</p>
+            <span className="inline-block mt-1 px-3 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded-full">
+              Coming Soon
+            </span>
+            <p className="text-sm text-neutral-400 mt-2">
+              Route import from GPX, JSON, KML, and CSV files is planned for a future update.
+            </p>
           </div>
-        ) : (
-          <div className="space-y-3">
-            <svg
-              className="w-12 h-12 mx-auto text-neutral-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-              />
-            </svg>
-            <div>
-              <p className="text-lg font-medium text-neutral-900">Import Route</p>
-              <p className="text-sm text-neutral-600">
-                Drag and drop a GPX, JSON, KML, or CSV file here
-              </p>
-            </div>
-            <div>
-              <label className="cursor-pointer">
-                <span className="bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition-colors inline-block">
-                  Choose File
-                </span>
-                <input
-                  type="file"
-                  accept=".gpx,.json,.kml,.csv"
-                  onChange={handleFileSelect}
-                  className="sr-only"
-                />
-              </label>
-            </div>
-            <p className="text-xs text-neutral-500">Supports GPX, JSON, KML, and CSV formats</p>
-          </div>
-        )}
+        </div>
       </div>
     </div>
   );

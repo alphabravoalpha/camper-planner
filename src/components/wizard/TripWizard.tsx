@@ -28,6 +28,7 @@ import {
   Lightbulb,
 } from 'lucide-react';
 import { useTripWizardStore, useVehicleStore, useRouteStore } from '../../store';
+import ConfirmDialog from '../ui/ConfirmDialog';
 import { useTripSettingsStore } from '../../store/tripSettingsStore';
 import {
   TripWizardService,
@@ -73,6 +74,8 @@ const TripWizard: React.FC = () => {
   const wizard = useTripWizardStore();
   const { profile: vehicleProfile } = useVehicleStore();
   const routeStore = useRouteStore();
+  const [showCloseConfirm, setShowCloseConfirm] = useState(false);
+  const [showOverwriteConfirm, setShowOverwriteConfirm] = useState(false);
 
   // Detect ferry crossings between start and end
   const detected: DetectedCrossings | null = useMemo(() => {
@@ -101,7 +104,10 @@ const TripWizard: React.FC = () => {
       case 'start-end':
         return !!(wizard.start && wizard.end);
       case 'dates':
-        return !!wizard.startDate;
+        // Require start date, and if end date is set, it must be after start date
+        if (!wizard.startDate) return false;
+        if (wizard.endDate && new Date(wizard.endDate) <= new Date(wizard.startDate)) return false;
+        return true;
       case 'driving':
         return true; // always has a default
       case 'crossing':
@@ -152,7 +158,7 @@ const TripWizard: React.FC = () => {
   }, [wizard, visibleSteps, isLastStep, vehicleProfile]);
 
   // Handle creating the trip (adding waypoints to the route)
-  const handleCreateTrip = useCallback(() => {
+  const doCreateTrip = useCallback(() => {
     if (!wizard.itinerary) return;
 
     const ts = Date.now();
@@ -257,6 +263,16 @@ const TripWizard: React.FC = () => {
     wizard.resetWizard();
   }, [wizard, routeStore]);
 
+  // Wrapper that checks for existing waypoints before creating trip
+  const handleCreateTrip = useCallback(() => {
+    const existingWaypoints = routeStore.waypoints;
+    if (existingWaypoints.length > 0) {
+      setShowOverwriteConfirm(true);
+    } else {
+      doCreateTrip();
+    }
+  }, [routeStore.waypoints, doCreateTrip]);
+
   if (!wizard.wizardOpen) return null;
 
   return (
@@ -267,8 +283,14 @@ const TripWizard: React.FC = () => {
           <h2 className="text-xl font-display font-bold text-neutral-900">Plan Your Trip</h2>
           <button
             onClick={() => {
-              wizard.closeWizard();
-              wizard.resetWizard();
+              // Show confirmation if user has entered any data
+              const hasProgress = wizard.wizardStep > 0 || wizard.start || wizard.end;
+              if (hasProgress) {
+                setShowCloseConfirm(true);
+              } else {
+                wizard.closeWizard();
+                wizard.resetWizard();
+              }
             }}
             className="p-2 hover:bg-neutral-100 rounded-lg transition-all duration-200"
           >
@@ -321,16 +343,16 @@ const TripWizard: React.FC = () => {
         </div>
 
         {/* Footer */}
-        {currentStepId !== 'itinerary' && (
-          <div className="flex items-center justify-between px-6 py-4 border-t border-neutral-100">
-            <button
-              onClick={() => wizard.prevStep()}
-              disabled={isFirstStep}
-              className="flex items-center gap-2 px-4 py-2 text-neutral-600 hover:text-neutral-800 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
-            >
-              <ChevronLeft className="w-4 h-4" />
-              Back
-            </button>
+        <div className="flex items-center justify-between px-6 py-4 border-t border-neutral-100">
+          <button
+            onClick={() => wizard.prevStep()}
+            disabled={isFirstStep}
+            className="flex items-center gap-2 px-4 py-2 text-neutral-600 hover:text-neutral-800 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
+          >
+            <ChevronLeft className="w-4 h-4" />
+            Back
+          </button>
+          {currentStepId !== 'itinerary' && (
             <button
               onClick={handleNext}
               disabled={!canProceed}
@@ -341,9 +363,40 @@ const TripWizard: React.FC = () => {
                 : 'Next'}
               <ChevronRight className="w-4 h-4" />
             </button>
-          </div>
-        )}
+          )}
+        </div>
       </div>
+
+      {/* Close confirmation dialog */}
+      <ConfirmDialog
+        isOpen={showCloseConfirm}
+        title="Close Trip Wizard?"
+        message="You have unsaved progress. Closing will discard your trip planning data."
+        confirmLabel="Discard"
+        cancelLabel="Keep Planning"
+        confirmVariant="danger"
+        onConfirm={() => {
+          setShowCloseConfirm(false);
+          wizard.closeWizard();
+          wizard.resetWizard();
+        }}
+        onCancel={() => setShowCloseConfirm(false)}
+      />
+
+      {/* Overwrite route confirmation dialog */}
+      <ConfirmDialog
+        isOpen={showOverwriteConfirm}
+        title="Replace Current Route?"
+        message="You already have waypoints on the map. Creating this trip will replace your current route."
+        confirmLabel="Replace Route"
+        cancelLabel="Cancel"
+        confirmVariant="warning"
+        onConfirm={() => {
+          setShowOverwriteConfirm(false);
+          doCreateTrip();
+        }}
+        onCancel={() => setShowOverwriteConfirm(false)}
+      />
     </div>
   );
 };
@@ -372,8 +425,8 @@ const StepStartEnd: React.FC = () => {
       const results = await campsiteService.geocodeLocationMultiple(query, 5);
       if (results.length === 0) return [];
       // Map to format expected by result rendering
-      return results.map((r, i) => ({
-        place_id: i,
+      return results.map(r => ({
+        place_id: Math.round(r.lat * 1e6) * 1e7 + Math.round(r.lng * 1e6),
         display_name: r.display_name,
         lat: String(r.lat),
         lon: String(r.lng),
@@ -1243,6 +1296,15 @@ const DayCard: React.FC<{ day: ItineraryDay }> = ({ day }) => {
           )}
 
           {/* Campsite Options */}
+          {day.overnightOptions.length === 0 && (
+            <div className="ml-11 p-3 bg-neutral-50 rounded-lg border border-neutral-200">
+              <p className="text-sm text-neutral-500 flex items-center gap-2">
+                <Tent className="w-4 h-4" />
+                No campsites found near this route segment. You may need to search manually or
+                adjust your route.
+              </p>
+            </div>
+          )}
           {day.overnightOptions.length > 0 && (
             <div className="ml-11">
               <p className="text-xs font-medium text-neutral-700 mb-2">

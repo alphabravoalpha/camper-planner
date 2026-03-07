@@ -8,6 +8,7 @@ import { type VehicleProfile } from '../../types';
 import { FeatureFlags } from '../../config';
 import { cn } from '../../utils/cn';
 import Tooltip from '../ui/Tooltip';
+import ConfirmDialog from '../ui/ConfirmDialog';
 import {
   VEHICLE_DATABASE,
   MOTORHOME_PRESETS,
@@ -326,7 +327,13 @@ const VehicleProfilePanel: React.FC<VehicleProfilePanelProps> = ({
   }, [profile]);
 
   // Handle clear profile
+  const [showClearConfirm, setShowClearConfirm] = useState(false);
+
   const handleClear = useCallback(() => {
+    setShowClearConfirm(true);
+  }, []);
+
+  const confirmClear = useCallback(() => {
     clearProfile();
     setFormData({ height: 2.0, width: 1.9, weight: 3.0, length: 5.0 });
     setErrors({});
@@ -335,6 +342,7 @@ const VehicleProfilePanel: React.FC<VehicleProfilePanelProps> = ({
     setSelectedModelId('');
     setSelectedVariantId('');
     setSelectedMotorhomeId('');
+    setShowClearConfirm(false);
 
     addNotification({
       type: 'info',
@@ -752,6 +760,18 @@ const VehicleProfilePanel: React.FC<VehicleProfilePanelProps> = ({
           vehicle cannot handle.
         </p>
       </div>
+
+      {/* Clear Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={showClearConfirm}
+        title="Clear Vehicle Profile"
+        message="This will remove your saved vehicle profile. You'll need to re-enter your vehicle dimensions if you want to use vehicle-aware routing."
+        confirmLabel="Clear Profile"
+        cancelLabel="Keep Profile"
+        confirmVariant="danger"
+        onConfirm={confirmClear}
+        onCancel={() => setShowClearConfirm(false)}
+      />
     </div>
   );
 };
