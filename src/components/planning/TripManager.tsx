@@ -667,7 +667,7 @@ const TripManager: React.FC<TripManagerProps> = ({
             {filteredTrips.length === 0 ? (
               <div className="text-center py-8 text-neutral-500">
                 <Navigation className="w-12 h-12 mx-auto mb-3 text-neutral-300" />
-                <p>No trips found. Start by saving your current route or using a template.</p>
+                <p>No saved trips yet. Plan a route and save it here.</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">

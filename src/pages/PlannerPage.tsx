@@ -188,7 +188,7 @@ const PlannerPage: React.FC = () => {
           <button
             data-tour-id="plan-trip-float"
             onClick={openWizard}
-            className="absolute z-[1000] bottom-14 left-4 sm:bottom-4 sm:right-4 sm:left-auto flex items-center gap-2 px-4 py-2.5 bg-white text-accent-600 rounded-xl hover:bg-accent-50 text-sm font-semibold shadow-medium ring-1 ring-black/5 transition-all"
+            className="absolute z-30 bottom-14 left-4 sm:bottom-4 sm:right-4 sm:left-auto flex items-center gap-2 px-4 py-2.5 bg-white text-accent-600 rounded-xl hover:bg-accent-50 text-sm font-semibold shadow-medium ring-1 ring-black/5 transition-all"
           >
             <RouteIcon className="w-4 h-4" />
             Continue Planning

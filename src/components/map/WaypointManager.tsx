@@ -115,7 +115,7 @@ const generateWaypointName = (type: 'start' | 'waypoint' | 'end', index: number)
     case 'end':
       return 'Destination';
     case 'waypoint':
-      return `Waypoint ${index}`;
+      return `Waypoint ${index + 1}`;
     default:
       return `Point ${index + 1}`;
   }
