@@ -73,11 +73,19 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
       />
 
       {/* Dialog */}
-      <div className="relative bg-white rounded-lg shadow-xl max-w-md w-full mx-4 transform transition-all">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="confirm-dialog-title"
+        aria-describedby="confirm-dialog-message"
+        className="relative bg-white rounded-lg shadow-xl max-w-md w-full mx-4 transform transition-all"
+      >
         <div className="p-6">
           {/* Header */}
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-neutral-900">{title}</h3>
+            <h3 id="confirm-dialog-title" className="text-lg font-semibold text-neutral-900">
+              {title}
+            </h3>
             <button
               onClick={onCancel}
               className="text-neutral-400 hover:text-neutral-600 p-1 rounded transition-colors"
@@ -96,7 +104,9 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
 
           {/* Message */}
           <div className="mb-6">
-            <p className="text-neutral-600 text-sm leading-relaxed">{message}</p>
+            <p id="confirm-dialog-message" className="text-neutral-600 text-sm leading-relaxed">
+              {message}
+            </p>
           </div>
 
           {/* Actions */}

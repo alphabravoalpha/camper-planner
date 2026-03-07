@@ -20,13 +20,13 @@ const Footer: React.FC = () => {
             <div className="flex items-center gap-2 mb-3">
               <img
                 src="/logo.png"
-                alt="European Camper Planner"
+                alt="CamperPlanning.com"
                 className="w-7 h-7"
                 width={28}
                 height={28}
               />
               <span className="text-white font-display font-semibold text-sm">
-                European Camper Planner
+                CamperPlanning.com
               </span>
             </div>
             <p className="text-neutral-400 text-sm leading-relaxed">
@@ -147,7 +147,7 @@ const Footer: React.FC = () => {
       <div className="border-t border-neutral-800">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-neutral-400">
-            <p>&copy; {currentYear} European Camper Trip Planner. All rights reserved.</p>
+            <p>&copy; {currentYear} CamperPlanning.com. All rights reserved.</p>
             <p className="text-center sm:text-right">
               Some links may earn us a small commission at no extra cost to you.{' '}
               <Link

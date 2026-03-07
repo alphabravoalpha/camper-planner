@@ -299,6 +299,7 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
         }
       } catch (error) {
         console.error('Search error:', error);
+        setSearchError('Search failed. Please try again.');
         setResults([]);
         pendingAutoSelectRef.current = false;
       } finally {

@@ -5,7 +5,14 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { MapContainer as LeafletMapContainer, useMap, useMapEvents } from 'react-leaflet';
 import * as L from 'leaflet';
 import { FeatureFlags } from '../../config';
-import { useMapStore, useRouteStore, useUIStore, useTripWizardStore } from '../../store';
+import {
+  useMapStore,
+  useRouteStore,
+  useUIStore,
+  useTripWizardStore,
+  useVehicleStore,
+} from '../../store';
+import { useTripSettingsStore } from '../../store/tripSettingsStore';
 import { mapStorage } from '../../utils/mapStorage';
 import { cn } from '../../utils/cn';
 import WaypointManager from './WaypointManager';
@@ -1247,9 +1254,37 @@ const MapContainer: React.FC = () => {
             <div className="flex-1 overflow-hidden">
               <TripManager
                 className="h-full border-0 rounded-none"
-                onTripLoad={_trip => {
-                  // Handle trip loading - would integrate with route store
-                  // TODO: Load trip data into route store, vehicle store, etc.
+                onTripLoad={trip => {
+                  // Restore waypoints to the map
+                  if (trip.data.waypoints && trip.data.waypoints.length > 0) {
+                    useRouteStore.getState().reorderWaypoints(trip.data.waypoints);
+
+                    // Fit map to loaded waypoints
+                    const lats = trip.data.waypoints.map(wp => wp.lat);
+                    const lngs = trip.data.waypoints.map(wp => wp.lng);
+                    const bounds = L.latLngBounds(
+                      [Math.min(...lats), Math.min(...lngs)],
+                      [Math.max(...lats), Math.max(...lngs)]
+                    );
+                    if (mapRef.current) {
+                      mapRef.current.fitBounds(bounds, { padding: [50, 50] });
+                    }
+                  }
+
+                  // Restore vehicle profile if saved
+                  if (trip.data.vehicleProfile) {
+                    useVehicleStore.getState().setProfile(trip.data.vehicleProfile);
+                  }
+
+                  // Restore trip settings if saved
+                  if (trip.data.settings) {
+                    useTripSettingsStore.getState().loadSettings(trip.data.settings);
+                  }
+
+                  addNotification({
+                    type: 'success',
+                    message: `Trip "${trip.metadata.name}" loaded`,
+                  });
                   setShowTripManager(false);
                 }}
                 onClose={() => setShowTripManager(false)}

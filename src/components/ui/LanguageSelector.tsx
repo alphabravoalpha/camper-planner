@@ -12,6 +12,8 @@ interface Language {
   nativeName: string;
 }
 
+const COMPLETE_LANGUAGES = new Set(['en', 'de']);
+
 const supportedLanguages: Language[] = [
   { code: 'en', name: 'English', nativeName: 'English' },
   { code: 'de', name: 'German', nativeName: 'Deutsch' },
@@ -38,7 +40,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   const currentLanguage =
     supportedLanguages.find(lang => lang.code === i18n.language) || supportedLanguages[0];
 
-  // Close dropdown when clicking outside
+  // Close dropdown when clicking outside or pressing Escape
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -46,11 +48,19 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
       }
     };
 
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && isOpen) {
+        setIsOpen(false);
+      }
+    };
+
     document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleKeyDown);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
     };
-  }, []);
+  }, [isOpen]);
 
   const handleLanguageChange = (languageCode: string) => {
     i18n.changeLanguage(languageCode);
@@ -125,7 +135,12 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
                 role="menuitem"
               >
                 <div className="flex-1">
-                  <div className="font-medium">{language.nativeName}</div>
+                  <div className="font-medium">
+                    {language.nativeName}
+                    {!COMPLETE_LANGUAGES.has(language.code) && (
+                      <span className="ml-1.5 text-xs text-amber-600 font-normal">(Beta)</span>
+                    )}
+                  </div>
                   {language.nativeName !== language.name && (
                     <div className="text-xs text-neutral-500">{language.name}</div>
                   )}
