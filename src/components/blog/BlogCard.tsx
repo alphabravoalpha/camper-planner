@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Clock } from 'lucide-react';
 import type { BlogPost } from '../../types/blog';
 import { BLOG_CATEGORIES } from '../../data/blog';
@@ -11,6 +12,7 @@ interface BlogCardProps {
 }
 
 const BlogCard: React.FC<BlogCardProps> = ({ post }) => {
+  const { t } = useTranslation();
   const categoryInfo = BLOG_CATEGORIES[post.category];
 
   return (
@@ -47,7 +49,7 @@ const BlogCard: React.FC<BlogCardProps> = ({ post }) => {
         <div className="flex items-center gap-3 text-xs text-neutral-500">
           <span className="flex items-center gap-1">
             <Clock className="w-3.5 h-3.5" />
-            {post.readingTime} min read
+            {t('blog.minuteRead', { min: post.readingTime })}
           </span>
           <span>
             {new Date(post.publishedDate).toLocaleDateString('en-GB', {

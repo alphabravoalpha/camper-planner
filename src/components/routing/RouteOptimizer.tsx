@@ -2,6 +2,7 @@
 // Phase 5.1: Multi-stop optimization with TSP solver and visual feedback
 
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Ruler, Zap, Scale, Tent, MapPin } from 'lucide-react';
 import { FeatureFlags } from '../../config';
 import {
@@ -50,6 +51,7 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
   onWaypointInsert,
   isVisible = true,
 }) => {
+  const { t } = useTranslation();
   const { waypoints, reorderWaypoints } = useRouteStore();
   const { profile } = useVehicleStore();
   const { addNotification } = useUIStore();
@@ -109,12 +111,15 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
       if (result.improvements.percentageImprovement > 1) {
         addNotification({
           type: 'success',
-          message: `Route optimized! Saved ${result.improvements.distanceSaved.toFixed(1)}km and ${Math.round(result.improvements.timeSaved)} minutes`,
+          message: t('route.optimizer.successMessage', {
+            distance: result.improvements.distanceSaved.toFixed(1),
+            time: Math.round(result.improvements.timeSaved),
+          }),
         });
       } else {
         addNotification({
           type: 'info',
-          message: 'Route is already well optimized',
+          message: t('route.optimizer.alreadyOptimized'),
         });
       }
 
@@ -124,7 +129,7 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
       setOptimizationError(errorMessage);
       addNotification({
         type: 'error',
-        message: `Optimization failed: ${errorMessage}`,
+        message: t('route.optimizer.errorMessage', { error: errorMessage }),
       });
     } finally {
       setIsOptimizing(false);
@@ -137,6 +142,7 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
     canOptimize,
     addNotification,
     onOptimizationComplete,
+    t,
   ]);
 
   // Apply optimization result
@@ -148,9 +154,9 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
 
     addNotification({
       type: 'success',
-      message: 'Route optimization applied successfully',
+      message: t('route.optimizer.appliedSuccess'),
     });
-  }, [optimizationResult, reorderWaypoints, addNotification]);
+  }, [optimizationResult, reorderWaypoints, addNotification, t]);
 
   // Toggle waypoint lock
   const toggleWaypointLock = useCallback((waypointId: string) => {
@@ -193,11 +199,11 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
           console.error('Insertion analysis failed:', error);
           addNotification({
             type: 'error',
-            message: 'Failed to analyze waypoint insertion',
+            message: t('route.optimizer.insertionError'),
           });
         });
     },
-    [insertionMode, waypoints, settings.objective, profile, addNotification]
+    [insertionMode, waypoints, settings.objective, profile, addNotification, t]
   );
 
   // Auto-optimize when waypoints change
@@ -232,14 +238,14 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
                 d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 01.553-.894L9 2l6 3 6-3v15l-6 3-6-3z"
               />
             </svg>
-            Route Optimizer
+            {t('route.optimizer.title')}
           </h3>
 
           <div className="flex items-center space-x-2">
             <button
               onClick={() => setShowAdvancedSettings(!showAdvancedSettings)}
               className="p-2 text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100 rounded"
-              title="Advanced Settings"
+              title={t('route.optimizer.advancedSettings')}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
@@ -269,7 +275,7 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
                 d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
               />
             </svg>
-            Add at least 3 waypoints to enable route optimization
+            {t('route.optimizer.minWaypoints')}
           </p>
         )}
       </div>
@@ -278,16 +284,28 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
       <div className="p-4">
         {/* Optimization Objective */}
         <div className="mb-4">
-          <span className="block text-sm font-medium text-neutral-700 mb-2">Optimization Goal</span>
+          <span className="block text-sm font-medium text-neutral-700 mb-2">
+            {t('route.optimizer.objectiveLabel')}
+          </span>
           <div className="grid grid-cols-3 gap-2">
             {[
-              { value: 'shortest', label: 'Shortest', icon: Ruler, desc: 'Minimize distance' },
-              { value: 'fastest', label: 'Fastest', icon: Zap, desc: 'Minimize time' },
+              {
+                value: 'shortest',
+                labelKey: 'route.optimizer.shortest' as const,
+                icon: Ruler,
+                descKey: 'route.optimizer.shortestDesc' as const,
+              },
+              {
+                value: 'fastest',
+                labelKey: 'route.optimizer.fastest' as const,
+                icon: Zap,
+                descKey: 'route.optimizer.fastestDesc' as const,
+              },
               {
                 value: 'balanced',
-                label: 'Balanced',
+                labelKey: 'route.optimizer.balanced' as const,
                 icon: Scale,
-                desc: 'Balance time & distance',
+                descKey: 'route.optimizer.balancedDesc' as const,
               },
             ].map(option => {
               const Icon = option.icon;
@@ -310,8 +328,8 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
                   <div className="flex justify-center mb-1">
                     <Icon className="w-5 h-5" />
                   </div>
-                  <div className="font-medium">{option.label}</div>
-                  <div className="text-xs text-neutral-500">{option.desc}</div>
+                  <div className="font-medium">{t(option.labelKey)}</div>
+                  <div className="text-xs text-neutral-500">{t(option.descKey)}</div>
                 </button>
               );
             })}
@@ -345,7 +363,7 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
                     d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
                   />
                 </svg>
-                <span>Optimizing...</span>
+                <span>{t('route.optimizer.optimizingButton')}</span>
               </>
             ) : (
               <>
@@ -357,7 +375,7 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
                     d="M13 10V3L4 14h7v7l9-11h-7z"
                   />
                 </svg>
-                <span>Optimize Route</span>
+                <span>{t('route.optimizer.optimizeButton')}</span>
               </>
             )}
           </button>
@@ -387,12 +405,12 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
         {optimizationError && (
           <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2">
             <span className="text-red-600 text-sm flex-1">
-              Optimization failed: {optimizationError}
+              {t('route.optimizer.errorMessage', { error: optimizationError })}
             </span>
             <button
               onClick={() => setOptimizationError(null)}
               className="text-red-400 hover:text-red-600 p-0.5"
-              aria-label="Dismiss error"
+              aria-label={t('route.optimizer.dismissButton')}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
@@ -417,14 +435,16 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
               }
               className="rounded border-neutral-300 text-primary-600 focus:ring-primary-500"
             />
-            <span>Auto-optimize when route changes</span>
+            <span>{t('route.optimizer.autoOptimize')}</span>
           </label>
         </div>
 
         {/* Advanced Settings */}
         {showAdvancedSettings && (
           <div className="space-y-4 p-4 bg-neutral-50 rounded-lg">
-            <h4 className="font-medium text-neutral-900">Advanced Settings</h4>
+            <h4 className="font-medium text-neutral-900">
+              {t('route.optimizer.advancedSettings')}
+            </h4>
 
             {/* Time Constraints */}
             <div>
@@ -437,7 +457,7 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
                   }
                   className="rounded border-neutral-300 text-primary-600 focus:ring-primary-500"
                 />
-                <span>Enable time constraints</span>
+                <span>{t('route.optimizer.enableTimeConstraints')}</span>
               </label>
 
               {settings.enableTimeConstraints && (
@@ -447,7 +467,7 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
                       htmlFor="optimizer-max-driving-time"
                       className="block text-xs text-neutral-600 mb-1"
                     >
-                      Max driving time (hours)
+                      {t('route.optimizer.maxDrivingTime')}
                     </label>
                     <input
                       id="optimizer-max-driving-time"
@@ -466,7 +486,7 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
                       htmlFor="optimizer-preferred-start-time"
                       className="block text-xs text-neutral-600 mb-1"
                     >
-                      Preferred start time
+                      {t('route.optimizer.preferredStartTime')}
                     </label>
                     <input
                       id="optimizer-preferred-start-time"
@@ -498,14 +518,16 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
                   }
                   className="rounded border-neutral-300 text-primary-600 focus:ring-primary-500"
                 />
-                <span>Enable campsite preferences</span>
+                <span>{t('route.optimizer.enableCampsitePreferences')}</span>
               </label>
 
               {settings.enableCampsitePreferences && (
                 <div className="ml-6">
                   <div className="mb-2">
                     <label className="block text-xs text-neutral-600 mb-1">
-                      Max distance between stops: {settings.maxDistanceBetweenStops}km
+                      {t('route.optimizer.maxDistanceBetweenStops', {
+                        distance: settings.maxDistanceBetweenStops,
+                      })}
                     </label>
                     <input
                       type="range"
@@ -534,7 +556,7 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
                       }
                       className="rounded border-neutral-300 text-primary-600 focus:ring-primary-500"
                     />
-                    <span>Require campsite for overnight stops</span>
+                    <span>{t('route.optimizer.requireCampsiteOvernight')}</span>
                   </label>
                 </div>
               )}
@@ -562,7 +584,7 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
                   d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                 />
               </svg>
-              Waypoint Order ({waypoints.length} stops)
+              {t('route.optimizer.waypointOrder', { count: waypoints.length })}
             </h4>
 
             <div className="space-y-2 max-h-48 overflow-y-auto">
@@ -583,11 +605,11 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
                       <span className="inline-flex items-center gap-1">
                         {waypoint.type === 'campsite' ? (
                           <>
-                            <Tent className="w-3 h-3" /> Campsite
+                            <Tent className="w-3 h-3" /> {t('route.optimizer.campsiteLabel')}
                           </>
                         ) : (
                           <>
-                            <MapPin className="w-3 h-3" /> Waypoint
+                            <MapPin className="w-3 h-3" /> {t('route.optimizer.waypointLabel')}
                           </>
                         )}
                       </span>
@@ -603,7 +625,9 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
                         : 'text-neutral-400 hover:bg-neutral-100'
                     )}
                     title={
-                      lockedWaypoints.has(waypoint.id) ? 'Unlock waypoint' : 'Lock waypoint order'
+                      lockedWaypoints.has(waypoint.id)
+                        ? t('route.optimizer.unlockTooltip')
+                        : t('route.optimizer.lockTooltip')
                     }
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -638,7 +662,7 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
                     d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                   />
                 </svg>
-                {lockedWaypoints.size} waypoint(s) locked in position
+                {t('route.optimizer.lockedInfo', { count: lockedWaypoints.size })}
               </div>
             )}
           </div>
@@ -658,24 +682,34 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
                   d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
                 />
               </svg>
-              Optimization Complete
+              {t('route.optimizer.completeTitle')}
             </h4>
 
             <div className="grid grid-cols-2 gap-4 mb-4">
               <div className="bg-white p-3 rounded border">
-                <div className="text-xs text-neutral-600 mb-1">Distance Saved</div>
+                <div className="text-xs text-neutral-600 mb-1">
+                  {t('route.optimizer.distanceSaved')}
+                </div>
                 <div className="text-lg font-semibold text-green-600">
-                  {optimizationResult.improvements.distanceSaved.toFixed(1)}km
+                  {t('route.optimizer.distanceFormat', {
+                    distance: optimizationResult.improvements.distanceSaved.toFixed(1),
+                  })}
                 </div>
                 <div className="text-xs text-neutral-500">
-                  {optimizationResult.improvements.percentageImprovement.toFixed(1)}% improvement
+                  {t('route.optimizer.improvement', {
+                    percent: optimizationResult.improvements.percentageImprovement.toFixed(1),
+                  })}
                 </div>
               </div>
 
               <div className="bg-white p-3 rounded border">
-                <div className="text-xs text-neutral-600 mb-1">Time Saved</div>
+                <div className="text-xs text-neutral-600 mb-1">
+                  {t('route.optimizer.timeSaved')}
+                </div>
                 <div className="text-lg font-semibold text-green-600">
-                  {Math.round(optimizationResult.improvements.timeSaved)} min
+                  {t('route.optimizer.minutesFormat', {
+                    minutes: Math.round(optimizationResult.improvements.timeSaved),
+                  })}
                 </div>
                 <div className="text-xs text-neutral-500">
                   {optimizationResult.optimizationMetadata.algorithm}
@@ -688,13 +722,13 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
                 onClick={applyOptimization}
                 className="flex-1 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors text-sm font-medium"
               >
-                Apply Optimization
+                {t('route.optimizer.applyButton')}
               </button>
               <button
                 onClick={() => setOptimizationResult(null)}
                 className="px-4 py-2 border border-neutral-300 text-neutral-700 rounded-lg hover:bg-neutral-50 transition-colors text-sm"
               >
-                Dismiss
+                {t('route.optimizer.dismissButton')}
               </button>
             </div>
           </div>
@@ -714,7 +748,7 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
                   d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                 />
               </svg>
-              <span>Click on the map to find the optimal position for a new waypoint</span>
+              <span>{t('route.optimizer.insertionModeHint')}</span>
             </div>
           </div>
         </div>
@@ -724,14 +758,22 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
       {insertionResult && newWaypointPosition && (
         <div className="border-t border-neutral-200 bg-yellow-50">
           <div className="p-4">
-            <h4 className="font-medium text-yellow-900 mb-2">Waypoint Insertion Analysis</h4>
+            <h4 className="font-medium text-yellow-900 mb-2">
+              {t('route.optimizer.insertionAnalysisTitle')}
+            </h4>
             <div className="text-sm text-yellow-800 mb-3">
-              Best position: After waypoint {insertionResult.suggestedPosition + 1}
+              {t('route.optimizer.bestPosition', {
+                position: insertionResult.suggestedPosition + 1,
+              })}
               <br />
-              Impact: +{insertionResult.routeImpact.distanceAdded.toFixed(1)}km, +
-              {Math.round(insertionResult.routeImpact.timeAdded)} min
+              {t('route.optimizer.impact', {
+                distance: insertionResult.routeImpact.distanceAdded.toFixed(1),
+                time: Math.round(insertionResult.routeImpact.timeAdded),
+              })}
               <br />
-              Efficiency: {(insertionResult.routeImpact.efficiency * 100).toFixed(0)}%
+              {t('route.optimizer.efficiency', {
+                percent: (insertionResult.routeImpact.efficiency * 100).toFixed(0),
+              })}
             </div>
 
             <div className="flex space-x-3">
@@ -744,7 +786,7 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
                 }}
                 className="bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 transition-colors text-sm font-medium"
               >
-                Insert Here
+                {t('route.optimizer.insertButton')}
               </button>
               <button
                 onClick={() => {
@@ -753,7 +795,7 @@ const RouteOptimizer: React.FC<RouteOptimizerProps> = ({
                 }}
                 className="px-4 py-2 border border-neutral-300 text-neutral-700 rounded-lg hover:bg-neutral-50 transition-colors text-sm"
               >
-                Cancel
+                {t('route.optimizer.dismissButton')}
               </button>
             </div>
           </div>

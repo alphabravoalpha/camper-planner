@@ -5,6 +5,7 @@ import React, { useEffect, useState, useCallback, useMemo, useRef } from 'react'
 import { Marker, Popup } from 'react-leaflet';
 import { useMap } from 'react-leaflet';
 import * as L from 'leaflet';
+import { useTranslation } from 'react-i18next';
 import { campsiteService } from '../../services/CampsiteService';
 import { CampsiteFilterService } from '../../services/CampsiteFilterService';
 import { useRouteStore, useVehicleStore, useUIStore } from '../../store';
@@ -148,6 +149,7 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
   selectedCampsiteId,
 }) => {
   const map = useMap();
+  const { t } = useTranslation();
   const { calculatedRoute, waypoints, addWaypoint } = useRouteStore();
   const { profile } = useVehicleStore();
   const { addNotification } = useUIStore();
@@ -171,7 +173,7 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
       if (isCampsiteInRoute(campsite)) {
         addNotification({
           type: 'warning',
-          message: `${campsite.name || 'This campsite'} is already in your route`,
+          message: t('campsites.msg.alreadyInRoute'),
         });
         return;
       }
@@ -188,10 +190,10 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
       addWaypoint(newWaypoint);
       addNotification({
         type: 'success',
-        message: `Added "${newWaypoint.name}" to your route`,
+        message: t('campsites.msg.addedToRoute', { name: newWaypoint.name }),
       });
     },
-    [addWaypoint, addNotification, isCampsiteInRoute]
+    [addWaypoint, addNotification, isCampsiteInRoute, t]
   );
 
   const [campsites, setCampsites] = useState<Campsite[]>([]);
@@ -222,8 +224,8 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
     (err: unknown): { message: string; suggestion?: string; retryable?: boolean } => {
       if (!(err instanceof Error)) {
         return {
-          message: 'Failed to load campsites',
-          suggestion: 'Please try again or zoom to a different area.',
+          message: t('campsites.error.failedToLoad'),
+          suggestion: t('campsites.error.tryAgainOrZoom'),
           retryable: true,
         };
       }
@@ -233,8 +235,8 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
       // Timeout errors
       if (errorMsg.includes('timeout')) {
         return {
-          message: 'Request timed out while loading campsites',
-          suggestion: 'The area may be too large. Try zooming in to search a smaller area.',
+          message: t('campsites.error.timeout'),
+          suggestion: t('campsites.error.areaTooLarge'),
           retryable: true,
         };
       }
@@ -242,8 +244,8 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
       // Network errors
       if (errorMsg.includes('failed to fetch') || errorMsg.includes('network')) {
         return {
-          message: 'Network connection failed',
-          suggestion: 'Please check your internet connection and try again.',
+          message: t('campsites.error.networkFailed'),
+          suggestion: t('campsites.error.checkConnection'),
           retryable: true,
         };
       }
@@ -251,8 +253,8 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
       // Rate limit errors
       if (errorMsg.includes('rate limit') || errorMsg.includes('too many requests')) {
         return {
-          message: 'Too many requests',
-          suggestion: 'Please wait a moment before searching again.',
+          message: t('campsites.error.tooManyRequests'),
+          suggestion: t('campsites.error.waitBeforeRetry'),
           retryable: true,
         };
       }
@@ -260,8 +262,8 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
       // Bounding box too large
       if (errorMsg.includes('bounding box too large')) {
         return {
-          message: 'Search area too large',
-          suggestion: 'Please zoom in to search a smaller area.',
+          message: t('campsites.error.searchAreaTooLarge'),
+          suggestion: t('campsites.error.zoomInHint'),
           retryable: false,
         };
       }
@@ -269,8 +271,8 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
       // No data found
       if (errorMsg.includes('no data') || errorMsg.includes('404')) {
         return {
-          message: 'No campsites found in this area',
-          suggestion: 'Try zooming out or searching a different location.',
+          message: t('campsites.error.noCampsitesFound'),
+          suggestion: t('campsites.error.tryZoomOut'),
           retryable: false,
         };
       }
@@ -278,20 +280,20 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
       // Server errors
       if (errorMsg.includes('http 5')) {
         return {
-          message: 'Campsite service temporarily unavailable',
-          suggestion: 'Please try again in a few moments.',
+          message: t('campsites.error.serviceUnavailable'),
+          suggestion: t('campsites.error.tryAgainLater'),
           retryable: true,
         };
       }
 
       // Default error
       return {
-        message: err.message || 'Failed to load campsites',
-        suggestion: 'Please try again. If the problem persists, try zooming to a different area.',
+        message: err.message || t('campsites.error.failedToLoad'),
+        suggestion: t('campsites.error.tryDifferentArea'),
         retryable: true,
       };
     },
-    []
+    [t]
   );
 
   // Helper function to check if a campsite is compatible with the user's vehicle
@@ -500,7 +502,9 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
         trackFeature('campsite_search', 'completed', { results: response.campsites.length });
       } else {
         // Show error but keep existing campsites visible
-        const errorInfo = classifyError(new Error(response.error || 'Failed to load campsites'));
+        const errorInfo = classifyError(
+          new Error(response.error || t('campsites.error.failedToLoad'))
+        );
         setError(errorInfo);
       }
     } catch (err) {
@@ -519,6 +523,7 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
     onCampsitesLoaded,
     classifyError,
     trackFeature,
+    t,
   ]);
 
   // Auto-load campsites around route, splitting large bboxes into tiles
@@ -684,9 +689,13 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
         >
           <div className="animate-spin h-5 w-5 border-[2.5px] border-primary-200 border-t-primary-600 rounded-full"></div>
           <div>
-            <span className="text-sm font-medium text-neutral-800">Loading campsites...</span>
+            <span className="text-sm font-medium text-neutral-800">
+              {t('campsites.status.loading')}
+            </span>
             {campsites.length > 0 && (
-              <div className="text-xs text-neutral-500 mt-0.5">{campsites.length} found so far</div>
+              <div className="text-xs text-neutral-500 mt-0.5">
+                {t('campsites.status.foundSoFar', { count: campsites.length })}
+              </div>
             )}
           </div>
         </div>
@@ -701,7 +710,10 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
           <div className="flex items-center space-x-2">
             <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
             <span className="text-xs text-neutral-600">
-              Showing {visibleBatchCount} of {clusteredCampsites.length}...
+              {t('campsites.status.showingBatch', {
+                visible: visibleBatchCount,
+                total: clusteredCampsites.length,
+              })}
             </span>
           </div>
         </div>
@@ -749,14 +761,14 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
                         d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
                       />
                     </svg>
-                    Retry
+                    {t('campsites.error.retryButton')}
                   </button>
                 )}
                 <button
                   onClick={() => setError(null)}
                   className="inline-flex items-center px-2 py-1 text-xs font-medium text-red-700 hover:text-red-900"
                 >
-                  Dismiss
+                  {t('campsites.error.dismissButton')}
                 </button>
               </div>
             </div>
@@ -837,10 +849,12 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
               {isCluster ? (
                 <div className="p-3">
                   <h3 className="font-medium text-neutral-900 text-sm mb-2">
-                    {(campsite as ClusteredCampsite).clusterCount} Campsites
+                    {t('campsites.popup.clusterTitle', {
+                      count: (campsite as ClusteredCampsite).clusterCount,
+                    })}
                   </h3>
                   <p className="text-xs text-neutral-600 mb-2">
-                    Click to zoom in and see individual campsites
+                    {t('campsites.popup.clusterHint')}
                   </p>
                   <div className="space-y-1">
                     {(campsite as ClusteredCampsite).clusterCampsites
@@ -853,7 +867,9 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
                     {(campsite as ClusteredCampsite).clusterCampsites &&
                       (campsite as ClusteredCampsite).clusterCampsites!.length > 3 && (
                         <div className="text-xs text-neutral-500">
-                          and {(campsite as ClusteredCampsite).clusterCampsites!.length - 3} more...
+                          {t('campsites.popup.moreItems', {
+                            count: (campsite as ClusteredCampsite).clusterCampsites!.length - 3,
+                          })}
                         </div>
                       )}
                   </div>
@@ -916,7 +932,7 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
                   {/* Minimal data hint */}
                   {campsite.dataCompleteness === 'minimal' && (
                     <div className="text-xs text-amber-600 mb-2">
-                      Limited data — check Park4Night for more info
+                      {t('campsites.popup.limitedDataHint')}
                     </div>
                   )}
 
@@ -924,14 +940,14 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
                   <div className="flex gap-2 pt-2 border-t border-neutral-200">
                     {isCampsiteInRoute(campsite) ? (
                       <div className="flex-1 flex items-center justify-center py-1.5 bg-green-50 text-green-700 rounded text-xs font-medium">
-                        ✓ In route
+                        {t('campsites.popup.inRoute')}
                       </div>
                     ) : (
                       <button
                         onClick={e => handleAddToRoute(campsite, e)}
                         className="flex-1 py-1.5 bg-primary-600 hover:bg-primary-700 text-white rounded text-xs font-medium transition-colors"
                       >
-                        + Add to Route
+                        {t('campsites.popup.addToRoute')}
                       </button>
                     )}
                     <button
@@ -941,7 +957,7 @@ const SimpleCampsiteLayer: React.FC<SimpleCampsiteLayerProps> = ({
                       }}
                       className="flex-1 py-1.5 border border-neutral-300 text-neutral-700 hover:bg-neutral-50 rounded text-xs font-medium transition-colors"
                     >
-                      View Details →
+                      {t('campsites.popup.viewDetails')}
                     </button>
                   </div>
                 </div>

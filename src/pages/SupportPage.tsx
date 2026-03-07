@@ -3,6 +3,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Heart, Coffee, ChevronLeft, ExternalLink, Globe, Shield, Zap, Wrench } from 'lucide-react';
 import SEOHead from '../components/seo/SEOHead';
 
@@ -11,30 +12,29 @@ const KOFI_URL = 'https://ko-fi.com/camperplanning';
 const SUPPORT_REASONS = [
   {
     icon: Globe,
-    title: 'Keep it free for everyone',
-    description:
-      'Your support helps us keep the app completely free with no subscriptions or paywalls.',
+    titleKey: 'support.reasons.free.title',
+    descKey: 'support.reasons.free.description',
   },
   {
     icon: Zap,
-    title: 'New features and improvements',
-    description:
-      'Fund development of weather integration, toll calculations, trip sharing, and more.',
+    titleKey: 'support.reasons.features.title',
+    descKey: 'support.reasons.features.description',
   },
   {
     icon: Shield,
-    title: 'Privacy-first development',
-    description:
-      'We choose not to run ads or sell data. Your donations help sustain this approach.',
+    titleKey: 'support.reasons.privacy.title',
+    descKey: 'support.reasons.privacy.description',
   },
   {
     icon: Wrench,
-    title: 'Ongoing maintenance',
-    description: 'Bug fixes, security updates, and keeping third-party API integrations working.',
+    titleKey: 'support.reasons.maintenance.title',
+    descKey: 'support.reasons.maintenance.description',
   },
 ];
 
 const SupportPage: React.FC = () => {
+  const { t } = useTranslation();
+
   return (
     <div className="min-h-screen bg-neutral-50 animate-fade-in">
       <SEOHead
@@ -56,18 +56,17 @@ const SupportPage: React.FC = () => {
             className="inline-flex items-center gap-1 text-primary-200 hover:text-white text-sm mb-4 transition-colors"
           >
             <ChevronLeft className="w-4 h-4" />
-            Back to planner
+            {t('support.backToPlanner')}
           </Link>
           <div className="text-center">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-white/15 rounded-lg mb-5 backdrop-blur-sm">
               <Heart className="w-8 h-8" />
             </div>
             <h1 className="text-3xl sm:text-4xl font-display font-bold mb-3">
-              Support This Project
+              {t('support.title')}
             </h1>
             <p className="text-primary-100 text-lg max-w-2xl mx-auto leading-relaxed">
-              European Camper Trip Planner is free and always will be. If it helps you plan your
-              adventures, consider supporting its development.
+              {t('support.description')}
             </p>
           </div>
         </div>
@@ -79,15 +78,12 @@ const SupportPage: React.FC = () => {
           <div className="text-center">
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-accent-50 text-accent-700 rounded-full text-sm font-medium mb-4">
               <Coffee className="w-4 h-4" />
-              Buy us a coffee
+              {t('support.kofiTitle')}
             </div>
             <h2 className="text-2xl font-display font-bold text-neutral-900 mb-2">
-              One-off or monthly support
+              {t('support.kofiSubtitle')}
             </h2>
-            <p className="text-neutral-600 mb-6 max-w-lg mx-auto">
-              Every contribution, no matter how small, helps keep the lights on and the code
-              flowing. 100% of donations go towards development and hosting.
-            </p>
+            <p className="text-neutral-600 mb-6 max-w-lg mx-auto">{t('support.kofiDescription')}</p>
             <div className="flex justify-center">
               <iframe
                 id="kofiframe"
@@ -98,14 +94,14 @@ const SupportPage: React.FC = () => {
               />
             </div>
             <p className="text-neutral-400 text-xs mt-3">
-              Ko-fi charges 0% platform fees on donations.{' '}
+              {t('support.kofiDisclaimer')}{' '}
               <a
                 href={KOFI_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-neutral-500 underline hover:text-neutral-700 transition-colors"
               >
-                Open in Ko-fi
+                {t('support.openKofi')}
                 <ExternalLink className="w-3 h-3 inline ml-1" />
               </a>
             </p>
@@ -115,23 +111,23 @@ const SupportPage: React.FC = () => {
         {/* Why Support */}
         <div>
           <h2 className="text-2xl font-display font-bold text-neutral-900 mb-6 text-center">
-            What your support funds
+            {t('support.fundingTitle')}
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             {SUPPORT_REASONS.map(reason => {
               const Icon = reason.icon;
               return (
                 <div
-                  key={reason.title}
+                  key={reason.titleKey}
                   className="bg-white rounded-xl shadow-soft p-6 hover:shadow-medium hover:-translate-y-1 transition-all duration-200"
                 >
                   <div className="w-11 h-11 bg-accent-50 rounded-lg flex items-center justify-center mb-4">
                     <Icon className="w-5 h-5 text-accent-600" />
                   </div>
                   <h3 className="text-base font-display font-semibold text-neutral-900 mb-1.5">
-                    {reason.title}
+                    {t(reason.titleKey)}
                   </h3>
-                  <p className="text-sm text-neutral-500 leading-relaxed">{reason.description}</p>
+                  <p className="text-sm text-neutral-500 leading-relaxed">{t(reason.descKey)}</p>
                 </div>
               );
             })}
@@ -141,7 +137,7 @@ const SupportPage: React.FC = () => {
         {/* Other Ways to Help */}
         <div className="bg-white rounded-xl shadow-soft p-6 sm:p-8">
           <h2 className="text-xl font-display font-bold text-neutral-900 mb-4">
-            Other ways to help
+            {t('support.otherWaysTitle')}
           </h2>
           <div className="space-y-4">
             <div className="flex items-start gap-4">
@@ -162,11 +158,10 @@ const SupportPage: React.FC = () => {
               </div>
               <div>
                 <h3 className="font-display font-semibold text-neutral-900 text-sm">
-                  Spread the word
+                  {t('support.spreadWord.title')}
                 </h3>
                 <p className="text-neutral-500 text-sm mt-0.5">
-                  Tell fellow camper travellers about the app. Share it on forums, social media, or
-                  with your camping club.
+                  {t('support.spreadWord.description')}
                 </p>
               </div>
             </div>
@@ -189,14 +184,13 @@ const SupportPage: React.FC = () => {
               </div>
               <div>
                 <h3 className="font-display font-semibold text-neutral-900 text-sm">
-                  Report bugs and suggest features
+                  {t('support.reportBugs.title')}
                 </h3>
                 <p className="text-neutral-500 text-sm mt-0.5">
-                  Found a problem or have an idea?{' '}
+                  {t('support.reportBugs.description')}{' '}
                   <Link to="/feedback" className="text-primary-600 underline">
-                    Send us feedback
+                    {t('support.sendFeedback')}
                   </Link>
-                  .
                 </p>
               </div>
             </div>
@@ -219,13 +213,12 @@ const SupportPage: React.FC = () => {
               </div>
               <div>
                 <h3 className="font-display font-semibold text-neutral-900 text-sm">
-                  Book through our links
+                  {t('support.bookLinks.title')}
                 </h3>
                 <p className="text-neutral-500 text-sm mt-0.5">
-                  When booking campsites, using our affiliate links earns us a small commission at
-                  no extra cost to you.{' '}
+                  {t('support.bookLinks.description')}{' '}
                   <Link to="/affiliate-disclosure" className="text-primary-600 underline">
-                    Learn more
+                    {t('support.learnMore')}
                   </Link>
                 </p>
               </div>
@@ -236,17 +229,16 @@ const SupportPage: React.FC = () => {
         {/* Thank You */}
         <div className="text-center bg-gradient-to-br from-accent-50 to-accent-100 rounded-xl p-8">
           <Heart className="w-10 h-10 text-accent-500 mx-auto mb-3" />
-          <h2 className="text-2xl font-display font-bold text-accent-900 mb-2">Thank you</h2>
-          <p className="text-accent-700 max-w-md mx-auto">
-            Whether you donate, share the app, or simply use it to plan your next adventure &mdash;
-            thank you for being part of this project.
-          </p>
+          <h2 className="text-2xl font-display font-bold text-accent-900 mb-2">
+            {t('support.thankYou.title')}
+          </h2>
+          <p className="text-accent-700 max-w-md mx-auto">{t('support.thankYou.description')}</p>
           <div className="mt-6">
             <Link
               to="/"
               className="inline-flex items-center gap-2 px-6 py-3 bg-accent-600 text-white rounded-lg font-display font-semibold hover:bg-accent-700 transition-all duration-200 shadow-sm hover:shadow-medium active:scale-[0.97]"
             >
-              Start Planning Your Trip
+              {t('support.startPlanningTrip')}
             </Link>
           </div>
         </div>

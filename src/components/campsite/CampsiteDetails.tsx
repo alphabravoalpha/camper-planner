@@ -2,6 +2,7 @@
 // Redesigned: Single scrollable layout with complete traveler information + booking
 
 import React, { useState, useCallback, useRef, useMemo, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Zap,
   Wifi,
@@ -40,26 +41,27 @@ export interface CampsiteDetailsProps {
   className?: string;
 }
 
-// Amenity configuration with icons and labels
-const AMENITY_CONFIG: Record<string, { icon: React.FC<{ className?: string }>; label: string }> = {
-  electricity: { icon: Zap, label: 'Power' },
-  wifi: { icon: Wifi, label: 'WiFi' },
-  showers: { icon: Droplets, label: 'Showers' },
-  toilets: { icon: Bath, label: 'Toilets' },
-  drinking_water: { icon: GlassWater, label: 'Water' },
-  waste_disposal: { icon: Trash2, label: 'Waste' },
-  laundry: { icon: Shirt, label: 'Laundry' },
-  restaurant: { icon: UtensilsCrossed, label: 'Food' },
-  shop: { icon: ShoppingCart, label: 'Shop' },
-  playground: { icon: Baby, label: 'Kids' },
-  swimming_pool: { icon: Waves, label: 'Pool' },
-  pet_allowed: { icon: Dog, label: 'Pets OK' },
-  sanitary_dump_station: { icon: Trash2, label: 'Dump Station' },
-  hot_water: { icon: Droplets, label: 'Hot Water' },
-  kitchen: { icon: UtensilsCrossed, label: 'Kitchen' },
-  picnic_table: { icon: UtensilsCrossed, label: 'Picnic' },
-  bbq: { icon: Flame, label: 'BBQ' },
-};
+// Amenity configuration with icons and translation keys
+const AMENITY_CONFIG: Record<string, { icon: React.FC<{ className?: string }>; labelKey: string }> =
+  {
+    electricity: { icon: Zap, labelKey: 'campsites.amenity.power' },
+    wifi: { icon: Wifi, labelKey: 'campsites.amenity.wifi' },
+    showers: { icon: Droplets, labelKey: 'campsites.amenity.showers' },
+    toilets: { icon: Bath, labelKey: 'campsites.amenity.toilets' },
+    drinking_water: { icon: GlassWater, labelKey: 'campsites.amenity.water' },
+    waste_disposal: { icon: Trash2, labelKey: 'campsites.amenity.waste' },
+    laundry: { icon: Shirt, labelKey: 'campsites.amenity.laundry' },
+    restaurant: { icon: UtensilsCrossed, labelKey: 'campsites.amenity.food' },
+    shop: { icon: ShoppingCart, labelKey: 'campsites.amenity.shop' },
+    playground: { icon: Baby, labelKey: 'campsites.amenity.kids' },
+    swimming_pool: { icon: Waves, labelKey: 'campsites.amenity.pool' },
+    pet_allowed: { icon: Dog, labelKey: 'campsites.amenity.petsOk' },
+    sanitary_dump_station: { icon: Trash2, labelKey: 'campsites.amenity.dumpStation' },
+    hot_water: { icon: Droplets, labelKey: 'campsites.amenity.hotWater' },
+    kitchen: { icon: UtensilsCrossed, labelKey: 'campsites.amenity.kitchen' },
+    picnic_table: { icon: UtensilsCrossed, labelKey: 'campsites.amenity.picnic' },
+    bbq: { icon: Flame, labelKey: 'campsites.amenity.bbq' },
+  };
 
 // Key amenities to show at the top (most important for travelers)
 const KEY_AMENITIES = [
@@ -82,7 +84,7 @@ const FIND_ON_PLATFORMS = [
     icon: '\uD83C\uDFD5\uFE0F',
     buildUrl: (campsite: Campsite) =>
       `https://park4night.com/search?lat=${campsite.lat}&lng=${campsite.lng}`,
-    description: 'Reviews & photos',
+    descKey: 'campsites.details.researchPark4night',
   },
   {
     id: 'google_maps',
@@ -95,7 +97,7 @@ const FIND_ON_PLATFORMS = [
           : `${campsite.lat},${campsite.lng}`;
       return `https://www.google.com/maps/search/${query}/@${campsite.lat},${campsite.lng},15z`;
     },
-    description: 'Photos & Street View',
+    descKey: 'campsites.details.researchGoogleMaps',
   },
   {
     id: 'pincamp',
@@ -103,7 +105,7 @@ const FIND_ON_PLATFORMS = [
     icon: '\u2B50',
     buildUrl: (campsite: Campsite) =>
       `https://www.pincamp.de/suche?lat=${campsite.lat}&lng=${campsite.lng}`,
-    description: 'Inspection ratings',
+    descKey: 'campsites.details.researchPincamp',
   },
 ];
 
@@ -114,6 +116,7 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
   onExportData,
   className,
 }) => {
+  const { t } = useTranslation();
   const [showAllAmenities, setShowAllAmenities] = useState(false);
   const [showContact, setShowContact] = useState(false);
   const bookingSectionRef = useRef<HTMLDivElement>(null);
@@ -138,7 +141,7 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
     if (isWaypoint) {
       addNotification({
         type: 'warning',
-        message: 'This campsite is already in your route',
+        message: t('campsites.msg.alreadyInRoute'),
       });
       return;
     }
@@ -156,9 +159,9 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
 
     addNotification({
       type: 'success',
-      message: `Added ${waypoint.name} to your route`,
+      message: t('campsites.msg.addedToRoute', { name: waypoint.name }),
     });
-  }, [campsite, isWaypoint, addWaypoint, onAddAsWaypoint, addNotification]);
+  }, [campsite, isWaypoint, addWaypoint, onAddAsWaypoint, addNotification, t]);
 
   // Handle Book Now - scroll to booking section or open website
   const handleBookNow = useCallback(() => {
@@ -175,9 +178,9 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
     navigator.clipboard.writeText(coords);
     addNotification({
       type: 'success',
-      message: 'Coordinates copied to clipboard',
+      message: t('campsites.msg.coordsCopied'),
     });
-  }, [campsite.lat, campsite.lng, addNotification]);
+  }, [campsite.lat, campsite.lng, addNotification, t]);
 
   // Handle data export
   const handleExport = useCallback(() => {
@@ -215,9 +218,9 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
     onExportData?.(campsite);
     addNotification({
       type: 'success',
-      message: 'Campsite data exported successfully',
+      message: t('campsites.msg.exportedSuccess'),
     });
-  }, [campsite, onExportData, addNotification]);
+  }, [campsite, onExportData, addNotification, t]);
 
   // Generate affiliate booking links via BookingService
   const affiliateLinks: BookingLink[] = useMemo(() => {
@@ -287,7 +290,9 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
                     : 'bg-orange-500 text-white'
                 )}
               >
-                {campsite.access?.motorhome ? '✓ Vehicle OK' : '⚠ Check Size'}
+                {campsite.access?.motorhome
+                  ? t('campsites.details.vehicleOk')
+                  : t('campsites.details.checkSize')}
               </span>
             </div>
             {campsite.stars != null && campsite.stars > 0 && (
@@ -295,7 +300,9 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
                 {Array.from({ length: campsite.stars }).map((_, i) => (
                   <Star key={i} className="w-3.5 h-3.5 fill-yellow-300 text-yellow-300" />
                 ))}
-                <span className="text-xs text-green-200 ml-1">{campsite.stars} star</span>
+                <span className="text-xs text-green-200 ml-1">
+                  {t('campsites.details.starCount', { count: campsite.stars })}
+                </span>
               </div>
             )}
           </div>
@@ -304,7 +311,7 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
             <button
               onClick={onClose}
               className="p-1 hover:bg-green-700 rounded transition-colors ml-2"
-              aria-label="Close details"
+              aria-label={t('campsites.details.closeLabel')}
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
@@ -341,7 +348,7 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
-                <span>In Route</span>
+                <span>{t('campsites.details.inRoute')}</span>
               </>
             ) : (
               <>
@@ -353,7 +360,7 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
                     d="M12 6v6m0 0v6m0-6h6m-6 0H6"
                   />
                 </svg>
-                <span>Add to Route</span>
+                <span>{t('campsites.details.addToRoute')}</span>
               </>
             )}
           </button>
@@ -373,7 +380,7 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
                 d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
               />
             </svg>
-            <span>Book Now</span>
+            <span>{t('campsites.details.bookNow')}</span>
           </button>
         </div>
       </div>
@@ -393,7 +400,7 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
               }}
             />
             <div className="absolute bottom-2 right-2 bg-black/50 text-white text-[10px] px-1.5 py-0.5 rounded flex items-center gap-0.5">
-              <Camera className="w-3 h-3" /> Wikimedia Commons
+              <Camera className="w-3 h-3" /> {t('campsites.details.wikimediaCredit')}
             </div>
           </div>
         )}
@@ -403,14 +410,14 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
           <div className="p-3 bg-amber-50 border-b border-amber-200 flex items-start gap-2">
             <Info className="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0" />
             <div className="text-xs text-amber-800">
-              <span className="font-medium">Limited data available.</span>{' '}
+              <span className="font-medium">{t('campsites.details.limitedDataNotice')}</span>{' '}
               <a
                 href={`https://www.openstreetmap.org/edit?node=${campsite.osmId || campsite.id}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="underline hover:text-amber-900"
               >
-                Help improve this listing on OpenStreetMap
+                {t('campsites.details.helpImproveOsm')}
               </a>
             </div>
           </div>
@@ -422,16 +429,15 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
             <div className="flex flex-wrap gap-2">
               {keyAmenitiesAvailable.slice(0, 8).map(amenity => {
                 const config = AMENITY_CONFIG[amenity];
+                const label = config?.labelKey ? t(config.labelKey) : amenity.replace(/_/g, ' ');
                 return (
                   <div
                     key={amenity}
                     className="flex items-center gap-1.5 px-2.5 py-1.5 bg-green-50 text-green-800 rounded-lg text-sm"
-                    title={config?.label || amenity}
+                    title={label}
                   >
                     {config?.icon ? <config.icon className="w-4 h-4" /> : <span>•</span>}
-                    <span className="font-medium">
-                      {config?.label || amenity.replace(/_/g, ' ')}
-                    </span>
+                    <span className="font-medium">{label}</span>
                   </div>
                 );
               })}
@@ -455,7 +461,7 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
             <div className="flex items-center gap-3">
               <Info className="w-5 h-5 text-neutral-400 flex-shrink-0" />
               <span className="text-sm text-neutral-700">
-                Operated by <span className="font-medium">{campsite.operator}</span>
+                {t('campsites.details.operatedBy', { operator: campsite.operator })}
               </span>
             </div>
           )}
@@ -524,10 +530,10 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
               </svg>
               <span className="text-sm text-neutral-500 italic">
                 {campsite.type === 'aire'
-                  ? 'Motorhome service area with facilities'
+                  ? t('campsites.details.typeAire')
                   : campsite.type === 'caravan_site'
-                    ? 'Caravan and motorhome site'
-                    : 'Camping site'}
+                    ? t('campsites.details.typeCaravan')
+                    : t('campsites.details.typeCampsite')}
               </span>
             </div>
           )}
@@ -565,7 +571,9 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
                     hasConflict ? 'text-red-800' : 'text-orange-800'
                   )}
                 >
-                  {hasConflict ? 'Vehicle may not fit!' : 'Size restrictions'}
+                  {hasConflict
+                    ? t('campsites.details.vehicleMayNotFit')
+                    : t('campsites.details.sizeRestrictions')}
                 </div>
                 <div
                   className={cn(
@@ -575,7 +583,11 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
                 >
                   {campsite.access?.max_height && (
                     <div className="flex items-center gap-2">
-                      <span>Max height: {campsite.access.max_height}m</span>
+                      <span>
+                        {t('campsites.details.maxHeight', {
+                          height: campsite.access.max_height,
+                        })}
+                      </span>
                       {profile && (
                         <span
                           className={cn(
@@ -585,14 +597,20 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
                               : 'bg-green-200 text-green-800'
                           )}
                         >
-                          You: {profile.height}m
+                          {t('campsites.details.yourVehicle', {
+                            value: profile.height + 'm',
+                          })}
                         </span>
                       )}
                     </div>
                   )}
                   {campsite.access?.max_length && (
                     <div className="flex items-center gap-2">
-                      <span>Max length: {campsite.access.max_length}m</span>
+                      <span>
+                        {t('campsites.details.maxLength', {
+                          length: campsite.access.max_length,
+                        })}
+                      </span>
                       {profile && (
                         <span
                           className={cn(
@@ -602,14 +620,20 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
                               : 'bg-green-200 text-green-800'
                           )}
                         >
-                          You: {profile.length}m
+                          {t('campsites.details.yourVehicle', {
+                            value: profile.length + 'm',
+                          })}
                         </span>
                       )}
                     </div>
                   )}
                   {campsite.access?.max_weight && (
                     <div className="flex items-center gap-2">
-                      <span>Max weight: {campsite.access.max_weight}t</span>
+                      <span>
+                        {t('campsites.details.maxWeight', {
+                          weight: campsite.access.max_weight,
+                        })}
+                      </span>
                       {profile && (
                         <span
                           className={cn(
@@ -619,7 +643,9 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
                               : 'bg-green-200 text-green-800'
                           )}
                         >
-                          You: {profile.weight}t
+                          {t('campsites.details.yourVehicle', {
+                            value: profile.weight + 't',
+                          })}
                         </span>
                       )}
                     </div>
@@ -648,10 +674,13 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
                 />
               </svg>
               <div className="text-sm text-green-800">
-                <span className="font-medium">Compatible</span>
+                <span className="font-medium">{t('campsites.details.compatible')}</span>
                 <span className="text-green-700">
                   {' '}
-                  with your {profile.height}m × {profile.length}m vehicle
+                  {t('campsites.details.compatibleWith', {
+                    height: profile.height,
+                    length: profile.length,
+                  })}
                 </span>
               </div>
             </div>
@@ -665,7 +694,9 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
             campsite.policies.bbq ||
             campsite.policies.nudism) && (
             <div className="p-4 border-b border-neutral-100">
-              <div className="text-xs font-medium text-neutral-500 mb-2">Policies</div>
+              <div className="text-xs font-medium text-neutral-500 mb-2">
+                {t('campsites.details.policies')}
+              </div>
               <div className="flex flex-wrap gap-2">
                 {campsite.policies.dogs && (
                   <span
@@ -678,27 +709,27 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
                   >
                     <Dog className="w-3.5 h-3.5" />
                     {campsite.policies.dogs === 'yes'
-                      ? 'Dogs welcome'
+                      ? t('campsites.details.dogsWelcome')
                       : campsite.policies.dogs === 'leashed'
-                        ? 'Dogs on leash'
+                        ? t('campsites.details.dogsLeashed')
                         : campsite.policies.dogs === 'no'
-                          ? 'No dogs'
+                          ? t('campsites.details.noDogs')
                           : `Dogs: ${campsite.policies.dogs}`}
                   </span>
                 )}
                 {campsite.policies.fires && (
                   <span className="flex items-center gap-1 px-2 py-1 bg-orange-50 text-orange-700 rounded text-xs font-medium">
-                    <Flame className="w-3.5 h-3.5" /> Open fires OK
+                    <Flame className="w-3.5 h-3.5" /> {t('campsites.details.openFiresOk')}
                   </span>
                 )}
                 {campsite.policies.bbq && (
                   <span className="flex items-center gap-1 px-2 py-1 bg-green-50 text-green-700 rounded text-xs font-medium">
-                    BBQ allowed
+                    {t('campsites.details.bbqAllowed')}
                   </span>
                 )}
                 {campsite.policies.nudism && (
                   <span className="px-2 py-1 bg-blue-50 text-blue-700 rounded text-xs font-medium">
-                    Naturist
+                    {t('campsites.details.naturist')}
                   </span>
                 )}
               </div>
@@ -727,7 +758,10 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
                   />
                 </svg>
                 <span className="text-sm font-medium text-neutral-700">
-                  All Amenities ({availableAmenities.length}/{allAmenities.length} available)
+                  {t('campsites.details.allAmenities', {
+                    available: availableAmenities.length,
+                    total: allAmenities.length,
+                  })}
                 </span>
               </div>
               <svg
@@ -753,8 +787,8 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
                 {/* Note about data source */}
                 {availableAmenities.length === 0 && (
                   <div className="mb-3 p-2 bg-amber-50 border border-amber-200 rounded text-xs text-amber-700 flex items-start gap-1.5">
-                    <Info className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" /> Amenity data not available
-                    from OpenStreetMap. Check the campsite website for details.
+                    <Info className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" />{' '}
+                    {t('campsites.details.amenityDataUnavailable')}
                   </div>
                 )}
                 <div className="grid grid-cols-2 gap-2">
@@ -778,7 +812,7 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
                           <span>•</span>
                         )}
                         <span className="flex-1 capitalize">
-                          {config?.label || amenity.replace(/_/g, ' ')}
+                          {config?.labelKey ? t(config.labelKey) : amenity.replace(/_/g, ' ')}
                         </span>
                         {isConfirmed ? (
                           <svg
@@ -829,7 +863,9 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
                     d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
                   />
                 </svg>
-                <span className="text-sm font-medium text-neutral-700">Contact Details</span>
+                <span className="text-sm font-medium text-neutral-700">
+                  {t('campsites.details.contactDetails')}
+                </span>
               </div>
               <svg
                 className={cn(
@@ -891,7 +927,7 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
         <div className="p-4 border-b border-neutral-100">
           <h3 className="text-sm font-medium text-neutral-900 mb-3 flex items-center gap-2">
             <Search className="w-4 h-4 text-neutral-400" />
-            Research This Campsite
+            {t('campsites.details.researchTitle')}
           </h3>
           <div className="space-y-2">
             {FIND_ON_PLATFORMS.map(platform => (
@@ -906,7 +942,7 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
                   <span>{platform.icon}</span>
                   <div>
                     <div className="font-medium text-neutral-800">{platform.name}</div>
-                    <div className="text-xs text-neutral-500">{platform.description}</div>
+                    <div className="text-xs text-neutral-500">{t(platform.descKey)}</div>
                   </div>
                 </div>
                 <ExternalLink className="w-4 h-4 text-neutral-400" />
@@ -932,7 +968,7 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
                   d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                 />
               </svg>
-              Book This Campsite
+              {t('campsites.details.bookTitle')}
             </h3>
 
             {/* Direct booking link if website available — always shown first */}
@@ -951,7 +987,7 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
                     d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
                   />
                 </svg>
-                <span>Visit Official Website</span>
+                <span>{t('campsites.details.visitWebsite')}</span>
               </a>
             )}
 
@@ -959,7 +995,7 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
             {affiliateLinks.length > 0 && (
               <div className="space-y-2">
                 <div className="text-xs font-medium text-neutral-500 mb-2">
-                  Search on booking platforms:
+                  {t('campsites.details.searchOnPlatforms')}
                 </div>
                 {affiliateLinks.map(link => (
                   <a
@@ -988,18 +1024,18 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
                 ))}
                 {/* Affiliate disclosure */}
                 <p className="text-[10px] text-neutral-400 mt-1.5 leading-relaxed">
-                  We may earn a small commission from bookings at no extra cost to you.
+                  {t('campsites.details.affiliateDisclosure')}
                 </p>
               </div>
             )}
 
             {/* Booking tips */}
             <div className="mt-4 p-3 bg-primary-50 border border-primary-200 rounded-lg text-xs text-primary-800">
-              <div className="font-medium mb-1">Booking Tips:</div>
+              <div className="font-medium mb-1">{t('campsites.details.bookingTips')}</div>
               <ul className="space-y-0.5">
-                <li>Check availability directly with the campsite</li>
-                <li>Book in advance during peak season</li>
-                <li>Confirm vehicle size restrictions</li>
+                <li>{t('campsites.details.bookingTip1')}</li>
+                <li>{t('campsites.details.bookingTip2')}</li>
+                <li>{t('campsites.details.bookingTip3')}</li>
               </ul>
             </div>
           </div>
@@ -1021,7 +1057,7 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
                 d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"
               />
             </svg>
-            <span>Get Directions in Google Maps</span>
+            <span>{t('campsites.details.getDirections')}</span>
           </a>
         </div>
 
@@ -1029,12 +1065,16 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
         <div className="p-4 bg-neutral-50">
           <div className="flex items-center justify-between text-xs text-neutral-500 mb-3">
             <div className="flex items-center gap-2">
-              <span>Data from {campsite.source || 'OpenStreetMap'}</span>
+              <span>
+                {t('campsites.details.dataFrom', {
+                  source: campsite.source || 'OpenStreetMap',
+                })}
+              </span>
             </div>
             <button
               onClick={handleCopyCoords}
               className="flex items-center gap-1 text-neutral-400 hover:text-neutral-600 transition-colors"
-              title="Copy coordinates"
+              title={t('campsites.details.copyCoords')}
             >
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
@@ -1044,7 +1084,7 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
                   d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
                 />
               </svg>
-              <span>Copy coords</span>
+              <span>{t('campsites.details.copyCoordsShort')}</span>
             </button>
           </div>
 
@@ -1061,7 +1101,7 @@ const CampsiteDetails: React.FC<CampsiteDetailsProps> = ({
                 d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
               />
             </svg>
-            <span>Export Campsite Data</span>
+            <span>{t('campsites.details.exportData')}</span>
           </button>
         </div>
       </div>

@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { X } from 'lucide-react';
 
 interface ContextualNudgeProps {
@@ -38,6 +39,7 @@ export default function ContextualNudge({
   show,
   autoDismissMs = 8000,
 }: ContextualNudgeProps) {
+  const { t } = useTranslation();
   const [visible, setVisible] = useState(false);
   const [dismissed, setDismissed] = useState(() => isDismissed(nudgeId));
   const showDelayRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -118,7 +120,7 @@ export default function ContextualNudge({
       <button
         type="button"
         onClick={dismiss}
-        aria-label="Dismiss"
+        aria-label={t('actions.dismiss')}
         className="ml-3 flex-shrink-0 text-neutral-400 hover:text-neutral-600 cursor-pointer"
       >
         <X size={16} />

@@ -20,7 +20,7 @@ const Header: React.FC = () => {
   // Vehicle summary for badge
   const vehicleSummary = profile
     ? {
-        name: profile.name || 'Custom Vehicle',
+        name: profile.name || t('vehicle.customVehicle'),
         dims: `${profile.height}×${profile.width}×${profile.length}m`,
       }
     : null;
@@ -61,7 +61,7 @@ const Header: React.FC = () => {
                     ? 'bg-green-50 text-green-700 ring-1 ring-green-200 hover:bg-green-100'
                     : 'bg-primary-50 text-primary-700 ring-1 ring-primary-200 hover:bg-primary-100'
                 )}
-                title={vehicleSummary ? 'Edit vehicle profile' : 'Set up your vehicle profile'}
+                title={vehicleSummary ? t('vehicle.editProfile') : t('vehicle.setupVehicleHint')}
               >
                 <svg
                   className="w-4 h-4"
@@ -78,7 +78,7 @@ const Header: React.FC = () => {
                   />
                 </svg>
                 <span className="max-w-[120px] truncate">
-                  {vehicleSummary ? vehicleSummary.name : 'Setup Vehicle'}
+                  {vehicleSummary ? vehicleSummary.name : t('vehicle.setupVehicle')}
                 </span>
               </button>
             )}
@@ -136,7 +136,7 @@ const Header: React.FC = () => {
                   className="hidden sm:flex items-center gap-1.5 px-4 py-2 bg-accent-500 text-white rounded-lg hover:bg-accent-600 text-sm font-display font-semibold transition-all duration-200 shadow-sm hover:shadow-medium active:scale-[0.98]"
                 >
                   <Route className="w-4 h-4" />
-                  Plan a Trip
+                  {t('nav.planTrip')}
                 </Link>
               )}
 
@@ -148,7 +148,7 @@ const Header: React.FC = () => {
                 type="button"
                 onClick={toggleMobileMenu}
                 className="lg:hidden p-2 rounded-lg text-neutral-500 hover:text-neutral-700 hover:bg-neutral-50"
-                aria-label="Toggle menu"
+                aria-label={t('nav.toggleMenu')}
               >
                 <svg
                   className={cn('w-6 h-6 transition-transform', isMobileMenuOpen && 'rotate-90')}
@@ -203,7 +203,7 @@ const Header: React.FC = () => {
                     className="w-full flex items-center gap-2 px-3 py-2.5 rounded-lg text-base font-display font-semibold text-accent-700 bg-accent-50 hover:bg-accent-100 transition-all duration-200"
                   >
                     <Route className="w-4 h-4" />
-                    Plan a Trip
+                    {t('nav.planTrip')}
                   </Link>
                 )}
               </div>
@@ -220,7 +220,7 @@ const Header: React.FC = () => {
           onKeyDown={e => e.key === 'Escape' && setIsMobileMenuOpen(false)}
           role="button"
           tabIndex={0}
-          aria-label="Close menu"
+          aria-label={t('nav.closeMenu')}
         />
       )}
     </>

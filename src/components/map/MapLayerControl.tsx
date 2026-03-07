@@ -3,6 +3,7 @@
 
 import React, { useState, useCallback } from 'react';
 import { TileLayer } from 'react-leaflet';
+import { useTranslation } from 'react-i18next';
 import { Map, Mountain, Bike, Cross } from 'lucide-react';
 import { cn } from '../../utils/cn';
 import { useUIStore } from '../../store';
@@ -11,7 +12,7 @@ import { useUIStore } from '../../store';
 export interface TileLayerConfig {
   id: string;
   name: string;
-  description: string;
+  descKey: string;
   url: string;
   attribution: string;
   maxZoom: number;
@@ -25,7 +26,7 @@ export const TILE_LAYERS: TileLayerConfig[] = [
   {
     id: 'openstreetmap',
     name: 'OpenStreetMap',
-    description: 'Standard street map',
+    descKey: 'map.layers.openstreetmap',
     url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
     attribution:
       '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
@@ -37,7 +38,7 @@ export const TILE_LAYERS: TileLayerConfig[] = [
   {
     id: 'opentopomap',
     name: 'OpenTopoMap',
-    description: 'Topographic map with contours',
+    descKey: 'map.layers.opentopomap',
     url: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
     attribution:
       'Map data: © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: © <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)',
@@ -49,7 +50,7 @@ export const TILE_LAYERS: TileLayerConfig[] = [
   {
     id: 'cyclosm',
     name: 'CyclOSM',
-    description: 'Cycling-focused map',
+    descKey: 'map.layers.cyclosm',
     url: 'https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png',
     attribution:
       '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors. Tiles style by <a href="https://www.cyclosm.org">CyclOSM</a> hosted by <a href="https://openstreetmap.fr">OpenStreetMap France</a>',
@@ -61,7 +62,7 @@ export const TILE_LAYERS: TileLayerConfig[] = [
   {
     id: 'humanitarian',
     name: 'Humanitarian',
-    description: 'Clear, humanitarian mapping style',
+    descKey: 'map.layers.humanitarian',
     url: 'https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png',
     attribution:
       '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors. Tiles style by <a href="https://www.hotosm.org">Humanitarian OpenStreetMap Team</a> hosted by <a href="https://openstreetmap.fr">OpenStreetMap France</a>',
@@ -85,6 +86,7 @@ const MapLayerControl: React.FC<MapLayerControlProps> = ({
   collapsed = false,
   onToggleCollapse,
 }) => {
+  const { t } = useTranslation();
   const { addNotification } = useUIStore();
   const [isLoading, setIsLoading] = useState<string | null>(null);
 
@@ -121,18 +123,20 @@ const MapLayerControl: React.FC<MapLayerControlProps> = ({
 
         addNotification({
           type: 'success',
-          message: `Switched to ${layer.name} map layer`,
+          message: t('map.layers.switched', { name: layer.name }),
         });
       } catch {
         addNotification({
           type: 'error',
-          message: `Failed to load ${TILE_LAYERS.find(l => l.id === layerId)?.name} layer`,
+          message: t('map.layers.loadFailed', {
+            name: TILE_LAYERS.find(l => l.id === layerId)?.name,
+          }),
         });
       } finally {
         setIsLoading(null);
       }
     },
-    [currentLayerId, onLayerChange, addNotification]
+    [currentLayerId, onLayerChange, addNotification, t]
   );
 
   const currentLayer = TILE_LAYERS.find(l => l.id === currentLayerId);
@@ -161,8 +165,8 @@ const MapLayerControl: React.FC<MapLayerControlProps> = ({
           <button
             onClick={onToggleCollapse}
             className="w-10 h-10 flex items-center justify-center hover:bg-neutral-50 transition-colors rounded-lg"
-            title={`Current: ${currentLayer?.name || 'Unknown'}`}
-            aria-label="Open layer control"
+            title={t('map.layers.currentLayer') + ': ' + (currentLayer?.name || 'Unknown')}
+            aria-label={t('map.layers.openControl')}
           >
             {currentLayer ? <currentLayer.icon className="w-5 h-5" /> : <Map className="w-5 h-5" />}
           </button>
@@ -193,12 +197,12 @@ const MapLayerControl: React.FC<MapLayerControlProps> = ({
       <div className="absolute top-4 left-4 z-30 bg-white rounded-lg shadow-md overflow-hidden min-w-64">
         {/* Header */}
         <div className="flex items-center justify-between p-3 border-b border-neutral-200">
-          <h3 className="font-medium text-neutral-900 text-sm">Map Layers</h3>
+          <h3 className="font-medium text-neutral-900 text-sm">{t('map.layers.title')}</h3>
           {onToggleCollapse && (
             <button
               onClick={onToggleCollapse}
               className="text-neutral-400 hover:text-neutral-600 p-1 rounded transition-colors"
-              aria-label="Collapse layer control"
+              aria-label={t('map.layers.collapseControl')}
             >
               <svg
                 className="w-4 h-4"
@@ -266,7 +270,7 @@ const MapLayerControl: React.FC<MapLayerControlProps> = ({
                       </svg>
                     )}
                   </div>
-                  <p className="text-xs text-neutral-500 truncate">{layer.description}</p>
+                  <p className="text-xs text-neutral-500 truncate">{t(layer.descKey)}</p>
                 </div>
               </button>
             );
@@ -278,11 +282,12 @@ const MapLayerControl: React.FC<MapLayerControlProps> = ({
           <div className="p-3 border-t border-neutral-200 bg-neutral-50">
             <div className="text-xs text-neutral-600">
               <div className="flex items-center justify-between mb-1">
-                <span className="font-medium">Current Layer</span>
+                <span className="font-medium">{t('map.layers.currentLayer')}</span>
                 <span className="text-primary-600">{currentLayer.name}</span>
               </div>
               <div className="text-neutral-500">
-                Max Zoom: {currentLayer.maxZoom}x • Category: {currentLayer.category}
+                {t('map.layers.maxZoom', { zoom: currentLayer.maxZoom })} •{' '}
+                {t('map.layers.category', { category: currentLayer.category })}
               </div>
             </div>
           </div>

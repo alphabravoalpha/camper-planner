@@ -2,6 +2,7 @@
 // Phase 5.2: Fuel cost estimation and trip budgeting UI
 
 import React, { useState, useCallback, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   CostCalculationService,
   type FuelConsumptionSettings,
@@ -19,6 +20,7 @@ interface TripCostCalculatorProps {
 type CalculationStatus = 'idle' | 'calculating' | 'completed' | 'error';
 
 const TripCostCalculator: React.FC<TripCostCalculatorProps> = ({ className }) => {
+  const { t } = useTranslation();
   const { waypoints } = useRouteStore();
   const { profile: vehicleProfile } = useVehicleStore();
 
@@ -52,7 +54,7 @@ const TripCostCalculator: React.FC<TripCostCalculatorProps> = ({ className }) =>
 
   const handleCalculateCosts = useCallback(async () => {
     if (waypoints.length < 2) {
-      setError('At least 2 waypoints are required for cost calculation');
+      setError(t('planning.costCalc.minWaypointsError'));
       return;
     }
 
@@ -79,10 +81,10 @@ const TripCostCalculator: React.FC<TripCostCalculatorProps> = ({ className }) =>
       setStatus('completed');
     } catch (err) {
       // Error already surfaced in UI via setError
-      setError(err instanceof Error ? err.message : 'Cost calculation failed');
+      setError(err instanceof Error ? err.message : t('planning.costCalc.calculationFailed'));
       setStatus('error');
     }
-  }, [waypoints, vehicleProfile, fuelConsumption, fuelPrices]);
+  }, [waypoints, vehicleProfile, fuelConsumption, fuelPrices, t]);
 
   const updateConsumption = useCallback((updates: Partial<FuelConsumptionSettings>) => {
     setFuelConsumption(prev => ({ ...prev, ...updates }));
@@ -101,9 +103,11 @@ const TripCostCalculator: React.FC<TripCostCalculatorProps> = ({ className }) =>
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-display font-medium text-neutral-900">
-            Trip Cost Calculator
+            {t('planning.costCalc.title')}
           </h3>
-          <div className="text-xs text-neutral-500">{waypoints.length} waypoints</div>
+          <div className="text-xs text-neutral-500">
+            {t('planning.costCalc.waypointsCount', { count: waypoints.length })}
+          </div>
         </div>
 
         {/* Fuel Consumption Settings */}
@@ -112,7 +116,7 @@ const TripCostCalculator: React.FC<TripCostCalculatorProps> = ({ className }) =>
             htmlFor="trip-cost-fuel-consumption"
             className="text-xs font-medium text-neutral-700"
           >
-            Fuel Consumption
+            {t('planning.costCalc.fuelConsumption')}
           </label>
           <div className="flex space-x-2">
             <input
@@ -133,9 +137,9 @@ const TripCostCalculator: React.FC<TripCostCalculatorProps> = ({ className }) =>
               }
               className="text-xs border border-neutral-300 rounded px-2 py-1"
             >
-              <option value="l_per_100km">L/100km</option>
-              <option value="mpg_imperial">MPG (UK)</option>
-              <option value="mpg_us">MPG (US)</option>
+              <option value="l_per_100km">{t('planning.costCalc.lPer100km')}</option>
+              <option value="mpg_imperial">{t('planning.costCalc.mpgUk')}</option>
+              <option value="mpg_us">{t('planning.costCalc.mpgUs')}</option>
             </select>
           </div>
         </div>
@@ -143,7 +147,7 @@ const TripCostCalculator: React.FC<TripCostCalculatorProps> = ({ className }) =>
         {/* Fuel Type */}
         <div className="space-y-2">
           <label htmlFor="trip-cost-fuel-type" className="text-xs font-medium text-neutral-700">
-            Fuel Type
+            {t('planning.costCalc.fuelType')}
           </label>
           <select
             id="trip-cost-fuel-type"
@@ -153,10 +157,10 @@ const TripCostCalculator: React.FC<TripCostCalculatorProps> = ({ className }) =>
             }
             className="w-full text-xs border border-neutral-300 rounded px-2 py-1"
           >
-            <option value="diesel">Diesel</option>
-            <option value="petrol">Petrol</option>
-            <option value="lpg">LPG</option>
-            <option value="electric">Electric</option>
+            <option value="diesel">{t('planning.costCalc.diesel')}</option>
+            <option value="petrol">{t('planning.costCalc.petrol')}</option>
+            <option value="lpg">{t('planning.costCalc.lpg')}</option>
+            <option value="electric">{t('planning.costCalc.electric')}</option>
           </select>
         </div>
 
@@ -165,7 +169,7 @@ const TripCostCalculator: React.FC<TripCostCalculatorProps> = ({ className }) =>
           onClick={() => setShowAdvanced(!showAdvanced)}
           className="text-xs text-primary-600 hover:text-primary-800"
         >
-          {showAdvanced ? 'Hide' : 'Show'} Advanced Settings
+          {showAdvanced ? t('planning.costCalc.hideAdvanced') : t('planning.costCalc.showAdvanced')}
         </button>
 
         {/* Advanced Settings */}
@@ -173,7 +177,7 @@ const TripCostCalculator: React.FC<TripCostCalculatorProps> = ({ className }) =>
           <div className="space-y-2 p-3 bg-neutral-50 rounded-lg">
             <div className="space-y-2">
               <label htmlFor="trip-cost-currency" className="text-xs font-medium text-neutral-700">
-                Currency
+                {t('planning.costCalc.currency')}
               </label>
               <select
                 id="trip-cost-currency"
@@ -194,7 +198,7 @@ const TripCostCalculator: React.FC<TripCostCalculatorProps> = ({ className }) =>
                 htmlFor="trip-cost-tank-capacity"
                 className="text-xs font-medium text-neutral-700"
               >
-                Tank Capacity (L)
+                {t('planning.costCalc.tankCapacity')}
               </label>
               <input
                 id="trip-cost-tank-capacity"
@@ -225,10 +229,10 @@ const TripCostCalculator: React.FC<TripCostCalculatorProps> = ({ className }) =>
           {status === 'calculating' ? (
             <div className="flex items-center justify-center space-x-2">
               <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-              <span>Calculating...</span>
+              <span>{t('planning.costCalc.calculatingBtn')}</span>
             </div>
           ) : (
-            'Calculate Trip Cost'
+            t('planning.costCalc.calculateBtn')
           )}
         </button>
       </div>
@@ -253,7 +257,9 @@ const TripCostCalculator: React.FC<TripCostCalculatorProps> = ({ className }) =>
       {hasResults && (
         <div className="space-y-3">
           <div className="p-3 bg-primary-50 border border-primary-200 rounded-lg">
-            <h4 className="text-sm font-medium text-primary-900 mb-2">Trip Cost Summary</h4>
+            <h4 className="text-sm font-medium text-primary-900 mb-2">
+              {t('planning.costCalc.tripCostSummary')}
+            </h4>
 
             {/* Total Cost */}
             <div className="text-lg font-bold text-primary-900 mb-2">
@@ -264,7 +270,7 @@ const TripCostCalculator: React.FC<TripCostCalculatorProps> = ({ className }) =>
             {/* Cost Breakdown */}
             <div className="space-y-1 text-xs">
               <div className="flex justify-between">
-                <span className="text-primary-700">Fuel Cost</span>
+                <span className="text-primary-700">{t('planning.costCalc.fuelCost')}</span>
                 <span className="font-medium text-primary-900">
                   {fuelPrices.currency === 'EUR' ? '€' : fuelPrices.currency === 'GBP' ? '£' : '$'}
                   {costBreakdown.fuelCost.toFixed(2)}
@@ -272,7 +278,7 @@ const TripCostCalculator: React.FC<TripCostCalculatorProps> = ({ className }) =>
               </div>
               {costBreakdown.accommodationCost > 0 && (
                 <div className="flex justify-between">
-                  <span className="text-primary-700">Accommodation</span>
+                  <span className="text-primary-700">{t('planning.costCalc.accommodation')}</span>
                   <span className="font-medium text-primary-900">
                     {fuelPrices.currency === 'EUR'
                       ? '€'
@@ -285,7 +291,7 @@ const TripCostCalculator: React.FC<TripCostCalculatorProps> = ({ className }) =>
               )}
               {costBreakdown.tollCost > 0 && (
                 <div className="flex justify-between">
-                  <span className="text-primary-700">Tolls</span>
+                  <span className="text-primary-700">{t('planning.costCalc.tolls')}</span>
                   <span className="font-medium text-primary-900">
                     {fuelPrices.currency === 'EUR'
                       ? '€'
@@ -301,8 +307,10 @@ const TripCostCalculator: React.FC<TripCostCalculatorProps> = ({ className }) =>
             {/* Trip Statistics */}
             <div className="mt-2 pt-2 border-t border-primary-200">
               <div className="text-xs text-primary-600">
-                {costBreakdown.segments.length} segments • {costBreakdown.dailyBreakdown.length}{' '}
-                days
+                {t('planning.costCalc.segmentsAndDays', {
+                  segments: costBreakdown.segments.length,
+                  days: costBreakdown.dailyBreakdown.length,
+                })}
               </div>
             </div>
           </div>
@@ -310,12 +318,17 @@ const TripCostCalculator: React.FC<TripCostCalculatorProps> = ({ className }) =>
           {/* Daily Breakdown */}
           {costBreakdown.dailyBreakdown.length > 1 && (
             <div className="p-3 bg-neutral-50 border border-neutral-200 rounded-lg">
-              <h5 className="text-xs font-medium text-neutral-900 mb-2">Daily Breakdown</h5>
+              <h5 className="text-xs font-medium text-neutral-900 mb-2">
+                {t('planning.costCalc.dailyBreakdown')}
+              </h5>
               <div className="space-y-1 max-h-32 overflow-y-auto">
                 {costBreakdown.dailyBreakdown.map((day, index) => (
                   <div key={index} className="flex justify-between text-xs">
                     <span className="text-neutral-600">
-                      Day {index + 1} ({day.distance.toFixed(0)} km)
+                      {t('planning.costCalc.dayDistance', {
+                        day: index + 1,
+                        distance: day.distance.toFixed(0),
+                      })}
                     </span>
                     <span className="font-medium text-neutral-900">
                       {fuelPrices.currency === 'EUR'
@@ -335,10 +348,10 @@ const TripCostCalculator: React.FC<TripCostCalculatorProps> = ({ className }) =>
           {optimization && optimization.savings > 0 && (
             <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
               <h5 className="text-xs font-medium text-green-900 mb-2">
-                Cost Savings Opportunities
+                {t('planning.costCalc.costSavings')}
               </h5>
               <div className="text-sm font-medium text-green-900 mb-2">
-                Potential Savings:{' '}
+                {t('planning.costCalc.potentialSavings')}{' '}
                 {fuelPrices.currency === 'EUR' ? '€' : fuelPrices.currency === 'GBP' ? '£' : '$'}
                 {optimization.savings.toFixed(2)}
               </div>
@@ -347,13 +360,9 @@ const TripCostCalculator: React.FC<TripCostCalculatorProps> = ({ className }) =>
                   <div key={index} className="text-xs">
                     <div className="font-medium text-green-800">{suggestion.description}</div>
                     <div className="text-green-600">
-                      Save{' '}
-                      {fuelPrices.currency === 'EUR'
-                        ? '€'
-                        : fuelPrices.currency === 'GBP'
-                          ? '£'
-                          : '$'}
-                      {suggestion.potentialSaving.toFixed(2)}
+                      {t('planning.costCalc.savingsAmount', {
+                        amount: `${fuelPrices.currency === 'EUR' ? '€' : fuelPrices.currency === 'GBP' ? '£' : '$'}${suggestion.potentialSaving.toFixed(2)}`,
+                      })}
                     </div>
                   </div>
                 ))}
@@ -366,10 +375,7 @@ const TripCostCalculator: React.FC<TripCostCalculatorProps> = ({ className }) =>
       {/* Help Text */}
       {waypoints.length < 2 && (
         <div className="p-3 bg-primary-50 border border-primary-200 rounded-lg">
-          <div className="text-xs text-primary-700">
-            Add at least 2 waypoints to calculate trip costs including fuel, accommodation, and
-            optimization suggestions.
-          </div>
+          <div className="text-xs text-primary-700">{t('planning.costCalc.helpText')}</div>
         </div>
       )}
     </div>

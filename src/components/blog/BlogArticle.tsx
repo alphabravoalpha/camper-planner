@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { ArrowLeft } from 'lucide-react';
 import type { BlogPost } from '../../types/blog';
 import { getRelatedPosts } from '../../data/blog';
@@ -28,6 +29,7 @@ interface BlogArticleProps {
 }
 
 const BlogArticle: React.FC<BlogArticleProps> = ({ post }) => {
+  const { t } = useTranslation();
   const related = getRelatedPosts(post, 3);
 
   // Extract headings for table of contents
@@ -53,7 +55,7 @@ const BlogArticle: React.FC<BlogArticleProps> = ({ post }) => {
           className="inline-flex items-center gap-1.5 text-sm text-primary-600 hover:text-primary-700 mb-8 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
-          All Guides
+          {t('blog.allGuides')}
         </Link>
 
         <div className="lg:grid lg:grid-cols-[1fr_240px] lg:gap-10">
@@ -89,7 +91,7 @@ const BlogArticle: React.FC<BlogArticleProps> = ({ post }) => {
             <aside className="hidden lg:block">
               <div className="sticky top-24">
                 <h4 className="text-xs font-display font-bold text-neutral-500 uppercase tracking-wider mb-3">
-                  Contents
+                  {t('blog.tableOfContents')}
                 </h4>
                 <nav className="space-y-1.5">
                   {headings.map(h => (
@@ -112,7 +114,9 @@ const BlogArticle: React.FC<BlogArticleProps> = ({ post }) => {
       {related.length > 0 && (
         <div className="bg-neutral-50 border-t border-neutral-200">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <h2 className="text-xl font-display font-bold text-neutral-900 mb-6">Related Guides</h2>
+            <h2 className="text-xl font-display font-bold text-neutral-900 mb-6">
+              {t('blog.relatedGuides')}
+            </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {related.map(p => (
                 <BlogCard key={p.slug} post={p} />

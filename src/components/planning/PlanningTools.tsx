@@ -54,7 +54,7 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
   // Store hooks
   const { waypoints } = useRouteStore();
   const { profile } = useVehicleStore();
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   // Trip settings from shared store
   const { settings } = useTripSettingsStore();
@@ -138,7 +138,7 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
       }
     } catch (_err) {
       // Error already surfaced in UI via setError
-      setError('Failed to calculate trip plan. Please check your route.');
+      setError(t('planning.tools.calculationError'));
     } finally {
       setIsCalculating(false);
     }
@@ -232,17 +232,33 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
       <div className="flex items-center justify-between p-4 border-b bg-gradient-to-r from-purple-50 to-primary-50">
         <div className="flex items-center gap-2">
           <Target className="w-5 h-5 text-purple-600" />
-          <h3 className="text-lg font-semibold text-neutral-800">Trip Plan</h3>
+          <h3 className="text-lg font-semibold text-neutral-800">{t('planning.tools.title')}</h3>
         </div>
       </div>
 
       {/* Navigation Tabs */}
       <div className="flex border-b bg-neutral-50">
         {[
-          { id: 'overview', label: 'Overview', icon: <BarChart3 className="w-4 h-4" /> },
-          { id: 'calendar', label: 'Daily Plan', icon: <Calendar className="w-4 h-4" /> },
-          { id: 'recommendations', label: 'Tips', icon: <CheckCircle className="w-4 h-4" /> },
-          { id: 'metrics', label: 'Stats', icon: <TrendingUp className="w-4 h-4" /> },
+          {
+            id: 'overview',
+            label: t('planning.tools.overviewTab'),
+            icon: <BarChart3 className="w-4 h-4" />,
+          },
+          {
+            id: 'calendar',
+            label: t('planning.tools.dailyPlanTab'),
+            icon: <Calendar className="w-4 h-4" />,
+          },
+          {
+            id: 'recommendations',
+            label: t('planning.tools.tipsTab'),
+            icon: <CheckCircle className="w-4 h-4" />,
+          },
+          {
+            id: 'metrics',
+            label: t('planning.tools.statsTab'),
+            icon: <TrendingUp className="w-4 h-4" />,
+          },
         ].map(tab => (
           <button
             key={tab.id}
@@ -274,17 +290,17 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
         {isCalculating ? (
           <div className="flex items-center justify-center py-8">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
-            <span className="ml-2 text-neutral-600">Calculating trip plan...</span>
+            <span className="ml-2 text-neutral-600">{t('planning.tools.calculating')}</span>
           </div>
         ) : waypoints.length < 2 ? (
           <div className="text-center py-8 text-neutral-500">
             <Navigation className="w-12 h-12 mx-auto mb-3 text-neutral-300" />
-            <p>Add at least 2 waypoints to your route to start planning.</p>
+            <p>{t('planning.tools.minWaypoints')}</p>
           </div>
         ) : !tripPlan ? (
           <div className="text-center py-8 text-neutral-500">
             <Target className="w-12 h-12 mx-auto mb-3 text-neutral-300" />
-            <p>Unable to create trip plan. Please check your route.</p>
+            <p>{t('planning.tools.planningError')}</p>
           </div>
         ) : (
           <>
@@ -296,44 +312,53 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
                   <div className="bg-primary-50 rounded-lg p-4">
                     <div className="flex items-center gap-2 mb-2">
                       <Calendar className="w-4 h-4 text-primary-600" />
-                      <span className="text-sm text-primary-600 font-medium">Duration</span>
+                      <span className="text-sm text-primary-600 font-medium">
+                        {t('planning.tools.durationLabel')}
+                      </span>
                     </div>
                     <div className="text-2xl font-bold text-primary-800">{tripPlan.totalDays}</div>
-                    <div className="text-sm text-primary-600">days total</div>
+                    <div className="text-sm text-primary-600">{t('planning.tools.daysTotal')}</div>
                   </div>
 
                   <div className="bg-green-50 rounded-lg p-4">
                     <div className="flex items-center gap-2 mb-2">
                       <Route className="w-4 h-4 text-green-600" />
-                      <span className="text-sm text-green-600 font-medium">Distance</span>
+                      <span className="text-sm text-green-600 font-medium">
+                        {t('planning.tools.distanceLabel')}
+                      </span>
                     </div>
                     <div className="text-2xl font-bold text-green-800">
                       {Math.round(tripPlan.totalDistance)}
                     </div>
-                    <div className="text-sm text-green-600">km total</div>
+                    <div className="text-sm text-green-600">{t('planning.tools.kmTotal')}</div>
                   </div>
 
                   <div className="bg-purple-50 rounded-lg p-4">
                     <div className="flex items-center gap-2 mb-2">
                       <Clock className="w-4 h-4 text-purple-600" />
-                      <span className="text-sm text-purple-600 font-medium">Driving</span>
+                      <span className="text-sm text-purple-600 font-medium">
+                        {t('planning.tools.drivingLabel')}
+                      </span>
                     </div>
                     <div className="text-2xl font-bold text-purple-800">
                       {Math.round(tripPlan.totalDrivingTime)}
                     </div>
-                    <div className="text-sm text-purple-600">hours total</div>
+                    <div className="text-sm text-purple-600">{t('planning.tools.hoursTotal')}</div>
                   </div>
 
                   <div className="bg-orange-50 rounded-lg p-4">
                     <div className="flex items-center gap-2 mb-2">
                       <CheckCircle className="w-4 h-4 text-orange-600" />
-                      <span className="text-sm text-orange-600 font-medium">Feasibility</span>
+                      <span className="text-sm text-orange-600 font-medium">
+                        {t('planning.tools.feasibilityLabel')}
+                      </span>
                     </div>
                     <div className="text-xl font-bold text-orange-800 capitalize">
                       {tripPlan.overallFeasibility}
                     </div>
                     <div className="text-sm text-orange-600">
-                      {tripPlan.feasibilityScore}% score
+                      {tripPlan.feasibilityScore}
+                      {t('planning.tools.scoreFormat')}
                     </div>
                   </div>
                 </div>
@@ -342,25 +367,25 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
                 {drivingLimits && (
                   <div className="bg-neutral-50 rounded-lg p-4">
                     <h4 className="font-medium text-neutral-800 mb-3">
-                      Daily Driving Limits (Based on Vehicle & Season)
+                      {t('planning.tools.drivingLimitsTitle')}
                     </h4>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                       <div>
-                        <span className="text-neutral-600">Max Distance:</span>
+                        <span className="text-neutral-600">{t('planning.tools.maxDistance')}</span>
                         <div className="font-semibold">{drivingLimits.maxDailyDistance}km</div>
                       </div>
                       <div>
-                        <span className="text-neutral-600">Max Time:</span>
+                        <span className="text-neutral-600">{t('planning.tools.maxTime')}</span>
                         <div className="font-semibold">{drivingLimits.maxDailyDrivingTime}h</div>
                       </div>
                       <div>
-                        <span className="text-neutral-600">Break Every:</span>
+                        <span className="text-neutral-600">{t('planning.tools.breakEvery')}</span>
                         <div className="font-semibold">
                           {drivingLimits.recommendedBreakInterval}h
                         </div>
                       </div>
                       <div>
-                        <span className="text-neutral-600">Average Speed:</span>
+                        <span className="text-neutral-600">{t('planning.tools.averageSpeed')}</span>
                         <div className="font-semibold">{drivingLimits.averageSpeed}km/h</div>
                       </div>
                     </div>
@@ -373,23 +398,27 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
                     <div className="flex items-center gap-2 mb-3">
                       <Thermometer className="w-4 h-4 text-primary-600" />
                       <h4 className="font-medium text-neutral-800 capitalize">
-                        {season} Travel Conditions
+                        {t('planning.tools.travelConditions', { season })}
                       </h4>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <div className="text-sm text-neutral-600 mb-2">Expected Conditions:</div>
+                        <div className="text-sm text-neutral-600 mb-2">
+                          {t('planning.tools.expectedConditions')}
+                        </div>
                         <div className="space-y-1 text-sm">
                           <div>
-                            Temperature: {seasonalFactors.temperature.min}°C -{' '}
-                            {seasonalFactors.temperature.max}°C
+                            {t('planning.tools.temperature', {
+                              min: seasonalFactors.temperature.min,
+                              max: seasonalFactors.temperature.max,
+                            })}
                           </div>
                           <div>
-                            Tourist Density:{' '}
+                            {t('planning.tools.touristDensity')}{' '}
                             <span className="capitalize">{seasonalFactors.touristDensity}</span>
                           </div>
                           <div>
-                            Campsite Availability:{' '}
+                            {t('planning.tools.campsiteAvailability')}{' '}
                             <span className="capitalize">
                               {seasonalFactors.campsiteAvailability}
                             </span>
@@ -397,7 +426,9 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
                         </div>
                       </div>
                       <div>
-                        <div className="text-sm text-neutral-600 mb-2">Top Recommendations:</div>
+                        <div className="text-sm text-neutral-600 mb-2">
+                          {t('planning.tools.topRecommendations')}
+                        </div>
                         <ul className="space-y-1 text-sm">
                           {seasonalFactors.recommendations.slice(0, 3).map((rec, index) => (
                             <li key={index} className="flex items-start gap-1">
@@ -416,7 +447,9 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
                   <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
                     <div className="flex items-center gap-2 mb-2">
                       <AlertTriangle className="w-4 h-4 text-yellow-600" />
-                      <h4 className="font-medium text-yellow-800">Important Warnings</h4>
+                      <h4 className="font-medium text-yellow-800">
+                        {t('planning.tools.warningsTitle')}
+                      </h4>
                     </div>
                     <ul className="space-y-1">
                       {tripPlan.warnings.slice(0, 3).map((warning, index) => (
@@ -434,9 +467,14 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
             {viewMode === 'calendar' && (
               <div className="space-y-3">
                 <div className="flex items-center justify-between mb-4">
-                  <h4 className="font-medium text-neutral-800">Daily Itinerary</h4>
+                  <h4 className="font-medium text-neutral-800">
+                    {t('planning.tools.dailyItinerary')}
+                  </h4>
                   <div className="text-sm text-neutral-600">
-                    {tripPlan.dailyStages.length} driving days + {tripPlan.restDays} rest days
+                    {t('planning.tools.daysSummary', {
+                      driving: tripPlan.dailyStages.length,
+                      rest: tripPlan.restDays,
+                    })}
                   </div>
                 </div>
 
@@ -490,7 +528,9 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
                         {/* Stage Details */}
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                           <div>
-                            <div className="text-sm text-neutral-600 mb-1">Accommodation</div>
+                            <div className="text-sm text-neutral-600 mb-1">
+                              {t('planning.tools.accommodation')}
+                            </div>
                             <div className="flex items-center gap-1 text-sm">
                               <Bed className="w-4 h-4 text-neutral-400" />
                               <span className="capitalize">
@@ -499,21 +539,29 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
                             </div>
                           </div>
                           <div>
-                            <div className="text-sm text-neutral-600 mb-1">Average Speed</div>
+                            <div className="text-sm text-neutral-600 mb-1">
+                              {t('planning.tools.averageSpeed')}
+                            </div>
                             <div className="text-sm">
                               {Math.round(stage.distance / stage.drivingTime)}km/h
                             </div>
                           </div>
                           <div>
-                            <div className="text-sm text-neutral-600 mb-1">Stops Planned</div>
-                            <div className="text-sm">{stage.stops.length} stops</div>
+                            <div className="text-sm text-neutral-600 mb-1">
+                              {t('planning.tools.stopsPlanned')}
+                            </div>
+                            <div className="text-sm">
+                              {t('planning.tools.stopsCount', { count: stage.stops.length })}
+                            </div>
                           </div>
                         </div>
 
                         {/* Planned Stops */}
                         {stage.stops.length > 0 && (
                           <div className="mb-4">
-                            <div className="text-sm text-neutral-600 mb-2">Planned Stops:</div>
+                            <div className="text-sm text-neutral-600 mb-2">
+                              {t('planning.tools.plannedStops')}
+                            </div>
                             <div className="space-y-2">
                               {stage.stops.map((stop, stopIndex) => (
                                 <div key={stopIndex} className="flex items-center gap-2 text-sm">
@@ -532,7 +580,9 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
                         {/* Stage Warnings */}
                         {stage.warnings.length > 0 && (
                           <div className="mb-3">
-                            <div className="text-sm text-red-600 font-medium mb-1">Warnings:</div>
+                            <div className="text-sm text-red-600 font-medium mb-1">
+                              {t('planning.tools.warnings')}
+                            </div>
                             <ul className="space-y-1">
                               {stage.warnings.map((warning, wIndex) => (
                                 <li
@@ -551,7 +601,7 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
                         {stage.recommendations.length > 0 && (
                           <div>
                             <div className="text-sm text-primary-600 font-medium mb-1">
-                              Recommendations:
+                              {t('planning.tools.recommendationsLabel')}
                             </div>
                             <ul className="space-y-1">
                               {stage.recommendations.map((rec, rIndex) => (
@@ -577,13 +627,13 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
             {viewMode === 'recommendations' && (
               <div className="space-y-4">
                 <h4 className="font-medium text-neutral-800 mb-4">
-                  Planning Recommendations ({recommendations.length})
+                  {t('planning.tools.recommendationsHeading', { count: recommendations.length })}
                 </h4>
 
                 {recommendations.length === 0 ? (
                   <div className="text-center py-8 text-neutral-500">
                     <CheckCircle className="w-12 h-12 mx-auto mb-3 text-neutral-300" />
-                    <p>No specific recommendations - your trip plan looks great!</p>
+                    <p>{t('planning.tools.noRecommendations')}</p>
                   </div>
                 ) : (
                   <div className="space-y-3">
@@ -599,16 +649,20 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
                               <span
                                 className={`px-2 py-1 rounded-full text-xs font-medium ${getPriorityColor(rec.priority)}`}
                               >
-                                {rec.priority} priority
+                                {t('planning.tools.priorityBadge', { priority: rec.priority })}
                               </span>
                             </div>
                             <p className="text-sm text-neutral-600 mb-2">{rec.description}</p>
                             <div className="text-sm">
-                              <span className="font-medium text-neutral-700">Action: </span>
+                              <span className="font-medium text-neutral-700">
+                                {t('planning.tools.actionLabel')}
+                              </span>
                               <span className="text-neutral-600">{rec.action}</span>
                             </div>
                             <div className="text-sm mt-1">
-                              <span className="font-medium text-neutral-700">Impact: </span>
+                              <span className="font-medium text-neutral-700">
+                                {t('planning.tools.impactLabel')}
+                              </span>
                               <span className="text-neutral-600">{rec.impact}</span>
                             </div>
                           </div>
@@ -623,7 +677,9 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
                   <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
                     <div className="flex items-center gap-2 mb-3">
                       <Cloud className="w-4 h-4 text-orange-600" />
-                      <h5 className="font-medium text-orange-800">Seasonal Considerations</h5>
+                      <h5 className="font-medium text-orange-800">
+                        {t('planning.tools.seasonalTitle')}
+                      </h5>
                     </div>
                     <ul className="space-y-1">
                       {seasonalFactors.warnings.map((warning, index) => (
@@ -641,21 +697,27 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
             {/* Metrics Tab */}
             {viewMode === 'metrics' && metrics && (
               <div className="space-y-4">
-                <h4 className="font-medium text-neutral-800 mb-4">Trip Analysis & Metrics</h4>
+                <h4 className="font-medium text-neutral-800 mb-4">
+                  {t('planning.tools.metricsTitle')}
+                </h4>
 
                 {/* Key Metrics Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="bg-primary-50 rounded-lg p-4">
                     <div className="flex items-center gap-2 mb-3">
                       <Route className="w-4 h-4 text-primary-600" />
-                      <h5 className="font-medium text-primary-800">Driving Intensity</h5>
+                      <h5 className="font-medium text-primary-800">
+                        {t('planning.tools.drivingIntensity')}
+                      </h5>
                     </div>
                     <div className="text-2xl font-bold text-primary-800 mb-1">
                       {metrics.drivingIntensity}km
                     </div>
-                    <div className="text-sm text-primary-600">average per day</div>
+                    <div className="text-sm text-primary-600">
+                      {t('planning.tools.averagePerDay')}
+                    </div>
                     <div className="text-sm text-neutral-600 mt-2">
-                      Comfort Level:{' '}
+                      {t('planning.tools.comfortLevel')}{' '}
                       <span className="font-medium capitalize">{metrics.comfortLevel}</span>
                     </div>
                   </div>
@@ -663,26 +725,30 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
                   <div className="bg-green-50 rounded-lg p-4">
                     <div className="flex items-center gap-2 mb-3">
                       <TrendingUp className="w-4 h-4 text-green-600" />
-                      <h5 className="font-medium text-green-800">Trip Variety</h5>
+                      <h5 className="font-medium text-green-800">{t('planning.tools.variety')}</h5>
                     </div>
                     <div className="text-2xl font-bold text-green-800 mb-1">
                       {metrics.varietyScore}
                     </div>
-                    <div className="text-sm text-green-600">variety score</div>
+                    <div className="text-sm text-green-600">{t('planning.tools.varietyScore')}</div>
                     <div className="text-sm text-neutral-600 mt-2">
-                      Rest Ratio: {(metrics.restRatio * 100).toFixed(0)}%
+                      {t('planning.tools.restRatio', {
+                        percent: (metrics.restRatio * 100).toFixed(0),
+                      })}
                     </div>
                   </div>
 
                   <div className="bg-purple-50 rounded-lg p-4">
                     <div className="flex items-center gap-2 mb-3">
                       <Target className="w-4 h-4 text-purple-600" />
-                      <h5 className="font-medium text-purple-800">Difficulty Score</h5>
+                      <h5 className="font-medium text-purple-800">
+                        {t('planning.tools.difficulty')}
+                      </h5>
                     </div>
                     <div className="text-2xl font-bold text-purple-800 mb-1">
                       {metrics.difficultyScore}
                     </div>
-                    <div className="text-sm text-purple-600">out of 100</div>
+                    <div className="text-sm text-purple-600">{t('planning.tools.outOf100')}</div>
                     <div className="w-full bg-purple-200 rounded-full h-2 mt-2">
                       <div
                         className="bg-purple-600 h-2 rounded-full"
@@ -694,37 +760,45 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
                   <div className="bg-orange-50 rounded-lg p-4">
                     <div className="flex items-center gap-2 mb-3">
                       <Users className="w-4 h-4 text-orange-600" />
-                      <h5 className="font-medium text-orange-800">Trip Suitability</h5>
+                      <h5 className="font-medium text-orange-800">
+                        {t('planning.tools.suitability')}
+                      </h5>
                     </div>
                     <div className="space-y-1 text-sm">
                       <div className="flex justify-between">
-                        <span>Beginners:</span>
+                        <span>{t('planning.tools.beginners')}</span>
                         <span
                           className={
                             metrics.suitability.beginners ? 'text-green-600' : 'text-red-600'
                           }
                         >
-                          {metrics.suitability.beginners ? '✓ Suitable' : '✗ Not recommended'}
+                          {metrics.suitability.beginners
+                            ? t('planning.tools.suitable')
+                            : t('planning.tools.notRecommended')}
                         </span>
                       </div>
                       <div className="flex justify-between">
-                        <span>Families:</span>
+                        <span>{t('planning.tools.families')}</span>
                         <span
                           className={
                             metrics.suitability.families ? 'text-green-600' : 'text-red-600'
                           }
                         >
-                          {metrics.suitability.families ? '✓ Suitable' : '✗ Not recommended'}
+                          {metrics.suitability.families
+                            ? t('planning.tools.suitable')
+                            : t('planning.tools.notRecommended')}
                         </span>
                       </div>
                       <div className="flex justify-between">
-                        <span>Seniors:</span>
+                        <span>{t('planning.tools.seniors')}</span>
                         <span
                           className={
                             metrics.suitability.seniors ? 'text-green-600' : 'text-red-600'
                           }
                         >
-                          {metrics.suitability.seniors ? '✓ Suitable' : '✗ Not recommended'}
+                          {metrics.suitability.seniors
+                            ? t('planning.tools.suitable')
+                            : t('planning.tools.notRecommended')}
                         </span>
                       </div>
                     </div>
@@ -733,24 +807,59 @@ const PlanningTools: React.FC<PlanningToolsProps> = ({
 
                 {/* Detailed Analysis */}
                 <div className="bg-neutral-50 rounded-lg p-4">
-                  <h5 className="font-medium text-neutral-800 mb-3">Detailed Analysis</h5>
+                  <h5 className="font-medium text-neutral-800 mb-3">
+                    {t('planning.tools.detailedAnalysis')}
+                  </h5>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                     <div>
-                      <div className="text-neutral-600 mb-2">Trip Characteristics:</div>
+                      <div className="text-neutral-600 mb-2">
+                        {t('planning.tools.tripCharacteristics')}
+                      </div>
                       <ul className="space-y-1">
-                        <li>• Total driving days: {tripPlan.dailyStages.length}</li>
-                        <li>• Recommended rest days: {tripPlan.restDays}</li>
-                        <li>• Average daily distance: {metrics.drivingIntensity}km</li>
-                        <li>• Total driving time: {Math.round(tripPlan.totalDrivingTime)}h</li>
+                        <li>
+                          •{' '}
+                          {t('planning.tools.totalDrivingDays', {
+                            count: tripPlan.dailyStages.length,
+                          })}
+                        </li>
+                        <li>
+                          • {t('planning.tools.recommendedRestDays', { count: tripPlan.restDays })}
+                        </li>
+                        <li>
+                          •{' '}
+                          {t('planning.tools.avgDailyDistance', {
+                            distance: metrics.drivingIntensity,
+                          })}
+                        </li>
+                        <li>
+                          •{' '}
+                          {t('planning.tools.totalDrivingTime', {
+                            hours: Math.round(tripPlan.totalDrivingTime),
+                          })}
+                        </li>
                       </ul>
                     </div>
                     <div>
-                      <div className="text-neutral-600 mb-2">Planning Insights:</div>
+                      <div className="text-neutral-600 mb-2">
+                        {t('planning.tools.planningInsights')}
+                      </div>
                       <ul className="space-y-1">
-                        <li>• Comfort level: {metrics.comfortLevel}</li>
-                        <li>• Difficulty: {metrics.difficultyScore}/100</li>
-                        <li>• Route variety: {metrics.varietyScore}/100</li>
-                        <li>• Feasibility: {tripPlan.feasibilityScore}%</li>
+                        <li>
+                          • {t('planning.tools.comfortLevelValue', { level: metrics.comfortLevel })}
+                        </li>
+                        <li>
+                          •{' '}
+                          {t('planning.tools.difficultyValue', { score: metrics.difficultyScore })}
+                        </li>
+                        <li>
+                          • {t('planning.tools.routeVariety', { score: metrics.varietyScore })}
+                        </li>
+                        <li>
+                          •{' '}
+                          {t('planning.tools.feasibilityValue', {
+                            percent: tripPlan.feasibilityScore,
+                          })}
+                        </li>
                       </ul>
                     </div>
                   </div>
