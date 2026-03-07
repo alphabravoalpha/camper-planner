@@ -71,6 +71,7 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
   const [searchError, setSearchError] = useState<string | null>(null);
+  const [hasSearched, setHasSearched] = useState(false);
   const [isLocating, setIsLocating] = useState(false);
   const [locationError, setLocationError] = useState<string | null>(null);
 
@@ -150,6 +151,7 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
       currentSearchRef.current = searchQuery.trim();
       setIsSearching(true);
       setSearchError(null);
+      setHasSearched(true);
 
       const allResults: SearchResult[] = [];
       let mapCenter = map?.getCenter();
@@ -323,6 +325,8 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
     setQuery(e.target.value);
     setSelectedIndex(-1);
     setShowResults(true);
+    setHasSearched(false);
+    setResults([]);
   }, []);
 
   // Handle result selection
@@ -929,8 +933,31 @@ const UnifiedSearch: React.FC<UnifiedSearchProps> = ({
             </div>
           )}
 
-          {/* No results */}
-          {results.length === 0 && query.trim().length >= 2 && !isSearching && (
+          {/* Press Enter hint — shown while typing before search is triggered */}
+          {results.length === 0 && query.trim().length >= 2 && !isSearching && !hasSearched && (
+            <div className="px-4 py-4 text-center">
+              <div className="flex items-center justify-center space-x-2 text-neutral-500">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
+                </svg>
+                <p className="text-sm">
+                  Press{' '}
+                  <kbd className="px-1.5 py-0.5 text-xs bg-neutral-100 border border-neutral-200 rounded font-mono">
+                    Enter
+                  </kbd>{' '}
+                  to search
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* No results — only shown after search has actually been attempted */}
+          {results.length === 0 && query.trim().length >= 2 && !isSearching && hasSearched && (
             <div className="px-4 py-6 text-center">
               <svg
                 className="w-12 h-12 mx-auto text-neutral-300 mb-3"

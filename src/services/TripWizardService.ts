@@ -5,11 +5,10 @@
 import { routingService } from './RoutingService';
 import { campsiteService, type Campsite, type BoundingBox } from './CampsiteService';
 import {
-  type ChannelCrossing,
-  needsChannelCrossing,
-  getRecommendedCrossings,
-  isUKOrIreland,
-} from '../data/channelCrossings';
+  type FerryCrossing,
+  detectFerryCrossings,
+  haversineDistance,
+} from '../data/ferryCrossings';
 import { type Waypoint, type VehicleProfile } from '../types';
 
 // ============================================
@@ -24,7 +23,7 @@ export interface TripWizardInput {
   startDate: Date;
   endDate?: Date;
   drivingStyle: DrivingStyle;
-  crossing?: ChannelCrossing;
+  crossings: FerryCrossing[];
   restDayFrequency: number; // 0 = no rest days, 3 = every 3 driving days
   vehicleProfile?: VehicleProfile;
 }
@@ -46,13 +45,13 @@ export interface ItineraryDay {
   drivingTime: number; // hours
   overnightOptions: CampsiteOption[];
   selectedOvernight?: CampsiteOption;
-  crossing?: ChannelCrossing;
+  crossing?: FerryCrossing;
   notes: string[];
 }
 
 export interface TripItinerary {
   days: ItineraryDay[];
-  crossing?: ChannelCrossing;
+  crossings: FerryCrossing[];
   totalDistance: number; // km
   totalDrivingTime: number; // hours
   totalDays: number;
@@ -307,15 +306,15 @@ export class TripWizardService {
       warnings.push('This is a long trip. Consider adding rest days for comfort.');
     }
 
-    if (input.crossing?.overnightCrossing) {
-      warnings.push(
-        `The ${input.crossing.name} is an overnight crossing — you'll sleep on the ferry.`
-      );
+    for (const crossing of input.crossings) {
+      if (crossing.overnightCrossing) {
+        warnings.push(`The ${crossing.name} is an overnight crossing — you'll sleep on the ferry.`);
+      }
     }
 
     return {
       days,
-      crossing: input.crossing,
+      crossings: input.crossings,
       totalDistance: Math.round(totalDistanceKm),
       totalDrivingTime: Math.round(totalDurationHrs * 10) / 10,
       totalDays: days.length,
@@ -329,7 +328,6 @@ export class TripWizardService {
    */
   private static buildRouteWaypoints(input: TripWizardInput): Waypoint[] {
     const waypoints: Waypoint[] = [];
-    const startIsUK = isUKOrIreland(input.start.lat, input.start.lng);
 
     // Start point
     waypoints.push({
@@ -340,41 +338,44 @@ export class TripWizardService {
       name: input.start.name,
     });
 
-    // If crossing is selected, add terminal waypoints
-    if (input.crossing) {
-      if (startIsUK) {
-        // UK → Europe: drive to UK port, then from EU port
-        waypoints.push({
-          id: 'wizard-crossing-depart',
-          lat: input.crossing.departure.lat,
-          lng: input.crossing.departure.lng,
-          type: 'waypoint',
-          name: `${input.crossing.departure.name} (${input.crossing.type === 'tunnel' ? 'Tunnel' : 'Ferry'} Terminal)`,
-        });
-        waypoints.push({
-          id: 'wizard-crossing-arrive',
-          lat: input.crossing.arrival.lat,
-          lng: input.crossing.arrival.lng,
-          type: 'waypoint',
-          name: `${input.crossing.arrival.name} (Arrival)`,
-        });
-      } else {
-        // Europe → UK: drive to EU port, then from UK port
-        waypoints.push({
-          id: 'wizard-crossing-depart',
-          lat: input.crossing.arrival.lat,
-          lng: input.crossing.arrival.lng,
-          type: 'waypoint',
-          name: `${input.crossing.arrival.name} (${input.crossing.type === 'tunnel' ? 'Tunnel' : 'Ferry'} Terminal)`,
-        });
-        waypoints.push({
-          id: 'wizard-crossing-arrive',
-          lat: input.crossing.departure.lat,
-          lng: input.crossing.departure.lng,
-          type: 'waypoint',
-          name: `${input.crossing.departure.name} (Arrival)`,
-        });
-      }
+    // Insert crossing terminals in route order (direction-agnostic)
+    for (let i = 0; i < input.crossings.length; i++) {
+      const crossing = input.crossings[i];
+      const prevPoint = waypoints[waypoints.length - 1];
+
+      // Whichever terminal is closer to our current position is departure
+      const distToDep = haversineDistance(
+        prevPoint.lat,
+        prevPoint.lng,
+        crossing.departure.lat,
+        crossing.departure.lng
+      );
+      const distToArr = haversineDistance(
+        prevPoint.lat,
+        prevPoint.lng,
+        crossing.arrival.lat,
+        crossing.arrival.lng
+      );
+
+      const [depart, arrive] =
+        distToDep <= distToArr
+          ? [crossing.departure, crossing.arrival]
+          : [crossing.arrival, crossing.departure];
+
+      waypoints.push({
+        id: `wizard-crossing-${i}-depart`,
+        lat: depart.lat,
+        lng: depart.lng,
+        type: 'waypoint',
+        name: `${depart.name} (${crossing.type === 'tunnel' ? 'Tunnel' : 'Ferry'} Terminal)`,
+      });
+      waypoints.push({
+        id: `wizard-crossing-${i}-arrive`,
+        lat: arrive.lat,
+        lng: arrive.lng,
+        type: 'waypoint',
+        name: `${arrive.name} (Arrival)`,
+      });
     }
 
     // End point
@@ -582,12 +583,12 @@ export class TripWizardService {
   }
 
   /**
-   * Check if a day segment passes near a channel crossing terminal
+   * Check if a day segment passes near a ferry crossing terminal
    */
   private static isPointNearCrossing(
     dayStart: { lat: number; lng: number },
     dayEnd: { lat: number; lng: number },
-    crossing: ChannelCrossing
+    crossing: FerryCrossing
   ): boolean {
     const nearDeparture =
       haversine(dayStart.lat, dayStart.lng, crossing.departure.lat, crossing.departure.lng) < 50 ||
@@ -601,7 +602,7 @@ export class TripWizardService {
   }
 
   /**
-   * Check if a channel crossing is needed between two locations
+   * Check if any ferry crossing is needed between two locations
    */
   static needsCrossing(
     startLat: number,
@@ -609,19 +610,29 @@ export class TripWizardService {
     endLat: number,
     endLng: number
   ): boolean {
-    return needsChannelCrossing(startLat, startLng, endLat, endLng);
+    const result = detectFerryCrossings(
+      { lat: startLat, lng: startLng },
+      { lat: endLat, lng: endLng }
+    );
+    return result.mandatory.length > 0;
   }
 
   /**
-   * Get recommended crossings for a given journey
+   * Get recommended crossings for a given journey (mandatory + optional)
    */
   static getRecommendedCrossings(
     startLat: number,
     startLng: number,
     endLat: number,
     endLng: number
-  ): ChannelCrossing[] {
-    return getRecommendedCrossings(startLat, startLng, endLat, endLng);
+  ): FerryCrossing[] {
+    const result = detectFerryCrossings(
+      { lat: startLat, lng: startLng },
+      { lat: endLat, lng: endLng }
+    );
+    const recommended = result.mandatory.map(m => m.recommended);
+    const optional = result.optional.map(o => o.crossing);
+    return [...recommended, ...optional];
   }
 
   /**

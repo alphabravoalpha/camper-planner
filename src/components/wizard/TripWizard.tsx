@@ -1,7 +1,7 @@
 // Trip Planning Wizard
 // Step-by-step modal for creating a complete multi-day trip itinerary
 
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import {
   X,
   MapPin,
@@ -38,7 +38,12 @@ import {
   type ItineraryDay,
 } from '../../services/TripWizardService';
 import { campsiteService } from '../../services/CampsiteService';
-import { CHANNEL_CROSSINGS, needsChannelCrossing } from '../../data/channelCrossings';
+import {
+  detectFerryCrossings,
+  REGION_LABELS,
+  type FerryCrossing,
+  type DetectedCrossings,
+} from '../../data/ferryCrossings';
 import { type Waypoint } from '../../types';
 
 // Mapped geocode result for search dropdowns
@@ -72,11 +77,19 @@ const TripWizard: React.FC = () => {
   const [showCloseConfirm, setShowCloseConfirm] = useState(false);
   const [showOverwriteConfirm, setShowOverwriteConfirm] = useState(false);
 
-  // Determine if crossing step is needed
-  const needsCrossing =
-    wizard.start && wizard.end
-      ? needsChannelCrossing(wizard.start.lat, wizard.start.lng, wizard.end.lat, wizard.end.lng)
-      : false;
+  // Detect ferry crossings between start and end
+  const detected: DetectedCrossings | null = useMemo(() => {
+    if (!wizard.start || !wizard.end) return null;
+    const result = detectFerryCrossings(
+      { lat: wizard.start.lat, lng: wizard.start.lng },
+      { lat: wizard.end.lat, lng: wizard.end.lng }
+    );
+    return result;
+  }, [wizard.start, wizard.end]);
+
+  const needsCrossing = detected
+    ? detected.mandatory.length > 0 || detected.optional.length > 0
+    : false;
 
   // Build visible steps (skip crossing if not needed)
   const visibleSteps = STEPS.filter(step => step.id !== 'crossing' || needsCrossing);
@@ -98,7 +111,8 @@ const TripWizard: React.FC = () => {
       case 'driving':
         return true; // always has a default
       case 'crossing':
-        return needsCrossing ? !!wizard.crossing : true;
+        // Mandatory crossings are auto-selected; step is always valid
+        return true;
       case 'itinerary':
         return !!wizard.itinerary;
       default:
@@ -126,7 +140,7 @@ const TripWizard: React.FC = () => {
           startDate: wizard.startDate,
           endDate: wizard.endDate || undefined,
           drivingStyle: wizard.drivingStyle,
-          crossing: wizard.crossing || undefined,
+          crossings: wizard.crossings,
           restDayFrequency: wizard.restDayFrequency,
           vehicleProfile: vehicleProfile || undefined,
         });
@@ -164,6 +178,28 @@ const TripWizard: React.FC = () => {
         });
       }
 
+      // Add crossing terminal waypoints so ORS can route across the Channel
+      if (day.crossing) {
+        const startIsUK = isUKOrIreland(day.start.lat, day.start.lng);
+        const departTerminal = startIsUK ? day.crossing.departure : day.crossing.arrival;
+        const arriveTerminal = startIsUK ? day.crossing.arrival : day.crossing.departure;
+
+        newWaypoints.push({
+          id: `trip-${ts}-crossing-depart-${index}`,
+          lat: departTerminal.lat,
+          lng: departTerminal.lng,
+          type: 'waypoint',
+          name: `${departTerminal.name} (${day.crossing.type === 'tunnel' ? 'Tunnel' : 'Ferry'} Terminal)`,
+        });
+        newWaypoints.push({
+          id: `trip-${ts}-crossing-arrive-${index}`,
+          lat: arriveTerminal.lat,
+          lng: arriveTerminal.lng,
+          type: 'waypoint',
+          name: `${arriveTerminal.name} (Arrival)`,
+        });
+      }
+
       // Add overnight campsite (if selected and not last day)
       if (day.selectedOvernight && index < wizard.itinerary!.days.length - 1) {
         newWaypoints.push({
@@ -193,25 +229,30 @@ const TripWizard: React.FC = () => {
     routeStore.reorderWaypoints(newWaypoints);
 
     // Persist wizard settings to the trip settings store
-    const crossing = wizard.crossing;
-    const crossingType: 'ferry' | 'eurotunnel' | undefined = crossing
-      ? crossing.type === 'tunnel'
+    // Use the first crossing for the legacy crossing settings field
+    const primaryCrossing = wizard.crossings[0];
+    const crossingType: 'ferry' | 'eurotunnel' | undefined = primaryCrossing
+      ? primaryCrossing.type === 'tunnel'
         ? 'eurotunnel'
         : 'ferry'
       : undefined;
+
+    // Sum estimated costs across all crossings
+    const totalCrossingCost = wizard.crossings.reduce(
+      (sum, c) => sum + Math.round((c.estimatedCost.low + c.estimatedCost.high) / 2),
+      0
+    );
 
     useTripSettingsStore.getState().updateSettings({
       ...(wizard.startDate ? { startDate: wizard.startDate.toISOString().split('T')[0] } : {}),
       ...(wizard.endDate ? { endDate: wizard.endDate.toISOString().split('T')[0] } : {}),
       drivingStyle: wizard.drivingStyle,
       restDayFrequency: wizard.restDayFrequency,
-      ...(crossing && crossingType
+      ...(primaryCrossing && crossingType
         ? {
             crossing: {
               type: crossingType,
-              estimatedCost: Math.round(
-                (crossing.estimatedCost.low + crossing.estimatedCost.high) / 2
-              ),
+              estimatedCost: totalCrossingCost,
             },
           }
         : {}),
@@ -297,7 +338,7 @@ const TripWizard: React.FC = () => {
           {currentStepId === 'start-end' && <StepStartEnd />}
           {currentStepId === 'dates' && <StepDates />}
           {currentStepId === 'driving' && <StepDrivingStyle />}
-          {currentStepId === 'crossing' && <StepCrossing />}
+          {currentStepId === 'crossing' && <StepCrossing detected={detected} />}
           {currentStepId === 'itinerary' && <StepItinerary onCreateTrip={handleCreateTrip} />}
         </div>
 
@@ -814,128 +855,230 @@ const StepDrivingStyle: React.FC = () => {
 };
 
 // ============================================
-// Step 4: Channel Crossing
+// Step 4: Ferry Crossings
 // ============================================
 
-const StepCrossing: React.FC = () => {
-  const { start, end, crossing, setCrossing } = useTripWizardStore();
+// Helper: format crossing duration
+function formatDuration(minutes: number): string {
+  if (minutes < 60) return `${minutes} min`;
+  const h = Math.floor(minutes / 60);
+  const m = minutes % 60;
+  return m > 0 ? `${h}h ${m}m` : `${h}h`;
+}
 
-  // Group crossings by region
-  const crossingsByRegion = {
-    short: CHANNEL_CROSSINGS.filter(c => c.region === 'short'),
-    western: CHANNEL_CROSSINGS.filter(c => c.region === 'western'),
-    northern: CHANNEL_CROSSINGS.filter(c => c.region === 'northern'),
+// Crossing card for a single ferry/tunnel option
+const CrossingCard: React.FC<{
+  crossing: FerryCrossing;
+  isSelected: boolean;
+  isRecommended: boolean;
+  onSelect: () => void;
+}> = ({ crossing: c, isSelected, isRecommended, onSelect }) => (
+  <button
+    onClick={onSelect}
+    className={`w-full text-left p-3 rounded-xl border-2 transition-all duration-200 ${
+      isSelected
+        ? 'border-primary-500 bg-primary-50'
+        : 'border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50'
+    }`}
+  >
+    <div className="flex items-center justify-between">
+      <div className="flex items-center gap-2">
+        {c.type === 'tunnel' ? (
+          <TrainFront className="w-4 h-4 text-neutral-500" />
+        ) : (
+          <Ship className="w-4 h-4 text-primary-500" />
+        )}
+        <span className="font-medium text-neutral-900">{c.name}</span>
+        {isRecommended && (
+          <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">
+            Recommended
+          </span>
+        )}
+      </div>
+      {isSelected && <Check className="w-5 h-5 text-primary-500" />}
+    </div>
+
+    <div className="flex items-center gap-4 mt-1.5 text-xs text-neutral-500">
+      <span className="flex items-center gap-1">
+        <Clock className="w-3.5 h-3.5" />
+        {formatDuration(c.duration)}
+      </span>
+      <span>{c.operators.join(', ')}</span>
+      <span>
+        {c.estimatedCost.currency === 'EUR' ? '\u20AC' : '\u00A3'}
+        {c.estimatedCost.low}–{c.estimatedCost.high}
+      </span>
+      {c.overnightCrossing && <span className="text-purple-600">Overnight</span>}
+    </div>
+
+    {isSelected && c.notes && <p className="text-xs text-neutral-500 mt-2">{c.notes}</p>}
+
+    {isSelected && c.bookingUrls.length > 0 && (
+      <div className="flex gap-2 mt-2">
+        {c.bookingUrls.map((url, i) => (
+          <a
+            key={i}
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={e => e.stopPropagation()}
+            className="inline-flex items-center gap-1 text-xs text-primary-600 hover:text-primary-700 bg-primary-50 px-2 py-1 rounded-lg"
+          >
+            Book with {c.operators[i] || c.operators[0]}
+            <ExternalLink className="w-3 h-3" />
+          </a>
+        ))}
+      </div>
+    )}
+  </button>
+);
+
+interface StepCrossingProps {
+  detected: DetectedCrossings | null;
+}
+
+const StepCrossing: React.FC<StepCrossingProps> = ({ detected }) => {
+  const { crossings, setCrossings } = useTripWizardStore();
+  const [expandedMandatory, setExpandedMandatory] = useState<number | null>(null);
+
+  // On first render, auto-select recommended crossings for mandatory segments
+  React.useEffect(() => {
+    if (!detected || crossings.length > 0) return;
+    const recommended = detected.mandatory.map(m => m.recommended);
+    if (recommended.length > 0) {
+      setCrossings(recommended);
+    }
+  }, [detected, crossings.length, setCrossings]);
+
+  if (!detected) return null;
+
+  const { mandatory, optional } = detected;
+
+  // Check if a crossing is currently selected
+  const isSelected = (c: FerryCrossing) => crossings.some(s => s.id === c.id);
+
+  // Replace a mandatory crossing (swap recommended with user's choice)
+  const handleSwapMandatory = (segmentIndex: number, newCrossing: FerryCrossing) => {
+    const segment = mandatory[segmentIndex];
+    const updated = crossings.filter(c => !segment.crossings.some(sc => sc.id === c.id));
+    updated.push(newCrossing);
+    setCrossings(updated);
+    setExpandedMandatory(null);
   };
 
-  // Get recommended order based on start/end locations
-  const recommended =
-    start && end
-      ? TripWizardService.getRecommendedCrossings(start.lat, start.lng, end.lat, end.lng)
-      : [];
-  const topRecommendedId = recommended[0]?.id;
-
-  const regionLabels: Record<string, { title: string; desc: string }> = {
-    short: { title: 'Short Crossings', desc: 'Dover & Folkestone — quickest to cross' },
-    western: {
-      title: 'Western Crossings',
-      desc: 'Portsmouth, Plymouth & Poole — arrive further south/west',
-    },
-    northern: {
-      title: 'Northern Crossings',
-      desc: 'Harwich, Hull & Newcastle — best for northern routes',
-    },
+  // Toggle an optional crossing
+  const handleToggleOptional = (c: FerryCrossing) => {
+    if (isSelected(c)) {
+      setCrossings(crossings.filter(s => s.id !== c.id));
+    } else {
+      setCrossings([...crossings, c]);
+    }
   };
+
+  const hasMandatory = mandatory.length > 0;
+  const hasOptional = optional.length > 0;
 
   return (
     <div className="space-y-6">
       <div>
         <h3 className="text-lg font-display font-semibold text-neutral-900 mb-1">
-          Getting to Europe
+          Ferry Crossings
         </h3>
         <p className="text-sm text-neutral-500">
-          Choose how you want to cross the Channel. We&apos;ll route via the terminals.
+          {hasMandatory
+            ? `Your route requires ${mandatory.length} ferry crossing${mandatory.length > 1 ? 's' : ''}. We\u2019ve pre-selected the fastest option for each.`
+            : 'Optional ferry crossings that could shorten your drive.'}
         </p>
       </div>
 
-      {Object.entries(crossingsByRegion).map(([region, crossings]) => (
-        <div key={region}>
-          <h4 className="font-display font-semibold text-neutral-800 mb-1">
-            {regionLabels[region].title}
-          </h4>
-          <p className="text-xs text-neutral-500 mb-2">{regionLabels[region].desc}</p>
-          <div className="space-y-2">
-            {crossings.map(c => {
-              const isSelected = crossing?.id === c.id;
-              const isRecommended = c.id === topRecommendedId;
+      {/* Mandatory Crossings */}
+      {hasMandatory && (
+        <div className="space-y-4">
+          {mandatory.length > 1 && (
+            <h4 className="font-display font-semibold text-neutral-800 text-sm uppercase tracking-wide">
+              Required Crossings
+            </h4>
+          )}
+          {mandatory.map((segment, idx) => {
+            const selected =
+              crossings.find(c => segment.crossings.some(sc => sc.id === c.id)) ||
+              segment.recommended;
+            const isExpanded = expandedMandatory === idx;
+            const regionLabel = REGION_LABELS[selected.region];
 
-              return (
-                <button
-                  key={c.id}
-                  onClick={() => setCrossing(isSelected ? null : c)}
-                  className={`w-full text-left p-3 rounded-xl border-2 transition-all duration-200 ${
-                    isSelected
-                      ? 'border-primary-500 bg-primary-50'
-                      : 'border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50'
-                  }`}
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      {c.type === 'tunnel' ? (
-                        <Car className="w-4 h-4 text-neutral-500" />
-                      ) : (
-                        <Ship className="w-4 h-4 text-primary-500" />
-                      )}
-                      <span className="font-medium text-neutral-900">{c.name}</span>
-                      {isRecommended && (
-                        <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">
-                          Recommended
-                        </span>
-                      )}
-                    </div>
-                    {isSelected && <Check className="w-5 h-5 text-primary-500" />}
-                  </div>
+            return (
+              <div key={`mandatory-${idx}`} className="space-y-2">
+                <div className="flex items-center gap-2 text-xs text-neutral-500">
+                  <ArrowLeftRight className="w-3.5 h-3.5" />
+                  <span>{regionLabel?.title || selected.region}</span>
+                </div>
 
-                  <div className="flex items-center gap-4 mt-1.5 text-xs text-neutral-500">
-                    <span className="flex items-center gap-1">
-                      <Clock className="w-3.5 h-3.5" />
-                      {c.duration < 60
-                        ? `${c.duration} min`
-                        : `${Math.floor(c.duration / 60)}h ${c.duration % 60 > 0 ? `${c.duration % 60}m` : ''}`}
-                    </span>
-                    <span>{c.operators.join(', ')}</span>
-                    <span>
-                      £{c.estimatedCost.low}–£{c.estimatedCost.high}
-                    </span>
-                    {c.overnightCrossing && <span className="text-purple-600">Overnight</span>}
-                  </div>
+                {/* Currently selected crossing */}
+                <CrossingCard
+                  crossing={selected}
+                  isSelected={true}
+                  isRecommended={selected.id === segment.recommended.id}
+                  onSelect={() => setExpandedMandatory(isExpanded ? null : idx)}
+                />
 
-                  {isSelected && c.notes && (
-                    <p className="text-xs text-neutral-500 mt-2">{c.notes}</p>
-                  )}
+                {/* Change button */}
+                {segment.crossings.length > 1 && (
+                  <button
+                    onClick={() => setExpandedMandatory(isExpanded ? null : idx)}
+                    className="text-xs text-primary-600 hover:text-primary-700 ml-1"
+                  >
+                    {isExpanded
+                      ? 'Hide alternatives'
+                      : `${segment.crossings.length - 1} alternative${segment.crossings.length > 2 ? 's' : ''} available`}
+                  </button>
+                )}
 
-                  {isSelected && (
-                    <div className="flex gap-2 mt-2">
-                      {c.bookingUrls.map((url, i) => (
-                        <a
-                          key={i}
-                          href={url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={e => e.stopPropagation()}
-                          className="inline-flex items-center gap-1 text-xs text-primary-600 hover:text-primary-700 bg-primary-50 px-2 py-1 rounded-lg"
-                        >
-                          Book with {c.operators[i] || c.operators[0]}
-                          <ExternalLink className="w-3 h-3" />
-                        </a>
+                {/* Alternatives list */}
+                {isExpanded && (
+                  <div className="space-y-2 pl-4 border-l-2 border-primary-100">
+                    {segment.crossings
+                      .filter(c => c.id !== selected.id)
+                      .map(c => (
+                        <CrossingCard
+                          key={c.id}
+                          crossing={c}
+                          isSelected={false}
+                          isRecommended={c.id === segment.recommended.id}
+                          onSelect={() => handleSwapMandatory(idx, c)}
+                        />
                       ))}
-                    </div>
-                  )}
-                </button>
-              );
-            })}
-          </div>
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
-      ))}
+      )}
+
+      {/* Optional Crossings */}
+      {hasOptional && (
+        <div className="space-y-3">
+          <h4 className="font-display font-semibold text-neutral-800 text-sm uppercase tracking-wide">
+            Optional Ferries
+          </h4>
+          <p className="text-xs text-neutral-500">
+            These ferries could save you driving time. Toggle any you&apos;d like to include.
+          </p>
+          {optional.map(({ crossing: c, estimatedSavingsKm }) => (
+            <div key={c.id} className="relative">
+              <CrossingCard
+                crossing={c}
+                isSelected={isSelected(c)}
+                isRecommended={false}
+                onSelect={() => handleToggleOptional(c)}
+              />
+              <span className="absolute top-3 right-12 text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full">
+                Saves ~{estimatedSavingsKm} km
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
@@ -1131,11 +1274,9 @@ const DayCard: React.FC<{ day: ItineraryDay }> = ({ day }) => {
                 {day.crossing.name}
               </p>
               <p className="text-xs text-blue-700 mt-1">
-                {day.crossing.operators.join(', ')} ·{' '}
-                {day.crossing.duration < 60
-                  ? `${day.crossing.duration} min`
-                  : `${Math.floor(day.crossing.duration / 60)}h ${day.crossing.duration % 60 > 0 ? `${day.crossing.duration % 60}m` : ''}`}{' '}
-                crossing · £{day.crossing.estimatedCost.low}–£{day.crossing.estimatedCost.high}
+                {day.crossing.operators.join(', ')} · {formatDuration(day.crossing.duration)}{' '}
+                crossing · {day.crossing.estimatedCost.currency === 'EUR' ? '\u20AC' : '\u00A3'}
+                {day.crossing.estimatedCost.low}–{day.crossing.estimatedCost.high}
               </p>
               <div className="flex gap-2 mt-2">
                 {day.crossing.bookingUrls.map((url: string, i: number) => (
